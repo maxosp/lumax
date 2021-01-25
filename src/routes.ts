@@ -1,12 +1,12 @@
 import { RouteConfig } from 'vue-router'
-import CommonPageLayout from '@/layouts/CommonPageLayout.vue'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import HomePage from '@/pages/home/HomePage.vue'
 // import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
 
 export const routes: RouteConfig[] = [
   {
     path: '',
-    component: CommonPageLayout,
+    component: DefaultLayout,
     children: [
       {
         name: 'home',

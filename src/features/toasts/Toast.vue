@@ -1,12 +1,12 @@
 <template>
   <div
     class="toast"
-    :class="{ success: isSuccess, error: isError }"
+    :class="{ success: isSuccess, error: isError, warning: isWarning }"
   >
     <Icon
       :type="icon"
       class="icon"
-      :class="{success: isSuccess, error: isError}"
+      :class="{ success: isSuccess, error: isError, warning: isWarning }"
     />
     <h4 class="title">
       {{ title }}
@@ -52,6 +52,9 @@ export default Vue.extend({
     isSuccess() {
       return this.toast.type === 'success'
     },
+    isWarning() {
+      return this.toast.type === 'warning'
+    },
     isError() {
       return this.toast.type === 'error'
     },
@@ -61,12 +64,13 @@ export default Vue.extend({
 
 <style scoped>
 :root {
-  --success-color: var(--c-green-1);
-  --error-color: var(--c-red-2);
+  --success-color: var(--c-green-0);
+  --warning-color: var(--c-yellow-0);
+  --error-color: var(--c-red-0);
 }
 .toast {
   margin-top: 10px;
-  z-index: var(--toasts-z-index);
+  z-index: 10;
   border-radius: 5px;
   background-color: #fff;
   min-width: 200px;
@@ -79,7 +83,9 @@ export default Vue.extend({
   &.success {
     background-color: var(--success-color);
   }
-
+  &.warning {
+    background-color: var(--warning-color);
+  }
   &.error {
     background-color: var(--error-color);
   }

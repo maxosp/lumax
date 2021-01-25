@@ -1,21 +1,38 @@
 <template>
-  <div class="layout">
-    <RouterView />
+  <div class="default-layout">
+    <PageHeader />
+    <div class="main">
+      <Navigation />
+      <div class="content">
+        <RouterView />
+      </div>
+    </div>
+    <PageFooter />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import PageHeader from '@/pages/common/PageHeader.vue'
+import PageFooter from '@/pages/common/PageFooter.vue'
+import Navigation from '@/pages/common/Navigation/Navigation.vue'
 
 export default Vue.extend({
   name: 'DefaultLayout',
+  components: { PageHeader, PageFooter, Navigation },
 })
 </script>
 
 <style scoped>
-.layout {
-  height: 100vh;
-  overflow: auto;
+.default-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--base-bg-color);
+}
+.main {
+  display: flex;
+  min-height: calc(100vh - 90px);
 }
 </style>
 

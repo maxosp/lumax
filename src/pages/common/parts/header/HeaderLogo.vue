@@ -2,7 +2,14 @@
   <div class="logo-wrap">
     <RouterLink :to="{ name: 'home' }" class="link">
       <img
-        src="~assets/img/logo.svg"
+        v-if="$isOpened"
+        src='~assets/img/logo-full.svg'
+        alt="logo"
+        class="logo"
+      >
+      <img
+        v-else
+        src='~assets/img/logo.svg'
         alt="logo"
         class="logo"
       >
@@ -12,9 +19,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { $isOpened } from '@/pages/common/Navigation/navigation.model.ts'
 
 export default Vue.extend({
   name: 'HeaderLogo',
+  effector: {
+    $isOpened,
+  },
 })
 </script>
 

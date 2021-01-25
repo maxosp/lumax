@@ -23,7 +23,7 @@ export default Vue.extend({
 
 <style scoped>
 * {
-  --hover-bg-color: var(--c-purple-0);
+  --hover-bg-color: var(--c-yellow-1);
 }
 .header-link {
   display: flex;
@@ -31,7 +31,7 @@ export default Vue.extend({
   height: 100%;
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
+  color: var(--base-text-primary);
   text-decoration: none;
   padding: 0 20px;
   transition: background-color var(--base-animation);

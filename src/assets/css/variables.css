@@ -1,86 +1,26 @@
 :root {
-  --c-purple-0: #7481eb;
-  --c-purple-1: #f4f5fe;
-  --c-purple-2: #afb6f1;
-  --c-purple-3: #6371e2;
-  --c-purple-4: #ebedfd;
-  --c-purple-5: #aab1f0;
-  --c-purple-6: rgba(38, 41, 65, 0.7);
-  --c-purple-7: #d0d3e8;
-  --c-purple-8: #adb2d3;
-  --c-purple-9: #9193b6;
+  --base-text-primary: #0F2345;
+  --base-text-secondary: #6B768B;
+  --base-bg-color: #E5E5E5;
 
-  --c-grey-0: #2c2c2c;
-  --c-grey-1: rgba(0, 0, 0, 0.5);
-  --c-grey-2: #fcfcfc;
-  --c-grey-3: #d9e0e2;
-  --c-grey-4: rgba(158, 172, 177, 0.3);
-  --c-grey-5: #f3f3f3;
-  --c-grey-6: #606060;
-  --c-grey-7: #979797;
-  --c-grey-8: #d1d1d1;
-  --c-grey-9: #e4e4e4;
-  --c-grey-10: rgba(38, 41, 65, 0.7);
-  --c-grey-11: #9eacb1;
-  --c-grey-12: #bfbfbf;
-  --c-grey-13: #d1d1d1;
-  --c-grey-14: #bfc6c8;
-  --c-grey-15: #e8e8e8;
-  --c-grey-16: #b5b5b5;
-  --c-grey-17: rgba(44, 44, 44, 0.4);
-  --c-grey-18: #7f7f7f;
-  --c-grey-19: rgba(131, 135, 163, 0.8);
-  --c-grey-20: rgba(255, 255, 255, 0.6);
+  --c-grey-0: #C2C2C2;
+  --c-grey-1: #A6A6A6;
+  --c-grey-2: #D0D7E0;
+  --c-grey-3: #929BAE;
+  --c-grey-4: #EDEEF0;
 
-  --c-red-0: #fd6c6d;
-  --c-red-1: #fe7d8b;
-  --c-red-2: #ff5858;
-  --c-red-3: #fe5a6b;
-  --c-red-4: #ff0000;
-  --c-green-0: #44dc8a;
-  --c-green-1: rgba(50, 200, 83, 0.85);
-  --c-orange-0: #f2b37f;
+  --c-green-0: #62C16C;
 
+  --c-red-0: #FF5757;
 
-  --c-accent: var(--c-purple-0);
-  --c-error: var(--c-red-1);
+  --c-yellow-0: #F9C961;
+  --c-yellow-1: #EBAE28;
 
-  --base-bg-color: var(--c-grey-2);
-
-  --base-placeholder-color: var(--c-grey-1);
-  --base-input-text-color: black;
-  --base-text-color: var(--c-grey-6);
-  --base-header-color: black;
-  --base-select-item-text-color: var(--base-input-text-color);
-  --base-select-item-border-color: var(--c-grey-9);
-
-  --base-font-family: 'Open Sans', sans-serif;
+  --base-font-family: 'Proxima Nova', sans-serif;
   --base-font-size: 14px;
-
-  --input-small-font-size: 13px;
 
   --base-animation-length: 0.15s;
   --base-animation: var(--base-animation-length) ease-out;
-
-  --base-border-radius: 10px;
-
-  --form-fields-between-margin: 10px;
-
-  --footer-item-font-size: 13px;
-  --footer-item-line-height: 0.92;
-  --footer-item-space-between: 40px;
-
-  --header-bg-color: var(--c-grey-0);
-  --header-height: 50px;
-
-  --sidebar-width: 300px;
-  --base-sidebar-bg-color: var(--c-purple-1);
-
-  --modal-z-index: 100;
-  --toasts-z-index: 200;
-  --modal-overley-color: var(--c-grey-10);
-
-  --inputs-inner-side-padding: 15px;
 }
 
 
