@@ -1,0 +1,35 @@
+@import "./reset.css";
+@import "./fonts.css";
+@import "./animations.css";
+
+* {
+  font-family: var(--base-font-family);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+
+html {
+  font-size: var(--base-font-size);
+}
+body {
+  min-width: 1140px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#app {
+  height: 100vh;
+}
+
+input,
+a,
+button {
+  outline: none;
+}
+
+a:focus {
+  outline: none;
+}
+
+

@@ -1,0 +1,54 @@
+{
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue"
+  ],
+  "files": [
+    "./typings/index.d.ts",
+    "./typings/shims-vue.d.ts",
+    "./typings/shims-tsx.d.ts"
+  ],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es6", "es2015", "es2017", "dom"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "pretty": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "experimentalDecorators": true,
+    "target": "es2016",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["vue", "node", "jest"]
+  },
+  "exclude": [
+    "./node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "razzle.config.js",
+    "postcss.config.js",
+    ".eslintrc.js",
+    "babel.config.js",
+    "./.storybook",
+    "./src/stories"
+  ]
+}
+

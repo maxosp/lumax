@@ -1,0 +1,7 @@
+@define-mixin between-childs {
+  &:not(:first-child) {
+    @mixin-content;
+  }
+}
+
+
