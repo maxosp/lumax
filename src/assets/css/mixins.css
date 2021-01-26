@@ -14,3 +14,9 @@
   flex-direction: column;
   align-items: center;
 }
+
+@define-mixin flex-row-central {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

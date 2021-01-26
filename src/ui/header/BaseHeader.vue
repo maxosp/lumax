@@ -40,6 +40,8 @@ export default Vue.extend({
 .right-section {
   display: flex;
   align-items: center;
+  padding-right: 30px;
+  box-sizing: border-box;
 }
 </style>
 

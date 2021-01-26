@@ -22,13 +22,12 @@
         <HeaderLink route-name="user.profile">
           Никита Махаев
         </HeaderLink>
-        <HeaderLink
-          v-if="!false"
-          :style="'text-decoration-line: underline;'"
-          route-name="auth.login"
+        <div
+          class="element"
+          @click="modalLogoutVisibilityChanged(true)"
         >
-          Выйти
-        </HeaderLink>
+          <p> Выйти </p>
+        </div>
       </div>
     </template>
   </BaseHeader>
@@ -41,6 +40,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import HeaderLogo from '@/pages/common/parts/header/HeaderLogo.vue'
 import HeaderLink from '@/pages/common/parts/header/HeaderLink.vue'
 import { $isOpened, changeNavState } from '@/pages/common/Navigation/navigation.model.ts'
+import { modalLogoutVisibilityChanged } from '@/pages/common/modal-logout/modal-logout.model'
 // import { $isAuthed } from '@/features/session'
 
 export default Vue.extend({
@@ -52,6 +52,7 @@ export default Vue.extend({
   },
   methods: {
     changeNavState,
+    modalLogoutVisibilityChanged,
   },
 })
 </script>
@@ -71,6 +72,15 @@ export default Vue.extend({
   display: flex;
   justify-content: flex-end;
   min-width: 300px;
+  .element {
+    font-weight: 700;
+    line-height: 17px;
+    color: var(--base-text-primary);
+    text-decoration: underline;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 .nav-state-switcher {
   display: flex;
