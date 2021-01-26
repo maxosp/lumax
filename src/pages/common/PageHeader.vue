@@ -39,7 +39,7 @@ import BaseHeader from '@/ui/header/BaseHeader.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderLogo from '@/pages/common/parts/header/HeaderLogo.vue'
 import HeaderLink from '@/pages/common/parts/header/HeaderLink.vue'
-import { $isOpened, changeNavState } from '@/pages/common/Navigation/navigation.model.ts'
+import { $isOpened, changeNavState } from '@/pages/common/navigation/navigation.model.ts'
 import { modalLogoutVisibilityChanged } from '@/pages/common/modal-logout/modal-logout.model'
 // import { $isAuthed } from '@/features/session'
 
@@ -62,7 +62,7 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px;
+  width: 70px;
   transition: width var(--base-animation);
 }
 .opened {

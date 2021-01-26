@@ -1,11 +1,12 @@
 <template>
   <div class="sidebar">
     <Divider />
-    <div :class="{ 'page-nav': true, opened: $isOpened }">
+    <div :class="{ 'navigation': true, opened: $isOpened }">
       <NavItem
         v-for="item in navItems"
         :key="item.title"
-        :type="item.icon"
+        :item="item"
+        :opened="$isOpened"
       />
     </div>
   </div>
@@ -34,13 +35,12 @@ export default Vue.extend({
 .sidebar {
   background-color: #fff;
 }
-.page-nav {
+.navigation {
   padding: 20px;
-  width: 60px;
+  width: 70px;
   transition: width var(--base-animation);
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 .opened {
   width: 240px;

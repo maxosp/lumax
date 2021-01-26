@@ -1,7 +1,8 @@
-import { NavItem } from '@/pages/common/Navigation/types.ts'
+import { NavItem } from '@/pages/common/navigation/types.ts'
 
 export const data: NavItem[] = [
   {
+    id: 'tasks',
     title: 'Банк заданий',
     icon: 'tasks',
     children: [
@@ -11,26 +12,31 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'tests',
     title: 'Тестирование',
     icon: 'check',
     children: [{ title: 'Тесты' }, { title: 'Метки для заданий' }],
   },
   {
+    id: 'olympiads',
     title: 'Олимпиады',
     icon: 'olympiad',
     children: [{ title: 'Олимпиады' }, { title: 'Метки олимпиад' }],
   },
   {
+    id: 'learning',
     title: 'Обучение',
     icon: 'book',
     children: [{ title: 'Уроки' }, { title: 'Курсы' }, { title: 'Кружки' }, { title: 'Ученики' }],
   },
   {
+    id: 'exams',
     title: 'Экзамены',
     icon: 'list',
     children: [{ title: 'Заочный' }, { title: 'Очный' }],
   },
   {
+    id: 'results',
     title: 'Результаты',
     icon: 'statistics',
     children: [
@@ -43,6 +49,7 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'requests',
     title: 'Заявки',
     icon: 'success',
     children: [
@@ -52,6 +59,7 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'users',
     title: 'Пользователи',
     icon: 'user',
     children: [
@@ -62,11 +70,13 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'callback',
     title: 'Обратная связь',
     icon: 'callback',
-    children: [],
+    children: null,
   },
   {
+    id: 'catalog',
     title: 'Справочник',
     icon: 'folder',
     children: [
@@ -79,11 +89,13 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'content',
     title: 'Контент',
     icon: 'display',
     children: [{ title: 'Новости' }, { title: 'FAQ' }, { title: 'Слайдеры' }, { title: 'Баннеры' }],
   },
   {
+    id: 'settings',
     title: 'Настройки',
     icon: 'filter',
     children: [
@@ -93,8 +105,9 @@ export const data: NavItem[] = [
     ],
   },
   {
+    id: 'backups',
     title: 'Бэкапы',
     icon: 'backup',
-    children: [],
+    children: null,
   },
 ]

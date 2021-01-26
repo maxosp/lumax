@@ -1,8 +1,26 @@
 <template>
   <div class="nav-item">
-    <Icon :type="$props.item.icon" size="30" />
-    <div v-if="$isOpened" class="content">
-      <div class="title">{{ $props.item.title }}</div>
+    <Icon
+      :type="`${isCollapsed ? $props.item.icon : `${$props.item.icon}-selected`}`"
+      size="30"
+    />
+    <div v-if="$props.opened" class="content">
+      <div class="header" @click="changeCollapsState">
+        <div class="title">{{ $props.item.title }}</div>
+        <Icon
+          v-if="$props.item.children"
+          type="chevron-down"
+          size="10"
+        />
+        <div v-else />
+      </div>
+      <div v-if="!isCollapsed" class="nav-children">
+        <NavChild
+          v-for="child in $props.item.children"
+          :key="child.title"
+          :item="child"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -10,44 +28,71 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import { $isOpened } from '@/pages/common/Navigation/navigation.model.ts'
-import { NavItem } from '@/pages/common/Navigation/types'
+import NavChild from '@/pages/common/navigation/parts/NavChild.vue'
+import { NavItem } from '@/pages/common/navigation/types'
+import { $openedItem, changeOpenedItem } from '@/pages/common/navigation/navigation.model'
 
 export default Vue.extend({
   name: 'NavItem',
-  components: { Icon },
+  components: { Icon, NavChild },
   effector: {
-    $isOpened,
+    $openedItem,
   },
   props: {
     item: { type: Object as PropType<NavItem>, required: true },
+    opened: { type: Boolean, required: true },
   },
-  data: () => ({
-    collapsed: false,
-  }),
   computed: {
     isCollapsed() {
       // @ts-ignore
-      return this.$isOpened && this.collapsed
+      return !this.$props.opened || this.$openedItem !== this.$props.item.id
+    },
+  },
+  methods: {
+    changeCollapsState() {
+      if (!this.$props.opened) return
+      // @ts-ignore
+      if (this.$openedItem === this.$props.item.id) {
+        changeOpenedItem(null)
+      } else {
+        changeOpenedItem(this.$props.item.id)
+      }
     },
   },
 })
 </script>
 
 <style scoped>
-.sidebar {
-  background-color: #fff;
+.nav-item {
+  padding-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  white-space: nowrap;
 }
-.page-nav {
-  padding: 20px;
-  width: 60px;
-  transition: width var(--base-animation);
+
+.content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding-left: 15px;
+  flex-basis: 100%;
 }
-.opened {
-  width: 240px;
+
+.header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 7px;
+  flex-basis: 100%;
+}
+
+.title {
+  color: var(--base-text-primary);
+  font-weight: 600;
+}
+
+.filled /deep/ path {
+  fill: var(--c-yellow-1) !important;
 }
 </style>
 

@@ -16,8 +16,8 @@
 import Vue from 'vue'
 import PageHeader from '@/pages/common/PageHeader.vue'
 import PageFooter from '@/pages/common/PageFooter.vue'
-import Navigation from '@/pages/common/Navigation/Navigation.vue'
 import ModalLogout from '@/pages/common/modal-logout/ModalLogout.vue'
+import Navigation from '@/pages/common/navigation/Navigation.vue'
 
 export default Vue.extend({
   name: 'DefaultLayout',

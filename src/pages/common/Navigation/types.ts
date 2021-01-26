@@ -3,7 +3,8 @@ export type NavItemChild = {
 }
 
 export type NavItem = {
+  id: string
   title: string
   icon: string
-  children: NavItemChild[]
+  children: NavItemChild[] | null
 }
