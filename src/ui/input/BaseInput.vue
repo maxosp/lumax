@@ -16,7 +16,9 @@ export default Vue.extend({
   name: 'BaseInput',
   props: {
     value: { type: [String, Number] as PropType<string | number>, default: '' },
+    placeholder: { type: String as PropType<string>, default: '' },
     maxLength: { type: Number },
+    disabled: { type: Boolean },
   },
   model: {
     event: 'input',
@@ -24,24 +26,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped>
-* {
-  --text-color: var(--base-input-text-color);
-  --side-padding: 15px;
-}
-.custom-dnd-placeholder {
-  padding: 0 !important;
-  margin-right: 10px;
-}
-input {
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  color: var(--text-color);
-  background-color: transparent;
-  border: none;
-}
-</style>
-
-

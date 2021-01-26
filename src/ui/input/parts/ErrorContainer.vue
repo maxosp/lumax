@@ -18,7 +18,6 @@ export default Vue.extend({
 }
 .error-container {
   padding: 20px;
-  font-size: 14px;
   font-weight: 600;
   line-height: 1.43;
   color: var(--text-color);

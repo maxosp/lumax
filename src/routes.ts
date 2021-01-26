@@ -1,6 +1,7 @@
 import { RouteConfig } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import HomePage from '@/pages/home/HomePage.vue'
+import LoginPage from '@/pages/login/LoginPage.vue'
 // import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
 
 export const routes: RouteConfig[] = [
@@ -17,5 +18,10 @@ export const routes: RouteConfig[] = [
         },
       },
     ],
+  },
+  {
+    name: 'login',
+    path: '/login',
+    component: LoginPage,
   },
 ]

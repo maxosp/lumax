@@ -110,7 +110,6 @@ export default Vue.extend({
 
 .title {
   margin: 0;
-  font-size: 14px;
   font-weight: bold;
   line-height: 1.14;
   color: #ffffff;

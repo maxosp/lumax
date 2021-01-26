@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-
 import WithTooltip from '@/ui/tooltip/WithTooltip.vue'
 
 export default Vue.extend({
@@ -29,10 +28,5 @@ export default Vue.extend({
   props: {
     disabled: { type: Boolean as PropType<boolean> },
   },
-
-  methods: {},
 })
 </script>
-
-<style scoped></style>
-
