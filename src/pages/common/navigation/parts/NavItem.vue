@@ -1,32 +1,36 @@
 <template>
-  <div class="sidebar">
-    <Divider />
-    <div :class="{ 'page-nav': true, opened: $isOpened }">
-      <Icon
-        v-for="item in navItems"
-        :key="item.title"
-        :type="item.icon"
-      />
+  <div class="nav-item">
+    <Icon :type="$props.item.icon" size="30" />
+    <div v-if="$isOpened" class="content">
+      <div class="title">{{ $props.item.title }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Divider from '@/ui/divider/Divider.vue'
+import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { $isOpened } from '@/pages/common/Navigation/navigation.model.ts'
-import { data as navItems } from './data'
+import { NavItem } from '@/pages/common/Navigation/types'
 
 export default Vue.extend({
-  name: 'Navigation',
-  components: { Divider, Icon },
+  name: 'NavItem',
+  components: { Icon },
   effector: {
     $isOpened,
   },
+  props: {
+    item: { type: Object as PropType<NavItem>, required: true },
+  },
   data: () => ({
-    navItems,
+    collapsed: false,
   }),
+  computed: {
+    isCollapsed() {
+      // @ts-ignore
+      return this.$isOpened && this.collapsed
+    },
+  },
 })
 </script>
 
