@@ -2,7 +2,6 @@
 const gulp = require('gulp')
 const svgSprite = require('gulp-svg-sprite')
 const svgmin = require('gulp-svgmin')
-const cheerio = require('gulp-cheerio')
 const replace = require('gulp-replace')
 
 const config = {
@@ -39,19 +38,6 @@ gulp.task('svg-sprite', function () {
           js2svg: {
             pretty: true
           }
-        })
-      )
-      // remove all fill, style and stroke declarations in out shapes
-      .pipe(
-        cheerio({
-          run: function ($, file) {
-            if (file.path.includes('question.svg') || file.path.includes('info.svg')) return
-
-            $('[style]').removeAttr('style')
-            $('[fill]').removeAttr('fill')
-            $('[stroke]').removeAttr('stroke')
-          },
-          parserOptions: { xmlMode: true }
         })
       )
       // cheerio plugin create unnecessary string '&gt;', so replace it.

@@ -9,7 +9,12 @@
     </template>
     <template #center>
       <div class="nav-state-switcher">
-        <div @click="changeNavState(!$isOpened)">Click me</div>
+        <Icon
+          class="sidebar"
+          type="sidebar"
+          size="20"
+          @click="changeNavState(!$isOpened)"
+        />
       </div>
     </template>
     <template #right>
@@ -32,6 +37,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import BaseHeader from '@/ui/header/BaseHeader.vue'
+import Icon from '@/ui/icon/Icon.vue'
 import HeaderLogo from '@/pages/common/parts/header/HeaderLogo.vue'
 import HeaderLink from '@/pages/common/parts/header/HeaderLink.vue'
 import { $isOpened, changeNavState } from '@/pages/common/Navigation/navigation.model.ts'
@@ -39,7 +45,7 @@ import { $isOpened, changeNavState } from '@/pages/common/Navigation/navigation.
 
 export default Vue.extend({
   name: 'PageHeader',
-  components: { BaseHeader, HeaderLogo, HeaderLink },
+  components: { BaseHeader, Icon, HeaderLogo, HeaderLink },
   effector: {
     // $isAuthed,
     $isOpened,
@@ -65,6 +71,14 @@ export default Vue.extend({
   display: flex;
   justify-content: flex-end;
   min-width: 300px;
+}
+.nav-state-switcher {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+.sidebar {
+  cursor: pointer;
 }
 </style>
 

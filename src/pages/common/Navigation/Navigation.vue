@@ -1,8 +1,12 @@
 <template>
   <div class="sidebar">
     <Divider />
-    <div :class="{ 'page-nav': true, opened: $isOpened }" @click="changeNavState(!$isOpened)">
-      Навигация
+    <div :class="{ 'page-nav': true, opened: $isOpened }">
+      <Icon
+        v-for="item in navItems"
+        :key="item.title"
+        :type="item.icon"
+      />
     </div>
   </div>
 </template>
@@ -10,17 +14,19 @@
 <script lang="ts">
 import Vue from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
-import { $isOpened, changeNavState } from '@/pages/common/Navigation/navigation.model.ts'
+import Icon from '@/ui/icon/Icon.vue'
+import { $isOpened } from '@/pages/common/Navigation/navigation.model.ts'
+import { data as navItems } from './data'
 
 export default Vue.extend({
   name: 'Navigation',
-  components: { Divider },
+  components: { Divider, Icon },
   effector: {
     $isOpened,
   },
-  methods: {
-    changeNavState,
-  },
+  data: () => ({
+    navItems,
+  }),
 })
 </script>
 
@@ -32,6 +38,9 @@ export default Vue.extend({
   padding: 20px;
   width: 60px;
   transition: width var(--base-animation);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .opened {
   width: 240px;

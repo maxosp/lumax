@@ -76,7 +76,6 @@
     "express-http-proxy": "^1.6.2",
     "fork-ts-checker-webpack-plugin": "5.2.0",
     "gulp": "^4.0.2",
-    "gulp-cheerio": "^1.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-svg-sprite": "^1.5.0",
     "gulp-svgmin": "^3.0.0",
