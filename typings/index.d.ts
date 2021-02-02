@@ -27,3 +27,5 @@ declare interface Window {
     [key: string]: string
   }
 }
+
+declare module 'vuetable-2'

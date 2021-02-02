@@ -33,6 +33,7 @@ const markup = (assetsCss: string, assetsJs: string) => `
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="utf-8" />
     <title>Electronic Education</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" media="screen" title="no title" charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     ${assetsCss ? `<link rel="stylesheet" href="${assetsCss}">` : ''}
     <script>window.env = ${serialize(config)};</script>
@@ -45,6 +46,8 @@ const markup = (assetsCss: string, assetsJs: string) => `
   <body>
     ${loadSvgSpriteForDev()}
     <div id="app"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js" charset="utf-8"></script>
   </body>
 </html>
 `

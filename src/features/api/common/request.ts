@@ -25,7 +25,7 @@ export const authorizedRequestFx = attach<
   effect: requestFx,
   source: $token,
   mapParams: (params, token) => {
-    const auth = token ? { Authorization: `Token ${token}` } : null
+    const auth = token ? { Authorization: `Bearer ${token}` } : null
     return { ...params, headers: { ...params.headers, ...auth } }
   },
 })
