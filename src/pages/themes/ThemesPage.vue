@@ -7,9 +7,16 @@
       :api-url="apiUrl"
       :fields="fields"
       :http-fetch="myFetch"
-      pagination-path=""
       @vuetable:pagination-data="onPaginationData"
-    />
+    >
+      <template v-slot:actions="props">
+        <Actions
+          :row-data="props.rowData"
+          :row-index="props.rowIndex"
+          :row-field="props.rowField"
+        />
+      </template>
+    </Vuetable>
     <div class="vuetable-pagination ui basic segment grid">
       <VuetablePagination
         ref="pagination"
@@ -21,16 +28,25 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Vuetable, VuetablePagination } from 'vuetable-2'
+import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
 import { $themes, $isLoading } from '@/pages/themes/themes-page.model'
 import { themesTableFields } from '@/pages/themes/constants'
+import { computeSortParam } from '@/pages/themes/utils'
+import Actions from '@/pages/themes/parts/Actions.vue'
+
+// {{ /* eslint-disable-next-line */ }}
+// <div slot-scope="props" slot="actions"><Actions :params="props" /></div>
+
+// eslint-disable-next-line
+Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
 
 export default Vue.extend({
   name: 'ThemesPage',
-  components: { Vuetable, VuetablePagination },
+  // eslint-disable-next-line
+  components: { Vuetable, VuetablePagination, Actions },
   effector: {
     $themes,
     $isLoading,
@@ -48,7 +64,9 @@ export default Vue.extend({
   },
   methods: {
     myFetch(apiUrl: string, httpOptions: any) {
-      return axios.get(apiUrl, httpOptions)
+      return axios.get(apiUrl, {
+        params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
+      })
     },
     onPaginationData(paginationData: any) {
       // @ts-ignore
@@ -74,6 +92,7 @@ export default Vue.extend({
   border-color: var(--c-grey-5);
 }
 .table /deep/ th[class^='vuetable-th'] {
-  color: #f00;
+  color: var(--base-text-primary);
+  font-weight: 600;
 }
 </style>

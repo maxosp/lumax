@@ -24,6 +24,8 @@
 
   --base-animation-length: 0.15s;
   --base-animation: var(--base-animation-length) ease-out;
+
+  --inputs-inner-side-padding: 20px;
 }
 
 

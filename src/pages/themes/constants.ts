@@ -3,6 +3,11 @@ import { Subject, StudyYear } from '@/features/api/subject/types'
 
 export const themesTableFields = [
   {
+    name: '__checkbox',
+    titleClass: 'center aligned',
+    dataClass: 'center aligned',
+  },
+  {
     name: 'id',
     sortField: 'id',
     title: 'ID Темы',
@@ -48,5 +53,11 @@ export const themesTableFields = [
     formatter(value: string) {
       return value ? dayjs(value).format('dd.mm.yyyy') : '-'
     },
+  },
+  {
+    name: 'actions',
+    title: 'Actions',
+    titleClass: 'text-center',
+    dataClass: 'text-center',
   },
 ]

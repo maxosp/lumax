@@ -26,12 +26,6 @@ export const routes: RouteConfig[] = [
           title: 'Стартовая страница - Школа Летово',
         },
       },
-    ],
-  },
-  {
-    path: '',
-    component: DefaultLayout,
-    children: [
       {
         name: 'themes',
         path: '/themes',
