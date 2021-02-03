@@ -91,6 +91,9 @@ export default Vue.extend({
 .table /deep/ .ui.blue.table {
   border-color: var(--c-grey-5);
 }
+.table /deep/ .vuetable-slot {
+  overflow: initial !important;
+}
 .table /deep/ th[class^='vuetable-th'] {
   color: var(--base-text-primary);
   font-weight: 600;

@@ -144,6 +144,7 @@ export default Vue.extend({
 .menu-wrap {
   position: absolute;
   width: min-content;
+  min-width: 130px;
   height: min-content;
   visibility: hidden;
   z-index: 2;

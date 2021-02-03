@@ -33,7 +33,6 @@ export default Vue.extend({
 .scroll {
   display: flex;
   flex-direction: column;
-  min-height: 155px;
 }
 </style>
 
