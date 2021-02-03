@@ -4,12 +4,12 @@
     menu-width="100%"
   >
     <template #activator>
-      <div
+      <Icon
         class="actions-activator"
+        type="kebab-menu"
+        size="24"
         @click="onActivatorClick"
-      >
-        icon...
-      </div>
+      />
     </template>
 
     <template #menu>
@@ -38,6 +38,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Icon from '@/ui/icon/Icon.vue'
 import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
@@ -46,6 +47,7 @@ import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 export default Vue.extend({
   name: 'Actions',
   components: {
+    Icon,
     MenuWrap,
     SelectMenu,
     SelectItem,

@@ -6,6 +6,9 @@ export const loadThemes = createEvent<void>()
 export const setThemes = createEvent<Theme[]>()
 export const $themes = restore(setThemes, [])
 
+export const toggleTreeView = createEvent<boolean>()
+export const $treeView = restore(toggleTreeView, false)
+
 const getThemes = attach({
   effect: getThemesListFx,
 })

@@ -56,8 +56,9 @@ export const themesTableFields = [
   },
   {
     name: 'actions',
-    title: 'Actions',
+    title: '',
     titleClass: 'text-center',
     dataClass: 'text-center',
+    width: '50px',
   },
 ]
