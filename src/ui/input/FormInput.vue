@@ -18,6 +18,13 @@
             input: (e) => $emit('input', e),
           }"
         />
+        <span
+          v-if="$slots.icon"
+          class="icon-wrap"
+          :class="{'has-error': hasError}"
+        >
+          <slot name="icon" />
+        </span>
       </label>
       <template
         v-if="hasError"
@@ -106,5 +113,11 @@ label {
 }
 .base-input-wrap ::v-deep .menu-wrap {
   top: 64.5% !important;
+}
+.icon-wrap {
+  position: absolute;
+  @mixin flex-center;
+  right: 18px;
+  bottom: 16px;
 }
 </style>

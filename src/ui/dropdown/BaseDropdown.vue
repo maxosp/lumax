@@ -8,9 +8,12 @@
       <DropdownActivator
         :value="value"
         :placeholder="placeholder"
+        :label="label"
         :is-open="isOpen"
         :error-message="errorMessage"
+        :disabled="disabled"
         @click="onActivatorClick"
+        @input="(e) => $emit('input', e)"
       >
         <template #error>
           <slot name="error" />
@@ -44,6 +47,8 @@ export default Vue.extend({
     errorMessage: { type: String as PropType<string>, default: '' },
     value: { type: String as PropType<string>, required: true },
     placeholder: { type: String as PropType<string>, required: true },
+    label: { type: String as PropType<string>, required: true },
+    disabled: { type: Boolean as PropType<boolean> },
   },
   data: () => ({
     isOpen: false,

@@ -36,6 +36,11 @@ export default Vue.extend({
   display: flex;
   min-height: calc(100vh - 90px);
 }
+.content {
+  width: 100%;
+  padding: 30px;
+  box-sizing: border-box;
+}
 </style>
 
 

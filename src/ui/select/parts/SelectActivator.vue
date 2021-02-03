@@ -61,7 +61,6 @@ export default Vue.extend({
   &.open {
     transform: rotate(180deg);
   }
-
   & >>> use {
     fill: var(--icon-color) !important;
   }

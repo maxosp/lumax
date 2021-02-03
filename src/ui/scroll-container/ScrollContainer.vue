@@ -50,7 +50,7 @@ export default Vue.extend({
 <style scoped>
 * {
   --scrollbar-side-margin: 15px;
-  --scrollbar-bg-color: var(--c-purple-0);
+  --scrollbar-bg-color: var(--c-yellow-1);
   --track-bg-color: transparent;
 }
 

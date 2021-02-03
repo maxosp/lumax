@@ -9,6 +9,7 @@
     <div class="btns-wrapper">
       <BaseButton
         class="btn"
+        big
         border-without-bg
         @click="fakeLogout"
       >
@@ -16,6 +17,7 @@
       </BaseButton>
       <BaseButton
         class="btn"
+        big
         @click="modalLogoutVisibilityChanged(false)"
       >
         Нет

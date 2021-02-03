@@ -33,7 +33,7 @@
 import Vue, { PropType } from 'vue'
 
 import MenuWrap from '@/ui/menu/MenuWrap.vue'
-import Tooltip, { Position, Corner } from './Tooltip.vue'
+import Tooltip, { Position, Corner } from '@/ui/tooltip/Tooltip.vue'
 
 type Actions = 'click' | 'mouseover' | 'mouseleave'
 

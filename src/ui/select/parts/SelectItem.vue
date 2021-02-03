@@ -1,61 +1,71 @@
 <template>
   <div
     class="select-item"
-    :class="{active}"
+    :class="{active, '--sub': subTitle}"
     v-on="$listeners"
   >
-    <div class="content">
-      <slot />
-    </div>
+    <slot />
+    <Icon
+      v-if="withIcon"
+      type="tick"
+      size="16"
+      class="icon"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import Icon from '@/ui/icon/Icon.vue'
 
 export default Vue.extend({
   name: 'SelectItem',
-
+  components: {
+    Icon,
+  },
   props: {
     active: { type: Boolean as PropType<boolean> },
+    withIcon: { type: Boolean as PropType<boolean> },
+    subTitle: { type: Boolean as PropType<boolean> },
   },
 })
 </script>
 
 <style scoped>
 * {
-  --side-padding: var(--inputs-inner-side-padding);
+  --side-padding: 20px;
   --bg-color: transparent;
-  --bg-hover-color: rgba(193, 193, 193, 0.11);
-  --bg-active-color: var(--c-yellow-1);
+  --bg-hover-color: var(--c-grey-7);
+  --bg-active-color: var(--bg-hover-color);
   --text-color: var(--base-text-primary);
-  --border-color: transparent;
-  --after-active-color: var(--base-text-primary);
+  --border-color: var(--c-grey-6);
 }
 
 .select-item {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 51px;
+  padding: 0 var(--side-padding);
   font-size: 14px;
   color: var(--text-color);
   background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
   transition: background-color var(--base-animation);
   cursor: pointer;
-
   &:hover {
     background-color: var(--bg-hover-color);
   }
 
-  &.active {
-    background-color: var(--bg-active-color);
-    &:after {
-      background-color: var(--after-active-color);
-    }
+  &.--sub {
+    padding-left: 60px;
   }
-
+  .icon {
+    stroke: var(--base-text-primary);
+    fill: transparent;
+  }
   &:after {
     position: absolute;
     content: '';
@@ -66,16 +76,6 @@ export default Vue.extend({
     background-color: transparent;
     transition: background-color var(--base-animation);
   }
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  height: 51px;
-  width: 95%;
-  margin: 0 7px;
-  padding: 0 7px;
-  border-bottom: 1px solid var(--border-color);
 }
 </style>
 

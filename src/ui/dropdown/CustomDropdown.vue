@@ -48,9 +48,6 @@ export default Vue.extend({
   data: () => ({
     isOpen: false,
   }),
-
-  computed: {},
-
   methods: {
     onActivatorClick() {
       this.isOpen = !this.isOpen
@@ -64,9 +61,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-* {
-  --icon-color: var(--c-accent);
-}
 .custom-dropdown /deep/ .select-menu {
   width: 188px;
   border-radius: 10px;
@@ -86,16 +80,11 @@ export default Vue.extend({
   }
 }
 .chevron-icon {
-  fill: var(--icon-color);
   transform-origin: center;
   transition: transform var(--base-animation);
   margin-left: 10px;
   &.open {
     transform: rotate(180deg);
-  }
-
-  & >>> use {
-    fill: var(--icon-color) !important;
   }
 }
 </style>

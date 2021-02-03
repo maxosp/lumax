@@ -28,6 +28,7 @@
         />
         <BaseButton
           class="btn"
+          big
           :disabled="!$isFormValid"
           @click="submitForm"
         >

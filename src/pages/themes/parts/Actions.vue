@@ -2,13 +2,13 @@
   <MenuWrap
     v-model="isOpen"
     menu-width="100%"
-    position-offset="-10px"
   >
     <template #activator>
       <div
+        class="actions-activator"
         @click="onActivatorClick"
       >
-        123
+        icon...
       </div>
     </template>
 
@@ -21,6 +21,8 @@
         >
           <SelectItem
             :key="item.value"
+            :active="false"
+            class="action-item"
             @click="() => {
               selectItem(item)
               closeMenu()
@@ -39,6 +41,7 @@ import Vue from 'vue'
 import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 
 export default Vue.extend({
   name: 'Actions',
@@ -49,7 +52,7 @@ export default Vue.extend({
   },
   props: {
     rowData: { type: Object, required: true },
-    rowIndex: { type: Object, required: true },
+    rowIndex: { type: Number, required: true },
     rowField: { type: Object, required: true },
   },
   data: () => ({
@@ -70,12 +73,16 @@ export default Vue.extend({
       this.isOpen = false
     },
   },
-  mounted() {
-    console.log(this.$props.rowData)
-    console.log(this.$props.rowIndex)
-    console.log(this.$props.rowField)
-  },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.actions-activator {
+  cursor: pointer;
+}
+.action-item {
+  &:hover {
+    background-color: var(--c-yellow-0);
+  }
+}
+</style>

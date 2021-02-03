@@ -157,7 +157,8 @@ export default Vue.extend({
 }
 .tooltip {
   z-index: 2;
-  background-color: var(--bg-color);
+  background-color: #fff;
+  box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.15);
   opacity: var(--opacity);
   border-radius: 5px;
   font-weight: 600;
@@ -173,20 +174,20 @@ export default Vue.extend({
 .arrow.top {
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-bottom: 10px solid var(--bg-color);
+  border-bottom: 10px solid #fff;
 }
 .arrow.left {
-  border-right: 10px solid var(--bg-color);
+  border-right: 10px solid #fff;
   border-bottom: 7px solid transparent;
   border-top: 7px solid transparent;
 }
 .arrow.right {
-  border-left: 10px solid var(--bg-color);
+  border-left: 10px solid #fff;
   border-bottom: 7px solid transparent;
   border-top: 7px solid transparent;
 }
 .arrow.bottom {
-  border-top: 10px solid var(--bg-color);
+  border-top: 10px solid #fff;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
 }

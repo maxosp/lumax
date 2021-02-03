@@ -45,7 +45,7 @@ export default Vue.extend({
     positionOffset: { type: String as PropType<string>, default: null },
     cornerOffset: { type: String as PropType<string>, default: null },
     closeOnClickOutside: { type: Boolean as PropType<boolean>, default: true },
-    menuWidth: { type: String as PropType<string>, default: 'min-content' },
+    menuWidth: { type: String as PropType<string>, default: 'max-content' },
     menuHeight: { type: String as PropType<string>, default: 'min-content' },
   },
 
@@ -143,8 +143,8 @@ export default Vue.extend({
 
 .menu-wrap {
   position: absolute;
-  width: min-content;
-  min-width: 130px;
+  width: max-content;
+  min-width: 220px;
   height: min-content;
   visibility: hidden;
   z-index: 2;

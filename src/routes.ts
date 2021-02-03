@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
 import ThemesPage from '@/pages/themes/ThemesPage.vue'
+import ThemeCreationPage from '@/pages/theme-creation/ThemeCreationPage.vue'
 // import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
 
 export const routes: RouteConfig[] = [
@@ -32,6 +33,14 @@ export const routes: RouteConfig[] = [
         component: ThemesPage,
         meta: {
           title: 'Темы - Школа Летово',
+        },
+      },
+      {
+        name: 'theme-creation',
+        path: '/theme-creation',
+        component: ThemeCreationPage,
+        meta: {
+          title: 'Создание темы - Школа Летово',
         },
       },
     ],

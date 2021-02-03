@@ -8,9 +8,6 @@
       class="icon"
       :class="{ success: isSuccess, error: isError, warning: isWarning }"
     />
-    <h4 class="title">
-      {{ title }}
-    </h4>
     <p class="message">
       {{ toast.message }}
     </p>
@@ -43,12 +40,6 @@ export default Vue.extend({
         }
       }
     },
-    title() {
-      return {
-        success: 'Успех:',
-        error: 'Ошибка:',
-      }[this.toast.type]
-    },
     isSuccess() {
       return this.toast.type === 'success'
     },
@@ -75,9 +66,8 @@ export default Vue.extend({
   background-color: #fff;
   min-width: 200px;
   max-width: 300px;
-  padding: 20px 20px 20px 60px;
+  padding: 14px 58px 17px 52px;
   display: flex;
-  flex-direction: column;
   position: relative;
 
   &.success {
@@ -94,29 +84,30 @@ export default Vue.extend({
 .icon {
   position: absolute;
   left: 20px;
-  top: 20px;
+  top: 17px;
   width: 18px;
   height: 18px;
   stroke: #fff;
-  fill: transparent;
+  fill: #fff;
 
   &.error {
     width: 16px;
     height: 16px;
     stroke: none;
     fill: #fff;
+    & ::v-deep use {
+      fill: #fff !important;
+    }
+  }
+  &.success {
+    height: 14px;
+    & ::v-deep use {
+      fill: transparent !important;
+    }
   }
 }
 
-.title {
-  margin: 0;
-  font-weight: bold;
-  line-height: 1.14;
-  color: #ffffff;
-}
-
 .message {
-  margin-top: 5px;
   color: #fff;
   font-size: 13px;
   font-weight: bold;

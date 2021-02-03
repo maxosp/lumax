@@ -1,7 +1,7 @@
 <template>
   <button
     v-bind="$props"
-    :class="{borderWithoutBg}"
+    :class="{borderWithoutBg, yellow, big}"
     v-on="$listeners"
   >
     <slot />
@@ -15,6 +15,8 @@ export default Vue.extend({
   name: 'BaseButton',
   props: {
     borderWithoutBg: { type: Boolean },
+    yellow: { type: Boolean },
+    big: { type: Boolean },
     disabled: { type: Boolean as PropType<boolean>, default: false },
   },
 })
@@ -30,11 +32,16 @@ button {
   color: white;
   font-weight: 700;
   line-height: 17px;
-  height: 46px;
+  height: 40px;
   border-radius: 7px;
   cursor: pointer;
+  box-sizing: border-box;
   &:disabled {
     opacity: 0.5;
+  }
+
+  &.big {
+    height: 46px;
   }
 
   &.borderWithoutBg {
@@ -44,6 +51,11 @@ button {
     &:disabled {
       opacity: 0.5;
     }
+  }
+  &.yellow {
+    background-color: var(--c-yellow-1);
+    font-weight: 600;
+    padding: 0px 15px;
   }
 }
 </style>

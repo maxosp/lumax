@@ -7,6 +7,7 @@
       :api-url="apiUrl"
       :fields="fields"
       :http-fetch="myFetch"
+      pagination-path=""
       @vuetable:pagination-data="onPaginationData"
     >
       <template v-slot:actions="props">
@@ -37,15 +38,11 @@ import { themesTableFields } from '@/pages/themes/constants'
 import { computeSortParam } from '@/pages/themes/utils'
 import Actions from '@/pages/themes/parts/Actions.vue'
 
-// {{ /* eslint-disable-next-line */ }}
-// <div slot-scope="props" slot="actions"><Actions :params="props" /></div>
-
 // eslint-disable-next-line
 Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
 
 export default Vue.extend({
   name: 'ThemesPage',
-  // eslint-disable-next-line
   components: { Vuetable, VuetablePagination, Actions },
   effector: {
     $themes,
@@ -89,7 +86,7 @@ export default Vue.extend({
 
 <style scoped>
 .table /deep/ .ui.blue.table {
-  border-color: var(--c-grey-5);
+  border-color: var(--c-grey-9);
 }
 .table /deep/ .vuetable-slot {
   overflow: initial !important;
