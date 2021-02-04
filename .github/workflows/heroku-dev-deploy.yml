@@ -1,0 +1,18 @@
+name: Dev deploy
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.2.6
+        with:
+          heroku_api_key: ${{secrets.HEROKU_DEV_API_KEY}}
+          heroku_app_name: "letovo-admin-dev"
+          heroku_email: "pugachev.max.serg@gmail.com"
+          usedocker: true
