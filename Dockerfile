@@ -2,7 +2,7 @@ FROM node:12.18.1-alpine as builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm i
 ENV NODE_ENV=production
 
 COPY . ./
