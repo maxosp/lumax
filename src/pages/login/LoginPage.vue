@@ -32,7 +32,8 @@
           :disabled="!$isFormValid"
           @click="submitForm"
         >
-          Вход
+          {{ $isLoading ? '' : 'Вход'}}
+          <Loader v-if="$isLoading" />
         </BaseButton>
       </form>
     </Card>
@@ -45,6 +46,7 @@ import LoginLayout from '@/layouts/LoginLayout.vue'
 import Card from '@/ui/card/Card.vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
+import Loader from '@/pages/common/parts/loader/Loader.vue'
 import {
   $form,
   emailChanged,
@@ -52,6 +54,7 @@ import {
   $errors,
   $isFormValid,
   submitForm,
+  $isLoading,
 } from '@/pages/login/login.model'
 
 export default Vue.extend({
@@ -61,11 +64,13 @@ export default Vue.extend({
     Card,
     FormInput,
     BaseButton,
+    Loader,
   },
   effector: {
     $form,
     $errors,
     $isFormValid,
+    $isLoading,
   },
   methods: {
     emailChanged,

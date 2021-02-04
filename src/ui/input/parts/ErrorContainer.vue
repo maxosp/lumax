@@ -14,7 +14,7 @@ export default Vue.extend({
 
 <style scoped>
 * {
-  --text-color: white;
+  --text-color: var(--base-text-primary);
 }
 .error-container {
   padding: 20px;

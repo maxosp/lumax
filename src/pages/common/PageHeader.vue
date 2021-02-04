@@ -19,11 +19,11 @@
     </template>
     <template #right>
       <div class="header-auth">
-        <HeaderLink route-name="user.profile">
-          Никита Махаев
-        </HeaderLink>
+        <div class="element">
+          <p> {{ userName }} </p>
+        </div>
         <div
-          class="element"
+          class="element --underline"
           @click="modalLogoutVisibilityChanged(true)"
         >
           <p>Выход</p>
@@ -38,17 +38,23 @@ import Vue from 'vue'
 import BaseHeader from '@/ui/header/BaseHeader.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderLogo from '@/pages/common/parts/header/HeaderLogo.vue'
-import HeaderLink from '@/pages/common/parts/header/HeaderLink.vue'
 import { $isOpened, changeNavState } from '@/pages/common/navigation/navigation.model.ts'
 import { modalLogoutVisibilityChanged } from '@/pages/common/modal-logout/modal-logout.model'
+import { $session } from '@/features/session'
 // import { $isAuthed } from '@/features/session'
 
 export default Vue.extend({
   name: 'PageHeader',
-  components: { BaseHeader, Icon, HeaderLogo, HeaderLink },
+  components: { BaseHeader, Icon, HeaderLogo },
   effector: {
     // $isAuthed,
     $isOpened,
+    $session,
+  },
+  computed: {
+    userName() {
+      return this.$session && `${this.$session.first_name} ${this.$session.last_name} `
+    },
   },
   methods: {
     changeNavState,
@@ -79,10 +85,15 @@ export default Vue.extend({
     font-weight: 700;
     line-height: 17px;
     color: var(--base-text-primary);
-    text-decoration: underline;
     &:hover {
       cursor: pointer;
     }
+  }
+  .element:not(:last-child) {
+    margin-right: 30px;
+  }
+  .element.--underline {
+    text-decoration: underline;
   }
 }
 .nav-state-switcher {

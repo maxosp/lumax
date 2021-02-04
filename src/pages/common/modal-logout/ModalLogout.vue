@@ -11,7 +11,7 @@
         class="btn"
         big
         border-without-bg
-        @click="fakeLogout"
+        @click="logout"
       >
         Да
       </BaseButton>
@@ -34,6 +34,7 @@ import {
   $modalLogoutVisibility,
   modalLogoutVisibilityChanged,
 } from '@/pages/common/modal-logout/modal-logout.model'
+import { logout } from '@/features/session/index'
 
 export default Vue.extend({
   name: 'ModalLogout',
@@ -46,6 +47,7 @@ export default Vue.extend({
   },
   methods: {
     modalLogoutVisibilityChanged,
+    logout,
     fakeLogout() {
       modalLogoutVisibilityChanged(false)
       this.$router.push({ name: 'login' })

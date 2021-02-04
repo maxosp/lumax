@@ -4,6 +4,7 @@ import { config } from '@/config'
 import { navigatePush } from '@/features/navigation'
 import { request, RequestParams, Response } from '@/lib/request'
 
+export const setTokenForRefresh = createEvent<string>()
 export const setTokenForRequest = createEvent<string>()
 export const $token = restore(setTokenForRequest, '')
 

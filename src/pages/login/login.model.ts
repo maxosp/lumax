@@ -1,13 +1,24 @@
+import { setTokenForRefresh, setTokenForRequest } from '@/features/api/common/request'
+import { loginFx } from '@/features/api/user/login'
+import { LoginFxParams, LoginFxResponse } from '@/features/api/user/types'
 import { navigateReplace } from '@/features/navigation'
+import { loadSessionFx } from '@/features/session'
+import { addToast } from '@/features/toasts/toasts.model'
 import { createEffectorField } from '@/lib/effector/field-generator'
+import { Response } from '@/lib/request'
 import { isEmailValid } from '@/lib/validators/email'
-import { combine, createEvent, forward } from 'effector'
+import { attach, combine, createEvent, forward, guard, sample, split } from 'effector'
 import { every } from 'patronum'
 
-// const sendLoginFormFx = attach({
-//   effect: loginFx,
-//   mapParams: (params: LoginFxParams) => params,
-// })
+const loadCurrentSessionFx = attach({
+  effect: loadSessionFx,
+  mapParams: (params) => params,
+})
+
+const sendLoginFormFx = attach({
+  effect: loginFx,
+  mapParams: (params: LoginFxParams) => params,
+})
 
 const resetField = createEvent()
 export const submitForm = createEvent()
@@ -40,28 +51,55 @@ export const $isFormValid = every({
   stores: [$isEmailCorrect, $isPasswordCorrect],
 })
 
-// const { noInternetConnection } = split(sendLoginFormFx.failData, {
-//   noInternetConnection: ({ status }) => status === undefined,
-// })
+export const $canSubmit = combine(
+  $isFormValid,
+  sendLoginFormFx.pending,
+  loadCurrentSessionFx.pending,
+  (formValid, loginPending, sessionPending) => formValid && !loginPending && !sessionPending
+)
 
-// const { userNotFound } = split(sendLoginFormFx.failData, {
-//   userNotFound: ({ status }) => status === 400,
-// })
+sample({
+  clock: guard({ source: submitForm, filter: $canSubmit }),
+  source: $form,
+  target: sendLoginFormFx,
+})
+
+const { noInternetConnection } = split(sendLoginFormFx.failData, {
+  noInternetConnection: ({ status }) => status === undefined,
+})
+
+const { userNotFound } = split(sendLoginFormFx.failData, {
+  userNotFound: ({ status }) => status === 404,
+})
+
+export const $isLoading = combine(
+  sendLoginFormFx.pending,
+  loadCurrentSessionFx.pending,
+  (loginPending, sessionPending) => loginPending || sessionPending
+)
 
 forward({
-  from: submitForm,
+  from: sendLoginFormFx.doneData,
+  to: [
+    setTokenForRequest.prepend(({ body }: Response<LoginFxResponse>) => body.access),
+    setTokenForRefresh.prepend(({ body }: Response<LoginFxResponse>) => body.refresh),
+    loadCurrentSessionFx,
+  ],
+})
+forward({
+  from: loadCurrentSessionFx.doneData,
   to: [navigateReplace.prepend(() => ({ name: 'home' })), resetField],
 })
 
-// forward({
-//   from: noInternetConnection,
-//   to: addToast.prepend(() => ({ type: 'error', message: 'Отсутствует подключение' })),
-// })
+forward({
+  from: noInternetConnection,
+  to: addToast.prepend(() => ({ type: 'error', message: 'Отсутствует подключение' })),
+})
 
-// forward({
-//   from: userNotFound,
-//   to: addToast.prepend(() => ({
-//     type: 'error',
-//     message: 'Не удается войти. Неправильно указан е-mail или пароль.',
-//   })),
-// })
+forward({
+  from: userNotFound,
+  to: addToast.prepend(() => ({
+    type: 'error',
+    message: 'Не удается войти. Неправильно указан е-mail или пароль.',
+  })),
+})
