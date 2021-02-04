@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: git config user.email "pugachev.max.serg@gmail.com"
+      - run: git config user.name "Maxim Pugachev"
+      - run: git add -A && git commit -m "Updated code"
       - uses: akhileshns/heroku-deploy@v3.2.6
         with:
           heroku_api_key: ${{secrets.HEROKU_DEV_API_KEY}}
