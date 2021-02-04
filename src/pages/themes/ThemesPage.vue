@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!$isLoading">
+  <div>
     <TableHeader :total="total" />
     <Vuetable
       ref="vuetable"
@@ -34,7 +34,7 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { $themes, $isLoading } from '@/pages/themes/themes-page.model'
+import { $themes } from '@/pages/themes/themes-page.model'
 import { themesTableFields } from '@/pages/themes/constants'
 import { computeSortParam } from '@/pages/themes/utils'
 import TableHeader from '@/pages/themes/parts/Header.vue'
@@ -48,7 +48,6 @@ export default Vue.extend({
   components: { Vuetable, VuetablePagination, TableHeader, Actions },
   effector: {
     $themes,
-    $isLoading,
     $token,
   },
   data() {

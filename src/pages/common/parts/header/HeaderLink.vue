@@ -1,10 +1,10 @@
 <template>
-  <router-link
+  <RouterLink
     :to="{ name: routeName }"
     class="header-link"
   >
     <slot />
-  </router-link>
+  </RouterLink>
 </template>
 
 <script lang="ts">
@@ -36,7 +36,7 @@ export default Vue.extend({
   padding: 0 20px;
   transition: background-color var(--base-animation);
   &:hover {
-    background-color: var(--hover-bg-color);
+    text-decoration: underline;
   }
 }
 .router-link-exact-active {

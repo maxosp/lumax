@@ -1,5 +1,6 @@
 export type NavItemChild = {
   title: string
+  link: string
 }
 
 export type NavItem = {

@@ -1,7 +1,10 @@
 <template>
-  <div class="nav-child">
+  <RouterLink
+    :to="{name: $props.item.link}"
+    class="nav-child"
+  >
     {{ $props.item.title }}
-  </div>
+  </RouterLink>
 </template>
 
 <script lang="ts">

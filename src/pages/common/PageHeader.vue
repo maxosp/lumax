@@ -26,7 +26,7 @@
           class="element"
           @click="modalLogoutVisibilityChanged(true)"
         >
-          <p> Выйти </p>
+          <p>Выход</p>
         </div>
       </div>
     </template>
@@ -70,8 +70,11 @@ export default Vue.extend({
 }
 .header-auth {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   min-width: 300px;
+  padding-right: 30px;
+
   .element {
     font-weight: 700;
     line-height: 17px;
