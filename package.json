@@ -2,6 +2,11 @@
   "name": "letovo-admin-frontend",
   "version": "0.1.0",
   "license": "MIT",
+  "description": "Letovo School - Administration panel",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/junto-team/Letovo-Admin-Frontend.git"
+  },
   "scripts": {
     "dev": "yarn makesvg && razzle start",
     "build": "yarn makesvg && razzle build",
@@ -26,6 +31,7 @@
     }
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dayjs": "^1.8.33",
@@ -47,6 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
+    "@babel/eslint-parser": "^7.12.13",
     "@babel/preset-typescript": "^7.10.4",
     "@types/express": "^4.17.6",
     "@types/express-http-proxy": "^1.6.1",
