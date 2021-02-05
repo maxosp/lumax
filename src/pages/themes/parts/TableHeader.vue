@@ -16,6 +16,7 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import { toggleTreeView, $treeView } from '@/pages/themes/themes-page.model'
 
 export default Vue.extend({
+  name: 'TableHeader',
   components: {
     BaseSwitch,
   },

@@ -1,22 +1,11 @@
 import dayjs from 'dayjs'
 import { Subject, StudyYear } from '@/features/api/subject/types'
-/*
-1140
+import { TableField, SearchField } from '@/pages/themes/types'
 
-70 - 6% - checkbox
-110 - 10% - id
-130 - 11% - prereq
-140 - 12% - predmet
-80 - 7% - class
-250 - 22% - name
-110 - 10% - created
-110 - 10% - updated
-125 - 11% - actions
-*/
-
-export const themesTableFields = [
+export const themesTableFields: TableField[] = [
   {
     name: '__checkbox',
+    title: '',
     titleClass: 'center aligned',
     dataClass: 'center aligned',
     width: '70px',
@@ -44,7 +33,7 @@ export const themesTableFields = [
     title: 'Класс',
     width: '80px',
     formatter(value: StudyYear) {
-      return value ? value.number + 1 : '-'
+      return value ? value.name : '-'
     },
   },
   {
@@ -88,4 +77,12 @@ export const themesTableFields = [
     dataClass: 'right aligned',
     width: '125px',
   },
+]
+
+export const searchFieldsData: SearchField[] = [
+  { name: 'all', title: 'Искать везде' },
+  { name: 'id', title: 'ID Темы' },
+  { name: 'name', title: 'Название' },
+  { name: 'study_year', title: 'Класс' },
+  { name: 'subject', title: 'Предмет' },
 ]

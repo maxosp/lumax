@@ -10,6 +10,7 @@
         <Icon
           v-if="$props.item.children"
           type="chevron-down"
+          :class="{ uncollapsed: !isCollapsed, icon: true }"
           size="10"
         />
         <div v-else />
@@ -93,6 +94,14 @@ export default Vue.extend({
 
 .filled /deep/ path {
   fill: var(--c-yellow-1) !important;
+}
+
+.icon {
+  stroke: var(--base-text-primary);
+}
+
+.uncollapsed {
+  transform: rotate(180deg);
 }
 </style>
 
