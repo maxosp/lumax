@@ -17,7 +17,7 @@ export default Vue.extend({
   width: 100%;
   height: 100%;
   @mixin flex-center;
-  background-image: url('~assets/img/login-bg.png');
+  background-image: url('~assets/img/login-bg.jpg');
   background-size: cover;
   background-position: center;
   border-bottom: 6px solid var(--c-yellow-1);

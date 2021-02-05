@@ -2,7 +2,6 @@
   <transition name="fade">
     <ModalOverlay v-if="value">
       <ModalBody
-        :title="title"
         @close="$emit('change', false)"
       >
         <slot />
@@ -13,7 +12,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
 import ModalOverlay from '@/ui/modal/parts/ModalOverlay.vue'
 import ModalBody from '@/ui/modal/parts/ModalBody.vue'
 
@@ -25,7 +23,6 @@ export default Vue.extend({
   },
   props: {
     value: { type: Boolean },
-    title: { type: String, default: '' },
   },
   model: {
     prop: 'value',

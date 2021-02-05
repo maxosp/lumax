@@ -16,15 +16,24 @@ export default Vue.extend({
         this.close()
       }
     },
+    clickHandler(e: any) {
+      if (
+        e.target.classList.contains('modal-overlay') ||
+        e.target.classList.contains('content-wrap')
+      )
+        this.close()
+    },
     close() {
       this.$emit('close', false)
     },
   },
   mounted() {
     document.addEventListener('keydown', this.keydownHandler)
+    document.addEventListener('click', this.clickHandler)
   },
   destroyed() {
     document.removeEventListener('keydown', this.keydownHandler)
+    document.removeEventListener('click', this.clickHandler)
   },
 })
 </script>

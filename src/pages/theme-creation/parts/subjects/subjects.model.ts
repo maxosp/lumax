@@ -26,13 +26,13 @@ debounced.watch((str) => {
 })
 
 sample({
+  source: $_subjectsDropdown,
   clock: searchSubject,
-  source: $subjectsDropdown,
   fn: (list, str) => list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
   target: $subjectsDropdown,
 })
 sample({
-  clock: restoreSubjects,
   source: $_subjectsDropdown,
+  clock: restoreSubjects,
   target: $subjectsDropdown,
 })

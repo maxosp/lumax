@@ -25,13 +25,13 @@ debounced.watch((str) => {
 })
 
 sample({
-  clock: searchClass,
   source: $classDropdown,
+  clock: searchClass,
   fn: (list, str) => list.filter((el) => `${el}`.includes(str)),
   target: $classDropdown,
 })
 sample({
-  clock: restoreClassDropdown,
   source: $_classDropdown,
+  clock: restoreClassDropdown,
   target: $classDropdown,
 })

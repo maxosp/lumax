@@ -56,8 +56,8 @@ const setSubjectError = createEvent<boolean>()
 export const $subjectError = restore(setSubjectError, false)
 
 const $canToggleIsPrerequisite = sample({
-  clock: toggleIsPrerequisite,
   source: $selectedThemes,
+  clock: toggleIsPrerequisite,
   fn: (list, isPrerequisite) => {
     return { listLength: list.length, value: isPrerequisite }
   },
@@ -101,8 +101,8 @@ condition({
 })
 
 sample({
-  clock: saveTheme,
   source: $themeForm,
+  clock: saveTheme,
   fn: (obj) => {
     if (obj.title.length > 0 && obj.class !== null && obj.position !== null && obj.subject !== null)
       addToast({ type: 'success', message: 'Тема успешно создана!' })
@@ -117,8 +117,8 @@ sample({
 })
 
 sample({
-  clock: savePrerequisite,
   source: $prerequisiteForm,
+  clock: savePrerequisite,
   fn: (obj) => {
     if (obj.title.length > 0 && obj.subject !== null)
       addToast({ type: 'success', message: 'Пререквизит успешно создан!' })

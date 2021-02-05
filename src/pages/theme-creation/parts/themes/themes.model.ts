@@ -10,8 +10,8 @@ export const setSelectedTheme = createEvent<{ id: number; title: string }>()
 export const $selectedThemes = createStore([] as any)
 
 sample({
-  clock: setSelectedTheme,
   source: $selectedThemes,
+  clock: setSelectedTheme,
   fn: (list, element) => {
     const arr = list.slice()
     if (!arr.find((el: any) => el.id === element.id) || !arr.length) arr.push(element)
@@ -21,8 +21,8 @@ sample({
 })
 
 sample({
-  clock: deleteTheme,
   source: $selectedThemes,
+  clock: deleteTheme,
   fn: (list, id: number) => list.filter((el: any) => el.id !== id),
   target: $selectedThemes,
 })
@@ -48,13 +48,13 @@ debounced.watch((str) => {
 })
 
 sample({
+  source: $_themesList,
   clock: searchTheme,
-  source: $themesList,
   fn: (list, str) => list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
   target: $themesList,
 })
 sample({
-  clock: restoreTheme,
   source: $_themesList,
+  clock: restoreTheme,
   target: $themesList,
 })

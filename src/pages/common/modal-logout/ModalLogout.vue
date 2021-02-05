@@ -1,7 +1,6 @@
 <template>
   <Modal
     class="dialog"
-    title="Мои блок-схемы"
     :value="$modalLogoutVisibility"
     @change="modalLogoutVisibilityChanged"
   >

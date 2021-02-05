@@ -11,8 +11,8 @@ export const $selectedPrerequisites = createStore([] as any)
 export const resetSelectedPrerequisites = createEvent<void>()
 
 sample({
-  clock: setSelectedPrerequisite,
   source: $selectedPrerequisites,
+  clock: setSelectedPrerequisite,
   fn: (list, element) => {
     const arr = list.slice()
     if (!arr.find((el: any) => el.id === element.id) || !arr.length) arr.push(element)
@@ -21,14 +21,14 @@ sample({
   target: $selectedPrerequisites,
 })
 sample({
-  clock: resetSelectedPrerequisites,
   source: $selectedPrerequisites,
+  clock: resetSelectedPrerequisites,
   fn: () => [],
   target: $selectedPrerequisites,
 })
 sample({
-  clock: deletePrerequisite,
   source: $selectedPrerequisites,
+  clock: deletePrerequisite,
   fn: (list, id: number) => list.filter((el: any) => el.id !== id),
   target: $selectedPrerequisites,
 })
@@ -56,13 +56,13 @@ debounced.watch((str) => {
 })
 
 sample({
+  source: $_prerequisitesList,
   clock: searchPrerequisite,
-  source: $prerequisitesList,
   fn: (list, str) => list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
   target: $prerequisitesList,
 })
 sample({
-  clock: restorePrerequisite,
   source: $_prerequisitesList,
+  clock: restorePrerequisite,
   target: $prerequisitesList,
 })
