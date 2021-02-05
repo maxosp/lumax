@@ -8,13 +8,20 @@
       @input="(e) => themeSearchStringChanged(e)"
     >
       <template #default="{closeMenu}">
-        <SelectItem
-          v-for="(item, index) in $themesList"
-          :key="index"
-          @click="handleClick(item.id, item.title, closeMenu)"
-        >
-          {{ item.title }}
-        </SelectItem>
+        <div v-if="$themesList.length">
+          <SelectItem
+            v-for="(item, index) in $themesList"
+            :key="index"
+            @click="handleClick(item.id, item.title, closeMenu)"
+          >
+            {{ item.title }}
+          </SelectItem>
+        </div>
+        <div v-else>
+          <SelectItem @click="closeMenu">
+            Не найдено совпадений
+          </SelectItem>
+        </div>
       </template>
     </BaseDropdown>
     <div class="selected-themes">

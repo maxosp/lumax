@@ -7,14 +7,21 @@
     @input="(e) => subjectSearchStringChanged(e)"
   >
     <template #default="{closeMenu}">
-      <SelectItem
-        v-for="(item, index) in $subjectsDropdown"
-        :key="index"
-        :placeholder="item"
-        @click="handleSubjectClick(item.id, closeMenu)"
-      >
-        {{ item.title }}
-      </SelectItem>
+      <div v-if="$subjectsDropdown.length">
+        <SelectItem
+          v-for="(item, index) in $subjectsDropdown"
+          :key="index"
+          :placeholder="item"
+          @click="handleSubjectClick(item.id, closeMenu)"
+        >
+          {{ item.title }}
+        </SelectItem>
+      </div>
+      <div v-else>
+        <SelectItem @click="closeMenu">
+          Не найдено совпадений
+        </SelectItem>
+      </div>
     </template>
   </BaseDropdown>
 </template>

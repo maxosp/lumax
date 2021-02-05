@@ -9,14 +9,21 @@
       @input="(e) => prerequisiteSearchStringChanged(e)"
     >
       <template #default="{closeMenu}">
-        <SelectItem
-          v-for="(item, index) in $prerequisitesList"
-          :key="index"
-          :with-icon="showTick(item.id)"
-          @click="handleClick(item.id, item.title, closeMenu)"
-        >
-          {{ item.title }}
-        </SelectItem>
+        <div v-if="$prerequisitesList.length">
+          <SelectItem
+            v-for="(item, index) in $prerequisitesList"
+            :key="index"
+            :with-icon="showTick(item.id)"
+            @click="handleClick(item.id, item.title, closeMenu)"
+          >
+            {{ item.title }}
+          </SelectItem>
+        </div>
+        <div v-else>
+          <SelectItem @click="closeMenu">
+            Не найдено совпадений
+          </SelectItem>
+        </div>
       </template>
     </BaseDropdown>
     <div class="selected-prerequisite">

@@ -7,14 +7,21 @@
     @input="(e) => classSearchStringChanged(e)"
   >
     <template #default="{closeMenu}">
-      <SelectItem
-        v-for="(item, index) in $classDropdown"
-        :key="index"
-        :placeholder="item"
-        @click="handleClassClick(item, closeMenu)"
-      >
-        {{ item }}
-      </SelectItem>
+      <div v-if="$classDropdown.length">
+        <SelectItem
+          v-for="(item, index) in $classDropdown"
+          :key="index"
+          :placeholder="item"
+          @click="handleClassClick(item, closeMenu)"
+        >
+          {{ item }}
+        </SelectItem>
+      </div>
+      <div v-else>
+        <SelectItem @click="closeMenu">
+          Не найдено совпадений
+        </SelectItem>
+      </div>
     </template>
   </BaseDropdown>
 </template>

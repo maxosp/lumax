@@ -8,15 +8,22 @@
     @input="(e) => positionSearchStringChanged(e)"
   >
     <template #default="{closeMenu}">
-      <SelectItem
-        v-for="(item, index) in $positionDropdown"
-        :key="index"
-        :sub-title="item.sub"
-        :with-icon="item.id === $position"
-        @click="handleClick(item.id, closeMenu)"
-      >
-        {{ item.title }}
-      </SelectItem>
+      <div v-if="$positionDropdown.length">
+        <SelectItem
+          v-for="(item, index) in $positionDropdown"
+          :key="index"
+          :sub-title="item.sub"
+          :with-icon="item.id === $position"
+          @click="handleClick(item.id, closeMenu)"
+        >
+          {{ item.title }}
+        </SelectItem>
+      </div>
+      <div v-else>
+        <SelectItem @click="closeMenu">
+          Не найдено совпадений
+        </SelectItem>
+      </div>
     </template>
   </BaseDropdown>
 </template>
