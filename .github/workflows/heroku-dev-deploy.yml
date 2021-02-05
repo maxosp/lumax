@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          git add .
+          git reset --hard HEAD
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.2.6
         with:
@@ -16,6 +19,3 @@ jobs:
           heroku_app_name: "letovo-admin-development"
           heroku_email: "pugachev.max.serg@gmail.com"
           usedocker: true
-          justlogin: true
-      - run: |
-          heroku container:login
