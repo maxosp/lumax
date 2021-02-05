@@ -1,5 +1,7 @@
 <template>
   <div>
+    <PageHeader />
+    <GeneralFilter @setFilter="onFilterSet" @resetFilter="onFilterReset" />
     <TableHeader :total="total" />
     <Vuetable
       ref="vuetable"
@@ -8,6 +10,7 @@
       :api-url="apiUrl"
       :fields="fields"
       :http-fetch="myFetch"
+      :append-params="filterParams"
       pagination-path=""
       @vuetable:pagination-data="onPaginationData"
     >
@@ -30,6 +33,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import VueEvents from 'vue-events'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
@@ -37,15 +41,18 @@ import { $token } from '@/features/api/common/request'
 import { $themes } from '@/pages/themes/themes-page.model'
 import { themesTableFields } from '@/pages/themes/constants'
 import { computeSortParam } from '@/pages/themes/utils'
-import TableHeader from '@/pages/themes/parts/Header.vue'
+import PageHeader from '@/pages/themes/parts/PageHeader.vue'
+import TableHeader from '@/pages/themes/parts/TableHeader.vue'
+import GeneralFilter from '@/pages/themes/parts/GeneralFilter/GeneralFilter.vue'
 import Actions from '@/pages/themes/parts/Actions.vue'
 
+Vue.use(VueEvents)
 // eslint-disable-next-line
 Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
 
 export default Vue.extend({
   name: 'ThemesPage',
-  components: { Vuetable, VuetablePagination, TableHeader, Actions },
+  components: { Vuetable, VuetablePagination, PageHeader, TableHeader, GeneralFilter, Actions },
   effector: {
     $themes,
     $token,
@@ -54,6 +61,7 @@ export default Vue.extend({
     return {
       fields: themesTableFields,
       total: 0,
+      filterParams: {},
     }
   },
   computed: {
@@ -76,6 +84,20 @@ export default Vue.extend({
       // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
+    onFilterSet(data: any) {
+      this.filterParams = { ...this.filterParams, [data.filter]: data.value }
+      // @ts-ignore
+      Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+    onFilterReset() {
+      this.filterParams = {}
+      // @ts-ignore
+      Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+  },
+  mounted() {
+    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
+    this.$events.$on('filter-reset', () => this.onFilterReset())
   },
   created() {
     // Authorization request
