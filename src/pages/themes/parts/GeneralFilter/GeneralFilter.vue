@@ -66,11 +66,11 @@ export default Vue.extend({
     searchFieldChanged,
     handleSearchString(value: string) {
       searchStringChanged(value)
-      this.$emit('setFilter', { filter: 'search', value })
+      this.$emit('setFilter', { filter: `search_${this.$searchField.name}`, value })
     },
     handleSearchFieldClick(item: SearchField, cb: any) {
       searchFieldChanged(item)
-      // this.$emit('setFilter', { filter: item.name, value: item.title })
+      this.$emit('setFilter', { filter: `search_${item.name}`, value: this.$searchString })
       cb()
     },
   },
@@ -92,6 +92,7 @@ export default Vue.extend({
 
 .input {
   border: none;
+  width: 400px;
 }
 
 .right-section {

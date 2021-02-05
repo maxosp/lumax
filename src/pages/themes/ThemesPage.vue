@@ -85,7 +85,7 @@ export default Vue.extend({
       this.$refs.vuetable.changePage(page)
     },
     onFilterSet(data: any) {
-      this.filterParams = { ...this.filterParams, [data.filter]: data.value }
+      this.filterParams = { [data.filter]: data.value }
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
