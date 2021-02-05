@@ -50,10 +50,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-* {
-  --icon-color: var(--base-text-primary);
-}
-
 .select-activator >>> * {
   cursor: pointer;
 }
@@ -61,10 +57,12 @@ export default Vue.extend({
   & ::v-deep .inner-input {
     background-color: var(--c-grey-5);
     border: 1px solid var(--c-grey-6);
+    padding-right: 40px;
   }
 }
 .chevron-icon {
-  fill: var(--icon-color);
+  fill: transparent;
+  stroke: var(--base-text-primary);
   transform-origin: center;
   transition: transform var(--base-animation);
   width: 19px;

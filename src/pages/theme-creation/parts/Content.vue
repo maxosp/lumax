@@ -107,6 +107,7 @@ export default Vue.extend({
   width: 100%;
   height: fit-content;
   padding: 30px;
+  padding-bottom: 140px;
   box-sizing: border-box;
   margin-top: 20px;
   & ::v-deep .content {
@@ -128,6 +129,6 @@ export default Vue.extend({
   }
 }
 .--error ::v-deep .inner-input {
-  border: 2px solid var(--c-red-0);
+  border: 2px solid var(--c-red-0) !important;
 }
 </style>

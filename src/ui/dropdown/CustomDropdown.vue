@@ -80,6 +80,8 @@ export default Vue.extend({
   }
 }
 .chevron-icon {
+  fill: transparent;
+  stroke: var(--base-text-primary);
   transform-origin: center;
   transition: transform var(--base-animation);
   margin-left: 10px;

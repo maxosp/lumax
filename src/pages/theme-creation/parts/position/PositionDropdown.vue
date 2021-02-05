@@ -3,7 +3,7 @@
     class="input dropdown"
     :value="correctPlaceholder"
     label="Положение темы в таксономии"
-    placeholder="Тема привязана к предмету"
+    placeholder="Тема привязана к классу"
     :disabled="!$canSetThemePosition"
     @input="(e) => positionSearchStringChanged(e)"
   >
@@ -12,6 +12,7 @@
         v-for="(item, index) in $positionDropdown"
         :key="index"
         :sub-title="item.sub"
+        :with-icon="item.id === $position"
         @click="handleClick(item.id, closeMenu)"
       >
         {{ item.title }}

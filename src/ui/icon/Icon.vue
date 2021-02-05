@@ -8,6 +8,7 @@
   >
     <use
       :href="spritepath"
+      :xlink:href="spritepath"
     />
   </svg>
 </template>

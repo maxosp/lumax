@@ -33,16 +33,19 @@ sample({
   target: $selectedPrerequisites,
 })
 
+export const resetPrerequisite = createEvent<void>()
 export const prerequisiteChanged = createEvent<null | number>()
-export const $prerequisite = restore<null | number>(prerequisiteChanged, null)
+export const $prerequisite = restore<null | number>(prerequisiteChanged, null).reset(
+  resetPrerequisite
+)
 export const prerequisiteSearchStringChanged = createEvent<string>()
-export const resetSearchString = createEvent()
-export const $prerequisiteSearchString = restore(prerequisiteSearchStringChanged, '').reset(
+export const resetSearchString = createEvent<void>()
+export const $prerequisiteSearchString = restore<string>(prerequisiteSearchStringChanged, '').reset(
   resetSearchString
 )
 
 const searchPrerequisite = createEvent<string>()
-const restorePrerequisite = createEvent()
+const restorePrerequisite = createEvent<void>()
 
 const debounced = debounce({
   source: $prerequisiteSearchString,

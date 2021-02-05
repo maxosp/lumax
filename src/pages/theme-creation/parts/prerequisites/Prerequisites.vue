@@ -5,6 +5,7 @@
       :value="correctPlaceholder"
       label="Пререквизиты темы"
       placeholder="Выберите пререквизиты"
+      :disabled="!$canSetPrerequisites"
       @input="(e) => prerequisiteSearchStringChanged(e)"
     >
       <template #default="{closeMenu}">
@@ -63,6 +64,7 @@ import {
   $selectedPrerequisites,
   setSelectedPrerequisite,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
+import { $canSetPrerequisites } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
   components: {
@@ -76,6 +78,7 @@ export default Vue.extend({
     $prerequisite,
     $prerequisiteSearchString,
     $selectedPrerequisites,
+    $canSetPrerequisites,
   },
   computed: {
     correctPlaceholder() {

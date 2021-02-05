@@ -12,7 +12,7 @@
           :placeholder="placeholder"
           :disabled="disabled"
           class="inner-input"
-          :class="{'--error': hasError}"
+          :class="{'--error': hasError, '--disabled': disabled}"
           v-on="{
             ...$listeners,
             input: (e) => $emit('input', e),
@@ -21,7 +21,7 @@
         <span
           v-if="$slots.icon"
           class="icon-wrap"
-          :class="{'has-error': hasError}"
+          :class="{'has-error': hasError, '--disabled': disabled}"
         >
           <slot name="icon" />
         </span>
@@ -88,7 +88,7 @@ label {
 .inner-input {
   width: 100%;
   height: 46px;
-  padding-left: 15px;
+  padding: 0 15px;
   box-sizing: border-box;
   @mixin flex-center;
   align-items: flex-start;
@@ -97,11 +97,21 @@ label {
   border: 0px;
   &::placeholder {
     font-weight: 400;
-    line-height: 17px;
+    line-height: 46px;
     color: var(--c-grey-1);
   }
   &.--error {
     border: 2px solid var(--c-red-0);
+  }
+  &.--disabled {
+    border: 1px solid var(--c-grey-3) !important;
+    background-color: var(--base-bg-color) !important;
+    &::placeholder {
+      color: var(--base-text-secondary);
+    }
+    &:hover {
+      cursor: default;
+    }
   }
 }
 .label {
@@ -119,5 +129,8 @@ label {
   @mixin flex-center;
   right: 18px;
   bottom: 16px;
+  &.--disabled ::v-deep .chevron-icon {
+    stroke: var(--c-grey-10);
+  }
 }
 </style>

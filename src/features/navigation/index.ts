@@ -59,8 +59,7 @@ export const navigateReplace = createEvent<Navigate>()
 const navigateFactory = (navigationMethod: 'push' | 'replace') => (navigate: Navigate) => {
   const defaultOptions = { query: navigate.query, params: navigate.params }
   if (isNamedNavigation(navigate)) {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    router[navigationMethod]({ ...defaultOptions, name: navigate.name }).catch(() => {})
+    router[navigationMethod]({ ...defaultOptions, name: navigate.name }).catch(() => ({}))
   } else {
     router[navigationMethod]({ ...defaultOptions, path: navigate.url })
   }

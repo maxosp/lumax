@@ -1,20 +1,22 @@
 import { createEvent, createStore, restore, sample } from 'effector-root'
 import { debounce } from 'patronum'
 import { POSITION_DROPDOWN_VALUES } from '@/pages/theme-creation/parts/position/constants'
+import { PositionDropdownType } from '@/pages/theme-creation/parts/position/types'
 
-export const $positionDropdown = createStore(POSITION_DROPDOWN_VALUES)
-export const $_positionDropdown = createStore(POSITION_DROPDOWN_VALUES)
+export const $positionDropdown = createStore<PositionDropdownType[]>(POSITION_DROPDOWN_VALUES)
+export const $_positionDropdown = createStore<PositionDropdownType[]>(POSITION_DROPDOWN_VALUES)
 
 export const positionChanged = createEvent<null | number>()
-export const $position = restore<null | number>(positionChanged, null)
+export const resetPosition = createEvent<void>()
+export const $position = restore<null | number>(positionChanged, null).reset(resetPosition)
 export const positionSearchStringChanged = createEvent<string>()
-export const resetSearchString = createEvent()
-export const $positionSearchString = restore(positionSearchStringChanged, '').reset(
+export const resetSearchString = createEvent<void>()
+export const $positionSearchString = restore<string>(positionSearchStringChanged, '').reset(
   resetSearchString
 )
 
 const searchPosition = createEvent<string>()
-const restorePositions = createEvent()
+const restorePositions = createEvent<void>()
 
 const debounced = debounce({
   source: $positionSearchString,

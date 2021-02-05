@@ -1,12 +1,20 @@
 import { combine, createEvent, forward, restore, sample } from 'effector-root'
 import { condition, every } from 'patronum'
-import { $subject, subjectChanged } from '@/pages/theme-creation/parts/subjects/subjects.model'
+import {
+  $subject,
+  resetSubject,
+  subjectChanged,
+} from '@/pages/theme-creation/parts/subjects/subjects.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import { $selectedThemes } from '@/pages/theme-creation/parts/themes/themes.model'
-import { $class, classChanged } from '@/pages/theme-creation/parts/class/class.model'
-import { $position, positionChanged } from '@/pages/theme-creation/parts/position/position.model'
+import { $class, classChanged, resetClass } from '@/pages/theme-creation/parts/class/class.model'
 import {
-  prerequisiteChanged,
+  $position,
+  positionChanged,
+  resetPosition,
+} from '@/pages/theme-creation/parts/position/position.model'
+import {
+  resetPrerequisite,
   resetSelectedPrerequisites,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
 
@@ -18,8 +26,9 @@ export const isPrerequisiteChanged = createEvent<boolean>()
 export const $isPrerequisite = restore(isPrerequisiteChanged, false)
 export const toggleIsPrerequisite = createEvent<boolean>()
 
+export const resetThemeTitle = createEvent<void>()
 export const themeTitleChanged = createEvent<string>()
-export const $themeTitle = restore(themeTitleChanged, '')
+export const $themeTitle = restore(themeTitleChanged, '').reset(resetThemeTitle)
 
 export const prerequisiteTitleChanged = createEvent<string>()
 export const $prerequisiteTitle = restore(prerequisiteTitleChanged, '')
@@ -27,6 +36,11 @@ export const $prerequisiteTitle = restore(prerequisiteTitleChanged, '')
 export const $canSetThemePosition = every({
   predicate: (value) => value !== null,
   stores: [$subject, $class],
+})
+
+export const $canSetPrerequisites = every({
+  predicate: (value) => value !== null,
+  stores: [$subject, $class, $position],
 })
 
 const $themeForm = combine({
@@ -78,13 +92,18 @@ condition({
 forward({
   from: isPrerequisiteChanged,
   to: [
-    themeTitleChanged.prepend(() => ''),
-    classChanged.prepend(() => null),
-    subjectChanged.prepend(() => null),
-    positionChanged.prepend(() => null),
-    prerequisiteChanged.prepend(() => null),
+    resetThemeTitle,
+    resetClass,
+    resetSubject,
+    resetPosition,
+    resetPrerequisite,
     resetSelectedPrerequisites,
   ],
+})
+
+forward({
+  from: [classChanged, subjectChanged],
+  to: [resetPosition.prepend(() => ({})), resetSelectedPrerequisites],
 })
 
 const $saveMethodFired = sample({
@@ -104,10 +123,15 @@ sample({
   source: $themeForm,
   clock: saveTheme,
   fn: (obj) => {
-    if (obj.title.length > 0 && obj.class !== null && obj.position !== null && obj.subject !== null)
+    if (
+      obj.title.trim().length &&
+      obj.class !== null &&
+      obj.position !== null &&
+      obj.subject !== null
+    )
       addToast({ type: 'success', message: 'Тема успешно создана!' })
     else {
-      if (obj.title.length === 0) setThemeTitleError(true)
+      if (!obj.title.trim().length) setThemeTitleError(true)
       if (obj.class === null) setClassError(true)
       if (obj.position === null) setPositionError(true)
       if (obj.subject === null) setSubjectError(true)

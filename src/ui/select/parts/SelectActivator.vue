@@ -45,9 +45,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-* {
-  --icon-color: var(--base-text-primary);
-}
 .select-activator {
   font-weight: 600;
 }
@@ -55,7 +52,8 @@ export default Vue.extend({
   cursor: pointer;
 }
 .chevron-icon {
-  fill: var(--icon-color);
+  fill: transparent;
+  stroke: var(--base-text-primary);
   transform-origin: center;
   transition: transform var(--base-animation);
   &.open {

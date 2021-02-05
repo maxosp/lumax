@@ -1,4 +1,6 @@
-export const POSITION_DROPDOWN_VALUES = [
+import { PositionDropdownType } from '@/pages/theme-creation/parts/position/types'
+
+export const POSITION_DROPDOWN_VALUES: PositionDropdownType[] = [
   {
     id: 0,
     title: 'Языковые нормы',

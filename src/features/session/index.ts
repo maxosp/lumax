@@ -3,6 +3,7 @@ import { navigatePush } from '@/features/navigation'
 import { setTokenForRequest } from '@/features/api/common/request'
 import { getSelfUserFx } from '@/features/api/user/get-self-user'
 import { GetUserFxResponse } from '@/features/api/user/types'
+import { modalLogoutVisibilityChanged } from '@/pages/common/modal-logout/modal-logout.model'
 
 export const logout = createEvent()
 
@@ -34,5 +35,9 @@ forward({
 
 forward({
   from: logout,
-  to: [setTokenForRequest.prepend(() => ''), navigatePush.prepend(() => ({ name: 'login' }))],
+  to: [
+    modalLogoutVisibilityChanged.prepend(() => false),
+    setTokenForRequest.prepend(() => ''),
+    navigatePush.prepend(() => ({ name: 'login' })),
+  ],
 })
