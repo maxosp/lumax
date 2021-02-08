@@ -1,36 +1,165 @@
 <template>
   <div v-if="$props.visible" class="themes-filter">
     <div class="section">
-      <SubjectsDropdown />
+      <SubjectsDropdown
+        :module-methods="subjectsModuleMethods"
+        @setItem="val => changeFilter('subject', val)"
+      />
+      <BaseSwitch
+        class="switch"
+        :checked="$togglers.hide_prerequisites"
+        @change="setToggler('hide_prerequisites')"
+      >
+        <p>Скрыть переквизиты</p>
+      </BaseSwitch>
+      <BaseSwitch
+        class="switch"
+        :checked="$togglers.show_only_prerequisites"
+        @change="setToggler('show_only_prerequisites')"
+      >
+        <p>Отобразить только переквизиты</p>
+      </BaseSwitch>
     </div>
     <div class="section">
-      <ClassesDropdown />
+      <ClassesDropdown
+        :module-methods="classesModuleMethods"
+        @setItem="val => changeFilter('study_year', val)"
+      />
+      <BaseSwitch
+        class="switch"
+        :checked="$togglers.show_without_tasks"
+        @change="setToggler('show_without_tasks')"
+      >
+        <p>Отобразить только темы без заданий</p>
+      </BaseSwitch>
+      <BaseSwitch
+        class="switch"
+        :checked="$togglers.show_with_tasks"
+        @change="setToggler('show_with_tasks')"
+      >
+        <p>Отобразить только темы с заданиями</p>
+      </BaseSwitch>
     </div>
     <div class="section">
-      <AuthorsDropdown />
+      <AuthorsDropdown
+        :module-methods="authorsModuleMethods"
+        @setItem="val => changeFilter('created_by', val)"
+      />
+      <div class="buttons">
+        <div class="btn">
+          <BaseButton
+            small
+            @click="applyFilters"
+          >
+            Применить
+          </BaseButton>
+        </div>
+        <div class="btn">
+          <BaseButton
+            class="borderless"
+            small
+            border-without-bg
+            @click="resetFilters"
+          >
+            Сбросить фильтры
+          </BaseButton>
+        </div>
+      </div>
     </div>
-    <Icon type="cross" />
+    <Icon
+      type="close"
+      class="close-icon"
+      size="10"
+      @click="toggleVisibility(false)"
+    />
+    <div class="arrow-up" />
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
+import Icon from '@/ui/icon/Icon.vue'
+import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
+import BaseButton from '@/ui/button/BaseButton.vue'
 import AuthorsDropdown from '@/pages/themes/parts/themes-filter/parts/authors-dropdown/AuthorsDropdown.vue'
 import ClassesDropdown from '@/pages/themes/parts/themes-filter/parts/classes-dropdown/ClassesDropdown.vue'
 import SubjectsDropdown from '@/pages/themes/parts/themes-filter/parts/subjects-dropdown/SubjectsDropdown.vue'
-
-import Icon from '@/ui/icon/Icon.vue'
+import { authorsDropdownModule } from '@/pages/themes/parts/themes-filter/parts/authors-dropdown/authors-dropdown.model'
+import { classesDropdownModule } from '@/pages/themes/parts/themes-filter/parts/classes-dropdown/classes-dropdown.model'
+import { subjectsDropdownModule } from '@/pages/themes/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
+import {
+  $togglers,
+  setTogglers,
+  reset,
+  toggleVisibility,
+} from '@/pages/themes/parts/themes-filter/themes-filter.model'
+import { mapTogglerToEntity } from '@/pages/themes/parts/themes-filter/constants.ts'
 
 export default Vue.extend({
   name: 'ThemesFilter',
   components: {
+    Icon,
+    BaseSwitch,
+    BaseButton,
     AuthorsDropdown,
     ClassesDropdown,
     SubjectsDropdown,
-    Icon,
+  },
+  effector: {
+    $togglers,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
+    filterParams: { type: Object, required: true },
+  },
+  data() {
+    return {
+      dropdownsFilter: { subject: null, study_year: null, created_by: null },
+      // modules methods should be here for reset
+      authorsModuleMethods: authorsDropdownModule.methods,
+      classesModuleMethods: classesDropdownModule.methods,
+      subjectsModuleMethods: subjectsDropdownModule.methods,
+    }
+  },
+  methods: {
+    toggleVisibility,
+    setToggler(name) {
+      setTogglers({
+        ...this.$togglers,
+        [name]: !this.$togglers[name],
+      })
+    },
+    changeFilter(name, value) {
+      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    },
+    applyFilters() {
+      // set switchers values to filter
+      const filter = {}
+      Object.keys(this.$togglers).forEach((toggler) => {
+        if (this.$togglers[toggler]) {
+          const togglerEntity = mapTogglerToEntity[toggler]
+          filter[togglerEntity.name] = togglerEntity.value
+        }
+      })
+      // set dropdowns value to filter
+      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
+        if (this.dropdownsFilter[dropdownFilterKey]) {
+          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
+        }
+      })
+      // call table filter
+      this.$emit('setFilter', {
+        ...this.$props.filterParams,
+        ...filter,
+      })
+    },
+    resetFilters() {
+      this.$emit('resetFilter')
+      this.authorsModuleMethods.resetItem()
+      this.classesModuleMethods.resetItem()
+      this.subjectsModuleMethods.resetItem()
+      reset()
+    },
   },
 })
 </script>
@@ -57,5 +186,45 @@ export default Vue.extend({
   & + .section {
     margin-left: 40px;
   }
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  & + .switch {
+    margin-top: 15px;
+  }
+}
+
+.buttons {
+  display: flex;
+}
+
+.btn {
+  width: max-content;
+}
+
+.borderless {
+  border-color: transparent !important;
+  text-decoration: underline;
+}
+
+.close-icon {
+  cursor: pointer;
+  position: relative;
+  top: -10px;
+  fill: var(--c-grey-3);
+}
+
+.arrow-up {
+  position: relative;
+  width: 0;
+  height: 0;
+  top: -40px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
 }
 </style>

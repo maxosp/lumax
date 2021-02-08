@@ -5,7 +5,7 @@
       :checked="$treeView"
       @change="toggleTreeView"
     >
-      <span>Дерево</span>
+      <p>Дерево</p>
     </BaseSwitch>
   </div>
 </template>

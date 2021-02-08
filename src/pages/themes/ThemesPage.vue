@@ -7,7 +7,12 @@
       @handleFilterVisibility="toggleVisibility(!$visibility)"
     >
       <template #filter>
-        <ThemesFilter :visible="$visibility" />
+        <ThemesFilter
+          :visible="$visibility"
+          :filter-params="filterParams"
+          @setFilter="onFilterSet"
+          @resetFilter="onFilterReset"
+        />
       </template>
     </GeneralFilter>
     <TableHeader :total="total" />

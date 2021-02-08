@@ -4,20 +4,21 @@
     label="Предмет"
     placeholder="Выберите предмет"
     :data="$subjects"
-    :methods="filterModuleMethods"
+    :methods="$props.moduleMethods"
     :store="{ $item, $itemsDropdown, $searchString }"
     @item-changed="onSelectItem"
   />
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   subjectsDropdownModule,
   loadSubjects,
   $subjects,
 } from '@/pages/themes/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
+import { FilterDropdownMethods } from '@/pages/common/filter-dropdown/types'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
@@ -28,15 +29,13 @@ export default Vue.extend({
     $subjects,
     ...subjectsDropdownModule.store,
   },
-  data() {
-    return {
-      filterModuleMethods: subjectsDropdownModule.methods,
-    }
+  props: {
+    moduleMethods: { type: Object as PropType<FilterDropdownMethods>, required: true },
   },
   methods: {
     loadSubjects,
     onSelectItem(item: DropdownItem | null) {
-      console.log(item)
+      this.$emit('setItem', item ? item.name : null)
     },
   },
   mounted() {
