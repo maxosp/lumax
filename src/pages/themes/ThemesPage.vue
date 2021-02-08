@@ -11,39 +11,44 @@
       </template>
     </GeneralFilter>
     <TableHeader :total="total" />
-    <Vuetable
-      ref="vuetable"
-      class="table"
-      :api-mode="true"
-      :api-url="apiUrl"
-      :fields="fields"
-      :http-fetch="myFetch"
-      :append-params="filterParams"
-      no-data-template=""
-      pagination-path=""
-      @vuetable:pagination-data="onPaginationData"
-    >
-      <template v-slot:actions="props">
-        <Actions
-          :row-data="props.rowData"
-          :row-index="props.rowIndex"
-          :row-field="props.rowField"
+    <div v-if="!$treeView">
+      <Vuetable
+        ref="vuetable"
+        class="table"
+        :api-mode="true"
+        :api-url="apiUrl"
+        :fields="fields"
+        :http-fetch="myFetch"
+        :append-params="filterParams"
+        no-data-template=""
+        pagination-path=""
+        @vuetable:pagination-data="onPaginationData"
+      >
+        <template v-slot:actions="props">
+          <Actions
+            :row-data="props.rowData"
+            :row-index="props.rowIndex"
+            :row-field="props.rowField"
+          />
+        </template>
+      </Vuetable>
+      <div v-if="!total" class="no-data-content">
+        <div>Поиск не дал результатов.</div>
+        <div>Попробуйте
+          <span class="reset-filters" @click="onFilterReset">
+            сбросить все фильтры
+          </span>
+        </div>
+      </div>
+      <div class="vuetable-pagination ui basic segment grid">
+        <VuetablePagination
+          ref="pagination"
+          @vuetable-pagination:change-page="onChangePage"
         />
-      </template>
-    </Vuetable>
-    <div v-if="!total" class="no-data-content">
-      <div>Поиск не дал результатов.</div>
-      <div>Попробуйте
-        <span class="reset-filters" @click="onFilterReset">
-          сбросить все фильтры
-        </span>
       </div>
     </div>
-    <div class="vuetable-pagination ui basic segment grid">
-      <VuetablePagination
-        ref="pagination"
-        @vuetable-pagination:change-page="onChangePage"
-      />
+    <div v-else>
+      <ThemesTree />
     </div>
   </div>
 </template>
@@ -55,18 +60,20 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
 import { computeSortParam } from '@/pages/themes/utils'
 import PageHeader from '@/pages/themes/parts/PageHeader.vue'
 import TableHeader from '@/pages/themes/parts/TableHeader.vue'
 import Actions from '@/pages/themes/parts/Actions.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/themes/parts/themes-filter/ThemesFilter.vue'
+import ThemesTree from '@/pages/themes/parts/themes-tree/ThemesTree.vue'
+import { $treeView, loadTree } from '@/pages/themes/themes-page.model'
 import {
   toggleVisibility,
   $visibility,
 } from '@/pages/themes/parts/themes-filter/themes-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
+import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -82,10 +89,12 @@ export default Vue.extend({
     GeneralFilter,
     ThemesFilter,
     Actions,
+    ThemesTree,
   },
   effector: {
     $token,
     $visibility,
+    $treeView,
   },
   data() {
     return {
@@ -131,6 +140,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
+    loadTree()
   },
   created() {
     // Authorization request

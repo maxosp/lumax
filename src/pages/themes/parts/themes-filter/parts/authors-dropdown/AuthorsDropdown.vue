@@ -3,7 +3,9 @@
     v-if="$authors.length"
     label="Автор"
     placeholder="Выберите автора"
-    :items="$authors"
+    :data="$authors"
+    :methods="filterModuleMethods"
+    :store="{ $item, $itemsDropdown, $searchString }"
     @item-changed="onSelectItem"
   />
 </template>
@@ -12,6 +14,7 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
+  authorsDropdownModule,
   loadAuthors,
   $authors,
 } from '@/pages/themes/parts/themes-filter/parts/authors-dropdown/authors-dropdown.model'
@@ -23,10 +26,16 @@ export default Vue.extend({
   },
   effector: {
     $authors,
+    ...authorsDropdownModule.store,
+  },
+  data() {
+    return {
+      filterModuleMethods: authorsDropdownModule.methods,
+    }
   },
   methods: {
     loadAuthors,
-    onSelectItem(item: DropdownItem) {
+    onSelectItem(item: DropdownItem | null) {
       console.log(item)
     },
   },

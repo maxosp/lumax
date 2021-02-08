@@ -33,3 +33,18 @@ export type Theme = {
   study_year_id: number
   subject_id: number
 }
+
+export type GetThemesTreeQueryParams = {
+  sort?: string
+  subject?: string
+  study_year?: number
+  is_prerequisite?: 'true' | 'false'
+  created_by?: number
+  has_assignment?: 'true' | 'false'
+  search?: string
+  search_all?: ''
+  search_id?: ''
+  search_name?: ''
+  search_subject?: ''
+  search_study_year?: ''
+}

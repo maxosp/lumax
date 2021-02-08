@@ -4,13 +4,13 @@
     :value="correctValue"
     :label="$props.label"
     :placeholder="$props.placeholder"
-    @input="$emit('search-string-changed', $event)"
+    @input="$props.methods.searchStringChanged"
     @clear="clear"
   >
     <template #default="{closeMenu}">
-      <div v-if="$props.items.length">
+      <div v-if="items.length">
         <SelectItem
-          v-for="item in $props.items"
+          v-for="item in items"
           :key="item.name"
           :placeholder="item.title"
           @click="onSelectItem(item, closeMenu)"
@@ -32,53 +32,46 @@ import Vue, { PropType } from 'vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { DropdownItem } from '@/pages/common/types'
-import {
-  setItems,
-  $item,
-  $itemsDropdown,
-  $searchString,
-  itemChanged,
-  resetSearchString,
-  resetItem,
-} from '@/pages/common/filter-dropdown/filter-dropdown.model'
+import { FilterDropdownMethods, FilterDropdownStore } from '@/pages/common/filter-dropdown/types'
 
 export default Vue.extend({
   components: {
     BaseDropdown,
     SelectItem,
   },
-  effector: {
-    $item,
-    $itemsDropdown,
-    $searchString,
-  },
   props: {
     label: { type: String, required: false, default: '' },
     placeholder: { type: String, required: false, default: '' },
-    items: { type: [Array, null] as PropType<DropdownItem[] | null>, default: null },
+    data: { type: Array as PropType<DropdownItem[]>, default: [] },
+    methods: { type: Object as PropType<FilterDropdownMethods>, required: true },
+    store: { type: Object as PropType<FilterDropdownStore>, required: true },
   },
   computed: {
     correctValue() {
-      // @ts-ignore
-      const currentItem = this.$itemsDropdown.find((el: DropdownItem) => el.name === this.$item)
-      // @ts-ignore
-      return currentItem ? currentItem.title : this.$searchString
+      const currentItem = this.$props.store.$itemsDropdown.find(
+        (el: DropdownItem) => el.name === this.$props.store.$item
+      )
+      return currentItem ? currentItem.title : this.$props.store.$searchString
+    },
+    items() {
+      return this.$props.store.$itemsDropdown
     },
   },
   methods: {
     onSelectItem(item: DropdownItem, cb: any) {
       this.$emit('item-changed', item)
-      itemChanged(item.name)
-      resetSearchString()
+      this.$props.methods.itemChanged(item.name)
+      this.$props.methods.resetSearchString()
       cb()
     },
     clear() {
-      resetItem()
-      resetSearchString()
+      this.$emit('item-changed', null)
+      this.$props.methods.resetItem()
+      this.$props.methods.resetSearchString()
     },
   },
   mounted() {
-    setItems(this.$props.items)
+    this.$props.methods.setItems(this.$props.data)
   },
 })
 </script>

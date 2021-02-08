@@ -1,7 +1,10 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
-import { DropdownItem } from '@/pages/common/types'
 import { getUserStudyYearsListFx } from '@/features/api/user/get-user-study-years-list'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { DropdownItem } from '@/pages/common/types'
 import { GetListQueryParams } from '@/features/api/types'
+
+export const classesDropdownModule = createFilter()
 
 const getClasses = attach({
   effect: getUserStudyYearsListFx,

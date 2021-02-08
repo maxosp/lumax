@@ -1,7 +1,10 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
 import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { GetListQueryParams } from '@/features/api/types'
 import { DropdownItem } from '@/pages/common/types'
+
+export const subjectsDropdownModule = createFilter()
 
 const getSubjects = attach({
   effect: getSubjectsListFx,

@@ -3,7 +3,9 @@
     v-if="$classes.length"
     label="Класс"
     placeholder="Выберите класс"
-    :items="$classes"
+    :data="$classes"
+    :methods="filterModuleMethods"
+    :store="{ $item, $itemsDropdown, $searchString }"
     @item-changed="onSelectItem"
   />
 </template>
@@ -14,6 +16,7 @@ import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   loadClasses,
   $classes,
+  classesDropdownModule,
 } from '@/pages/themes/parts/themes-filter/parts/classes-dropdown/classes-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -23,10 +26,16 @@ export default Vue.extend({
   },
   effector: {
     $classes,
+    ...classesDropdownModule.store,
+  },
+  data() {
+    return {
+      filterModuleMethods: classesDropdownModule.methods,
+    }
   },
   methods: {
     loadClasses,
-    onSelectItem(item: DropdownItem) {
+    onSelectItem(item: DropdownItem | null) {
       console.log(item)
     },
   },

@@ -3,7 +3,9 @@
     v-if="$subjects.length"
     label="Предмет"
     placeholder="Выберите предмет"
-    :items="$subjects"
+    :data="$subjects"
+    :methods="filterModuleMethods"
+    :store="{ $item, $itemsDropdown, $searchString }"
     @item-changed="onSelectItem"
   />
 </template>
@@ -12,6 +14,7 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
+  subjectsDropdownModule,
   loadSubjects,
   $subjects,
 } from '@/pages/themes/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
@@ -23,10 +26,16 @@ export default Vue.extend({
   },
   effector: {
     $subjects,
+    ...subjectsDropdownModule.store,
+  },
+  data() {
+    return {
+      filterModuleMethods: subjectsDropdownModule.methods,
+    }
   },
   methods: {
     loadSubjects,
-    onSelectItem(item: DropdownItem) {
+    onSelectItem(item: DropdownItem | null) {
       console.log(item)
     },
   },
