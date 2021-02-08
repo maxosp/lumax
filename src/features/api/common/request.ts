@@ -38,7 +38,7 @@ split({
     forbidden: ({ status }) => status === 403,
   },
   cases: {
-    unauthorized: navigatePush.prepend<Response>(() => ({ name: 'auth.login' })),
-    forbidden: navigatePush.prepend<Response>(() => ({ name: 'user.cabinet' })),
+    unauthorized: navigatePush.prepend<Response>(() => ({ name: 'login' })),
+    forbidden: navigatePush.prepend<Response>(() => ({ name: 'home' })),
   },
 })

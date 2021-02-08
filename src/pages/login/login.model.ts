@@ -69,7 +69,7 @@ const { noInternetConnection } = split(sendLoginFormFx.failData, {
 })
 
 const { userNotFound } = split(sendLoginFormFx.failData, {
-  userNotFound: ({ status }) => status === 404,
+  userNotFound: ({ status }) => status === 404 || status === 401,
 })
 
 export const $isLoading = combine(
