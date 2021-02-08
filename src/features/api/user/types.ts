@@ -1,3 +1,5 @@
+import { GetListQueryParams } from '@/features/api/types'
+
 export type LoginFxParams = {
   email: string
   password: string
@@ -8,7 +10,7 @@ export type LoginFxResponse = {
   refresh: string
 }
 
-export type GetUserFxResponse = {
+export type User = {
   id: number
   first_name: string
   last_name: string
@@ -18,3 +20,7 @@ export type GetUserFxResponse = {
   is_student: boolean
   date_joined: string
 }
+
+export type GetUsersListQueryParams = {
+  is_student?: boolean
+} & GetListQueryParams

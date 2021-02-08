@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { Subject, StudyYear } from '@/features/api/subject/types'
-import { TableField, SearchField } from '@/pages/themes/types'
+import { TableField } from '@/pages/themes/types'
+import { DropdownItem } from '@/pages/common/types'
 
 export const themesTableFields: TableField[] = [
   {
@@ -59,7 +60,7 @@ export const themesTableFields: TableField[] = [
     title: 'Создано',
     width: '110px',
     formatter(value: string) {
-      return value ? dayjs(value).format('dd.mm.yyyy') : '-'
+      return value ? dayjs(value).format('DD.mm.YYYY') : '-'
     },
   },
   {
@@ -68,7 +69,7 @@ export const themesTableFields: TableField[] = [
     title: 'Обновлено',
     width: '110px',
     formatter(value: string) {
-      return value ? dayjs(value).format('dd.mm.yyyy') : '-'
+      return value ? dayjs(value).format('DD.mm.YYYY') : '-'
     },
   },
   {
@@ -79,7 +80,7 @@ export const themesTableFields: TableField[] = [
   },
 ]
 
-export const searchFieldsData: SearchField[] = [
+export const searchFieldsData: DropdownItem[] = [
   { name: 'all', title: 'Искать везде' },
   { name: 'id', title: 'ID Темы' },
   { name: 'name', title: 'Название' },

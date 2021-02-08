@@ -15,7 +15,7 @@
       >
         <template #default="{closeMenu}">
           <SelectItem
-            v-for="item in searchFields"
+            v-for="item in $props.searchFields"
             :key="item.name"
             :placeholder="item.title"
             @click="handleSearchFieldClick(item, closeMenu)"
@@ -24,13 +24,18 @@
           </SelectItem>
         </template>
       </BaseDropdown>
-      <Icon class="filter-settings" type="filter-settings" />
+      <Icon
+        class="filter-settings"
+        type="filter-settings"
+        @click="$emit('handleFilterVisibility')"
+      />
     </div>
+    <slot name="filter" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import BaseInput from '@/ui/input/BaseInput.vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
@@ -40,9 +45,9 @@ import {
   searchStringChanged,
   $searchField,
   searchFieldChanged,
-} from '@/pages/themes/parts/GeneralFilter/general-filter.model.ts'
-import { searchFieldsData } from '@/pages/themes/constants'
-import { SearchField } from '@/pages/themes/types'
+  reset,
+} from '@/pages/common/general-filter/general-filter.model.ts'
+import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'GeneralFilter',
@@ -56,29 +61,37 @@ export default Vue.extend({
     $searchString,
     $searchField,
   },
-  data() {
-    return {
-      searchFields: searchFieldsData,
-    }
+  props: {
+    searchFields: { type: Array as PropType<DropdownItem[]>, required: true },
   },
   methods: {
     searchStringChanged,
     searchFieldChanged,
     handleSearchString(value: string) {
       searchStringChanged(value)
-      this.$emit('setFilter', { filter: `search_${this.$searchField.name}`, value })
+      this.$emit('setFilter', {
+        [`search_${this.$searchField.name}`]: 'true',
+        search: value,
+      })
     },
-    handleSearchFieldClick(item: SearchField, cb: any) {
+    handleSearchFieldClick(item: DropdownItem, cb: any) {
       searchFieldChanged(item)
-      this.$emit('setFilter', { filter: `search_${item.name}`, value: this.$searchString })
+      this.$emit('setFilter', {
+        [`search_${item.name}`]: 'true',
+        search: this.$searchString,
+      })
       cb()
     },
+  },
+  mounted() {
+    reset()
   },
 })
 </script>
 
 <style scoped>
 .filter {
+  position: relative;
   width: 100%;
   height: 40px;
   display: flex;
@@ -93,6 +106,7 @@ export default Vue.extend({
 .input {
   border: none;
   width: 400px;
+  height: 100%;
 }
 
 .right-section {
@@ -111,10 +125,18 @@ export default Vue.extend({
     height: 30px;
   }
   & /deep/ .icon-wrap {
-    bottom: 10px;
+    bottom: 0;
+    height: 100%;
   }
   & /deep/ .chevron-icon {
     stroke: #fff;
   }
+  & /deep/ .icon.cross {
+    fill: #fff;
+  }
+}
+
+.filter-settings {
+  cursor: pointer;
 }
 </style>

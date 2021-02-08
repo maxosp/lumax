@@ -2,7 +2,7 @@ import { attach, combine, createEvent, forward, restore } from 'effector-root'
 import { navigatePush } from '@/features/navigation'
 import { setTokenForRequest } from '@/features/api/common/request'
 import { getSelfUserFx } from '@/features/api/user/get-self-user'
-import { GetUserFxResponse } from '@/features/api/user/types'
+import { User } from '@/features/api/user/types'
 import { modalLogoutVisibilityChanged } from '@/pages/common/modal-logout/modal-logout.model'
 
 export const logout = createEvent()
@@ -14,8 +14,8 @@ export const loadSessionFx = attach({
   mapParams: (params) => params,
 })
 
-export const setSession = createEvent<null | GetUserFxResponse>()
-export const $session = restore<null | GetUserFxResponse>(setSession, null).reset(logout)
+export const setSession = createEvent<null | User>()
+export const $session = restore<null | User>(setSession, null).reset(logout)
 
 export const $isAuthed = combine(
   $session,

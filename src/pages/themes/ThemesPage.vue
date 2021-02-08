@@ -1,7 +1,15 @@
 <template>
   <div>
     <PageHeader />
-    <GeneralFilter @setFilter="onFilterSet" @resetFilter="onFilterReset" />
+    <GeneralFilter
+      :search-fields="searchFields"
+      @setFilter="onFilterSet"
+      @handleFilterVisibility="toggleVisibility(!$visibility)"
+    >
+      <template #filter>
+        <ThemesFilter :visible="$visibility" />
+      </template>
+    </GeneralFilter>
     <TableHeader :total="total" />
     <Vuetable
       ref="vuetable"
@@ -11,6 +19,7 @@
       :fields="fields"
       :http-fetch="myFetch"
       :append-params="filterParams"
+      no-data-template=""
       pagination-path=""
       @vuetable:pagination-data="onPaginationData"
     >
@@ -22,6 +31,14 @@
         />
       </template>
     </Vuetable>
+    <div v-if="!total" class="no-data-content">
+      <div>Поиск не дал результатов.</div>
+      <div>Попробуйте
+        <span class="reset-filters" @click="onFilterReset">
+          сбросить все фильтры
+        </span>
+      </div>
+    </div>
     <div class="vuetable-pagination ui basic segment grid">
       <VuetablePagination
         ref="pagination"
@@ -38,13 +55,18 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { $themes } from '@/pages/themes/themes-page.model'
-import { themesTableFields } from '@/pages/themes/constants'
+import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
 import { computeSortParam } from '@/pages/themes/utils'
 import PageHeader from '@/pages/themes/parts/PageHeader.vue'
 import TableHeader from '@/pages/themes/parts/TableHeader.vue'
-import GeneralFilter from '@/pages/themes/parts/GeneralFilter/GeneralFilter.vue'
 import Actions from '@/pages/themes/parts/Actions.vue'
+import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
+import ThemesFilter from '@/pages/themes/parts/themes-filter/ThemesFilter.vue'
+import {
+  toggleVisibility,
+  $visibility,
+} from '@/pages/themes/parts/themes-filter/themes-filter.model'
+import { reset } from '@/pages/common/general-filter/general-filter.model'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -52,14 +74,23 @@ Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
 
 export default Vue.extend({
   name: 'ThemesPage',
-  components: { Vuetable, VuetablePagination, PageHeader, TableHeader, GeneralFilter, Actions },
+  components: {
+    Vuetable,
+    VuetablePagination,
+    PageHeader,
+    TableHeader,
+    GeneralFilter,
+    ThemesFilter,
+    Actions,
+  },
   effector: {
-    $themes,
     $token,
+    $visibility,
   },
   data() {
     return {
       fields: themesTableFields,
+      searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
     }
@@ -70,6 +101,7 @@ export default Vue.extend({
     },
   },
   methods: {
+    toggleVisibility,
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
@@ -84,13 +116,14 @@ export default Vue.extend({
       // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
-    onFilterSet(data: any) {
-      this.filterParams = { [data.filter]: data.value }
+    onFilterSet(newFilter: any) {
+      this.filterParams = newFilter
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
       this.filterParams = {}
+      reset()
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -171,5 +204,23 @@ export default Vue.extend({
     transform: rotate(35deg);
     font-weight: bold;
   }
+}
+
+.no-data-content {
+  width: 100%;
+  min-height: 550px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--base-text-secondary);
+  & > div + div {
+    margin-top: 10px;
+  }
+}
+.reset-filters {
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

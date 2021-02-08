@@ -1,11 +1,11 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
 import { GetListQueryParams, TableDataResponse } from '@/features/api/types'
-import { Theme } from '@/features/api/subject/types'
+import { Subject } from '@/features/api/subject/types'
 
-export const getThemesListFx = createApiEffect<GetListQueryParams, TableDataResponse<Theme[]>>({
+export const getSubjectsListFx = createApiEffect<GetListQueryParams, TableDataResponse<Subject[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/themes/list/',
+    url: '/api/subject/list/',
     query,
   }),
 })
