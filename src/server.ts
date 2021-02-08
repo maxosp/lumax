@@ -32,7 +32,7 @@ const markup = (assetsCss: string, assetsJs: string) => `
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="utf-8" />
-    <title>Electronic Education</title>
+    <title>CMS Letovo Online</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" media="screen" title="no title" charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     ${assetsCss ? `<link rel="stylesheet" href="${assetsCss}">` : ''}

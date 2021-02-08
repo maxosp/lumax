@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
     .find((r) => r.meta && r.meta.metaTags)
   const nameDataAtr = 'data-vue-router'
   // set title if it exist
-  if (nearestWithTitle) document.title = nearestWithTitle.meta.title || 'Electronic Education'
+  if (nearestWithTitle) document.title = nearestWithTitle.meta.title || 'CMS Letovo Online'
   // // remove prev page meta tags
   const oldMetaTags: HTMLElement[] = Array.from(document.querySelectorAll(`[${nameDataAtr}]`))
   if (oldMetaTags.length) oldMetaTags.map((el: any) => el.parentNode.removeChild(el))
