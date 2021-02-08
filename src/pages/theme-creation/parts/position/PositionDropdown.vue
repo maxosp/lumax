@@ -6,6 +6,7 @@
     placeholder="Тема привязана к классу"
     :disabled="!$canSetThemePosition"
     @input="(e) => positionSearchStringChanged(e)"
+    @clear="clearField"
   >
     <template #default="{closeMenu}">
       <div v-if="$positionDropdown.length">
@@ -40,6 +41,7 @@ import {
   $positionSearchString,
   resetSearchString,
   positionSearchStringChanged,
+  resetPosition,
 } from '@/pages/theme-creation/parts/position/position.model'
 
 export default Vue.extend({
@@ -66,6 +68,10 @@ export default Vue.extend({
       positionChanged(item)
       resetSearchString()
       cb()
+    },
+    clearField() {
+      resetPosition()
+      resetSearchString()
     },
   },
 })

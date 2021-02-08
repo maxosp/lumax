@@ -30,8 +30,11 @@ export const resetThemeTitle = createEvent<void>()
 export const themeTitleChanged = createEvent<string>()
 export const $themeTitle = restore(themeTitleChanged, '').reset(resetThemeTitle)
 
+export const resetPrerequisiteTitle = createEvent<void>()
 export const prerequisiteTitleChanged = createEvent<string>()
-export const $prerequisiteTitle = restore(prerequisiteTitleChanged, '')
+export const $prerequisiteTitle = restore(prerequisiteTitleChanged, '').reset(
+  resetPrerequisiteTitle
+)
 
 export const $canSetThemePosition = every({
   predicate: (value) => value !== null,

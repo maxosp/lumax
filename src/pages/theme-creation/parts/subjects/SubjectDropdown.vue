@@ -4,6 +4,7 @@
     :value="correctSubjectValue"
     label="Предмет"
     placeholder="Выберите предмет"
+    @clear="clearField"
     @input="(e) => subjectSearchStringChanged(e)"
   >
     <template #default="{closeMenu}">
@@ -35,6 +36,7 @@ import {
   $subjectsDropdown,
   $subjectSearchString,
   resetSearchString,
+  resetSubject,
   subjectChanged,
   subjectSearchStringChanged,
 } from '@/pages/theme-creation/parts/subjects/subjects.model'
@@ -61,6 +63,10 @@ export default Vue.extend({
       subjectChanged(item)
       resetSearchString()
       cb()
+    },
+    clearField() {
+      resetSubject()
+      resetSearchString()
     },
   },
 })

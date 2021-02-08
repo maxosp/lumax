@@ -7,7 +7,9 @@
       :label="label"
       :disabled="disabled"
       class="input"
+      clear-btn
       @click="$emit('click')"
+      @clear="$emit('clear')"
       @input="(e) => $emit('input', e)"
     >
       <template #icon>
@@ -57,7 +59,7 @@ export default Vue.extend({
   & ::v-deep .inner-input {
     background-color: var(--c-grey-5);
     border: 1px solid var(--c-grey-6);
-    padding-right: 40px;
+    padding-right: 54px;
   }
 }
 .chevron-icon {

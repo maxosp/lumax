@@ -6,6 +6,7 @@
       label="Пререквизиты темы"
       placeholder="Выберите пререквизиты"
       :disabled="!$canSetPrerequisites"
+      @clear="clearField"
       @input="(e) => prerequisiteSearchStringChanged(e)"
     >
       <template #default="{closeMenu}">
@@ -70,6 +71,7 @@ import {
   prerequisiteSearchStringChanged,
   $selectedPrerequisites,
   setSelectedPrerequisite,
+  resetPrerequisite,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
 import { $canSetPrerequisites } from '@/pages/theme-creation/theme-creation-page.model'
 
@@ -103,6 +105,10 @@ export default Vue.extend({
       setSelectedPrerequisite({ id: itemId, title: itemTitle })
       resetSearchString()
       cb()
+    },
+    clearField() {
+      resetPrerequisite()
+      resetSearchString()
     },
     showPrerequisiteMenu(itemId: number) {
       let currentComponent = ''

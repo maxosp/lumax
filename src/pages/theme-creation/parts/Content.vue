@@ -12,7 +12,8 @@
           :max-length="200"
           :class="{'--error': $themeTitleError}"
           class="input"
-
+          clear-btn
+          @clear="resetThemeTitle"
           @input="themeTitleChanged"
         />
         <PositionDropdown :class="{'--error': $positionError}" />
@@ -36,6 +37,8 @@
           :max-length="100"
           :class="{'--error': $prerequisiteTitleError}"
           class="input"
+          clear-btn
+          @clear="resetPrerequisiteTitle"
           @input="prerequisiteTitleChanged"
         />
         <TeachingResources />
@@ -60,10 +63,12 @@ import TeachingResources from '@/pages/theme-creation/parts/teaching-resources/T
 import Themes from '@/pages/theme-creation/parts/themes/Themes.vue'
 import {
   $themeTitle,
+  resetThemeTitle,
   themeTitleChanged,
   $themeTitleError,
   $prerequisiteTitle,
   $prerequisiteTitleError,
+  resetPrerequisiteTitle,
   prerequisiteTitleChanged,
   $positionError,
   $subjectError,
@@ -93,7 +98,9 @@ export default Vue.extend({
     $isPrerequisite,
   },
   methods: {
+    resetThemeTitle,
     themeTitleChanged,
+    resetPrerequisiteTitle,
     prerequisiteTitleChanged,
   },
 })

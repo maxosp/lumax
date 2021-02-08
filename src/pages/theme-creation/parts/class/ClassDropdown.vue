@@ -5,6 +5,7 @@
     label="Класс"
     placeholder="Выберите класс"
     @input="(e) => classSearchStringChanged(e)"
+    @clear="clearField"
   >
     <template #default="{closeMenu}">
       <div v-if="$classDropdown.length">
@@ -37,6 +38,7 @@ import {
   $classSearchString,
   classSearchStringChanged,
   resetSearchString,
+  resetClass,
 } from '@/pages/theme-creation/parts/class/class.model'
 
 export default Vue.extend({
@@ -62,6 +64,10 @@ export default Vue.extend({
       classChanged(item)
       resetSearchString()
       cb()
+    },
+    clearField() {
+      resetClass()
+      resetSearchString()
     },
   },
 })

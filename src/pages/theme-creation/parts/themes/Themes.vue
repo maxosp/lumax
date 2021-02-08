@@ -5,6 +5,7 @@
       :value="correctPlaceholder"
       label="Темы, к которым привязан пререквизит"
       placeholder="Выберите тему"
+      @clear="clearField"
       @input="(e) => themeSearchStringChanged(e)"
     >
       <template #default="{closeMenu}">
@@ -61,6 +62,7 @@ import {
   themeSearchStringChanged,
   $selectedThemes,
   setSelectedTheme,
+  resetTheme,
 } from '@/pages/theme-creation/parts/themes/themes.model'
 
 export default Vue.extend({
@@ -91,6 +93,10 @@ export default Vue.extend({
       setSelectedTheme({ id: itemId, title: itemTitle })
       resetSearchString()
       cb()
+    },
+    clearField() {
+      resetTheme()
+      resetSearchString()
     },
   },
 })

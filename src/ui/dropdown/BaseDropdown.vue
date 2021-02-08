@@ -13,6 +13,7 @@
         :error-message="errorMessage"
         :disabled="disabled"
         @click="onActivatorClick"
+        @clear="$emit('clear')"
         @input="(e) => $emit('input', e)"
       >
         <template #error>

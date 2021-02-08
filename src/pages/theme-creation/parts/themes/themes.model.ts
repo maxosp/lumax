@@ -27,8 +27,9 @@ sample({
   target: $selectedThemes,
 })
 
+export const resetTheme = createEvent<void>()
 export const themeChanged = createEvent<null | number>()
-export const $theme = restore<null | number>(themeChanged, null)
+export const $theme = restore<null | number>(themeChanged, null).reset(resetTheme)
 export const themeSearchStringChanged = createEvent<string>()
 export const resetSearchString = createEvent()
 export const $themeSearchString = restore(themeSearchStringChanged, '').reset(resetSearchString)
