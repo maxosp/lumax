@@ -31,6 +31,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   background-color: var(--base-bg-color);
+  min-width: min-content;
 }
 .main {
   display: flex;

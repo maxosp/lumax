@@ -9,8 +9,8 @@
       />
       <Icon
         v-else
-        type="tree-folder"
-        class="folder-icon"
+        :type="node.is_prerequisite ? 'folder-prerequisite' : 'tree-folder'"
+        :class="{ 'folder-icon': true, transapent: node.is_prerequisite }"
         size="35"
       />
       <span>{{ title }}</span>
@@ -62,19 +62,22 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          count: 3,
+          count: '8',
           description: 'Количество заданий',
         },
         videos: {
-          count: 8,
+          // @ts-ignore
+          count: this.node.media_resource_count,
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
-          count: 5,
+          // @ts-ignore
+          count: this.node.text_resource_count,
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
-          count: 2,
+          // @ts-ignore
+          count: this.node.link_resource_count,
           description: 'Количество ресурсов типа "Ссылка"',
         },
       }
@@ -96,6 +99,9 @@ export default Vue.extend({
 .folder-icon {
   stroke: var(--c-grey-3);
   margin-right: 15px;
+  &.transparent {
+    opacity: 0.5;
+  }
 }
 .label {
   cursor: pointer;

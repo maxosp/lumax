@@ -9,6 +9,6 @@ export type TableField = {
 }
 
 export type ResourceChip = {
-  count: number
+  count: string
   description: string
 }

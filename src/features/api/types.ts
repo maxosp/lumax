@@ -29,4 +29,7 @@ export type TreeDataResponse = {
   study_year: StudyYear | null
   theme: Theme | null
   virtual_folder: VirtualFolder | null
+  text_resource_count: string
+  link_resource_count: string
+  media_resource_count: string
 }
