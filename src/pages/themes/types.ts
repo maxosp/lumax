@@ -7,3 +7,8 @@ export type TableField = {
   width?: string
   formatter?: (value: any) => any
 }
+
+export type ResourceChip = {
+  count: number
+  description: string
+}

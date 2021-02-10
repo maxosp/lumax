@@ -16,7 +16,7 @@
       </template>
     </GeneralFilter>
     <TableHeader :total="total" />
-    <div v-if="!$treeView">
+    <div :class="{ invisible: $treeView }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -52,7 +52,7 @@
         />
       </div>
     </div>
-    <div v-else>
+    <div :class="{ invisible: !$treeView }">
       <ThemesTree />
     </div>
   </div>
@@ -132,12 +132,14 @@ export default Vue.extend({
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
+      loadTree({ ...this.filterParams })
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
       this.filterParams = {}
       reset()
+      loadTree({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -145,7 +147,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree()
+    loadTree({})
   },
   created() {
     // Authorization request
@@ -158,6 +160,10 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.invisible {
+  display: none;
+}
+
 .table /deep/ tr:nth-child(2n) {
   background-color: var(--c-grey-7);
 }

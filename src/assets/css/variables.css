@@ -29,6 +29,7 @@
   --base-font-size: 14px;
 
   --modal-overlay-color: rgba(15, 35, 69, 0.5);
+  --tooltip-bg-color: rgba(0, 0, 0, 0.8);
 
   --base-animation-length: 0.15s;
   --base-animation: var(--base-animation-length) ease-out;

@@ -1,3 +1,5 @@
+import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
+
 export type GetListQueryParams = {
   sort?: string
   page?: number
@@ -12,4 +14,19 @@ export type TableDataResponse<T> = {
   total: number
   per_page: number
   data: T
+}
+
+export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder'
+
+export type VirtualFolder = {
+  name: string
+}
+
+export type TreeDataResponse = {
+  element_type: TreeElementType
+  leaves: TreeDataResponse[]
+  subject: Subject | null
+  study_year: StudyYear | null
+  theme: Theme | null
+  virtual_folder: VirtualFolder | null
 }
