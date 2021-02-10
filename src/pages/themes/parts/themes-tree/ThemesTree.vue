@@ -20,9 +20,6 @@ export default Vue.extend({
     TreeNode,
   },
   effector: { $themesTree },
-  mounted() {
-    console.log(this.$themesTree)
-  },
 })
 </script>
 

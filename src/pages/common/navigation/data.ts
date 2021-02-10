@@ -2,6 +2,16 @@ import { NavItem } from '@/pages/common/navigation/types.ts'
 
 export const data: NavItem[] = [
   {
+    id: 'requests',
+    title: 'Заявки',
+    icon: 'success',
+    children: [
+      { title: 'Мои заявки', link: '/' },
+      { title: 'Заявки на проверку задания', link: '/' },
+      { title: 'Заявки на удаление', link: '/' },
+    ],
+  },
+  {
     id: 'tasks',
     title: 'Банк заданий',
     icon: 'tasks',
@@ -60,16 +70,6 @@ export const data: NavItem[] = [
       { title: 'Курсы', link: '/' },
       { title: 'Кружки', link: '/' },
       { title: 'Сводные результаты по пользователю', link: '/' },
-    ],
-  },
-  {
-    id: 'requests',
-    title: 'Заявки',
-    icon: 'success',
-    children: [
-      { title: 'Мои заявки', link: '/' },
-      { title: 'Заявки на проверку задания', link: '/' },
-      { title: 'Заявки на удаление', link: '/' },
     ],
   },
   {
