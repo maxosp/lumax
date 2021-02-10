@@ -47,10 +47,6 @@ export default Vue.extend({
   methods: {
     modalLogoutVisibilityChanged,
     logout,
-    fakeLogout() {
-      modalLogoutVisibilityChanged(false)
-      this.$router.push({ name: 'login' })
-    },
   },
 })
 </script>
@@ -72,6 +68,7 @@ export default Vue.extend({
   @mixin flex-row-central;
   justify-content: space-between;
   .btn {
+    cursor: pointer;
     width: 144px;
   }
 }

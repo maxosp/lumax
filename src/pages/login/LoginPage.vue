@@ -1,48 +1,45 @@
 <template>
-  <LoginLayout>
-    <Card class="card">
-      <img
-        src='~assets/img/logo-full.svg'
-        alt="logo"
-        class="logo"
+  <Card class="card">
+    <img
+      src='~assets/img/logo-full.svg'
+      alt="logo"
+      class="logo"
+    >
+    <form @submit.prevent>
+      <FormInput
+        :value="$form.email"
+        label="Email"
+        :max-length="100"
+        placeholder="Введите ваш email"
+        :error-message="$errors.email"
+        class="input"
+        @input="emailChanged"
+      />
+      <FormInput
+        :value="$form.password"
+        type="password"
+        label="Пароль"
+        :max-length="100"
+        placeholder="Введите ваш пароль"
+        :error-message="$errors.password"
+        class="input"
+        @input="passwordChanged"
+      />
+      <BaseButton
+        class="btn"
+        big
+        :disabled="!$isFormValid"
+        @click="submitForm"
       >
-      <form @submit.prevent>
-        <FormInput
-          :value="$form.email"
-          label="Email"
-          :max-length="100"
-          placeholder="Введите ваш email"
-          :error-message="$errors.email"
-          class="input"
-          @input="emailChanged"
-        />
-        <FormInput
-          :value="$form.password"
-          type="password"
-          label="Пароль"
-          :max-length="100"
-          placeholder="Введите ваш пароль"
-          :error-message="$errors.password"
-          class="input"
-          @input="passwordChanged"
-        />
-        <BaseButton
-          class="btn"
-          big
-          :disabled="!$isFormValid"
-          @click="submitForm"
-        >
-          {{ $isLoading ? '' : 'Вход'}}
-          <Loader v-if="$isLoading" />
-        </BaseButton>
-      </form>
-    </Card>
-  </LoginLayout>
+        {{ $isLoading ? '' : 'Вход'}}
+        <Loader v-if="$isLoading" />
+      </BaseButton>
+    </form>
+  </Card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import LoginLayout from '@/layouts/LoginLayout.vue'
 import Card from '@/ui/card/Card.vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
@@ -60,7 +57,6 @@ import {
 export default Vue.extend({
   name: 'LoginPage',
   components: {
-    LoginLayout,
     Card,
     FormInput,
     BaseButton,

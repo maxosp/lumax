@@ -90,6 +90,7 @@ export default Vue.extend({
     margin-right: 30px;
   }
   .element.--underline {
+    cursor: pointer;
     position: relative;
     &::after {
       content: '';

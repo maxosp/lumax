@@ -23,7 +23,7 @@ condition({
 condition({
   source: checkGuest,
   if: $isAuthed,
-  then: navigateReplace.prepend(() => ({ name: 'user' })),
+  then: navigateReplace.prepend(() => ({ name: 'admin' })),
   else: resolveNavigationFx,
 })
 

@@ -1,6 +1,6 @@
 <template>
   <div class="login-layout">
-    <slot />
+    <RouterView />
   </div>
 </template>
 

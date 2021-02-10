@@ -1,4 +1,6 @@
 import { RouteConfig } from 'vue-router'
+import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
+import LoginLayout from '@/layouts/LoginLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
@@ -8,20 +10,30 @@ import ThemeCreationPage from '@/pages/theme-creation/ThemeCreationPage.vue'
 
 export const routes: RouteConfig[] = [
   {
-    name: 'login',
-    path: '/login',
-    component: LoginPage,
-    meta: {
-      title: 'Вход - Школа Летово',
-    },
+    path: '/auth',
+    component: LoginLayout,
+    redirect: { name: 'auth.login' },
+    beforeEnter: checkUserGuestMiddleware,
+    children: [
+      {
+        name: 'auth.login',
+        path: 'login',
+        component: LoginPage,
+        meta: {
+          title: 'Вход - Школа Летово',
+        },
+      },
+    ],
   },
   {
     path: '',
     component: DefaultLayout,
+    redirect: { name: 'home' },
+    beforeEnter: checkUserAuthedMiddleware,
     children: [
       {
         name: 'home',
-        path: '/',
+        path: '/home',
         component: HomePage,
         meta: {
           title: 'Стартовая страница - Школа Летово',
@@ -43,6 +55,7 @@ export const routes: RouteConfig[] = [
           title: 'Создание темы - Школа Летово',
         },
       },
+      { name: 'default-route', path: '*', redirect: { name: 'home' } },
     ],
   },
 ]

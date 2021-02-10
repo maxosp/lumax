@@ -38,6 +38,6 @@ forward({
   to: [
     modalLogoutVisibilityChanged.prepend(() => false),
     setTokenForRequest.prepend(() => ''),
-    navigatePush.prepend(() => ({ name: 'login' })),
+    navigatePush.prepend(() => ({ name: 'auth.login' })),
   ],
 })
