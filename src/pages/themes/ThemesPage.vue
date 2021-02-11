@@ -16,7 +16,7 @@
       </template>
     </GeneralFilter>
     <TableHeader :total="total" />
-    <div :class="{ invisible: $treeView }">
+    <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -27,6 +27,7 @@
         :append-params="filterParams"
         no-data-template=""
         pagination-path=""
+        @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
       >
         <template v-slot:actions="props">
@@ -80,6 +81,7 @@ import {
   $visibility,
 } from '@/pages/themes/parts/themes-filter/themes-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
+import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
 
 Vue.use(VueEvents)
@@ -156,6 +158,9 @@ export default Vue.extend({
         Vue.nextTick(() => this.$refs.vuetable.refresh())
       }
     },
+    handleLoadError() {
+      addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+    },
   },
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
@@ -175,6 +180,10 @@ export default Vue.extend({
 <style scoped>
 .invisible {
   display: none;
+}
+
+.table-container {
+  overflow-x: auto;
 }
 
 .table /deep/ tr:nth-child(2n) {
@@ -254,6 +263,7 @@ export default Vue.extend({
   }
 }
 .reset-filters {
+  color: var(--base-text-primary);
   cursor: pointer;
   text-decoration: underline;
 }

@@ -195,6 +195,7 @@ export default Vue.extend({
         ...this.$props.filterParams,
         ...filter,
       })
+      toggleVisibility(false)
     },
     resetFilters() {
       this.dropdownsFilter = {}
@@ -203,6 +204,7 @@ export default Vue.extend({
       this.classesModuleMethods.resetItem()
       this.subjectsModuleMethods.resetItem()
       reset()
+      toggleVisibility(false)
     },
   },
 })

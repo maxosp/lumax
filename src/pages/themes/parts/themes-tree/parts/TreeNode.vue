@@ -100,6 +100,9 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.tree-node {
+  padding-bottom: 20px;
+}
 .folder-icon {
   stroke: var(--c-grey-3);
   margin-right: 15px;

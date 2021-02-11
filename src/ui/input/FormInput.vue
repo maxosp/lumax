@@ -93,6 +93,11 @@ export default Vue.extend({
       },
     },
   },
+  mounted() {
+    if (this.value && this.clearBtn) {
+      this.showClearBtn = true
+    }
+  },
 })
 </script>
 

@@ -1,12 +1,12 @@
 <template>
   <div
     class="toast"
-    :class="{ success: isSuccess, error: isError, warning: isWarning }"
+    :class="{ success: isSuccess, error: isError, loading: isLoading, 'no-internet': isNoInternet }"
   >
     <Icon
       :type="icon"
       class="icon"
-      :class="{ success: isSuccess, error: isError, warning: isWarning }"
+      :class="{ success: isSuccess, error: isError, loading: isLoading, 'no-internet': isNoInternet }"
     />
     <p class="message">
       {{ toast.message }}
@@ -34,6 +34,10 @@ export default Vue.extend({
           return 'close'
         case 'success':
           return 'tick'
+        case 'loading':
+          return 'loader'
+        case 'no-internet':
+          return 'wifi'
         default: {
           // Toast type unknown, icon break'
           return ''
@@ -43,11 +47,14 @@ export default Vue.extend({
     isSuccess() {
       return this.toast.type === 'success'
     },
-    isWarning() {
-      return this.toast.type === 'warning'
+    isLoading() {
+      return this.toast.type === 'loading'
     },
     isError() {
       return this.toast.type === 'error'
+    },
+    isNoInternet() {
+      return this.toast.type === 'no-internet'
     },
   },
 })
@@ -57,6 +64,7 @@ export default Vue.extend({
 :root {
   --success-color: var(--c-green-0);
   --warning-color: var(--c-yellow-0);
+  --no-internet-color: var(--c-grey-0);
   --error-color: var(--c-red-0);
 }
 .toast {
@@ -78,6 +86,9 @@ export default Vue.extend({
   }
   &.error {
     background-color: var(--error-color);
+  }
+  &.no-internet {
+    background-color: var(--no-internet-color);
   }
 }
 

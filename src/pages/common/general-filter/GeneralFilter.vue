@@ -1,9 +1,11 @@
 <template>
   <div class="filter">
-    <BaseInput
+    <FormInput
       :value="$searchString"
       placeholder="Поиск"
       class="input"
+      clear-btn
+      @clear="clear"
       @input="handleSearchString"
     />
     <div class="right-section">
@@ -37,7 +39,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import BaseInput from '@/ui/input/BaseInput.vue'
+import FormInput from '@/ui/input/FormInput.vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import Icon from '@/ui/icon/Icon.vue'
@@ -53,7 +55,7 @@ import { DropdownItem } from '@/pages/common/types'
 export default Vue.extend({
   name: 'GeneralFilter',
   components: {
-    BaseInput,
+    FormInput,
     BaseDropdown,
     SelectItem,
     Icon,
@@ -83,6 +85,9 @@ export default Vue.extend({
       })
       cb()
     },
+    clear() {
+      this.handleSearchString('')
+    },
   },
   mounted() {
     reset()
@@ -105,9 +110,26 @@ export default Vue.extend({
 }
 
 .input {
-  border: none;
-  width: 400px;
-  height: 100%;
+  width: 100%;
+  & /deep/ .wrap {
+    height: 100%;
+  }
+  & /deep/ label {
+    height: 100%;
+  }
+  & /deep/ .label {
+    display: none;
+  }
+  & /deep/ .icon-wrap {
+    height: 100%;
+  }
+
+  & /deep/ .inner-input {
+    border: none;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+  }
 }
 
 .right-section {

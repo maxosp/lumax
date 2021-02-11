@@ -1,7 +1,7 @@
 import { createApi, createEffect, createStore, forward } from 'effector-root'
 
 export type Toast = {
-  type: 'error' | 'success' | 'warning'
+  type: 'error' | 'success' | 'loading' | 'no-internet'
   message: string
   duration?: number
 }

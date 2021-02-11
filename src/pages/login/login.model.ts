@@ -93,7 +93,7 @@ forward({
 
 forward({
   from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'error', message: 'Отсутствует подключение' })),
+  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 forward({

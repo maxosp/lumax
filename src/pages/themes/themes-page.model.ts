@@ -1,8 +1,9 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { getThemesTreeFx } from '@/features/api/subject/get-themes-tree'
+import { deleteThemeFx } from '@/features/api/subject/delete-theme'
+import { addToast } from '@/features/toasts/toasts.model'
 import { TreeDataResponse } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
-import { deleteThemeFx } from '@/features/api/subject/delete-theme'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -32,4 +33,9 @@ forward({
 forward({
   from: deleteTheme.doneData,
   to: loadTree.prepend(() => ({})),
+})
+
+forward({
+  from: getThemesTree.failData,
+  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
