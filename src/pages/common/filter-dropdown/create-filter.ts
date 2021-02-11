@@ -6,6 +6,7 @@ export const createFilter = () => {
   const setItems = createEvent<DropdownItem[]>()
 
   const resetItem = createEvent<void>()
+
   const itemChanged = createEvent<null | string>()
   const $item = restore<null | string>(itemChanged, null).reset(resetItem)
 

@@ -1,3 +1,5 @@
+import { User } from '@/features/api/user/types'
+
 export type StudyYear = {
   id: number
   number: number
@@ -32,6 +34,8 @@ export type Theme = {
   prerequisites_ids: number[]
   study_year_id: number
   subject_id: number
+  created_by: User
+  updated_by: User
 }
 
 export type GetThemesTreeQueryParams = {

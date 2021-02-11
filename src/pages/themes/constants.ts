@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { Subject, StudyYear } from '@/features/api/subject/types'
 import { TableField } from '@/pages/themes/types'
 import { DropdownItem } from '@/pages/common/types'
+import { User } from '@/features/api/user/types'
 
 export const themesTableFields: TableField[] = [
   {
@@ -22,8 +23,8 @@ export const themesTableFields: TableField[] = [
     sortField: 'subject',
     title: 'Предмет',
     width: '140px',
-    formatter(value: Subject) {
-      return value ? value.name : '-'
+    formatter(subject: Subject) {
+      return subject ? subject.name : '-'
     },
   },
   {
@@ -32,9 +33,9 @@ export const themesTableFields: TableField[] = [
     titleClass: 'center aligned',
     dataClass: 'center aligned',
     title: 'Класс',
-    width: '80px',
-    formatter(value: StudyYear) {
-      return value ? value.name : '-'
+    width: '100px',
+    formatter(year: StudyYear) {
+      return year ? year.name : '-'
     },
   },
   {
@@ -52,24 +53,42 @@ export const themesTableFields: TableField[] = [
       return value ? 'Да' : 'Нет'
     },
     title: 'Пререквизит',
-    width: '130px',
+    width: '150px',
   },
   {
     name: 'creation_datetime',
     sortField: 'creation_datetime',
     title: 'Создано',
-    width: '110px',
-    formatter(value: string) {
-      return value ? dayjs(value).format('DD.mm.YYYY') : '-'
+    width: '130px',
+    formatter(datetime: string) {
+      return datetime ? dayjs(datetime).format('DD.MM.YYYY') : '-'
+    },
+  },
+  {
+    name: 'created_by',
+    sortField: 'created_by',
+    title: 'Кем',
+    width: '200px',
+    formatter(user: User) {
+      return user ? `${user.first_name} ${user.last_name}` : '-'
     },
   },
   {
     name: 'update_datetime',
     sortField: 'update_datetime',
     title: 'Обновлено',
-    width: '110px',
-    formatter(value: string) {
-      return value ? dayjs(value).format('DD.mm.YYYY') : '-'
+    width: '130px',
+    formatter(datetime: string) {
+      return datetime ? dayjs(datetime).format('DD.MM.YYYY') : '-'
+    },
+  },
+  {
+    name: 'updated_by',
+    sortField: 'updated_by',
+    title: 'Кем',
+    width: '200px',
+    formatter(user: User) {
+      return user ? `${user.first_name} ${user.last_name}` : '-'
     },
   },
   {

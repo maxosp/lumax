@@ -1,6 +1,7 @@
 <template>
   <MenuWrap
     v-model="isOpen"
+    class="actions"
     menu-width="100%"
   >
     <template #activator>
@@ -79,6 +80,9 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.actions /deep/ .menu-wrap {
+  left: 0 !important;
+}
 .actions-activator {
   cursor: pointer;
 }

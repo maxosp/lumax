@@ -8,14 +8,24 @@
       <BaseSwitch
         class="switch"
         :checked="$togglers.hide_prerequisites"
-        @change="setToggler('hide_prerequisites')"
+        @change="val => {
+          setToggler('hide_prerequisites', val)
+          if (val) {
+            setToggler('show_only_prerequisites', false)
+          }
+        }"
       >
         <p>Скрыть переквизиты</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
         :checked="$togglers.show_only_prerequisites"
-        @change="setToggler('show_only_prerequisites')"
+        @change="val => {
+          setToggler('show_only_prerequisites', val)
+          if (val) {
+            setToggler('hide_prerequisites', false)
+          }
+        }"
       >
         <p>Отобразить только переквизиты</p>
       </BaseSwitch>
@@ -28,14 +38,24 @@
       <BaseSwitch
         class="switch"
         :checked="$togglers.show_without_tasks"
-        @change="setToggler('show_without_tasks')"
+        @change="val => {
+          setToggler('show_without_tasks', val)
+          if (val) {
+            setToggler('show_with_tasks', false)
+          }
+        }"
       >
         <p>Отобразить только темы без заданий</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
         :checked="$togglers.show_with_tasks"
-        @change="setToggler('show_with_tasks')"
+        @change="val => {
+          setToggler('show_with_tasks', val)
+          if (val) {
+            setToggler('show_without_tasks', false)
+          }
+        }"
       >
         <p>Отобразить только темы с заданиями</p>
       </BaseSwitch>
@@ -123,10 +143,10 @@ export default Vue.extend({
   },
   methods: {
     toggleVisibility,
-    setToggler(name) {
+    setToggler(name, value) {
       setTogglers({
         ...this.$togglers,
-        [name]: !this.$togglers[name],
+        [name]: value,
       })
     },
     changeFilter(name, value) {
@@ -154,6 +174,7 @@ export default Vue.extend({
       })
     },
     resetFilters() {
+      this.dropdownsFilter = {}
       this.$emit('resetFilter')
       this.authorsModuleMethods.resetItem()
       this.classesModuleMethods.resetItem()
