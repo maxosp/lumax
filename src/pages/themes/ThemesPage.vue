@@ -29,12 +29,11 @@
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
+        @vuetable:cell-rightclicked="handleRightClick"
       >
         <template v-slot:actions="props">
           <Actions
-            :row-data="props.rowData"
-            :row-index="props.rowIndex"
-            :row-field="props.rowField"
+            :id="props.rowData.id"
             :selected="selectedRows"
             @onRemove="removeSelected"
           />
@@ -54,6 +53,15 @@
           @vuetable-pagination:change-page="onChangePage"
         />
       </div>
+      <ContextMenu
+        v-if="showContextMenu"
+        :id="clickedRowId"
+        :selected="selectedRows"
+        :style="contextMenuStyles"
+        class="context-menu"
+        @onOutsideClick="hideContextMenu"
+        @onRemove="removeSelected"
+      />
     </div>
     <div :class="{ invisible: !$treeView }">
       <ThemesTree />
@@ -72,6 +80,7 @@ import { computeSortParam } from '@/pages/themes/utils'
 import PageHeader from '@/pages/themes/parts/PageHeader.vue'
 import TableHeader from '@/pages/themes/parts/TableHeader.vue'
 import Actions from '@/pages/themes/parts/Actions.vue'
+import ContextMenu from '@/pages/themes/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/themes/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/themes/parts/themes-tree/ThemesTree.vue'
@@ -83,6 +92,7 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
+import { Theme } from '@/features/api/subject/types'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -98,6 +108,7 @@ export default Vue.extend({
     GeneralFilter,
     ThemesFilter,
     Actions,
+    ContextMenu,
     ThemesTree,
   },
   effector: {
@@ -107,6 +118,9 @@ export default Vue.extend({
   },
   data() {
     return {
+      clickedRowId: 0,
+      showContextMenu: false,
+      contextMenuStyles: { top: '0', left: '0' },
       fields: themesTableFields,
       searchFields: searchFieldsData,
       total: 0,
@@ -118,6 +132,8 @@ export default Vue.extend({
       return `${config.BACKEND_URL}/api/subject/themes/list/`
     },
     selectedRows(): number[] {
+      // @ts-ignore
+      if (!this.$refs.vuetable) return []
       // @ts-ignore
       return this.$refs.vuetable.selectedTo
     },
@@ -151,15 +167,26 @@ export default Vue.extend({
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    removeSelected(ids: number | number[]) {
+    async removeSelected(ids: number | number[]) {
       if (typeof ids === 'number') {
-        deleteTheme(ids)
+        await deleteTheme(ids)
         // @ts-ignore
-        Vue.nextTick(() => this.$refs.vuetable.refresh())
+        await Vue.nextTick(() => this.$refs.vuetable.refresh())
       }
     },
-    handleLoadError() {
-      addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+    handleLoadError(res: any) {
+      if (!res.response) {
+        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+      }
+    },
+    handleRightClick({ data, event }: { data: Theme; event: any }) {
+      this.clickedRowId = data.id
+      this.showContextMenu = true
+      this.contextMenuStyles = { top: `${event.y}px`, left: `${event.x + 120}px` }
+      event.preventDefault()
+    },
+    hideContextMenu() {
+      this.showContextMenu = false
     },
   },
   mounted() {
@@ -266,5 +293,11 @@ export default Vue.extend({
   color: var(--base-text-primary);
   cursor: pointer;
   text-decoration: underline;
+}
+
+.context-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

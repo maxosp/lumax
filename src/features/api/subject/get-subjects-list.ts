@@ -5,7 +5,7 @@ import { Subject } from '@/features/api/subject/types'
 export const getSubjectsListFx = createApiEffect<GetListQueryParams, TableDataResponse<Subject[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/list/',
+    url: '/api/subject/subjects/list/',
     query,
   }),
 })

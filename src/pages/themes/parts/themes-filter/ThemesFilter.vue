@@ -118,20 +118,9 @@ import {
   toggleVisibility,
 } from '@/pages/themes/parts/themes-filter/themes-filter.model'
 import { mapTogglerToEntity } from '@/pages/themes/parts/themes-filter/constants'
+import ClickOutside from '@/features/directives/click-outside.ts'
 
-Vue.directive('click-outside', {
-  bind(el, binding, vnode) {
-    el.clickOutsideEvent = function (event) {
-      if (!(el === event.target || el.contains(event.target))) {
-        vnode.context[binding.expression](event)
-      }
-    }
-    document.body.addEventListener('click', el.clickOutsideEvent)
-  },
-  unbind(el) {
-    document.body.removeEventListener('click', el.clickOutsideEvent)
-  },
-})
+Vue.directive('click-outside', ClickOutside)
 
 export default Vue.extend({
   name: 'ThemesFilter',

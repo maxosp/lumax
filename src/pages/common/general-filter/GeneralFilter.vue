@@ -2,6 +2,7 @@
   <div class="filter">
     <FormInput
       :value="$searchString"
+      label=''
       placeholder="Поиск"
       class="input"
       clear-btn

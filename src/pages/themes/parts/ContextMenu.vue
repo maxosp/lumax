@@ -1,18 +1,10 @@
 <template>
   <MenuWrap
-    v-model="isOpen"
+    v-click-outside="closeMenu"
+    value
     class="actions"
     menu-width="100%"
   >
-    <template #activator>
-      <Icon
-        class="actions-activator"
-        type="kebab-menu"
-        size="24"
-        @click="onActivatorClick"
-      />
-    </template>
-
     <template #menu>
       <SelectMenu>
         <slot
@@ -39,17 +31,18 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import Icon from '@/ui/icon/Icon.vue'
 import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
+import ClickOutside from '@/features/directives/click-outside.ts'
+
+Vue.directive('click-outside', ClickOutside)
 
 export default Vue.extend({
-  name: 'Actions',
+  name: 'ContextMenu',
   components: {
-    Icon,
     MenuWrap,
     SelectMenu,
     SelectItem,
@@ -58,9 +51,6 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
   },
-  data: () => ({
-    isOpen: false,
-  }),
   computed: {
     items(): DropdownItem[] {
       if (this.$props.selected.length) {
@@ -73,9 +63,6 @@ export default Vue.extend({
     },
   },
   methods: {
-    onActivatorClick() {
-      this.isOpen = !this.isOpen
-    },
     handleAction(item: SelectItemI) {
       if (item.name === 'delete') {
         this.$emit('onRemove', this.$props.id)
@@ -84,7 +71,7 @@ export default Vue.extend({
       }
     },
     closeMenu() {
-      this.isOpen = false
+      this.$emit('onOutsideClick')
     },
   },
 })
