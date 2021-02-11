@@ -44,8 +44,7 @@ export default Vue.extend({
     opened: { type: Boolean, required: true },
   },
   computed: {
-    isCollapsed() {
-      // @ts-ignore
+    isCollapsed(): boolean {
       return !this.$props.opened || this.$openedItem !== this.$props.item.id
     },
   },

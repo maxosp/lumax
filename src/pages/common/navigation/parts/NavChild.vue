@@ -1,7 +1,7 @@
 <template>
   <RouterLink
     :to="{name: $props.item.link}"
-    class="nav-child"
+    :class="{ 'nav-child': true, selected: isSelected }"
   >
     {{ $props.item.title }}
   </RouterLink>
@@ -16,6 +16,11 @@ export default Vue.extend({
   props: {
     item: { type: Object as PropType<NavItemChild>, required: true },
   },
+  computed: {
+    isSelected(): boolean {
+      return this.$props.item.link === this.$route.name
+    },
+  },
 })
 </script>
 
@@ -27,6 +32,10 @@ export default Vue.extend({
   align-items: center;
   white-space: normal;
   color: var(--base-text-secondary);
+}
+.selected {
+  font-weight: 600;
+  color: var(--base-text-primary);
 }
 </style>
 

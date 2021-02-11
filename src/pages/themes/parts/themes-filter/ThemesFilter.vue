@@ -1,5 +1,9 @@
 <template>
-  <div v-if="$props.visible" class="themes-filter">
+  <div
+    v-click-outside="closeFilter"
+    v-if="$props.visible"
+    class="themes-filter"
+  >
     <div class="section">
       <SubjectsDropdown
         :module-methods="subjectsModuleMethods"
@@ -113,7 +117,21 @@ import {
   reset,
   toggleVisibility,
 } from '@/pages/themes/parts/themes-filter/themes-filter.model'
-import { mapTogglerToEntity } from '@/pages/themes/parts/themes-filter/constants.ts'
+import { mapTogglerToEntity } from '@/pages/themes/parts/themes-filter/constants'
+
+Vue.directive('click-outside', {
+  bind(el, binding, vnode) {
+    el.clickOutsideEvent = function (event) {
+      if (!(el === event.target || el.contains(event.target))) {
+        vnode.context[binding.expression](event)
+      }
+    }
+    document.body.addEventListener('click', el.clickOutsideEvent)
+  },
+  unbind(el) {
+    document.body.removeEventListener('click', el.clickOutsideEvent)
+  },
+})
 
 export default Vue.extend({
   name: 'ThemesFilter',
@@ -143,6 +161,11 @@ export default Vue.extend({
   },
   methods: {
     toggleVisibility,
+    closeFilter(event) {
+      if (event.target.id !== 'filter-icon') {
+        toggleVisibility(false)
+      }
+    },
     setToggler(name, value) {
       setTogglers({
         ...this.$togglers,

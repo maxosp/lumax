@@ -34,6 +34,8 @@
             :row-data="props.rowData"
             :row-index="props.rowIndex"
             :row-field="props.rowField"
+            :selected="selectedRows"
+            @onRemove="removeSelected"
           />
         </template>
       </Vuetable>
@@ -72,7 +74,7 @@ import Actions from '@/pages/themes/parts/Actions.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/themes/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/themes/parts/themes-tree/ThemesTree.vue'
-import { $treeView, loadTree } from '@/pages/themes/themes-page.model'
+import { $treeView, loadTree, deleteTheme } from '@/pages/themes/themes-page.model'
 import {
   toggleVisibility,
   $visibility,
@@ -110,8 +112,12 @@ export default Vue.extend({
     }
   },
   computed: {
-    apiUrl() {
+    apiUrl(): string {
       return `${config.BACKEND_URL}/api/subject/themes/list/`
+    },
+    selectedRows(): number[] {
+      // @ts-ignore
+      return this.$refs.vuetable.selectedTo
     },
   },
   methods: {
@@ -142,6 +148,13 @@ export default Vue.extend({
       loadTree({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+    removeSelected(ids: number | number[]) {
+      if (typeof ids === 'number') {
+        deleteTheme(ids)
+        // @ts-ignore
+        Vue.nextTick(() => this.$refs.vuetable.refresh())
+      }
     },
   },
   mounted() {

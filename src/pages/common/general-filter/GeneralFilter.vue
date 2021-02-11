@@ -25,6 +25,7 @@
         </template>
       </BaseDropdown>
       <Icon
+        id="filter-icon"
         class="filter-settings"
         type="filter-settings"
         @click="$emit('handleFilterVisibility')"

@@ -1,6 +1,6 @@
 import { createEvent, createStore, forward, restore, sample } from 'effector-root'
 import { debounce } from 'patronum'
-import { DropdownItem } from '../types'
+import { DropdownItem } from '@/pages/common/types'
 
 export const createFilter = () => {
   const setItems = createEvent<DropdownItem[]>()

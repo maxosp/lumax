@@ -17,19 +17,19 @@
       <SelectMenu>
         <slot
           v-for="item in items"
-          v-bind="{item, selectItem, closeMenu}"
+          v-bind="{item, handleAction, closeMenu}"
           name="item"
         >
           <SelectItem
-            :key="item.value"
+            :key="item.name"
             :active="false"
             class="action-item"
             @click="() => {
-              selectItem(item)
+              handleAction(item)
               closeMenu()
             }"
           >
-            {{ item.label }}
+            {{ item.title }}
           </SelectItem>
         </slot>
       </SelectMenu>
@@ -38,12 +38,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
+import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'Actions',
@@ -57,20 +58,32 @@ export default Vue.extend({
     rowData: { type: Object, required: true },
     rowIndex: { type: Number, required: true },
     rowField: { type: Object, required: true },
+    selected: { type: Array as PropType<number[]>, required: true },
   },
   data: () => ({
     isOpen: false,
-    items: [
-      { value: 'edit', label: 'Редактировать' },
-      { value: 'delete', label: 'Удалить' },
-    ],
   }),
+  computed: {
+    items(): DropdownItem[] {
+      if (this.$props.selected.length) {
+        return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
+      }
+      return [
+        { name: 'edit', title: 'Редактировать' },
+        { name: 'delete', title: 'Удалить' },
+      ]
+    },
+  },
   methods: {
     onActivatorClick() {
       this.isOpen = !this.isOpen
     },
-    selectItem(item: SelectItemI) {
-      console.log(item)
+    handleAction(item: SelectItemI) {
+      if (item.name === 'delete') {
+        this.$emit('onRemove', this.$props.rowData.id)
+      } else if (item.name === 'delete-all') {
+        this.$emit('onRemove', this.$props.selected)
+      }
     },
     closeMenu() {
       this.isOpen = false
@@ -82,6 +95,7 @@ export default Vue.extend({
 <style scoped>
 .actions /deep/ .menu-wrap {
   left: 0 !important;
+  min-width: 240px;
 }
 .actions-activator {
   cursor: pointer;
