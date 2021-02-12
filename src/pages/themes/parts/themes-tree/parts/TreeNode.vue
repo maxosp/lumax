@@ -1,6 +1,10 @@
 <template>
   <div class="tree-node">
-    <div class="label" @click="toggle">
+    <div
+      :id="`node-${$props.nodeId}`"
+      class="label"
+      @click="toggle"
+    >
       <Icon
         v-if="opened"
         type="tree-folder-opened"
@@ -28,6 +32,9 @@
         v-for="leaf in node.leaves"
         :key="leaf[leaf.element_type].id"
         :node="leaf"
+        :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
+        :prerequisite-folder="$props.prerequisiteFolder"
+        @onRightClick="$emit('onRightClick', $event)"
       />
     </div>
   </div>
@@ -48,6 +55,8 @@ export default Vue.extend({
   props: {
     node: { type: Object as PropType<TreeDataResponse> },
     parent: { type: Boolean, default: false },
+    prerequisiteFolder: { type: Boolean, default: false },
+    nodeId: { type: [Number, String] },
   },
   data() {
     return {
@@ -95,13 +104,45 @@ export default Vue.extend({
         this.opened = !this.opened
       }
     },
+    handleRightClick(event: any) {
+      event.preventDefault()
+      let type = this.$props.node.element_type
+
+      if (this.$props.node[type].is_prerequisite) {
+        if (this.$props.prerequisiteFolder) {
+          type = 'prerequisite_own'
+        } else {
+          type = 'prerequisite_general'
+        }
+      }
+
+      this.$emit('onRightClick', { data: { id: this.$props.nodeId }, event, type })
+    },
+  },
+  mounted() {
+    // @ts-ignore
+    if (this.$props.node.element_type === 'theme') {
+      // @ts-ignore
+      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+      // @ts-ignore
+      nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+  },
+  beforeDestroy() {
+    // @ts-ignore
+    if (this.$props.node.element_type === 'theme') {
+      // @ts-ignore
+      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+      // @ts-ignore
+      nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
+    }
   },
 })
 </script>
 
 <style scoped>
 .tree-node {
-  padding-bottom: 20px;
+  padding-top: 20px;
 }
 .folder-icon {
   stroke: var(--c-grey-3);

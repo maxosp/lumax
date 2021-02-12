@@ -3,8 +3,11 @@
     <TreeNode
       v-for="leaf in $themesTree"
       :key="leaf[leaf.element_type].id"
+      :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
       :node="leaf"
       parent
+      :prerequisite-folder="leaf.element_type === 'virtual_folder'"
+      @onRightClick="$emit('onRightClick', $event)"
     />
   </div>
 </template>

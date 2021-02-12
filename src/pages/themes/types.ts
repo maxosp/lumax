@@ -12,3 +12,5 @@ export type ResourceChip = {
   count: string
   description: string
 }
+
+export type ContextMenuType = 'table_theme' | 'theme' | 'prerequisite_own' | 'prerequisite_general'

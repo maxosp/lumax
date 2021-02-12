@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="themes-page">
     <PageHeader />
     <GeneralFilter
       :search-fields="searchFields"
@@ -31,6 +31,13 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
       >
+        <template v-slot:name="props">
+          <TooltipCell
+            :title="props.rowData.name"
+            :row-id="props.rowData.id"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template v-slot:actions="props">
           <Actions
             :id="props.rowData.id"
@@ -42,7 +49,7 @@
       <div v-if="!total" class="no-data-content">
         <div>Поиск не дал результатов.</div>
         <div>Попробуйте
-          <span class="reset-filters" @click="onFilterReset">
+          <span class="reset-filters" @click="resetAllFilters">
             сбросить все фильтры
           </span>
         </div>
@@ -53,19 +60,20 @@
           @vuetable-pagination:change-page="onChangePage"
         />
       </div>
-      <ContextMenu
-        v-if="showContextMenu"
-        :id="clickedRowId"
-        :selected="selectedRows"
-        :style="contextMenuStyles"
-        class="context-menu"
-        @onOutsideClick="hideContextMenu"
-        @onRemove="removeSelected"
-      />
     </div>
     <div :class="{ invisible: !$treeView }">
-      <ThemesTree />
+      <ThemesTree @onRightClick="handleRightClick" />
     </div>
+    <ContextMenu
+      v-if="showContextMenu"
+      :id="clickedRowId"
+      :selected="$treeView ? [] : selectedRows"
+      :style="contextMenuStyles"
+      :type="contextMenuType"
+      class="context-menu"
+      @onOutsideClick="hideContextMenu"
+      @onRemove="removeSelected"
+    />
   </div>
 </template>
 
@@ -79,6 +87,7 @@ import { $token } from '@/features/api/common/request'
 import { computeSortParam } from '@/pages/themes/utils'
 import PageHeader from '@/pages/themes/parts/PageHeader.vue'
 import TableHeader from '@/pages/themes/parts/TableHeader.vue'
+import TooltipCell from '@/pages/themes/parts/TooltipCell.vue'
 import Actions from '@/pages/themes/parts/Actions.vue'
 import ContextMenu from '@/pages/themes/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
@@ -92,11 +101,17 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/themes/constants'
-import { Theme } from '@/features/api/subject/types'
+import { ContextMenuType } from '@/pages/themes/types'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
 Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
+
+type RightClickParams = {
+  data: any
+  event: any
+  type?: ContextMenuType
+}
 
 export default Vue.extend({
   name: 'ThemesPage',
@@ -107,6 +122,7 @@ export default Vue.extend({
     TableHeader,
     GeneralFilter,
     ThemesFilter,
+    TooltipCell,
     Actions,
     ContextMenu,
     ThemesTree,
@@ -120,6 +136,7 @@ export default Vue.extend({
     return {
       clickedRowId: 0,
       showContextMenu: false,
+      contextMenuType: 'table_theme',
       contextMenuStyles: { top: '0', left: '0' },
       fields: themesTableFields,
       searchFields: searchFieldsData,
@@ -154,6 +171,19 @@ export default Vue.extend({
       // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
+    resetAllFilters() {
+      this.filterParams = {}
+      reset() // search string and field
+
+      const resetEvent = new Event('reset-themes-filter')
+      const container = document.querySelector('#themes-page')
+      container && container.dispatchEvent(resetEvent)
+
+      // reload data
+      loadTree({})
+      // @ts-ignore
+      Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadTree({ ...this.filterParams })
@@ -162,7 +192,9 @@ export default Vue.extend({
     },
     onFilterReset() {
       this.filterParams = {}
-      reset()
+      reset() // search string and field
+
+      // reload data
       loadTree({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
@@ -179,9 +211,10 @@ export default Vue.extend({
         addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
       }
     },
-    handleRightClick({ data, event }: { data: Theme; event: any }) {
+    handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       this.clickedRowId = data.id
       this.showContextMenu = true
+      this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y}px`, left: `${event.x + 120}px` }
       event.preventDefault()
     },
@@ -234,6 +267,8 @@ export default Vue.extend({
   border-left: none;
   border-top: none;
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .table /deep/ .vuetable-slot {

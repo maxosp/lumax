@@ -35,8 +35,9 @@ import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
+import ClickOutside from '@/features/directives/click-outside'
 import { DropdownItem } from '@/pages/common/types'
-import ClickOutside from '@/features/directives/click-outside.ts'
+import { ContextMenuType } from '@/pages/themes/types'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -50,12 +51,29 @@ export default Vue.extend({
   props: {
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
+    type: { type: String as PropType<ContextMenuType>, required: true },
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
+      if (this.$props.type === 'table_theme') {
+        if (this.$props.selected.length) {
+          return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
+        }
       }
+      if (this.$props.type === 'theme') {
+        return [
+          { name: 'create', title: 'Создать тему' },
+          { name: 'edit', title: 'Редактировать' },
+          { name: 'delete', title: 'Удалить' },
+        ]
+      }
+      if (this.$props.type === 'prerequisite_general') {
+        return [
+          { name: 'edit', title: 'Редактировать' },
+          { name: 'show', title: 'Показать в папке "Пререквизиты"' },
+        ]
+      }
+      // prerequisite_own || table_theme without selected
       return [
         { name: 'edit', title: 'Редактировать' },
         { name: 'delete', title: 'Удалить' },

@@ -5,10 +5,7 @@
     class="themes-filter"
   >
     <div class="section">
-      <SubjectsDropdown
-        :module-methods="subjectsModuleMethods"
-        @setItem="val => changeFilter('subject', val)"
-      />
+      <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
       <BaseSwitch
         class="switch"
         :checked="$togglers.hide_prerequisites"
@@ -35,10 +32,7 @@
       </BaseSwitch>
     </div>
     <div class="section">
-      <ClassesDropdown
-        :module-methods="classesModuleMethods"
-        @setItem="val => changeFilter('study_year', val)"
-      />
+      <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
       <BaseSwitch
         class="switch"
         :checked="$togglers.show_without_tasks"
@@ -65,10 +59,7 @@
       </BaseSwitch>
     </div>
     <div class="section">
-      <AuthorsDropdown
-        :module-methods="authorsModuleMethods"
-        @setItem="val => changeFilter('created_by', val)"
-      />
+      <AuthorsDropdown @setItem="val => changeFilter('created_by', val)" />
       <div class="buttons">
         <div class="btn">
           <BaseButton
@@ -188,13 +179,21 @@ export default Vue.extend({
     },
     resetFilters() {
       this.dropdownsFilter = {}
-      this.$emit('resetFilter')
+
       this.authorsModuleMethods.resetItem()
       this.classesModuleMethods.resetItem()
       this.subjectsModuleMethods.resetItem()
-      reset()
-      toggleVisibility(false)
+      this.$emit('resetFilter') // general filter
+      reset() // togglers and visibility
     },
+  },
+  mounted() {
+    const container = document.querySelector('#themes-page')
+    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
+  },
+  beforeDestroy() {
+    const container = document.querySelector('#themes-page')
+    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>
