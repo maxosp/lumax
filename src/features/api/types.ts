@@ -4,6 +4,9 @@ export type GetListQueryParams = {
   sort?: string
   page?: number
   per_page?: number
+  subject?: number
+  study_year?: number
+  is_prerequisite?: boolean
 }
 
 export type TableDataResponse<T> = {

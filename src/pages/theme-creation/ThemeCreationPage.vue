@@ -9,12 +9,23 @@
 import Vue from 'vue'
 import Header from '@/pages/theme-creation/parts/Header.vue'
 import Content from '@/pages/theme-creation/parts/Content.vue'
+import {
+  $formToSend,
+  redirectAfterSaveChanged,
+} from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
   name: 'ThemeCreationPage',
   components: {
     ThemeHeader: Header,
     ThemeContent: Content,
+  },
+  effector: {
+    $formToSend,
+  },
+  methods: { redirectAfterSaveChanged },
+  beforeDestroy() {
+    redirectAfterSaveChanged(false)
   },
 })
 </script>

@@ -1,73 +1,41 @@
 <template>
-  <BaseDropdown
-    class="input dropdown"
-    :value="correctSubjectValue"
+  <FilterDropdown
+    v-if="$subjects.length"
     label="Предмет"
     placeholder="Выберите предмет"
-    @clear="clearField"
-    @input="(e) => subjectSearchStringChanged(e)"
-  >
-    <template #default="{closeMenu}">
-      <div v-if="$subjectsDropdown.length">
-        <SelectItem
-          v-for="(item, index) in $subjectsDropdown"
-          :key="index"
-          :placeholder="item"
-          @click="handleSubjectClick(item.id, closeMenu)"
-        >
-          {{ item.title }}
-        </SelectItem>
-      </div>
-      <div v-else>
-        <SelectItem @click="closeMenu">
-          Не найдено совпадений
-        </SelectItem>
-      </div>
-    </template>
-  </BaseDropdown>
+    :methods="subjectModuleMethods"
+    :data="$subjects"
+    :store="{ $item, $itemsDropdown, $searchString }"
+  />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $subject,
-  $subjectsDropdown,
-  $subjectSearchString,
-  resetSearchString,
-  resetSubject,
-  subjectChanged,
-  subjectSearchStringChanged,
+  $subjects,
+  loadSubjects,
+  subjectDropdownModule,
 } from '@/pages/theme-creation/parts/subjects/subjects.model'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   effector: {
-    $subject,
-    $subjectsDropdown,
-    $subjectSearchString,
+    $subjects,
+    ...subjectDropdownModule.store,
   },
-  computed: {
-    correctSubjectValue() {
-      const name = this.$subjectsDropdown.filter((el) => el.id === this.$subject)
-      return name.length ? name[0].title : this.$subjectSearchString
-    },
+  data() {
+    return {
+      subjectModuleMethods: subjectDropdownModule.methods,
+    }
   },
   methods: {
-    subjectSearchStringChanged,
-    handleSubjectClick(item: number, cb: any) {
-      subjectChanged(item)
-      resetSearchString()
-      cb()
-    },
-    clearField() {
-      resetSubject()
-      resetSearchString()
-    },
+    loadSubjects,
+  },
+  mounted() {
+    loadSubjects()
   },
 })
 </script>

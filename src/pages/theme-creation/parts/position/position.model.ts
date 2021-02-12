@@ -1,42 +1,32 @@
-import { createEvent, createStore, restore, sample } from 'effector-root'
-import { debounce } from 'patronum'
-import { POSITION_DROPDOWN_VALUES } from '@/pages/theme-creation/parts/position/constants'
-import { PositionDropdownType } from '@/pages/theme-creation/parts/position/types'
+import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { DropdownItem } from '@/pages/common/types'
+import { createStore, forward } from 'effector'
+import { getThemeData } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
+import { $themes } from '@/pages/theme-creation/parts/themes/themes.model'
 
-export const $positionDropdown = createStore<PositionDropdownType[]>(POSITION_DROPDOWN_VALUES)
-export const $_positionDropdown = createStore<PositionDropdownType[]>(POSITION_DROPDOWN_VALUES)
+export const positionDropdownModule = createFilter()
 
-export const positionChanged = createEvent<null | number>()
-export const resetPosition = createEvent<void>()
-export const $position = restore<null | number>(positionChanged, null).reset(resetPosition)
-export const positionSearchStringChanged = createEvent<string>()
-export const resetSearchString = createEvent<void>()
-export const $positionSearchString = restore<string>(positionSearchStringChanged, '').reset(
-  resetSearchString
-)
+export const $positions = createStore<DropdownItem[]>([])
 
-const searchPosition = createEvent<string>()
-const restorePositions = createEvent<void>()
-
-const debounced = debounce({
-  source: $positionSearchString,
-  timeout: 150,
+forward({
+  from: getThemesListFx.doneData.map((data) =>
+    data.body.data
+      .filter((item) => !item.is_prerequisite)
+      .map((elem) => ({
+        name: `${elem.id}`,
+        title: elem.name,
+        is_prerequisite: elem.is_prerequisite,
+        study_year: elem.study_year,
+        id: elem.id,
+        subject: elem.subject,
+        created_by: elem.created_by,
+      }))
+  ),
+  to: [$positions, $themes],
 })
 
-debounced.watch((str) => {
-  if ($position && str.length) positionChanged(null)
-  if (str.length) searchPosition(str)
-  else restorePositions()
-})
-
-sample({
-  source: $_positionDropdown,
-  clock: searchPosition,
-  fn: (list, str) => list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
-  target: $positionDropdown,
-})
-sample({
-  source: $_positionDropdown,
-  clock: restorePositions,
-  target: $positionDropdown,
+forward({
+  from: positionDropdownModule.methods.itemChanged.map((data) => +data!),
+  to: getThemeData,
 })

@@ -1,45 +1,31 @@
-import { createEvent, createStore, restore, sample } from 'effector-root'
-import { debounce } from 'patronum'
+import { GetListQueryParams } from '@/features/api/types'
+import { getUserStudyYearsListFx } from '@/features/api/user/get-user-study-years-list'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { attach, createEvent, createStore, forward } from 'effector-root'
+import { DropdownItem } from '@/pages/common/types'
 
-export const resetClass = createEvent<void>()
-export const classChanged = createEvent<null | number>()
-export const $class = restore<null | number>(classChanged, null).reset(resetClass)
-export const classSearchStringChanged = createEvent<string>()
-export const resetSearchString = createEvent<void>()
-export const $classSearchString = restore<string>(classSearchStringChanged, '').reset(
-  resetSearchString
-)
+export const classDropdownModule = createFilter()
 
-export const $_classDropdown = createStore<number[]>(
-  Array.from({ length: 11 }, (el, index) => index + 1)
-)
-export const $classDropdown = createStore<number[]>(
-  Array.from({ length: 11 }, (el, index) => index + 1)
-)
-
-const searchClass = createEvent<string>()
-const restoreClassDropdown = createEvent<void>()
-
-const debounced = debounce({
-  source: $classSearchString,
-  timeout: 150,
+const getClasses = attach({
+  effect: getUserStudyYearsListFx,
+  mapParams: (params: GetListQueryParams) => params,
 })
 
-debounced.watch((str) => {
-  if ($class && str.length) classChanged(null)
-  if (str.length) searchClass(str)
-  else restoreClassDropdown()
+export const loadClasses = createEvent<void>()
+export const $classes = createStore<DropdownItem[]>([])
+
+forward({
+  from: loadClasses,
+  to: getClasses.prepend(() => ({})),
 })
 
-sample({
-  source: $_classDropdown,
-  clock: searchClass,
-  fn: (list, str) => list.filter((el) => `${el}`.includes(str)),
-  target: $classDropdown,
-})
-
-sample({
-  source: $_classDropdown,
-  clock: restoreClassDropdown,
-  target: $classDropdown,
+forward({
+  from: getClasses.doneData.map((res) =>
+    res.body.data.map((studyYear) => ({
+      name: `${studyYear.number}`,
+      title: studyYear.name,
+      id: studyYear.id,
+    }))
+  ),
+  to: $classes,
 })

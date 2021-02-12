@@ -21,6 +21,7 @@
       <BaseButton
         class="btn"
         yellow
+        @click="handleClick"
       >
         Сохранить и вернуться к списку
       </BaseButton>
@@ -37,6 +38,7 @@ import {
   $isPrerequisite,
   toggleIsPrerequisite,
   save,
+  redirectAfterSaveChanged,
 } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
@@ -51,6 +53,11 @@ export default Vue.extend({
   methods: {
     toggleIsPrerequisite,
     save,
+    redirectAfterSaveChanged,
+    handleClick() {
+      redirectAfterSaveChanged(true)
+      save()
+    },
   },
 })
 </script>
@@ -76,6 +83,7 @@ export default Vue.extend({
     @mixin flex-row-central;
     .switch {
       margin-right: 30px;
+      margin-top: 0px;
     }
     .btn {
       width: fit-content;

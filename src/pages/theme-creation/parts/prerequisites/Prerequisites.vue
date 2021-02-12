@@ -1,32 +1,14 @@
 <template>
   <div class="prerequisites-block">
-    <BaseDropdown
-      class="input dropdown"
-      :value="correctPlaceholder"
+    <FilterDropdown
       label="Пререквизиты темы"
       placeholder="Выберите пререквизиты"
+      :methods="prerequisiteModuleMethods"
+      :data="$prerequisites"
+      :store="{ $item, $itemsDropdown, $searchString }"
+      :selected-data="$selectedPrerequisites"
       :disabled="!$canSetPrerequisites"
-      @clear="clearField"
-      @input="(e) => prerequisiteSearchStringChanged(e)"
-    >
-      <template #default="{closeMenu}">
-        <div v-if="$prerequisitesList.length">
-          <SelectItem
-            v-for="(item, index) in $prerequisitesList"
-            :key="index"
-            :with-icon="showTick(item.id)"
-            @click="handleClick(item.id, item.title, closeMenu)"
-          >
-            {{ item.title }}
-          </SelectItem>
-        </div>
-        <div v-else>
-          <SelectItem @click="closeMenu">
-            Не найдено совпадений
-          </SelectItem>
-        </div>
-      </template>
-    </BaseDropdown>
+    />
     <div class="selected-prerequisite">
       <div
         v-for="(item, index) in $selectedPrerequisites"
@@ -37,7 +19,7 @@
         <p> {{ item.title }} </p>
         <div
           class="icon-wrapper"
-          @click="deletePrerequisite(item.id)"
+          @click="deletePrerequisite(item.name)"
         >
           <Icon
             type="close"
@@ -57,59 +39,36 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import PrerequisiteMenu from '@/pages/theme-creation/parts/prerequisites/PrerequisiteMenu.vue'
 import {
-  $prerequisitesList,
-  deletePrerequisite,
-  $prerequisite,
-  prerequisiteChanged,
-  $prerequisiteSearchString,
-  resetSearchString,
-  prerequisiteSearchStringChanged,
+  $prerequisites,
   $selectedPrerequisites,
-  setSelectedPrerequisite,
-  resetPrerequisite,
+  prerequisiteDropdownModule,
+  deletePrerequisite,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
 import { $canSetPrerequisites } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
     Icon,
     PrerequisiteMenu,
   },
   effector: {
-    $prerequisitesList,
-    $prerequisite,
-    $prerequisiteSearchString,
-    $selectedPrerequisites,
+    $prerequisites,
     $canSetPrerequisites,
+    $selectedPrerequisites,
+    ...prerequisiteDropdownModule.store,
   },
-  computed: {
-    correctPlaceholder() {
-      const name = this.$selectedPrerequisites.filter((el: any) => el.id === this.$prerequisite)
-      return name.length ? name[0].title : this.$prerequisiteSearchString
-    },
+  data() {
+    return {
+      prerequisiteModuleMethods: prerequisiteDropdownModule.methods,
+    }
   },
   methods: {
     deletePrerequisite,
-    prerequisiteChanged,
-    prerequisiteSearchStringChanged,
-    setSelectedPrerequisite,
-    handleClick(itemId: number, itemTitle: string, cb: any) {
-      prerequisiteChanged(itemId)
-      setSelectedPrerequisite({ id: itemId, title: itemTitle })
-      resetSearchString()
-      cb()
-    },
-    clearField() {
-      resetPrerequisite()
-      resetSearchString()
-    },
     showPrerequisiteMenu(itemId: number) {
       let currentComponent = ''
       Object.keys(this.$refs).forEach((el) => {
@@ -118,9 +77,6 @@ export default Vue.extend({
         if (el.includes(`menu-${itemId}`)) currentComponent = el
       })
       ;(this.$refs[currentComponent] as any)[0].$refs.tooltip.toggleTooltip()
-    },
-    showTick(itemId: number) {
-      return !!this.$selectedPrerequisites.find((el: any) => el.id === itemId)
     },
   },
 })

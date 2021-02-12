@@ -1,42 +1,34 @@
-import { createEvent, createStore, restore, sample } from 'effector-root'
-import { debounce } from 'patronum'
-import { SUBJECTS_DROPDOWN_VALUES } from '@/pages/theme-creation/parts/subjects/constants'
-import { SubjectDropdownType } from '@/pages/theme-creation/parts/subjects/types'
+import { attach, createEvent, createStore, forward } from 'effector-root'
+import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
+import { GetListQueryParams } from '@/features/api/types'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { DropdownItem } from '@/pages/common/types'
 
-export const resetSubject = createEvent<void>()
-export const subjectChanged = createEvent<null | number>()
-export const $subject = restore<null | number>(subjectChanged, null).reset(resetSubject)
-export const subjectSearchStringChanged = createEvent<string>()
-export const resetSearchString = createEvent<void>()
-export const $subjectSearchString = restore<string>(subjectSearchStringChanged, '').reset(
-  resetSearchString
-)
+export const subjectDropdownModule = createFilter()
 
-export const $subjectsDropdown = createStore<SubjectDropdownType[]>(SUBJECTS_DROPDOWN_VALUES)
-export const $_subjectsDropdown = createStore<SubjectDropdownType[]>(SUBJECTS_DROPDOWN_VALUES)
-
-const searchSubject = createEvent<string>()
-const restoreSubjects = createEvent<void>()
-
-const debounced = debounce({
-  source: $subjectSearchString,
-  timeout: 150,
+const getSubjects = attach({
+  effect: getSubjectsListFx,
+  mapParams: (params: GetListQueryParams) => params,
 })
 
-debounced.watch((str) => {
-  if ($subject && str.length) subjectChanged(null)
-  if (str.length) searchSubject(str)
-  else restoreSubjects()
+export const loadSubjects = createEvent<void>()
+export const $subjects = createStore<DropdownItem[]>([])
+
+forward({
+  from: loadSubjects,
+  to: getSubjects.prepend(() => ({})),
 })
 
-sample({
-  source: $_subjectsDropdown,
-  clock: searchSubject,
-  fn: (list, str) => list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
-  target: $subjectsDropdown,
-})
-sample({
-  source: $_subjectsDropdown,
-  clock: restoreSubjects,
-  target: $subjectsDropdown,
+forward({
+  from: getSubjects.doneData.map((res) =>
+    res.body.data.map((subject) => ({
+      name: `${subject.id}`,
+      title: subject.name,
+      author: subject.author,
+      color: subject.color,
+      icon: subject.icon,
+      is_mandatory: subject.is_mandatory,
+    }))
+  ),
+  to: $subjects,
 })

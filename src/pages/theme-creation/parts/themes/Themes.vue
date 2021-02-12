@@ -1,30 +1,13 @@
 <template>
   <div class="themes-block">
-    <BaseDropdown
-      class="input dropdown"
-      :value="correctPlaceholder"
+    <FilterDropdown
       label="Темы, к которым привязан пререквизит"
       placeholder="Выберите тему"
-      @clear="clearField"
-      @input="(e) => themeSearchStringChanged(e)"
-    >
-      <template #default="{closeMenu}">
-        <div v-if="$themesList.length">
-          <SelectItem
-            v-for="(item, index) in $themesList"
-            :key="index"
-            @click="handleClick(item.id, item.title, closeMenu)"
-          >
-            {{ item.title }}
-          </SelectItem>
-        </div>
-        <div v-else>
-          <SelectItem @click="closeMenu">
-            Не найдено совпадений
-          </SelectItem>
-        </div>
-      </template>
-    </BaseDropdown>
+      :methods="themeModuleMethods"
+      :data="$themes"
+      :store="{ $item, $itemsDropdown, $searchString }"
+      :selected-data="$selectedThemes"
+    />
     <div class="selected-themes">
       <div
         v-for="(item, index) in $selectedThemes"
@@ -34,7 +17,7 @@
         <p> {{ item.title }} </p>
         <div
           class="icon-wrapper"
-          @click="deleteTheme(item.id)"
+          @click="deleteTheme(item.name)"
         >
           <Icon
             type="close"
@@ -49,55 +32,32 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import {
-  $themesList,
   deleteTheme,
-  $theme,
-  themeChanged,
-  $themeSearchString,
-  resetSearchString,
-  themeSearchStringChanged,
+  $themes,
   $selectedThemes,
-  setSelectedTheme,
-  resetTheme,
+  themeDropdownModule,
 } from '@/pages/theme-creation/parts/themes/themes.model'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
     Icon,
   },
   effector: {
-    $themesList,
-    $theme,
-    $themeSearchString,
+    $themes,
+    ...themeDropdownModule.store,
     $selectedThemes,
   },
-  computed: {
-    correctPlaceholder() {
-      const name = this.$selectedThemes.filter((el: any) => el.id === this.$theme)
-      return name.length ? name[0].title : this.$themeSearchString
-    },
+  data() {
+    return {
+      themeModuleMethods: themeDropdownModule.methods,
+    }
   },
   methods: {
     deleteTheme,
-    themeChanged,
-    themeSearchStringChanged,
-    setSelectedTheme,
-    handleClick(itemId: number, itemTitle: string, cb: any) {
-      themeChanged(itemId)
-      setSelectedTheme({ id: itemId, title: itemTitle })
-      resetSearchString()
-      cb()
-    },
-    clearField() {
-      resetTheme()
-      resetSearchString()
-    },
   },
 })
 </script>

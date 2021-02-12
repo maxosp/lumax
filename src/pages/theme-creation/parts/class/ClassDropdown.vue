@@ -1,74 +1,41 @@
 <template>
-  <BaseDropdown
-    class="input dropdown"
-    :value="correctClassValue"
+  <FilterDropdown
+    v-if="$classes.length"
     label="Класс"
     placeholder="Выберите класс"
-    @input="(e) => classSearchStringChanged(e)"
-    @clear="clearField"
-  >
-    <template #default="{closeMenu}">
-      <div v-if="$classDropdown.length">
-        <SelectItem
-          v-for="(item, index) in $classDropdown"
-          :key="index"
-          :placeholder="item"
-          @click="handleClassClick(item, closeMenu)"
-        >
-          {{ item }}
-        </SelectItem>
-      </div>
-      <div v-else>
-        <SelectItem @click="closeMenu">
-          Не найдено совпадений
-        </SelectItem>
-      </div>
-    </template>
-  </BaseDropdown>
+    :methods="classModuleMethods"
+    :data="$classes"
+    :store="{ $item, $itemsDropdown, $searchString }"
+  />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $class,
-  classChanged,
-  $classDropdown,
-  $classSearchString,
-  classSearchStringChanged,
-  resetSearchString,
-  resetClass,
+  $classes,
+  classDropdownModule,
+  loadClasses,
 } from '@/pages/theme-creation/parts/class/class.model'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   effector: {
-    $class,
-    $classDropdown,
-    $classSearchString,
+    $classes,
+    ...classDropdownModule.store,
   },
-  computed: {
-    correctClassValue() {
-      return this.$class ? `${this.$class}` : this.$classSearchString
-    },
+  data() {
+    return {
+      classModuleMethods: classDropdownModule.methods,
+    }
   },
   methods: {
-    classChanged,
-    resetSearchString,
-    classSearchStringChanged,
-    handleClassClick(item: number, cb: any) {
-      classChanged(item)
-      resetSearchString()
-      cb()
-    },
-    clearField() {
-      resetClass()
-      resetSearchString()
-    },
+    loadClasses,
+  },
+  mounted() {
+    loadClasses()
   },
 })
 </script>

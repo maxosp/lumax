@@ -4,6 +4,7 @@
     :value="correctValue"
     :label="$props.label"
     :placeholder="$props.placeholder"
+    :disabled="disabled"
     @input="$props.methods.searchStringChanged"
     @clear="clear"
   >
@@ -12,7 +13,9 @@
         <SelectItem
           v-for="item in items"
           :key="item.name"
+          :with-icon="showTick(item.name)"
           :placeholder="item.title"
+
           @click="onSelectItem(item, closeMenu)"
         >
           {{ item.title }}
@@ -45,6 +48,8 @@ export default Vue.extend({
     data: { type: Array as PropType<DropdownItem[]>, default: [] },
     methods: { type: Object as PropType<FilterDropdownMethods>, required: true },
     store: { type: Object as PropType<FilterDropdownStore>, required: true },
+    disabled: { type: Boolean as PropType<boolean> },
+    selectedData: { type: Array as PropType<DropdownItem[]> },
   },
   computed: {
     correctValue() {
@@ -55,6 +60,13 @@ export default Vue.extend({
     },
     items() {
       return this.$props.store.$itemsDropdown
+    },
+  },
+  watch: {
+    data: {
+      handler(val, oldVal) {
+        if (oldVal.length === 0 && !!val.length) this.$props.methods.setItems(this.$props.data)
+      },
     },
   },
   methods: {
@@ -68,6 +80,9 @@ export default Vue.extend({
       this.$emit('item-changed', null)
       this.$props.methods.resetItem()
       this.$props.methods.resetSearchString()
+    },
+    showTick(id: string) {
+      return this.selectedData && !!this.selectedData.find((el: any) => el.name === id)
     },
   },
   mounted() {

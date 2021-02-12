@@ -1,78 +1,36 @@
 <template>
-  <BaseDropdown
-    class="input dropdown"
-    :value="correctPlaceholder"
+  <FilterDropdown
     label="Положение темы в таксономии"
     placeholder="Тема привязана к классу"
+    :methods="positionModuleMethods"
+    :data="$positions"
+    :store="{ $item, $itemsDropdown, $searchString }"
     :disabled="!$canSetThemePosition"
-    @input="(e) => positionSearchStringChanged(e)"
-    @clear="clearField"
-  >
-    <template #default="{closeMenu}">
-      <div v-if="$positionDropdown.length">
-        <SelectItem
-          v-for="(item, index) in $positionDropdown"
-          :key="index"
-          :sub-title="item.sub"
-          :with-icon="item.id === $position"
-          @click="handleClick(item.id, closeMenu)"
-        >
-          {{ item.title }}
-        </SelectItem>
-      </div>
-      <div v-else>
-        <SelectItem @click="closeMenu">
-          Не найдено совпадений
-        </SelectItem>
-      </div>
-    </template>
-  </BaseDropdown>
+  />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import { $canSetThemePosition } from '@/pages/theme-creation/theme-creation-page.model'
 import {
-  $positionDropdown,
-  $position,
-  positionChanged,
-  $positionSearchString,
-  resetSearchString,
-  positionSearchStringChanged,
-  resetPosition,
+  $positions,
+  positionDropdownModule,
 } from '@/pages/theme-creation/parts/position/position.model'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   effector: {
+    $positions,
     $canSetThemePosition,
-    $positionDropdown,
-    $position,
-    $positionSearchString,
+    ...positionDropdownModule.store,
   },
-  computed: {
-    correctPlaceholder() {
-      const name = this.$positionDropdown.filter((el) => el.id === this.$position)
-      return name.length ? name[0].title : this.$positionSearchString
-    },
-  },
-  methods: {
-    positionSearchStringChanged,
-    resetSearchString,
-    handleClick(item: number, cb: any) {
-      positionChanged(item)
-      resetSearchString()
-      cb()
-    },
-    clearField() {
-      resetPosition()
-      resetSearchString()
-    },
+  data() {
+    return {
+      positionModuleMethods: positionDropdownModule.methods,
+    }
   },
 })
 </script>
