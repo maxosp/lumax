@@ -9,7 +9,7 @@
       hide-on="mouseleave"
     >
       <template #activator>
-        <span>{{ $props.title }}</span>
+        <span>{{ `${$props.title.slice(0,30)}...` }}</span>
       </template>
       <template #tooltip-content>
         <span>{{
@@ -64,6 +64,8 @@ export default Vue.extend({
     font-weight: 600;
     line-height: 14px;
     padding: 15px;
+    max-width: 300px;
+    white-space: break-spaces;
   }
   & /deep/ .menu-wrap {
     min-width: max-content;

@@ -35,7 +35,9 @@ import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
+import { navigatePush } from '@/features/navigation'
 import ClickOutside from '@/features/directives/click-outside'
+import { update } from '@/pages/theme-creation/theme-creation-page.model'
 import { DropdownItem } from '@/pages/common/types'
 import { ContextMenuType } from '@/pages/themes/types'
 
@@ -82,10 +84,22 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
-      if (item.name === 'delete') {
-        this.$emit('onRemove', this.$props.id)
-      } else if (item.name === 'delete-all') {
-        this.$emit('onRemove', this.$props.selected)
+      switch (item.name) {
+        case 'create':
+          navigatePush({ name: 'theme-creation' })
+          break
+        case 'edit':
+          update(this.$props.id)
+          navigatePush({ name: 'theme-creation' })
+          break
+        case 'delete':
+          this.$emit('onRemove', this.$props.id)
+          break
+        case 'delete-all':
+          this.$emit('onRemove', this.$props.selected)
+          break
+        default:
+          break
       }
     },
     closeMenu() {

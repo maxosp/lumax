@@ -94,7 +94,7 @@ export const themesTableFields: TableField[] = [
   {
     name: 'actions',
     title: '',
-    dataClass: 'right aligned',
+    dataClass: 'actions-cell right aligned',
     width: '125px',
   },
 ]

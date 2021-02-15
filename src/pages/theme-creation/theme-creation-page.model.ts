@@ -212,10 +212,16 @@ const canGetThemesList = combine(
 
 forward({
   from: canGetThemesList,
-  to: getThemesList.prepend((data) => ({
-    study_year: data.study_year > 0 ? data.study_year : undefined,
-    subject: data.subject,
-  })),
+  to: getThemesList.prepend((data) => {
+    if (data.study_year > 0)
+      return {
+        study_year: data.study_year,
+        subject: data.subject,
+      }
+    return {
+      subject: data.subject,
+    }
+  }),
 })
 const $saveMethodFired = sample({
   source: $isPrerequisite,

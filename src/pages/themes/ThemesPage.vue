@@ -38,7 +38,7 @@
             @onRightClick="handleRightClick"
           />
         </template>
-        <template v-slot:actions="props">
+        <template id="one" v-slot:actions="props">
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
