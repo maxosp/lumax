@@ -12,6 +12,7 @@
         :is-open="isOpen"
         :error-message="errorMessage"
         :disabled="disabled"
+        :read-only-dropdown="readOnlyDropdown"
         @click="onActivatorClick"
         @clear="$emit('clear')"
         @input="(e) => $emit('input', e)"
@@ -50,6 +51,7 @@ export default Vue.extend({
     placeholder: { type: String as PropType<string>, required: true },
     label: { type: String as PropType<string>, required: true },
     disabled: { type: Boolean as PropType<boolean> },
+    readOnlyDropdown: { type: Boolean as PropType<boolean> },
   },
   data: () => ({
     isOpen: false,

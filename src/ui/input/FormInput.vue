@@ -11,6 +11,7 @@
           :max-length="maxLength"
           :placeholder="placeholder"
           :disabled="disabled"
+          :readonly="readOnlyDropdown"
           class="inner-input"
           :class="{'--error': hasError, '--disabled': disabled}"
           v-on="{
@@ -73,6 +74,7 @@ export default Vue.extend({
     errorMessage: { type: String as PropType<string>, default: '' },
     disabled: { type: Boolean as PropType<boolean> },
     clearBtn: { type: Boolean as PropType<boolean> },
+    readOnlyDropdown: { type: Boolean as PropType<boolean> },
   },
   model: {
     event: 'input',

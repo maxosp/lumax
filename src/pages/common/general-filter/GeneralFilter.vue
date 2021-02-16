@@ -15,6 +15,7 @@
         :placeholder="$searchField.title"
         :value="$searchField.title"
         label=""
+        read-only-dropdown
       >
         <template #default="{closeMenu}">
           <SelectItem

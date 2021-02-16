@@ -7,7 +7,8 @@
       :label="label"
       :disabled="disabled"
       class="input"
-      clear-btn
+      :clear-btn="!readOnlyDropdown"
+      :read-only-dropdown="readOnlyDropdown"
       @click="$emit('click')"
       @clear="$emit('clear')"
       @input="(e) => $emit('input', e)"
@@ -47,6 +48,7 @@ export default Vue.extend({
     errorMessage: { type: String as PropType<string>, default: '' },
     placeholder: { type: String as PropType<string>, required: true },
     label: { type: String as PropType<string>, required: true },
+    readOnlyDropdown: { type: Boolean as PropType<boolean> },
   },
 })
 </script>
