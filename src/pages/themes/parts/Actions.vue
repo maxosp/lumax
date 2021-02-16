@@ -45,7 +45,6 @@ import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { navigatePush } from '@/features/navigation'
-import { update } from '@/pages/theme-creation/theme-creation-page.model'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -76,13 +75,11 @@ export default Vue.extend({
     },
   },
   methods: {
-    update,
     onActivatorClick() {
       this.isOpen = !this.isOpen
     },
     selectItem() {
-      update(this.$props.rowData.id)
-      navigatePush({ name: 'theme-creation' })
+      navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
     },
     handleAction(item: SelectItemI) {
       if (item.name === 'delete') {

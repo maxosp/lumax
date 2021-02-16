@@ -1,7 +1,7 @@
 <template>
   <Card class="header">
     <div class="left">
-      <p class="title"> {{ $isPrerequisite ? 'Создание пререквизита' : 'Создание темы' }} </p>
+      <p class="title"> {{ correctTitle }} </p>
     </div>
     <div class="right">
       <BaseSwitch
@@ -39,6 +39,7 @@ import {
   toggleIsPrerequisite,
   save,
   redirectAfterSaveChanged,
+  $isEditingTheme,
 } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
@@ -49,6 +50,14 @@ export default Vue.extend({
   },
   effector: {
     $isPrerequisite,
+    $isEditingTheme,
+  },
+  computed: {
+    correctTitle() {
+      return `${this.$isEditingTheme ? 'Редактирование' : 'Создание'} ${
+        this.$isPrerequisite ? 'пререквизита' : 'темы'
+      }`
+    },
   },
   methods: {
     toggleIsPrerequisite,

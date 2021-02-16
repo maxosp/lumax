@@ -18,7 +18,9 @@ export const deletePrerequisite = createEvent<string>()
 
 forward({
   from: getThemeData.doneData.map((data) =>
-    data.body.prerequisites.map((elem) => ({ name: `${elem.id}`, title: elem.name }))
+    data.body.prerequisites
+      .filter((item) => item.is_prerequisite)
+      .map((elem) => ({ name: `${elem.id}`, title: elem.name }))
   ),
   to: $prerequisites,
 })

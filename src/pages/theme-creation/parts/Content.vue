@@ -17,7 +17,7 @@
           @input="themeTitleChanged"
         />
         <PositionDropdown :class="{'--error': $positionError}" />
-        <TeachingResources />
+        <TeachingResources v-if="$isEditingTheme" />
         <Prerequisites />
       </div>
       <div class="right">
@@ -74,6 +74,7 @@ import {
   $subjectError,
   $classError,
   $isPrerequisite,
+  $isEditingTheme,
 } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
@@ -96,6 +97,7 @@ export default Vue.extend({
     $subjectError,
     $classError,
     $isPrerequisite,
+    $isEditingTheme,
   },
   methods: {
     resetThemeTitle,

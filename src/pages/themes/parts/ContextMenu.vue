@@ -35,11 +35,10 @@ import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
-import { navigatePush } from '@/features/navigation'
 import ClickOutside from '@/features/directives/click-outside'
-import { update } from '@/pages/theme-creation/theme-creation-page.model'
 import { DropdownItem } from '@/pages/common/types'
 import { ContextMenuType } from '@/pages/themes/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -89,8 +88,7 @@ export default Vue.extend({
           navigatePush({ name: 'theme-creation' })
           break
         case 'edit':
-          update(this.$props.id)
-          navigatePush({ name: 'theme-creation' })
+          navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
           break
         case 'delete':
           this.$emit('onRemove', this.$props.id)

@@ -86,18 +86,19 @@ export default Vue.extend({
 .prerequisites-block {
   .selected-prerequisite {
     @mixin flex-row-central;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-top: 10px;
     margin-bottom: -10px;
     flex-wrap: wrap;
     .element {
       width: fit-content;
-      height: 30px;
-      padding: 0 10px;
+      min-height: 30px;
+      padding: 7px 10px;
       @mixin flex-row-central;
       background-color: var(--c-grey-8);
       border-radius: 6px;
       position: relative;
+      margin-bottom: 10px;
       p {
         font-weight: 300;
         line-height: 16px;
@@ -118,8 +119,8 @@ export default Vue.extend({
         right: 0;
       }
     }
-    .element {
-      margin-bottom: 10px;
+    .element:not(:last-child) {
+      margin-right: 10px;
     }
   }
 }

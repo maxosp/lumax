@@ -11,7 +11,9 @@ import Header from '@/pages/theme-creation/parts/Header.vue'
 import Content from '@/pages/theme-creation/parts/Content.vue'
 import {
   $formToSend,
+  clearFields,
   redirectAfterSaveChanged,
+  pareparePageForEditing,
 } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
@@ -23,9 +25,13 @@ export default Vue.extend({
   effector: {
     $formToSend,
   },
-  methods: { redirectAfterSaveChanged },
+  methods: { redirectAfterSaveChanged, clearFields, pareparePageForEditing },
+  mounted() {
+    if (this.$route.params.id) pareparePageForEditing(+this.$route.params.id)
+  },
   beforeDestroy() {
     redirectAfterSaveChanged(false)
+    clearFields()
   },
 })
 </script>

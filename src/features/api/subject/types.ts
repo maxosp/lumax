@@ -29,6 +29,7 @@ export type ThemeListItem = {
   name: string
   study_year: number
   subject: Subject
+  is_prerequisite: boolean
 }
 
 export type Theme = {
@@ -38,6 +39,7 @@ export type Theme = {
   creation_datetime: string
   update_datetime: string
   prerequisites: ThemeListItem[]
+  themes: ThemeListItem[]
   study_year: StudyYear
   subject: Subject
   prerequisites_ids: number[]
@@ -59,7 +61,7 @@ export type CreateThemeType = {
   subject_id: number
   themes_ids: number[]
   prerequisites_ids: number[]
-  parent_theme_id?: number
+  parent_theme_id?: number | null
 }
 
 export type GetThemesTreeQueryParams = {
