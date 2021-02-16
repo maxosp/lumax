@@ -44,7 +44,7 @@
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/themes/parts/themes-tree/parts/Chip.vue'
-import { TreeDataResponse } from '@/features/api/types'
+import { TreeData } from '@/features/api/types'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -53,7 +53,7 @@ export default Vue.extend({
     Chip,
   },
   props: {
-    node: { type: Object as PropType<TreeDataResponse> },
+    node: { type: Object as PropType<TreeData> },
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },

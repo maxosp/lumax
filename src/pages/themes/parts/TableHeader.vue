@@ -28,9 +28,6 @@ export default Vue.extend({
   },
   computed: {
     totalTitle() {
-      // @ts-ignore
-      if (this.$treeView) return ''
-
       let title = 'тем'
       const lastDigit = `${this.$props.total}`.slice(-1)
       if (lastDigit === '1') {

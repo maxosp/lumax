@@ -15,7 +15,7 @@
         />
       </template>
     </GeneralFilter>
-    <TableHeader :total="total" />
+    <TableHeader :total="$treeView ? $themesTreeTotal : total" />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
         ref="vuetable"
@@ -93,7 +93,12 @@ import ContextMenu from '@/pages/themes/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/themes/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/themes/parts/themes-tree/ThemesTree.vue'
-import { $treeView, loadTree, deleteTheme } from '@/pages/themes/themes-page.model'
+import {
+  $treeView,
+  loadTree,
+  $themesTreeTotal,
+  deleteTheme,
+} from '@/pages/themes/themes-page.model'
 import {
   toggleVisibility,
   $visibility,
@@ -131,6 +136,7 @@ export default Vue.extend({
     $token,
     $visibility,
     $treeView,
+    $themesTreeTotal,
   },
   data() {
     return {

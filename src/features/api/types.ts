@@ -25,9 +25,9 @@ export type VirtualFolder = {
   name: string
 }
 
-export type TreeDataResponse = {
+export type TreeData = {
   element_type: TreeElementType
-  leaves: TreeDataResponse[]
+  leaves: TreeData[]
   subject: Subject | null
   study_year: StudyYear | null
   theme: Theme | null
@@ -35,4 +35,9 @@ export type TreeDataResponse = {
   text_resource_count: string
   link_resource_count: string
   media_resource_count: string
+}
+
+export type TreeDataResponse = {
+  total: number
+  data: TreeData
 }
