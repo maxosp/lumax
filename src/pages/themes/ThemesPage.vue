@@ -250,6 +250,7 @@ export default Vue.extend({
 
 .table-container {
   overflow-x: auto;
+  background-color: #fff;
 }
 
 .table /deep/ tr:nth-child(2n) {
@@ -328,6 +329,76 @@ export default Vue.extend({
   color: var(--base-text-secondary);
   & > div + div {
     margin-top: 10px;
+  }
+}
+.vuetable-pagination {
+  display: flex;
+  justify-content: center;
+  background-color: transparent !important;
+  margin: 30px 0 !important;
+  position: sticky;
+  left: 0;
+  & ::v-deep .pagination {
+    min-height: unset;
+    border: unset;
+    box-shadow: unset;
+    background-color: transparent;
+    .item {
+      width: 30px;
+      min-width: unset;
+      height: 30px;
+      padding: 0;
+      border-radius: 7px !important;
+      border: 2px solid var(--base-text-primary);
+      background-color: transparent;
+      line-height: 18px;
+      font-weight: 600;
+      color: var(--base-text-primary);
+      @mixin flex-center;
+      &.active {
+        padding: 0;
+        border-top: 2px solid var(--base-text-primary);
+        color: #fff;
+        background-color: var(--base-text-primary);
+      }
+      &.disabled {
+        opacity: 0.5;
+      }
+      &::before {
+        display: none;
+      }
+      &.btn-nav {
+        @mixin flex-center;
+        .icon {
+          height: fit-content;
+          width: 10px;
+          opacity: 1;
+          margin: 0;
+        }
+        .icon.chevron {
+          content: url('~assets/icons/icons/chevron-single.svg');
+          position: relative;
+          left: 1px;
+        }
+        .icon.right.chevron {
+          transform: rotate(180deg);
+          left: -1px;
+        }
+        .icon.double {
+          content: url('~assets/icons/icons/chevron-double.svg');
+        }
+        .icon.double.right {
+          transform: rotate(180deg);
+        }
+        .icon::before,
+        .icon::after {
+          content: '';
+        }
+      }
+    }
+    .item:not(:last-child) {
+      margin-right: 10px;
+    }
   }
 }
 .reset-filters {
