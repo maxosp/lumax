@@ -144,7 +144,7 @@ export const $formToSend = combine({
 })
 
 export const $formToSendPrerequisite = combine({
-  id: -1,
+  id: DEFAULT_ID,
   name: $prerequisiteTitle,
   is_prerequisite: $isPrerequisite,
   subject_id: combine(

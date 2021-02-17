@@ -81,7 +81,7 @@ export default Vue.extend({
   &.success {
     background-color: var(--success-color);
   }
-  &.warning {
+  &.loading {
     background-color: var(--warning-color);
   }
   &.error {
