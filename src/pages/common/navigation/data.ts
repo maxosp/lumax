@@ -16,9 +16,9 @@ export const data: NavItem[] = [
     title: 'Банк заданий',
     icon: 'tasks',
     children: [
-      { title: 'Тестовые задания', link: '/' },
-      { title: 'Олимпиадные задания', link: '/' },
-      { title: 'Задания для уроков', link: '/' },
+      { title: 'Тестовые задания', link: 'test-task-creation' },
+      { title: 'Олимпиадные задания', link: 'olympiad-task-creation' },
+      { title: 'Задания для уроков', link: 'lesson-task-creation' },
     ],
   },
   {

@@ -4,8 +4,8 @@
   "license": "MIT",
   "description": "Letovo School - Administration panel",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/junto-team/Letovo-Admin-Frontend.git"
+    "type": "git",
+    "url": "https://github.com/junto-team/Letovo-Admin-Frontend.git"
   },
   "scripts": {
     "dev": "yarn makesvg && razzle start",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "ckeditor4-vue": "^1.3.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dayjs": "^1.8.33",

@@ -25,7 +25,6 @@ export default Vue.extend({
 
 <style scoped>
 button {
-  width: 100%;
   @mixin flex-center;
   border: none;
   padding: 0 30px;
