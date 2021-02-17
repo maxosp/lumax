@@ -7,8 +7,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Header from '@/pages/theme-creation/parts/Header.vue'
-import Content from '@/pages/theme-creation/parts/Content.vue'
+import ThemeHeader from '@/pages/theme-creation/parts/Header.vue'
+import ThemeContent from '@/pages/theme-creation/parts/Content.vue'
 import {
   $formToSend,
   clearFields,
@@ -18,12 +18,12 @@ import {
 
 export default Vue.extend({
   name: 'ThemeCreationPage',
-  components: {
-    ThemeHeader: Header,
-    ThemeContent: Content,
-  },
   effector: {
     $formToSend,
+  },
+  components: {
+    ThemeHeader,
+    ThemeContent,
   },
   methods: { redirectAfterSaveChanged, clearFields, pareparePageForEditing },
   mounted() {

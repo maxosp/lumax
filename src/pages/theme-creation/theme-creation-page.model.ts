@@ -88,6 +88,7 @@ forward({
   from: clearFields,
   to: [
     isPrerequisiteChanged.prepend(() => false),
+    isEditingThemeChanged.prepend(() => false),
     resetThemeTitle,
     resetPrerequisiteTitle,
     classDropdownModule.methods.resetItem,
@@ -270,15 +271,19 @@ condition({
 })
 
 sample({
-  source: $formToSend,
+  source: { $formToSend, $isEditingTheme },
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) {
-      $isEditingTheme.map((data) => (data ? updateTheme() : saveTheme()))
+    if (
+      obj.$formToSend.name.trim().length &&
+      obj.$formToSend.study_year_id &&
+      obj.$formToSend.subject_id
+    ) {
+      obj.$isEditingTheme ? updateTheme() : saveTheme()
     } else {
-      if (!obj.name.trim().length) setThemeTitleError(true)
-      if (!obj.study_year_id) setClassError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (!obj.$formToSend.name.trim().length) setThemeTitleError(true)
+      if (!obj.$formToSend.study_year_id) setClassError(true)
+      if (!obj.$formToSend.subject_id) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -291,8 +296,8 @@ sample({
 })
 
 sample({
-  clock: updatePrerequisite,
   source: $formToSendPrerequisite,
+  clock: updatePrerequisite,
   target: updatePrerequisiteFx,
 })
 
@@ -302,8 +307,8 @@ sample({
   target: saveThemeFx,
 })
 sample({
-  clock: savePrerequisite,
   source: $formToSendPrerequisite,
+  clock: savePrerequisite,
   target: savePrerequisiteFx,
 })
 

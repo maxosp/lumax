@@ -41,7 +41,7 @@
           @clear="resetPrerequisiteTitle"
           @input="prerequisiteTitleChanged"
         />
-        <TeachingResources />
+        <TeachingResources v-if="$isEditingTheme" />
         <Themes />
       </div>
       <div class="right">
