@@ -1,4 +1,5 @@
 import { StudyYear, Subject } from '@/features/api/subject/types'
+import { TreeData } from '@/features/api/types'
 import { User } from '@/features/api/user/types'
 
 export type DropdownItem = {
@@ -16,4 +17,5 @@ export type DropdownItem = {
   study_year?: StudyYear
   subject?: Subject
   created_by?: User
+  leaves?: TreeData[]
 }

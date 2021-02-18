@@ -9,17 +9,27 @@
     @clear="clear"
   >
     <template #default="{closeMenu}">
-      <div v-if="items.length">
+      <div v-if="items.length && !isRecursive">
         <SelectItem
           v-for="item in items"
           :key="item.name"
           :with-icon="showTick(item.name)"
           :placeholder="item.title"
-
           @click="onSelectItem(item, closeMenu)"
         >
           {{ item.title }}
         </SelectItem>
+      </div>
+      <div v-if="items.length && isRecursive">
+        <SelectItemRecursive
+          v-for="item in items"
+          :key="item.name"
+          :item="item"
+          :depth="0"
+          :with-icon="showTick(item.name)"
+          :placeholder="item.title"
+          :handle-click="(val) => handleClick(val, closeMenu)"
+        />
       </div>
       <div v-else>
         <SelectItem @click="closeMenu">
@@ -34,13 +44,16 @@
 import Vue, { PropType } from 'vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import SelectItemRecursive from '@/ui/select/parts/SelectItemRecursive.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { FilterDropdownMethods, FilterDropdownStore } from '@/pages/common/filter-dropdown/types'
+import { findItem } from '@/pages/common/filter-dropdown/lib'
 
 export default Vue.extend({
   components: {
     BaseDropdown,
     SelectItem,
+    SelectItemRecursive,
   },
   props: {
     label: { type: String, required: false, default: '' },
@@ -50,12 +63,14 @@ export default Vue.extend({
     store: { type: Object as PropType<FilterDropdownStore>, required: true },
     disabled: { type: Boolean as PropType<boolean> },
     selectedData: { type: Array as PropType<DropdownItem[]> },
+    isRecursive: { type: Boolean as PropType<boolean> },
   },
   computed: {
     correctValue() {
-      const currentItem = this.$props.store.$itemsDropdown.find(
-        (el: DropdownItem) => el.name === this.$props.store.$item
-      )
+      const arr = [...this.$props.store.$itemsDropdown]
+      const currentItem = this.isRecursive
+        ? findItem(this.$props.store.$item, arr)
+        : arr.find((el: DropdownItem) => el.name === this.$props.store.$item)
       return currentItem ? currentItem.title : this.$props.store.$searchString
     },
     items() {
@@ -84,6 +99,9 @@ export default Vue.extend({
     },
     showTick(id: string) {
       return this.selectedData && !!this.selectedData.find((el: any) => el.name === id)
+    },
+    handleClick(val: any, cb: any) {
+      this.onSelectItem(val, cb)
     },
   },
   mounted() {

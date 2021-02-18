@@ -6,6 +6,7 @@
     :data="$positions"
     :store="{ $item, $itemsDropdown, $searchString }"
     :disabled="!$canSetThemePosition"
+    is-recursive
   />
 </template>
 

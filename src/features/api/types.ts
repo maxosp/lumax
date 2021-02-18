@@ -9,6 +9,16 @@ export type GetListQueryParams = {
   is_prerequisite?: boolean
 }
 
+export type GetThemeTreeFilterListResponse = {
+  element_type: TreeElementType
+  leaves: TreeData[]
+  theme: {
+    id: number
+    name: string
+  }
+  virtual_folder: VirtualFolder | null
+}
+
 export type TableDataResponse<T> = {
   next_page_url: string
   prev_page_url: string

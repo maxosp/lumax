@@ -14,7 +14,6 @@ import {
   prerequisiteDropdownModule,
   resetSelectedPrerequisites,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
-import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { GetListQueryParams } from '@/features/api/types'
 import { createThemeFx } from '@/features/api/subject/create-theme'
@@ -23,11 +22,6 @@ import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/theme-creation/constants'
-
-const getThemesList = attach({
-  effect: getThemesListFx,
-  mapParams: (params: GetListQueryParams) => params,
-})
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -252,31 +246,18 @@ const canGetThemesList = combine(
 
 forward({
   from: canGetThemesList,
-  to: [
-    getThemesList.prepend((data) => {
-      if (data.study_year > 0)
-        return {
-          study_year: data.study_year,
-          subject: data.subject,
-        }
+  to: getThemesTreeList.prepend((data) => {
+    if (data.study_year > 0)
       return {
+        study_year: data.study_year,
         subject: data.subject,
       }
-    }),
-    getThemesTreeList.prepend((data) => {
-      if (data.study_year > 0)
-        return {
-          study_year: data.study_year,
-          subject: data.subject,
-        }
-      return {
-        subject: data.subject,
-      }
-    }),
-  ],
+    return {
+      subject: data.subject,
+    }
+  }),
 })
 
-getThemesTreeListFx.doneData.watch((data: any) => console.log(data))
 const $saveMethodFired = sample({
   source: $isPrerequisite,
   clock: save,
