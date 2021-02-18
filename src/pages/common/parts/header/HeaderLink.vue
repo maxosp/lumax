@@ -36,7 +36,7 @@ export default Vue.extend({
   padding: 0 20px;
   transition: background-color var(--base-animation);
   &:hover {
-    text-decoration: underline;
+    @mixin underline-text;
   }
 }
 .router-link-exact-active {

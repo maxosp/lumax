@@ -96,6 +96,6 @@ export default Vue.extend({
   cursor: pointer;
   color: var(--base-text-primary);
   line-height: 17px;
-  text-decoration: underline;
+  @mixin underline-text;
 }
 </style>

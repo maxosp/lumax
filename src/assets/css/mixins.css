@@ -20,3 +20,10 @@
   flex-direction: row;
   align-items: center;
 }
+
+@define-mixin underline-text {
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-decoration-skip: none;
+  -webkit-text-decoration-skip: none;
+}
