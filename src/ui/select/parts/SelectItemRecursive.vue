@@ -71,7 +71,7 @@ export default Vue.extend({
 
 <style scoped>
 * {
-  --side-padding: 20px;
+  --side-padding: 40px;
   --bg-color: transparent;
   --bg-hover-color: var(--c-grey-7);
   --bg-active-color: var(--bg-hover-color);
