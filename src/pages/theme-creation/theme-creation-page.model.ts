@@ -378,7 +378,6 @@ sample({
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
     if (obj.name.length && obj.subject_id !== null) {
-      console.log('HERE')
       $isEditingTheme.map((data) => (data ? updatePrerequisite() : savePrerequisite()))
     } else {
       if (obj.name.length === 0) setPrerequisiteTitleError(true)
