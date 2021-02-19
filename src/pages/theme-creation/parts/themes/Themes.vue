@@ -7,6 +7,7 @@
       :data="$themes"
       :store="{ $item, $itemsDropdown, $searchString }"
       :selected-data="$selectedThemes"
+      is-recursive
     />
     <div class="selected-themes">
       <div

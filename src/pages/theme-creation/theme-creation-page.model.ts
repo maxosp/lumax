@@ -42,7 +42,6 @@ const updateThemeDataFx = attach({
   effect: updateThemeFx,
   mapParams: (params: CreateThemeType) => params,
 })
-
 const updatePrerequisiteFx = attach({
   effect: updateThemeFx,
   mapParams: (params: Partial<CreateThemeType>) => params,
@@ -157,15 +156,17 @@ export const $formToSendPrerequisite = combine({
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
 
+$formToSendPrerequisite.watch((data) => console.log(data))
+
 forward({
   from: pareparePageForEditing,
   to: [isEditingThemeChanged.prepend(() => true), getThemeToUpdate],
 })
-
 sample({
   clock: getThemeToUpdate.done,
   source: getThemeFx.doneData.map((data) => data.body),
   fn: (theme: Theme) => {
+    console.log(theme)
     isPrerequisiteChanged(theme.is_prerequisite)
     themeTitleChanged(theme.name)
     prerequisiteTitleChanged(theme.name)
@@ -174,7 +175,7 @@ sample({
     const prerequisites = theme.prerequisites.map((el) => ({ name: `${el.id}`, title: el.name }))
     prerequisiteDropdownModule.methods.setItems(prerequisites)
     prerequisites.forEach((el) => prerequisiteDropdownModule.methods.itemChanged(el.name))
-    const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name }))
+    const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name, id: el.id }))
     themeDropdownModule.methods.setItems(themes)
     themes.forEach((el) => themeDropdownModule.methods.itemChanged(el.name))
     theme.parent_theme && positionDropdownModule.methods.itemChanged(`${theme.parent_theme.id}`)
@@ -290,6 +291,7 @@ sample({
   },
 })
 
+updateTheme.watch((data) => console.log(data))
 sample({
   clock: updateTheme,
   source: $formToSend,
@@ -376,6 +378,7 @@ sample({
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
     if (obj.name.length && obj.subject_id !== null) {
+      console.log('HERE')
       $isEditingTheme.map((data) => (data ? updatePrerequisite() : savePrerequisite()))
     } else {
       if (obj.name.length === 0) setPrerequisiteTitleError(true)

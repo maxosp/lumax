@@ -11,6 +11,7 @@ import ThemeHeader from '@/pages/theme-creation/parts/Header.vue'
 import ThemeContent from '@/pages/theme-creation/parts/Content.vue'
 import {
   $formToSend,
+  $formToSendPrerequisite,
   clearFields,
   redirectAfterSaveChanged,
   pareparePageForEditing,
@@ -20,6 +21,7 @@ export default Vue.extend({
   name: 'ThemeCreationPage',
   effector: {
     $formToSend,
+    $formToSendPrerequisite,
   },
   components: {
     ThemeHeader,

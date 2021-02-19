@@ -1,17 +1,4 @@
 <template>
-  <!-- <div
-    class="select-item"
-    :class="{active, '--sub': subTitle}"
-    v-on="$listeners"
-  >
-    <slot />
-    <Icon
-      v-if="withIcon"
-      type="tick"
-      size="16"
-      class="icon"
-    />
-  </div> -->
   <li
     class="select-item"
     :class="{active}"
@@ -21,13 +8,13 @@
       @click="handleClick(item)"
     >
       {{ item.title }}
+      <Icon
+        v-if="showTick"
+        type="tick"
+        size="16"
+        class="icon"
+      />
     </span>
-    <Icon
-      v-if="withIcon"
-      type="tick"
-      size="16"
-      class="icon"
-    />
     <ul
       v-if="item.leaves && item.leaves.length"
       class="sub-folders"
@@ -38,6 +25,8 @@
         :level="index"
         :depth="depth + 1"
         :item="child"
+        :selected-item-id="selectedItemId"
+        :selected-items-ids="selectedItemsIds"
         :handle-click="handleClick"
       />
     </ul>
@@ -61,12 +50,20 @@ export default Vue.extend({
     active: { type: Boolean as PropType<boolean> },
     withIcon: { type: Boolean as PropType<boolean> },
     depth: { type: Number as PropType<number> },
+    selectedItemId: { type: Number as PropType<number> },
+    selectedItemsIds: { type: Array as PropType<number[]> },
     handleClick: { type: Function as PropType<object> },
   },
   computed: {
     indent() {
       if (this.depth === 0) return { paddingLeft: '20px' }
       return { paddingLeft: `${this.depth * 50}px` }
+    },
+    showTick() {
+      if (this.selectedItemsIds && this.selectedItemsIds.find((el: any) => el.id === this.item.id))
+        return true
+      if (this.selectedItemId && this.selectedItemId === this.item.id) return true
+      return false
     },
   },
 })
@@ -90,24 +87,18 @@ li {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 51px;
-  padding: 0 var(--side-padding);
+  min-height: 51px;
+  padding: 16px var(--side-padding);
   font-size: 14px;
+  line-height: 18px;
   color: var(--text-color);
   background-color: var(--bg-color);
   border-bottom: 1px solid var(--border-color);
   transition: background-color var(--base-animation);
   cursor: pointer;
+  position: relative;
   &:hover {
     background-color: var(--bg-hover-color);
-  }
-
-  &.--sub {
-    padding-left: 60px;
-  }
-  .icon {
-    stroke: var(--base-text-primary);
-    fill: transparent;
   }
   &:after {
     position: absolute;
@@ -118,6 +109,14 @@ li {
     right: 0;
     background-color: transparent;
     transition: background-color var(--base-animation);
+  }
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+    stroke: var(--base-text-primary);
+    fill: transparent;
   }
 }
 </style>

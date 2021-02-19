@@ -26,7 +26,8 @@
           :key="item.name"
           :item="item"
           :depth="0"
-          :with-icon="showTick(item.name)"
+          :selected-item-id="+$props.store.$item"
+          :selected-items-ids="selectedData"
           :placeholder="item.title"
           :handle-click="(val) => handleClick(val, closeMenu)"
         />
@@ -67,6 +68,7 @@ export default Vue.extend({
   },
   computed: {
     correctValue() {
+      console.log(this.store.$item)
       const arr = [...this.$props.store.$itemsDropdown]
       const currentItem = this.isRecursive
         ? findItem(this.$props.store.$item, arr)
@@ -100,7 +102,7 @@ export default Vue.extend({
     showTick(id: string) {
       return this.selectedData && !!this.selectedData.find((el: any) => el.name === id)
     },
-    handleClick(val: any, cb: any) {
+    handleClick(val: DropdownItem, cb: any) {
       this.onSelectItem(val, cb)
     },
   },

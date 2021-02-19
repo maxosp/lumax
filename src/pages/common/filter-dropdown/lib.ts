@@ -1,6 +1,8 @@
+import { DropdownItem } from '@/pages/common/types'
+
 export function findItem(id: string, arr: any) {
   if (+id === 0) return
-  let res: any = arr.find((el: any) => {
+  let res: DropdownItem | undefined = arr.find((el: DropdownItem) => {
     return el.id === +id
   })
   for (let i = 0; i < arr.length && res === undefined; i++) {
