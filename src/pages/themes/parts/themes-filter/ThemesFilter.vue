@@ -242,7 +242,7 @@ export default Vue.extend({
 
 .borderless {
   border-color: transparent !important;
-  text-decoration: underline;
+  @mixin underline-text;
 }
 
 .close-icon {

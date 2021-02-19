@@ -1,7 +1,11 @@
 <template>
-  <div class="nav-item">
+  <div
+    class="nav-item"
+    @mouseenter="isHovered = true"
+    @mouseleave="isHovered =  false"
+  >
     <Icon
-      :type="`${isCollapsed ? $props.item.icon : `${$props.item.icon}-selected`}`"
+      :type="iconType"
       size="30"
     />
     <div v-if="$props.opened" class="content">
@@ -43,9 +47,16 @@ export default Vue.extend({
     item: { type: Object as PropType<NavItem>, required: true },
     opened: { type: Boolean, required: true },
   },
+  data: () => ({
+    isHovered: false,
+  }),
   computed: {
     isCollapsed(): boolean {
       return !this.$props.opened || this.$openedItem !== this.$props.item.id
+    },
+    iconType(): string {
+      if (this.isHovered) return `${this.$props.item.icon}-selected`
+      return this.isCollapsed ? this.$props.item.icon : `${this.$props.item.icon}-selected`
     },
   },
   methods: {
@@ -68,6 +79,9 @@ export default Vue.extend({
   display: flex;
   align-items: flex-start;
   white-space: nowrap;
+  &:hover .content .header .title {
+    color: var(--c-yellow-1);
+  }
 }
 
 .content {

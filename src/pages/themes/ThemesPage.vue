@@ -404,7 +404,7 @@ export default Vue.extend({
 .reset-filters {
   color: var(--base-text-primary);
   cursor: pointer;
-  text-decoration: underline;
+  @mixin underline-text;
 }
 
 .context-menu {
