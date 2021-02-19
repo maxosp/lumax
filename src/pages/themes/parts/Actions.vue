@@ -25,7 +25,6 @@
             :active="false"
             class="action-item"
             @click="() => {
-              selectItem()
               handleAction(item)
               closeMenu()
             }"
@@ -78,11 +77,10 @@ export default Vue.extend({
     onActivatorClick() {
       this.isOpen = !this.isOpen
     },
-    selectItem() {
-      navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
-    },
     handleAction(item: SelectItemI) {
-      if (item.name === 'delete') {
+      if (item.name === 'edit') {
+        navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
+      } else if (item.name === 'delete') {
         this.$emit('onRemove', this.$props.id)
       } else if (item.name === 'delete-all') {
         this.$emit('onRemove', this.$props.selected)
