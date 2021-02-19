@@ -1,10 +1,10 @@
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { createStore, forward } from 'effector'
-import { getThemeData } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
+import { createStore, forward, sample } from 'effector'
 import { $themes } from '@/pages/theme-creation/parts/themes/themes.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { DropdownItem } from '@/pages/common/types'
 import { GetThemeTreeFilterListResponse } from '@/features/api/types'
+import { getThemeData } from '../prerequisites/prerequisites.model'
 
 export const positionDropdownModule = createFilter()
 
@@ -23,9 +23,10 @@ function formateData(data: GetThemeTreeFilterListResponse[]): any {
     leaves: elem.leaves.length ? formateData(elem.leaves) : elem.leaves,
   }))
 }
-
-forward({
-  from: positionDropdownModule.methods.itemChanged.map((data) => +data!),
-  to: getThemeData,
+sample({
+  clock: positionDropdownModule.methods.itemChanged,
+  source: positionDropdownModule.store.$item,
+  fn: (item: string | null) => {
+    if (item) getThemeData(+item)
+  },
 })
-positionDropdownModule.methods.itemChanged.watch((data) => console.log(data))

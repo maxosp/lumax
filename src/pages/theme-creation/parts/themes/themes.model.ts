@@ -28,7 +28,6 @@ sample({
   },
   target: $selectedThemes,
 })
-themeDropdownModule.methods.itemChanged.watch((data) => console.log(data))
 
 sample({
   source: $selectedThemes,

@@ -33,7 +33,7 @@ sample({
   clock: prerequisiteDropdownModule.methods.itemChanged,
   fn: (list, element) => {
     const arr = list.selected.slice()
-    if (!arr.find((el: any) => el.name === element) || !arr.length) {
+    if (!arr.find(((el: any) => el.name === element) || !arr.length) && element) {
       const elem = list.all.find((full) => full.name === element)
       arr.push(elem!)
     }

@@ -32,7 +32,7 @@
           :handle-click="(val) => handleClick(val, closeMenu)"
         />
       </div>
-      <div v-else>
+      <div v-if="items.length === 0">
         <SelectItem @click="closeMenu">
           Не найдено совпадений
         </SelectItem>
@@ -68,7 +68,6 @@ export default Vue.extend({
   },
   computed: {
     correctValue() {
-      console.log(this.store.$item)
       const arr = [...this.$props.store.$itemsDropdown]
       const currentItem = this.isRecursive
         ? findItem(this.$props.store.$item, arr)

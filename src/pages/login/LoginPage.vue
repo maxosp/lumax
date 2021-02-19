@@ -88,6 +88,7 @@ form {
   }
   .btn {
     margin-top: 20px;
+    width: 100%;
   }
 }
 .logo {

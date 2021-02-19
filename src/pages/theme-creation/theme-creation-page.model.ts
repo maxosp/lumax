@@ -1,5 +1,5 @@
 import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
-import { condition, every } from 'patronum'
+import { condition, debounce, every } from 'patronum'
 import { subjectDropdownModule } from '@/pages/theme-creation/parts/subjects/subjects.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import {
@@ -135,7 +135,7 @@ export const $formToSend = combine({
     },
     ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
   ),
-  themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
+  themes_ids: $selectedThemes.map((arr) => arr.map((data) => data && +data.name)),
   prerequisites_ids: $selectedPrerequisites.map((arr) => arr.map((data) => +data.name)),
   parent_theme_id: positionDropdownModule.store.$item.map((data) =>
     data !== null ? +data! : null
@@ -156,8 +156,6 @@ export const $formToSendPrerequisite = combine({
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
 
-$formToSendPrerequisite.watch((data) => console.log(data))
-
 forward({
   from: pareparePageForEditing,
   to: [isEditingThemeChanged.prepend(() => true), getThemeToUpdate],
@@ -166,7 +164,6 @@ sample({
   clock: getThemeToUpdate.done,
   source: getThemeFx.doneData.map((data) => data.body),
   fn: (theme: Theme) => {
-    console.log(theme)
     isPrerequisiteChanged(theme.is_prerequisite)
     themeTitleChanged(theme.name)
     prerequisiteTitleChanged(theme.name)
@@ -177,7 +174,9 @@ sample({
     prerequisites.forEach((el) => prerequisiteDropdownModule.methods.itemChanged(el.name))
     const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name, id: el.id }))
     themeDropdownModule.methods.setItems(themes)
-    themes.forEach((el) => themeDropdownModule.methods.itemChanged(el.name))
+    themes.forEach((el) => {
+      themeDropdownModule.methods.itemChanged(el.name)
+    })
     theme.parent_theme && positionDropdownModule.methods.itemChanged(`${theme.parent_theme.id}`)
     $formToSend.map((el) => (el.id = theme.id))
     $formToSendPrerequisite.map((el) => (el.id = theme.id))
@@ -245,8 +244,13 @@ const canGetThemesList = combine(
   (cl, obj) => ({ study_year: +cl!, subject: +obj! })
 )
 
+const debounced = debounce({
+  source: canGetThemesList,
+  timeout: 150,
+})
+
 forward({
-  from: canGetThemesList,
+  from: debounced,
   to: getThemesTreeList.prepend((data) => {
     if (data.study_year > 0)
       return {
@@ -291,7 +295,6 @@ sample({
   },
 })
 
-updateTheme.watch((data) => console.log(data))
 sample({
   clock: updateTheme,
   source: $formToSend,
@@ -330,15 +333,6 @@ forward({
   to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
-forward({
-  from: updateThemeDataFx.doneData,
-  to: addToast.prepend(() => ({ type: 'success', message: 'Тема успешно обновлена!' })),
-})
-forward({
-  from: updatePrerequisiteFx.doneData,
-  to: addToast.prepend(() => ({ type: 'success', message: 'Пререквизит успешно обновлен!' })),
-})
-
 const $ifRedirect = sample({
   clock: [updateThemeDataFx, saveThemeFx, updatePrerequisiteFx, savePrerequisiteFx],
   source: $redirectAfterSave,
@@ -347,26 +341,51 @@ const $ifRedirect = sample({
 
 sample({
   source: $ifRedirect,
-  clock: [
-    saveThemeFx.doneData.map((data) => data.body.id),
-    savePrerequisiteFx.doneData.map((data) => data.body.id),
-  ],
+  clock: saveThemeFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
     addToast({ type: 'success', message: 'Тема успешно создана!' })
     if (ifRedirect) navigatePush({ name: 'themes' })
     else pareparePageForEditing(id)
   },
 })
+sample({
+  source: $ifRedirect,
+  clock: savePrerequisiteFx.doneData.map((data) => data.body.id),
+  fn: (ifRedirect: boolean, id: number) => {
+    addToast({ type: 'success', message: 'Пререквизит успешно создан!' })
+    if (ifRedirect) navigatePush({ name: 'themes' })
+    else pareparePageForEditing(id)
+  },
+})
 
 sample({
-  source: $formToSendPrerequisite,
+  source: $ifRedirect,
+  clock: updateThemeDataFx.doneData.map((data) => data.body.id),
+  fn: (ifRedirect: boolean, id: number) => {
+    addToast({ type: 'success', message: 'Тема успешно обновлена!' })
+    if (ifRedirect) navigatePush({ name: 'themes' })
+    else pareparePageForEditing(id)
+  },
+})
+sample({
+  source: $ifRedirect,
+  clock: updatePrerequisiteFx.doneData.map((data) => data.body.id),
+  fn: (ifRedirect: boolean, id: number) => {
+    addToast({ type: 'success', message: 'Пререквизит успешно обновлен!' })
+    if (ifRedirect) navigatePush({ name: 'themes' })
+    else pareparePageForEditing(id)
+  },
+})
+
+sample({
+  source: combine({ form: $formToSendPrerequisite, isEditing: $isEditingTheme }),
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
-    if (obj.name.length && obj.subject_id !== null) {
-      $isEditingTheme.map((data) => (data ? updatePrerequisite() : savePrerequisite()))
+    if (obj.form.name.length && obj.form.subject_id !== null) {
+      obj.isEditing ? updatePrerequisite() : savePrerequisite()
     } else {
-      if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (obj.subject_id === null) setSubjectError(true)
+      if (obj.form.name.length === 0) setPrerequisiteTitleError(true)
+      if (obj.form.subject_id === null) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
