@@ -91,16 +91,7 @@ export default Vue.extend({
   }
   .element.--underline {
     cursor: pointer;
-    position: relative;
-    &::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background-color: var(--base-text-primary);
-      left: 0;
-      bottom: 0;
-    }
+    @mixin underline-text;
     &:hover {
       cursor: pointer;
     }

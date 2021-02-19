@@ -340,37 +340,22 @@ forward({
 })
 
 const $ifRedirect = sample({
-  clock: [
-    updateThemeDataFx.done,
-    saveThemeFx.done,
-    updatePrerequisiteFx.done,
-    savePrerequisiteFx.done,
-  ],
+  clock: [updateThemeDataFx, saveThemeFx, updatePrerequisiteFx, savePrerequisiteFx],
   source: $redirectAfterSave,
   fn: (isRedirect: boolean) => isRedirect,
 })
 
-condition({
+sample({
   source: $ifRedirect,
-  if: (payload) => payload,
-  then: navigatePush.prepend(() => ({ name: 'themes' })),
-})
-
-forward({
-  from: saveThemeFx.doneData.map((data) => data.body.id),
-  to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Тема успешно создана!' })),
-    isEditingThemeChanged.prepend(() => true),
-    pareparePageForEditing,
+  clock: [
+    saveThemeFx.doneData.map((data) => data.body.id),
+    savePrerequisiteFx.doneData.map((data) => data.body.id),
   ],
-})
-forward({
-  from: savePrerequisiteFx.doneData.map((data) => data.body.id),
-  to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Пререквизит успешно создан!' })),
-    isEditingThemeChanged.prepend(() => true),
-    pareparePageForEditing,
-  ],
+  fn: (ifRedirect: boolean, id: number) => {
+    addToast({ type: 'success', message: 'Тема успешно создана!' })
+    if (ifRedirect) navigatePush({ name: 'themes' })
+    else pareparePageForEditing(id)
+  },
 })
 
 sample({

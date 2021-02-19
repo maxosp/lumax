@@ -16,7 +16,7 @@
           }
         }"
       >
-        <p>Скрыть переквизиты</p>
+        <p>Скрыть пререквизиты</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
@@ -28,7 +28,7 @@
           }
         }"
       >
-        <p>Отобразить только переквизиты</p>
+        <p>Отобразить только пререквизиты</p>
       </BaseSwitch>
     </div>
     <div class="section">
@@ -242,7 +242,7 @@ export default Vue.extend({
 
 .borderless {
   border-color: transparent !important;
-  text-decoration: underline;
+  @mixin underline-text;
 }
 
 .close-icon {

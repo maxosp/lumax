@@ -1,4 +1,4 @@
-import { attach, createEvent, forward, restore, split } from 'effector-root'
+import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
 import { getThemesTreeFx } from '@/features/api/subject/get-themes-tree'
 import { deleteThemeFx } from '@/features/api/subject/delete-theme'
 import { addToast } from '@/features/toasts/toasts.model'
@@ -37,10 +37,13 @@ forward({
 
 forward({
   from: deleteTheme.doneData,
-  to: loadTree.prepend(() => ({})),
+  to: [
+    loadTree.prepend(() => ({})),
+    addToast.prepend(() => ({ type: 'success', message: 'Тема была успешно удалена!' })),
+  ],
 })
 
-const { noInternet } = split(getThemesTree.failData, {
+const { noInternet } = split(merge([getThemesTree.failData, deleteTheme.failData]), {
   noInternet: ({ status }) => status === undefined,
 })
 

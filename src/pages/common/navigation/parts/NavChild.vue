@@ -32,6 +32,9 @@ export default Vue.extend({
   align-items: center;
   white-space: normal;
   color: var(--base-text-secondary);
+  &:hover {
+    @mixin underline-text;
+  }
 }
 .selected {
   font-weight: 600;

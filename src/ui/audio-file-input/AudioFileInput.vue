@@ -4,7 +4,7 @@
       <span>Перетащите аудиофайл в поле или выберите из&nbsp;
         <span ref="triggerText" class='trigger'>файлов</span>
       </span>
-      
+
     </div>
     <input
       ref="fileInput"
@@ -79,7 +79,7 @@ export default Vue.extend({
 }
 .trigger {
   cursor: pointer;
-  text-decoration: underline;
+  @mixin underline-text;
   color: var(--base-text-primary);
 }
 .file-input {
