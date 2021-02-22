@@ -14,3 +14,5 @@ export const $needDuplicate = restore(toggleNeedDuplicate, false)
 
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
+
+export const save = createEvent<void>()

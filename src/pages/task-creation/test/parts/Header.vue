@@ -3,7 +3,11 @@
     <div class='title'>Создание тестового задания</div>
     <div class='buttons'>
       <BaseButton class='btn' yellow>Сохранить и вернуться к списку</BaseButton>
-      <BaseButton class='btn' yellow>Сохранить</BaseButton>
+      <BaseButton
+        class='btn'
+        yellow
+        @click.prevent="save"
+      >Сохранить</BaseButton>
     </div>
   </div>
 </template>
@@ -11,10 +15,12 @@
 <script>
 import Vue from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
+import { save } from '@/pages/task-creation/test/task-creation-page.model.ts'
 
 export default Vue.extend({
   name: 'TaskHeader',
   components: { BaseButton },
+  methods: { save },
 })
 </script>
 
