@@ -21,7 +21,10 @@ forward({
 
 forward({
   from: getAuthors.doneData.map((res) =>
-    res.body.data.map((user) => ({ name: `${user.id}`, title: user.email }))
+    res.body.data.map((user) => ({
+      name: `${user.id}`,
+      title: `${user.first_name} ${user.last_name}`,
+    }))
   ),
   to: $authors,
 })

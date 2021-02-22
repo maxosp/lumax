@@ -218,10 +218,11 @@ export default Vue.extend({
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+      const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.showContextMenu = true
       this.contextMenuType = type
-      this.contextMenuStyles = { top: `${event.y}px`, left: `${event.x + 120}px` }
+      this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
     },
     hideContextMenu() {

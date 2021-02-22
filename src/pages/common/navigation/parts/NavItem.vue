@@ -79,6 +79,7 @@ export default Vue.extend({
   display: flex;
   align-items: flex-start;
   white-space: nowrap;
+  cursor: pointer;
   &:hover .content .header .title {
     color: var(--c-yellow-1);
   }
