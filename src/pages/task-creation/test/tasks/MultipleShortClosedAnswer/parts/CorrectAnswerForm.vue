@@ -67,7 +67,7 @@
       </div>
     </div>
     <div class="add-question" @click="addQuestion">
-      <BaseButton>Добавить&nbsp;вопрос</BaseButton>
+      <BaseButton>Добавить вопрос</BaseButton>
     </div>
   </div>
 </template>
