@@ -145,7 +145,6 @@ label {
   margin-bottom: 5px;
   pointer-events: none;
   font-weight: 600;
-  line-height: 17px;
   color: #000;
 }
 .base-input-wrap ::v-deep .menu-wrap {

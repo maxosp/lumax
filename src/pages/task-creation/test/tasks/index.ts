@@ -10,5 +10,5 @@ export { default as MovingImagesTextInputAnswer } from './MovingImagesTextInputA
 export { default as MultipleChoiceOneAnswer } from './MultipleChoiceOneAnswer.vue'
 export { default as MultipleChoiceOneOrManyAnswers } from './MultipleChoiceOneOrManyAnswers.vue'
 export { default as MultipleListTextAnswer } from './MultipleListTextAnswer.vue'
-export { default as MultipleShortClosedAnswer } from './MultipleShortClosedAnswer.vue'
+export { default as MultipleShortClosedAnswer } from './MultipleShortClosedAnswer/MultipleShortClosedAnswer.vue'
 export { default as ShortClosedAnswer } from './ShortClosedAnswer/ShortClosedAnswer.vue'

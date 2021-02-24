@@ -20,7 +20,6 @@
       <AudioFiles />
     </div>
     <div class='field'>
-      <span class="label">Правильный ответ</span>
       <CorrectAnswerForm />
     </div>
     <div class='field'>
@@ -37,9 +36,9 @@
 import Vue from 'vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
-import AudioFiles from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/AudioFiles.vue'
-import CorrectAnswerForm from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/CorrectAnswerForm.vue'
-import LanguagesDropdown from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/LanguagesDropdown.vue'
+import AudioFiles from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/AudioFiles.vue'
+import CorrectAnswerForm from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/CorrectAnswerForm.vue'
+import LanguagesDropdown from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/LanguagesDropdown.vue'
 import {
   $wording,
   setWording,
@@ -50,10 +49,10 @@ import {
   setAnswerExample,
   $language,
   setLanguage,
-} from '@/pages/task-creation/test/tasks/ShortClosedAnswer/short-closed-answer.model'
+} from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/multiple-short-closed-answer.model'
 
 export default Vue.extend({
-  name: 'ShortClosedAnswer',
+  name: 'MultipleShortClosedAnswer',
   components: {
     BaseTextarea,
     Wysiwyg,

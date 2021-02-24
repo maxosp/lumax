@@ -1,10 +1,11 @@
 import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/constants'
+import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, CorrectAnswerInput } from '@/pages/task-creation/test/tasks/types'
+import { AudioFile, QuestionAnswers } from '@/pages/task-creation/test/tasks/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -22,11 +23,16 @@ export const $audioFiles = restore(setAudioFiles, [])
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '')
 
-export const setCorrectAnswerInputs = createEvent<CorrectAnswerInput[]>()
-export const $correctAnswerInputs = restore(setCorrectAnswerInputs, [{ id: 0, value: '' }])
+export const setQuestionsAnswers = createEvent<QuestionAnswers[]>()
+export const $questionsAnswers = restore(setQuestionsAnswers, [
+  { id: getRandomId(), question: '', answers: [{ id: getRandomId(), value: '', mark: '' }] },
+])
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
+
+export const toggleMarksEnabling = createEvent<boolean>()
+export const $makrsEnabled = restore(toggleMarksEnabling, false)
 
 export const uploadAudioFiles = createEvent<FileList>()
 
