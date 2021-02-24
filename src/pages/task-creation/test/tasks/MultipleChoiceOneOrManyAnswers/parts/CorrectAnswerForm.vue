@@ -28,6 +28,14 @@
           @change="handleIsCorrectChange({ id: qa.id })"
         />
       </div> 
+      <FormInput
+        v-if="$makrsEnabled"
+        :label="idx === 0 ? 'Баллы' : ''"
+        :value="qa.mark"
+        placeholder="Баллов"
+        class="answer-mark"
+        @input="(mark) => handleMarkChange({ questionId: qa.id, mark })"
+      />
       <div
         v-if="$questionsAnswers.length > 1"
         :class="{ transparent: true, 'icon-btn': true, 'first-icon': idx === 0 }"
@@ -161,10 +169,14 @@ export default Vue.extend({
   flex-grow: 1;
 }
 
+.answer-mark,
 .icon-btn {
   margin-top: 5px;
   max-width: 150px;
   margin-left: 10px;
+}
+
+.icon-btn {
   cursor: pointer;
   width: 46px;
   height: 46px;
