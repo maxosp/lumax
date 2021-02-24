@@ -24,7 +24,7 @@
         <div v-if="idx === 0" class="checkbox-label">Правильный ответ</div>
         <BaseCheckbox
           :value="qa.isCorrect"
-          class="checkbox"
+          :class="{ checkbox: true, 'first-checkbox': idx === 0 }"
           @change="handleIsCorrectChange({ id: qa.id })"
         />
       </div> 
@@ -134,8 +134,6 @@ export default Vue.extend({
 
 .question-answers {
   display: flex;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--c-grey-11);
 
   & + .question-answers {
     margin-top: 10px;
@@ -143,21 +141,27 @@ export default Vue.extend({
 }
 
 .correct-checkbox {
-  min-width: 131px;
+  max-width: 40px;
   display: flex;
   flex-direction: column;
   margin-left: 20px;
 }
 
 .checkbox-label {
+  position: absolute;
+  width: 132px;
   color: #000;
   font-weight: 600;
   line-height: 17px;
   transform: translate(-83%, 0);
 }
 
+.first-checkbox {
+  margin-top: 30px !important;
+}
+
 .checkbox {
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .toggler {
@@ -169,14 +173,15 @@ export default Vue.extend({
   flex-grow: 1;
 }
 
-.answer-mark,
-.icon-btn {
-  margin-top: 5px;
+.answer-mark {
   max-width: 150px;
   margin-left: 10px;
 }
 
 .icon-btn {
+  margin-top: 5px;
+  max-width: 150px;
+  margin-left: 10px;
   cursor: pointer;
   width: 46px;
   height: 46px;
@@ -203,6 +208,9 @@ export default Vue.extend({
 }
 
 .add-question {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--c-grey-11);
   margin-top: 20px;
   display: flex;
   justify-content: center;
