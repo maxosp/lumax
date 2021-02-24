@@ -23,7 +23,7 @@
 import Vue from 'vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/parts/constants'
 
 export default Vue.extend({
   name: 'LanguagesDropdown',

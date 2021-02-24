@@ -66,7 +66,7 @@ import {
   $audioFiles,
   setAudioFiles,
   uploadAudioFiles,
-} from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/multiple-short-closed-answer.model'
+} from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/multiple-choice-one-or-many-answers.model'
 
 export default Vue.extend({
   name: 'AudioFiles',

@@ -5,14 +5,25 @@ export type AudioFile = {
   limit: number
 } & UploadMediaResponse
 
-export type CorrectAnswerInput = {
+export type ShortClosedAnswer = {
   id: number
   value: string
-  mark?: string
 }
 
-export type QuestionAnswers = {
+export type MultipleShortClosedAnswer = {
+  mark?: string
+} & ShortClosedAnswer
+
+export type MultipleShortClosedQuestion = {
   id: number
   question: string
-  answers: CorrectAnswerInput[]
+  answers: MultipleShortClosedAnswer[]
+}
+
+export type MultipleChoiceOneOrManyQuestion = {
+  id: number
+  question: string
+  answer: string
+  mark?: string
+  isCorrect: boolean
 }

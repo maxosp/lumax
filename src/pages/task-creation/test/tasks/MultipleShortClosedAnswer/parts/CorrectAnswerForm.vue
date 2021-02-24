@@ -17,7 +17,7 @@
         :label="idx === 0 ? 'Вопрос' : ''"
         :value="qa.question"
         placeholder="Введите вопрос"
-        :class="{ textarea: true, empty: !qa.question }"
+        class="textarea"
         @input="(question) => handleQuestionChange({ id: qa.id, question })"
       />
       <div class="answers">
@@ -114,7 +114,6 @@ export default Vue.extend({
         qa.id === questionId
           ? {
             ...qa,
-            id,
             answers: qa.answers.map((ans) => (ans.id === id ? { ...ans, value } : ans)),
           }
           : qa

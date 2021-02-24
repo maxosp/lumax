@@ -4,7 +4,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/constants'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, CorrectAnswerInput } from '@/pages/task-creation/test/tasks/types'
+import { AudioFile, ShortClosedAnswer } from '@/pages/task-creation/test/tasks/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -22,7 +22,7 @@ export const $audioFiles = restore(setAudioFiles, [])
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '')
 
-export const setCorrectAnswerInputs = createEvent<CorrectAnswerInput[]>()
+export const setCorrectAnswerInputs = createEvent<ShortClosedAnswer[]>()
 export const $correctAnswerInputs = restore(setCorrectAnswerInputs, [{ id: 0, value: '' }])
 
 export const setLanguage = createEvent<DropdownItem>()

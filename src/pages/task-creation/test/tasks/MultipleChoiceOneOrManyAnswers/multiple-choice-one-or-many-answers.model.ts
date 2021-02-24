@@ -5,7 +5,7 @@ import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleShortClo
 import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, MultipleShortClosedQuestion } from '@/pages/task-creation/test/tasks/types'
+import { AudioFile, MultipleChoiceOneOrManyQuestion } from '@/pages/task-creation/test/tasks/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -23,9 +23,9 @@ export const $audioFiles = restore(setAudioFiles, [])
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '')
 
-export const setQuestionsAnswers = createEvent<MultipleShortClosedQuestion[]>()
+export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyQuestion[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', answers: [{ id: getRandomId(), value: '', mark: '' }] },
+  { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: false },
 ])
 
 export const setLanguage = createEvent<DropdownItem>()
