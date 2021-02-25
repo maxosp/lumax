@@ -1,7 +1,7 @@
 import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleChoiceOneAnswer/parts/constants'
 import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
@@ -25,7 +25,7 @@ export const $answerExample = restore(setAnswerExample, '')
 
 export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyQuestion[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: false },
+  { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: true },
 ])
 
 export const setLanguage = createEvent<DropdownItem>()
