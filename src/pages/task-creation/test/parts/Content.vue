@@ -44,7 +44,7 @@ import {
   setTaskType,
 } from '@/pages/task-creation/test/task-creation-page.model'
 import * as tasks from '@/pages/task-creation/test/tasks'
-import { mapTaskTypeToComponent } from '@/pages/task-creation/test/parts/task-types-dropdown/constants.ts'
+import { mapTaskTypeToComponent } from '@/pages/task-creation/test/parts/task-types-dropdown/constants'
 
 export default Vue.extend({
   name: 'TaskContent',

@@ -18,7 +18,7 @@ import PageHeader from '@/pages/common/PageHeader.vue'
 import PageFooter from '@/pages/common/PageFooter.vue'
 import ModalLogout from '@/pages/common/modal-logout/ModalLogout.vue'
 import Navigation from '@/pages/common/navigation/Navigation.vue'
-import { $isOpened } from '@/pages/common/navigation/navigation.model.ts'
+import { $isOpened } from '@/pages/common/navigation/navigation.model'
 
 export default Vue.extend({
   name: 'DashboardLayout',

@@ -16,7 +16,7 @@ import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   taskTypesDropdownModule,
   $taskTypes,
-} from '@/pages/task-creation/test/parts/task-types-dropdown/task-types-dropdown.model.ts'
+} from '@/pages/task-creation/test/parts/task-types-dropdown/task-types-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

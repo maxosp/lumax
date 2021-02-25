@@ -52,7 +52,7 @@ import {
   $labels,
   $selectedLabels,
   setSelectedLabels,
-} from '@/pages/task-creation/test/parts/labels-dropdown/labels-dropdown.model.ts'
+} from '@/pages/task-creation/test/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
@@ -68,9 +68,9 @@ export default Vue.extend({
   methods: {
     loadLabels,
     onSelectItem(item: DropdownItem, cb: any) {
-      const existedItem = this.$selectedLabels.find((label) => label.name === item.name)
+      const existedItem = this.$selectedLabels.find((label: DropdownItem) => label.name === item.name)
       if (existedItem) {
-        const labels = this.$selectedLabels.filter((label) => label.name !== item.name)
+        const labels = this.$selectedLabels.filter((label: DropdownItem) => label.name !== item.name)
         setSelectedLabels(labels)
       } else {
         setSelectedLabels([item, ...this.$selectedLabels])
@@ -78,7 +78,7 @@ export default Vue.extend({
       cb()
     },
     onRemoveItem(item: DropdownItem) {
-      const labels = this.$selectedLabels.filter((label) => label.name !== item.name)
+      const labels = this.$selectedLabels.filter((label: DropdownItem) => label.name !== item.name)
       setSelectedLabels(labels)
     },
     clear() {

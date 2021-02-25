@@ -52,7 +52,7 @@ import {
   $tags,
   $selectedTags,
   setSelectedTags,
-} from '@/pages/task-creation/olympiad/parts/tags-dropdown/tags-dropdown.model.ts'
+} from '@/pages/task-creation/olympiad/parts/tags-dropdown/tags-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
@@ -68,9 +68,9 @@ export default Vue.extend({
   methods: {
     loadTags,
     onSelectItem(item: DropdownItem, cb: any) {
-      const existedItem = this.$selectedTags.find((tag) => tag.name === item.name)
+      const existedItem = this.$selectedTags.find((tag: DropdownItem) => tag.name === item.name)
       if (existedItem) {
-        const tags = this.$selectedTags.filter((tag) => tag.name !== item.name)
+        const tags = this.$selectedTags.filter((tag: DropdownItem) => tag.name !== item.name)
         setSelectedTags(tags)
       } else {
         setSelectedTags([item, ...this.$selectedTags])
@@ -78,7 +78,7 @@ export default Vue.extend({
       cb()
     },
     onRemoveItem(item: DropdownItem) {
-      const tags = this.$selectedTags.filter((tag) => tag.name !== item.name)
+      const tags = this.$selectedTags.filter((tag: DropdownItem) => tag.name !== item.name)
       setSelectedTags(tags)
     },
     clear() {

@@ -52,7 +52,7 @@ import {
   $searchField,
   searchFieldChanged,
   reset,
-} from '@/pages/common/general-filter/general-filter.model.ts'
+} from '@/pages/common/general-filter/general-filter.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

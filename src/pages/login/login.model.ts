@@ -7,7 +7,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { createEffectorField } from '@/lib/effector/field-generator'
 import { Response } from '@/lib/request'
 import { isEmailValid } from '@/lib/validators/email'
-import { attach, combine, createEvent, forward, guard, sample, split } from 'effector'
+import { attach, combine, createEvent, forward, guard, sample, split } from 'effector-root'
 import { every } from 'patronum'
 
 const loadCurrentSessionFx = attach({

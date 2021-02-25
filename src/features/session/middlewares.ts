@@ -1,6 +1,6 @@
 import { navigateReplace } from '@/features/navigation'
 import { $isAuthed } from '@/features/session/index'
-import { createEffect, createEvent } from 'effector'
+import { createEffect, createEvent } from 'effector-root'
 import { condition } from 'patronum'
 import { NavigationGuard } from 'vue-router/types/router'
 

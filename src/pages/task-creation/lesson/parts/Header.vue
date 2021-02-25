@@ -29,7 +29,7 @@ export default Vue.extend({
   margin-bottom: 20px;
 }
 .title {
-  color: var(--baset-text-primary);
+  color: var(--base-text-primary);
   font-weight: bold;
   font-size: 20px;
   line-height: 18px;

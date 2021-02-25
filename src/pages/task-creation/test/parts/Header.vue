@@ -15,7 +15,7 @@
 <script>
 import Vue from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import { save } from '@/pages/task-creation/test/task-creation-page.model.ts'
+import { save } from '@/pages/task-creation/test/task-creation-page.model'
 
 export default Vue.extend({
   name: 'TaskHeader',
@@ -35,7 +35,7 @@ export default Vue.extend({
   margin-bottom: 20px;
 }
 .title {
-  color: var(--baset-text-primary);
+  color: var(--base-text-primary);
   font-weight: bold;
   font-size: 20px;
   line-height: 18px;

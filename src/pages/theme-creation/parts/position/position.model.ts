@@ -1,5 +1,5 @@
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { createStore, forward, sample } from 'effector'
+import { createStore, forward, sample } from 'effector-root'
 import { $themes } from '@/pages/theme-creation/parts/themes/themes.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { DropdownItem } from '@/pages/common/types'

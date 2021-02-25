@@ -48,7 +48,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import {
   $correctAnswerInputs,
   setCorrectAnswerInputs,
-} from '@/pages/task-creation/test/tasks/ShortClosedAnswer/short-closed-answer.model.ts'
+} from '@/pages/task-creation/test/tasks/ShortClosedAnswer/short-closed-answer.model'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',

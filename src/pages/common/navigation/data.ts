@@ -1,4 +1,4 @@
-import { NavItem } from '@/pages/common/navigation/types.ts'
+import { NavItem } from '@/pages/common/navigation/types'
 
 export const data: NavItem[] = [
   {

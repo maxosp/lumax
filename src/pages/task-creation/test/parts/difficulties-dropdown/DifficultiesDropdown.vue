@@ -16,7 +16,7 @@ import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   difficultiesDropdownModule,
   $difficulties,
-} from '@/pages/task-creation/test/parts/difficulties-dropdown/difficulties-dropdown.model.ts'
+} from '@/pages/task-creation/test/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

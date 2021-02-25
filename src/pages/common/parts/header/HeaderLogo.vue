@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { $isOpened } from '@/pages/common/navigation/navigation.model.ts'
+import { $isOpened } from '@/pages/common/navigation/navigation.model'
 
 export default Vue.extend({
   name: 'HeaderLogo',

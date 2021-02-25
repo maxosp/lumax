@@ -34,7 +34,7 @@
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import NavChild from '@/pages/common/navigation/parts/NavChild.vue'
-import { $openedItem, changeOpenedItem } from '@/pages/common/navigation/navigation.model.ts'
+import { $openedItem, changeOpenedItem } from '@/pages/common/navigation/navigation.model'
 import { NavItem } from '@/pages/common/navigation/types'
 
 export default Vue.extend({

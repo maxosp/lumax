@@ -1,7 +1,7 @@
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { findItem } from '@/pages/common/filter-dropdown/lib'
 import { DropdownItem } from '@/pages/common/types'
-import { createEvent, createStore, forward, restore, sample } from 'effector'
+import { createEvent, createStore, forward, restore, sample } from 'effector-root'
 import { subjectDropdownModule } from '@/pages/theme-creation/parts/subjects/subjects.model'
 
 export const themeDropdownModule = createFilter()
