@@ -29,6 +29,7 @@
         </template>
       </BaseDropdown>
       <Icon
+        v-if="isShowFilter"
         id="filter-icon"
         class="filter-settings"
         type="filter-settings"
@@ -68,6 +69,7 @@ export default Vue.extend({
   },
   props: {
     searchFields: { type: Array as PropType<DropdownItem[]>, required: true },
+    isShowFilter: { type: Boolean, default: true },
   },
   methods: {
     searchStringChanged,
@@ -105,7 +107,7 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 5px 0 20px;
   background-color: #fff;
   border-radius: 7px;
   margin-bottom: 10px;
@@ -139,7 +141,6 @@ export default Vue.extend({
   align-items: center;
 }
 .dropdown {
-  margin-right: 20px;
   & /deep/ .label {
     display: none;
   }
@@ -163,5 +164,7 @@ export default Vue.extend({
 
 .filter-settings {
   cursor: pointer;
+  margin-left: 20px;
+  margin-right: 15px;
 }
 </style>

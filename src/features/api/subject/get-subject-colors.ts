@@ -1,14 +1,11 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
 import { GetListQueryParams, TableDataResponse } from '@/features/api/types'
-import { SubjectGrid } from '@/features/api/subject/types'
+import { Icon } from '@/features/api/subject/types'
 
-export const getSubjectsListFx = createApiEffect<
-  GetListQueryParams,
-  TableDataResponse<SubjectGrid[]>
->({
+export const getColorsListFx = createApiEffect<GetListQueryParams, TableDataResponse<Icon[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/subjects/list/',
+    url: '/api/subject/subject-colors/',
     query,
   }),
 })

@@ -1,7 +1,7 @@
 import { RouteConfig } from 'vue-router'
 import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
 import LoginLayout from '@/layouts/LoginLayout.vue'
-import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
 import ThemesPage from '@/pages/themes/ThemesPage.vue'
@@ -9,6 +9,8 @@ import ThemeCreationPage from '@/pages/theme-creation/ThemeCreationPage.vue'
 import LessonTaskCreationPage from '@/pages/task-creation/lesson/TaskCreationPage.vue'
 import OlympiadTaskCreationPage from '@/pages/task-creation/olympiad/TaskCreationPage.vue'
 import TestTaskCreationPage from '@/pages/task-creation/test/TaskCreationPage.vue'
+import subjectRoutes from '@/pages/subjects/subjects-routes'
+// import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
 
 export const routes: RouteConfig[] = [
   {
@@ -29,7 +31,7 @@ export const routes: RouteConfig[] = [
   },
   {
     path: '',
-    component: DefaultLayout,
+    component: DashboardLayout,
     redirect: { name: 'home' },
     beforeEnter: checkUserAuthedMiddleware,
     children: [
@@ -81,6 +83,7 @@ export const routes: RouteConfig[] = [
           title: 'Создание задания для уроков - Школа Летово',
         },
       },
+      ...subjectRoutes,
       { name: 'default-route', path: '*', redirect: { name: 'home' } },
     ],
   },

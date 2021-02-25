@@ -95,7 +95,7 @@ export const data: NavItem[] = [
     icon: 'folder',
     children: [
       { title: 'Темы', link: 'themes' },
-      { title: 'Предметы', link: '/' },
+      { title: 'Предметы', link: 'subject-list' },
       { title: 'Библиотека ресурсов', link: '/' },
       { title: 'Файлы пользователей', link: '/' },
       { title: 'Метки для тестовых заданий', link: '/' },

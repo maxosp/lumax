@@ -1,7 +1,7 @@
 <template>
   <div class='audio-file-input'>
     <div ref="dropContainer" class="drop-container">
-      <span>Перетащите аудиофайл в поле или выберите из&nbsp;
+      <span>{{ placeholder }}&nbsp;
         <span ref="triggerText" class='trigger'>файлов</span>
       </span>
 
@@ -10,7 +10,7 @@
       ref="fileInput"
       class="file-input"
       type="file"
-      accept="audio/*"
+      :accept="accept"
     >
   </div>
 </template>
@@ -20,6 +20,16 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'AudioFileInput',
+  props: {
+    placeholder: {
+      type: String,
+      default: 'Перетащите аудиофайл в поле или выберите из',
+    },
+    accept: {
+      type: String,
+      default: 'audio/*',
+    },
+  },
   methods: {
     preventDefault(event) {
       event.preventDefault()

@@ -5,6 +5,8 @@ import { User } from '@/features/api/user/types'
 export type DropdownItem = {
   name: string
   title: string
+  // for color dropdown
+  value?: string
   // for class dropdown
   id?: number
   // for subject dropdown
