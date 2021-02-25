@@ -20,12 +20,13 @@
         class="question-input"
         @input="(question) => handleQuestionChange({ id: qa.id, question })"
       />
-      <div class="correct-checkbox">
-        <div v-if="idx === 0" class="checkbox-label">Правильный ответ</div>
-        <BaseCheckbox
-          :value="qa.isCorrect"
-          :class="{ checkbox: true, 'first-checkbox': idx === 0 }"
-          @change="handleIsCorrectChange({ id: qa.id })"
+      <div class="correct-radio">
+        <div v-if="idx === 0" class="radio-label">Правильный ответ</div>
+        <RadioButton
+          option="is-correct"
+          :class="{ 'radio-button': true, 'first-radio': idx === 0 }"
+          :value="qa.isCorrect ? 'is-correct' : 'non-correct'"
+          @change="handleIsCorrectChange({ questionId: qa.id })"
         />
       </div> 
       <FormInput
@@ -60,13 +61,13 @@ import Icon from '@/ui/icon/Icon.vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import BaseCheckbox from '@/ui/checkbox/BaseCheckbox.vue'
+import RadioButton from '@/ui/radio/RadioButton.vue'
 import {
   $makrsEnabled,
   toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
-} from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/multiple-choice-one-or-many-answers.model'
+} from '@/pages/task-creation/test/tasks/MultipleChoiceOneAnswer/multiple-choice-one-answer.model'
 import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 
 export default Vue.extend({
@@ -76,7 +77,7 @@ export default Vue.extend({
     FormInput,
     BaseSwitch,
     BaseButton,
-    BaseCheckbox,
+    RadioButton,
   },
   effector: {
     $makrsEnabled,
@@ -91,9 +92,16 @@ export default Vue.extend({
       setQuestionsAnswers(questionsAnswers)
     },
     handleIsCorrectChange({ questionId }) {
-      const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === questionId ? { ...qa, isCorrect: !qa.isCorrect } : qa
-      )
+      const questionsAnswers = this.$questionsAnswers.map((qa) => {
+        if (qa.id === questionId) {
+          if (qa.isCorrect) {
+            return qa
+          }
+          return { ...qa, isCorrect: true }
+        }
+        return { ...qa, isCorrect: false }
+      })
+      console.log(questionsAnswers)
       setQuestionsAnswers(questionsAnswers)
     },
     handleMarkChange({ questionId, mark }) {
@@ -139,14 +147,14 @@ export default Vue.extend({
   }
 }
 
-.correct-checkbox {
+.correct-radio {
   max-width: 40px;
   display: flex;
   flex-direction: column;
   margin-left: 20px;
 }
 
-.checkbox-label {
+.radio-label {
   position: absolute;
   width: 132px;
   color: #000;
@@ -155,12 +163,12 @@ export default Vue.extend({
   transform: translate(-83%, 0);
 }
 
-.first-checkbox {
-  margin-top: 30px !important;
+.first-radio {
+  margin-top: 16px !important;
 }
 
-.checkbox {
-  margin-top: 16px;
+.radio-button {
+  margin-top: 2px;
 }
 
 .toggler {
