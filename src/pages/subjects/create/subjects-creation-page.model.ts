@@ -24,9 +24,6 @@ import { colorDropdownModule } from '@/pages/subjects/create/parts/colors/colors
 // методы запросов на бэк
 const saveSubjectFx = attach({
   effect: createSubjectFx,
-  mapParams: (params: CreateSubjectType) => {
-    return params
-  },
 })
 const updateSubjectDataFx = attach({
   effect: updateSubjectFx,

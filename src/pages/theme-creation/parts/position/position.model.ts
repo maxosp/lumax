@@ -10,19 +10,20 @@ export const positionDropdownModule = createFilter()
 
 export const $positions = createStore<DropdownItem[]>([])
 
-forward({
-  from: getThemesTreeListFx.doneData.map((data) => formateData(data.body)),
-  to: [$positions, $themes],
-})
-
-function formateData(data: GetThemeTreeFilterListResponse[]): any {
+function formatData(data: GetThemeTreeFilterListResponse[]): any {
   return data.map((elem: any) => ({
     name: `${elem.theme.id}`,
     title: elem.theme.name,
     id: elem.theme.id,
-    leaves: elem.leaves.length ? formateData(elem.leaves) : elem.leaves,
+    leaves: elem.leaves.length ? formatData(elem.leaves) : elem.leaves,
   }))
 }
+
+forward({
+  from: getThemesTreeListFx.doneData.map((data) => formatData(data.body)),
+  to: [$positions, $themes],
+})
+
 sample({
   clock: positionDropdownModule.methods.itemChanged,
   source: positionDropdownModule.store.$item,

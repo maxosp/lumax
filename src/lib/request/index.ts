@@ -4,7 +4,7 @@ import { createQueryString } from '@/lib/query'
 export type RequestParams = {
   url: string
   method: string
-  body?: BodyInit | object
+  body?: BodyInit | any
   query?: Record<string, any>
   headers?: Record<string, string>
 }

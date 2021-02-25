@@ -27,14 +27,14 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
       >
-        <template v-slot:name="props">
+        <template #name="props">
           <TooltipCell
             :title="props.rowData.name"
             :row-id="props.rowData.id"
             @onRightClick="handleRightClick"
           />
         </template>
-        <template id="one" v-slot:actions="props">
+        <template id="one" #actions="props">
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"

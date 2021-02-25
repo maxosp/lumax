@@ -1,5 +1,11 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 
+export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder'
+
+export type VirtualFolder = {
+  name: string
+}
+
 export type GetListQueryParams = {
   sort?: string
   page?: number
@@ -7,16 +13,6 @@ export type GetListQueryParams = {
   subject?: number
   study_year?: number
   is_prerequisite?: boolean
-}
-
-export type GetThemeTreeFilterListResponse = {
-  element_type: TreeElementType
-  leaves: TreeData[]
-  theme: {
-    id: number
-    name: string
-  }
-  virtual_folder: VirtualFolder | null
 }
 
 export type TableDataResponse<T> = {
@@ -29,12 +25,6 @@ export type TableDataResponse<T> = {
   data: T
 }
 
-export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder'
-
-export type VirtualFolder = {
-  name: string
-}
-
 export type TreeData = {
   element_type: TreeElementType
   leaves: TreeData[]
@@ -45,6 +35,16 @@ export type TreeData = {
   text_resource_count: string
   link_resource_count: string
   media_resource_count: string
+}
+
+export type GetThemeTreeFilterListResponse = {
+  element_type: TreeElementType
+  leaves: TreeData[]
+  theme: {
+    id: number
+    name: string
+  }
+  virtual_folder: VirtualFolder | null
 }
 
 export type TreeDataResponse = {

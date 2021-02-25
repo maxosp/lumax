@@ -16,6 +16,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+export type Corner = 'center' | 'start' | 'end'
+export type Position = 'top' | 'bottom' | 'left' | 'right'
+
 type ArrowConfig =
   | false
   | {
@@ -26,9 +29,6 @@ type ArrowConfig =
       position: Position
       ref: HTMLElement
     }
-
-export type Corner = 'center' | 'start' | 'end'
-export type Position = 'top' | 'bottom' | 'left' | 'right'
 
 export default Vue.extend({
   name: 'Tooltip',

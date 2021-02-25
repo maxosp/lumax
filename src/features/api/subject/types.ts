@@ -5,11 +5,13 @@ export type StudyYear = {
   number: number
   name: string
 }
+
 export type Icon = {
   id: number
   name: string
   value: string
 }
+
 export type File = {
   id: number
   owner: number
@@ -17,6 +19,7 @@ export type File = {
   file_name: string
   file_type: string
 }
+
 export type SubjectGrid = {
   id: number
   name: string
@@ -24,6 +27,31 @@ export type SubjectGrid = {
   color?: number
   author: number
   is_mandatory: boolean
+}
+
+export type Subject = {
+  id: number
+  name: string
+  description: string
+  useful_info: string
+  short_useful_info: string
+  icon: number
+  image: number
+  is_mandatory: boolean
+  creation_datetime: string
+  update_datetime: string
+  author?: {
+    first_name: string
+    last_name: string
+    is_moderator: boolean
+    is_teacher: boolean
+    is_student: boolean
+  }
+  color: {
+    id: number
+    name: string
+    value: string
+  }
 }
 
 export type ParentTheme = {
@@ -90,27 +118,6 @@ export type GetThemesTreeQueryParams = {
   search_study_year?: ''
 }
 
-export type Subject = {
-  id: number
-  name: string
-  description: string
-  useful_info: string
-  short_useful_info: string
-  icon: number
-  image: number
-  is_mandatory: boolean
-  creation_datetime: string
-  update_datetime: string
-  author?: {
-    first_name: string
-    last_name: string
-    is_moderator: boolean
-    is_teacher: boolean
-    is_student: boolean
-  }
-  color: { id: number, name: string, value: string },
-}
-
 export type CreateSubjectType = {
   id?: number
   name: string
@@ -129,5 +136,9 @@ export type CreateSubjectType = {
     is_teacher: boolean
     is_student: boolean
   }
-  color?: { id: number, name: string, value: string },
+  color?: {
+    id: number
+    name: string
+    value: string
+  }
 }

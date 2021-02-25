@@ -195,9 +195,7 @@ export const $subjectError = restore(setSubjectError, false)
 const $canToggleIsPrerequisite = sample({
   source: $selectedThemes,
   clock: toggleIsPrerequisite,
-  fn: (list, isPrerequisite) => {
-    return { listLength: list.length, value: isPrerequisite }
-  },
+  fn: (list, isPrerequisite) => ({ listLength: list.length, value: isPrerequisite }),
 })
 
 condition({

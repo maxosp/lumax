@@ -2,6 +2,7 @@ import { authorizedRequestFx } from '@/features/api/common/request'
 import { RequestParams, Response } from '@/lib/request'
 import { attach, Effect } from 'effector-root'
 
+// eslint-disable-next-line
 type Options<PARAMS, DONE, FAIL> = {
   requestMapper: (params: PARAMS) => RequestParams
 }

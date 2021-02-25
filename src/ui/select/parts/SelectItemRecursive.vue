@@ -52,7 +52,7 @@ export default Vue.extend({
     depth: { type: Number as PropType<number> },
     selectedItemId: { type: Number as PropType<number> },
     selectedItemsIds: { type: Array as PropType<number[]> },
-    handleClick: { type: Function as PropType<object> },
+    handleClick: { type: Function },
   },
   computed: {
     indent() {

@@ -6,5 +6,5 @@ import TASK_TYPES_DATA from '@/pages/task-creation/test/parts/task-types-dropdow
 export const taskTypesDropdownModule = createFilter()
 
 export const $taskTypes = createStore<DropdownItem[]>(
-  TASK_TYPES_DATA.map(({ name, title }: { name: string; title: string}) => ({ name, title }))
+  TASK_TYPES_DATA.map(({ name, title }: { name: string; title: string }) => ({ name, title }))
 )

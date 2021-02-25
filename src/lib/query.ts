@@ -1,3 +1,4 @@
+/* eslint-disable */
 const parseQueryStringFactory = (URLSearch: typeof URLSearchParams) => <T = {}>(
   string: string
 ): T => {

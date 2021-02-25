@@ -1,11 +1,11 @@
 import { DropdownItem } from '@/pages/common/types'
 
 export type FilterDropdownMethods = {
-  setItems: Function
-  resetItem: Function
-  itemChanged: Function
-  searchStringChanged: Function
-  resetSearchString: Function
+  setItems: () => void
+  resetItem: () => void
+  itemChanged: () => void
+  searchStringChanged: () => void
+  resetSearchString: () => void
 }
 export type FilterDropdownStore = {
   $item: string | null
