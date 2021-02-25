@@ -62,7 +62,6 @@ module.exports = {
         order: [
           'CONDITIONALS',
           'LIST_RENDERING',
-          'BINDING',
           'RENDER_MODIFIERS',
           'CONTENT',
           'GLOBAL',
