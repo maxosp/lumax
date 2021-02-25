@@ -11,7 +11,7 @@ module.exports = {
     'plugin:vue/recommended',
     "@vue/typescript/recommended",
     'plugin:prettier-vue/recommended',
-    'prettier',
+    'prettier/vue',
   ],
   parser: "vue-eslint-parser",
   parserOptions: {
@@ -76,6 +76,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     'vue/singleline-html-element-content-newline': "off",
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
     'camelcase': 'off',
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",

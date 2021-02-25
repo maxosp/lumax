@@ -1,3 +1,4 @@
+/* selint-disable */
 import { combine, createEvent, createStore, Event, restore, Store } from 'effector-root'
 import { delay } from 'patronum/delay'
 
