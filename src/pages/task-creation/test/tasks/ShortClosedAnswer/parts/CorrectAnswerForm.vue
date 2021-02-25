@@ -26,7 +26,11 @@
           size="16"
         />
       </div>
-      <div v-else class="icon-btn transparent">
+      <div
+        v-else
+        class="icon-btn transparent"
+        @click="removeInput({ id: input.id })"
+      >
         <Icon
           class="icon-close"
           type="close"
@@ -67,6 +71,10 @@ export default Vue.extend({
         ...this.$correctAnswerInputs,
         { id: this.$correctAnswerInputs.length, value: '' },
       ])
+    },
+    removeInput({ id }) {
+      const inputs = this.$correctAnswerInputs.filter((input) => input.id !== id)
+      setCorrectAnswerInputs(inputs)
     },
   },
 })

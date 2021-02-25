@@ -1,4 +1,5 @@
 import { UploadMediaResponse } from '@/features/api/media/types'
+import { DropdownItem } from '@/pages/common/types'
 
 export type AudioFile = {
   isLimited: boolean
@@ -27,3 +28,13 @@ export type MultipleChoiceOneOrManyQuestion = {
   mark?: string
   isCorrect: boolean
 }
+
+export type CommonListStringQuestion = {
+  id: number
+  question: string
+  answer: string
+}
+
+export type AnswerOption = {
+  id: number
+} & DropdownItem

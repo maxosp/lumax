@@ -50,7 +50,7 @@
       </div>
     </div>
     <div class="add-question" @click="addQuestion">
-      <BaseButton>Добавить вариант&nbsp;ответа</BaseButton>
+      <BaseButton>Добавить вариант ответа</BaseButton>
     </div>
   </div>
 </template>
@@ -110,15 +110,15 @@ export default Vue.extend({
       )
       setQuestionsAnswers(questionsAnswers)
     },
-    removeQuestion({ questionId }) {
-      const questionsAnswers = this.$questionsAnswers.filter((qa) => qa.id !== questionId)
-      setQuestionsAnswers(questionsAnswers)
-    },
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
         { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: false },
       ])
+    },
+    removeQuestion({ questionId }) {
+      const questionsAnswers = this.$questionsAnswers.filter((qa) => qa.id !== questionId)
+      setQuestionsAnswers(questionsAnswers)
     },
   },
 })
@@ -215,10 +215,9 @@ export default Vue.extend({
 }
 
 .add-question {
-  margin-top: 8px;
+  margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid var(--c-grey-11);
-  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
