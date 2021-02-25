@@ -1,11 +1,11 @@
 <template>
   <div class="audio-files-container">
     <AudioFileInput
-      @change="uploadAudioFiles"
+      @change="$emit('upload', $event)"
     />
-    <div class='files-container'>
+    <div v-if="$props.audioFiles.length" class='files-container'>
       <div
-        v-for="audio in $audioFiles"
+        v-for="audio in $props.audioFiles"
         :key="audio.id"
         class="audio-file"
       >
@@ -43,7 +43,8 @@
             }"
           />
         </div>
-        <div class="close">
+        <div class="field duration">{{ getReadableDuration(audio.duration_sec) }}</div>
+        <div class="close" @click="handleRemoveAudio({ id: audio.id })">
           <Icon
             class="close-icon"
             type="close"
@@ -61,12 +62,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import BaseInput from '@/ui/input/BaseInput.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import AudioFileInput from '@/ui/audio-file-input/AudioFileInput.vue'
-
-import {
-  $audioFiles,
-  setAudioFiles,
-  uploadAudioFiles,
-} from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/multiple-choice-one-or-many-answers.model'
+import { getReadableDuration } from '@/pages/task-creation/test/parts/audio-files/utils'
 
 export default Vue.extend({
   name: 'AudioFiles',
@@ -77,30 +73,31 @@ export default Vue.extend({
     AudioFileInput,
   },
   props: {
-    files: { type: Array },
-  },
-  effector: {
-    $audioFiles,
+    audioFiles: { type: Array },
   },
   methods: {
-    uploadAudioFiles,
+    getReadableDuration,
     handleNameChange({ id, value }) {
-      const files = this.$audioFiles.map((file) =>
+      const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, file_name: value } : file
       )
-      setAudioFiles(files)
+      this.$emit('change', newFiles)
     },
     handleIsLimitedChange({ id, value }) {
-      const files = this.$audioFiles.map((file) =>
+      const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, isLimited: value } : file
       )
-      setAudioFiles(files)
+      this.$emit('change', newFiles)
     },
     handleLimitChange({ id, value }) {
-      const files = this.$audioFiles.map((file) =>
+      const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, limit: value } : file
       )
-      setAudioFiles(files)
+      this.$emit('change', newFiles)
+    },
+    handleRemoveAudio({ id }) {
+      const newFiles = this.$props.audioFiles.filter((file) => file.id !== id)
+      this.$emit('change', newFiles)
     },
   },
 })
@@ -120,6 +117,7 @@ export default Vue.extend({
 .main {
   display: flex;
   align-items: center;
+  flex-grow: 1;
 }
 .field {
   margin-right: 20px;
@@ -138,7 +136,7 @@ export default Vue.extend({
   fill: var(--c-yellow-1);
 }
 .close-icon {
-  margin-top: 18px;
+  margin-top: 20px;
   fill: var(--c-grey-3);
 }
 .name-input,
@@ -148,8 +146,12 @@ export default Vue.extend({
   border: 1px solid #d5dae1;
   box-sizing: border-box;
   border-radius: 5px;
-  max-width: 200px;
 }
+
+.name-input {
+  flex-grow: 1;
+}
+
 .limit-input {
   max-width: 60px;
 
@@ -163,5 +165,9 @@ export default Vue.extend({
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
+}
+
+.duration {
+  color: var(--base-text-secondary);
 }
 </style>

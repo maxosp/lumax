@@ -1,7 +1,7 @@
 import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/ShortClosedAnswer/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/parts/languages-dropdown/constants'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, ShortClosedAnswer } from '@/pages/task-creation/test/tasks/types'

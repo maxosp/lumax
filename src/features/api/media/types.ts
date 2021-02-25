@@ -13,6 +13,7 @@ export type FileType =
 export type UploadMediaResponse = {
   id: number
   file_type: FileType
-  file_url: string
+  file: string
   file_name: string
+  duration_sec: number
 }

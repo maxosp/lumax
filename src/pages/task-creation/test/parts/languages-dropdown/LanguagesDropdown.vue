@@ -8,7 +8,7 @@
   >
     <template #default="{closeMenu}">
       <SelectItem
-        v-for="item in items"
+        v-for="item in laguages"
         :key="item.name"
         :placeholder="item.title"
         @click="handleClick(item, closeMenu)"
@@ -23,7 +23,7 @@
 import Vue from 'vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleChoiceOneAnswer/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/parts/languages-dropdown/constants'
 
 export default Vue.extend({
   name: 'LanguagesDropdown',
@@ -36,7 +36,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      items: LANGUAGE_DATA,
+      laguages: LANGUAGE_DATA,
     }
   },
   methods: {
@@ -47,5 +47,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style></style>

@@ -74,7 +74,7 @@ export default Vue.extend({
 
   .checkbox-label {
     .checkbox-input:checked ~ .checkmark {
-      background-color: var(--c-purple-0);
+      background-color: var(--base-text-primary);
     }
   }
 

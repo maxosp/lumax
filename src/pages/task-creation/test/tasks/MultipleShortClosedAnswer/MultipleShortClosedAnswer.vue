@@ -17,7 +17,11 @@
     </div>
     <div class="field">
       <span class="label">Аудиофайлы</span>
-      <AudioFiles />
+      <AudioFiles
+        :audio-files="$audioFiles"
+        @change="setAudioFiles"
+        @upload="uploadAudioFiles"
+      />
     </div>
     <div class='field'>
       <CorrectAnswerForm />
@@ -36,15 +40,18 @@
 import Vue from 'vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
-import AudioFiles from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/AudioFiles.vue'
+import AudioFiles from '@/pages/task-creation/test/parts/audio-files/AudioFiles.vue'
+import LanguagesDropdown from '@/pages/task-creation/test/parts/languages-dropdown/LanguagesDropdown.vue'
 import CorrectAnswerForm from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/CorrectAnswerForm.vue'
-import LanguagesDropdown from '@/pages/task-creation/test/tasks/MultipleShortClosedAnswer/parts/LanguagesDropdown.vue'
 import {
   $wording,
   setWording,
   $containing,
   setContaining,
   $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
   $answerExample,
   setAnswerExample,
   $language,
@@ -64,12 +71,15 @@ export default Vue.extend({
     $wording,
     $containing,
     $isAudioUploadLoading,
+    $audioFiles,
     $answerExample,
     $language,
   },
   methods: {
     setWording,
     setContaining,
+    setAudioFiles,
+    uploadAudioFiles,
     setAnswerExample,
     setLanguage,
   },

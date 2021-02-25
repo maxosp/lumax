@@ -1,7 +1,7 @@
 import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
-import { LANGUAGE_DATA } from '@/pages/task-creation/test/tasks/MultipleChoiceOneOrManyAnswers/parts/constants'
+import { LANGUAGE_DATA } from '@/pages/task-creation/test/parts/languages-dropdown/constants'
 import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
@@ -63,7 +63,13 @@ forward({
 forward({
   from: uploadAudioFilesFx.doneData,
   to: [
-    setAudioFiles.prepend((files) => files.map((file) => ({ ...file, isLimited: true, limit: 0 }))),
+    setAudioFiles.prepend((files) =>
+      files.map((file) => ({
+        ...file,
+        isLimited: true,
+        limit: 0,
+      }))
+    ),
     addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
   ],
 })
