@@ -44,13 +44,21 @@ export default Vue.extend({
   mounted() {
     this.bar = new SimpleBar(this.$refs.simpleBar as HTMLDivElement)
   },
+  beforeUpdate() {
+    const content = document.getElementsByClassName('simplebar-content')[0] as HTMLElement
+    const height = parseInt(getComputedStyle(content).height, 10)
+    if (height === 0) {
+      const block = document.getElementsByClassName('select-item')[0].parentNode
+      if (block) content.appendChild(block)
+    }
+  },
 })
 </script>
 
 <style scoped>
 * {
   --scrollbar-side-margin: 15px;
-  --scrollbar-bg-color: var(--c-yellow-1);
+  --scrollbar-bg-color: var(--base-text-primary);
   --track-bg-color: transparent;
 }
 

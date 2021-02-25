@@ -5,6 +5,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
   resetSelectedThemes,
+  setSelectedThemes,
   themeDropdownModule,
 } from '@/pages/theme-creation/parts/themes/themes.model'
 import { classDropdownModule } from '@/pages/theme-creation/parts/class/class.model'
@@ -13,6 +14,7 @@ import {
   $selectedPrerequisites,
   prerequisiteDropdownModule,
   resetSelectedPrerequisites,
+  setSelectedPrerequisites,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { GetListQueryParams } from '@/features/api/types'
@@ -22,6 +24,7 @@ import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/theme-creation/constants'
+import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -108,15 +111,6 @@ export const $canSetThemePosition = every({
   stores: [subjectDropdownModule.store.$item, classDropdownModule.store.$item],
 })
 
-export const $canSetPrerequisites = every({
-  predicate: (value) => value !== null,
-  stores: [
-    subjectDropdownModule.store.$item,
-    classDropdownModule.store.$item,
-    positionDropdownModule.store.$item,
-  ],
-})
-
 export const $formToSend = combine({
   id: DEFAULT_ID,
   name: $themeTitle,
@@ -169,14 +163,14 @@ sample({
     prerequisiteTitleChanged(theme.name)
     classDropdownModule.methods.itemChanged(`${theme.study_year ? theme.study_year.number : null}`)
     subjectDropdownModule.methods.itemChanged(`${theme.subject.id}`)
-    const prerequisites = theme.prerequisites.map((el) => ({ name: `${el.id}`, title: el.name }))
-    prerequisiteDropdownModule.methods.setItems(prerequisites)
-    prerequisites.forEach((el) => prerequisiteDropdownModule.methods.itemChanged(el.name))
+    const prerequisites = theme.prerequisites.map((el) => ({
+      name: `${el.id}`,
+      title: el.name,
+      id: el.id,
+    }))
+    setSelectedPrerequisites(prerequisites)
     const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name, id: el.id }))
-    themeDropdownModule.methods.setItems(themes)
-    themes.forEach((el) => {
-      themeDropdownModule.methods.itemChanged(el.name)
-    })
+    setSelectedThemes(themes)
     theme.parent_theme && positionDropdownModule.methods.itemChanged(`${theme.parent_theme.id}`)
     $formToSend.map((el) => (el.id = theme.id))
     $formToSendPrerequisite.map((el) => (el.id = theme.id))
@@ -235,7 +229,12 @@ forward({
 
 forward({
   from: [classDropdownModule.methods.itemChanged, subjectDropdownModule.methods.itemChanged],
-  to: [positionDropdownModule.methods.resetItem.prepend(() => ({})), resetSelectedPrerequisites],
+  to: positionDropdownModule.methods.resetItem.prepend(() => ({})),
+})
+
+forward({
+  from: subjectDropdownModule.methods.itemChanged,
+  to: [resetSelectedPrerequisites, prerequisiteDropdownModule.methods.resetItem],
 })
 
 const canGetThemesList = combine(
@@ -251,16 +250,21 @@ const debounced = debounce({
 
 forward({
   from: debounced,
-  to: getThemesTreeList.prepend((data) => {
-    if (data.study_year > 0)
+  to: [
+    getThemesTreeList.prepend((data) => {
+      if (data.study_year > 0)
+        return {
+          study_year: data.study_year,
+          subject: data.subject,
+          is_prerequisite: false,
+        }
       return {
-        study_year: data.study_year,
         subject: data.subject,
+        is_prerequisite: false,
       }
-    return {
-      subject: data.subject,
-    }
-  }),
+    }),
+    getThemesListFx.prepend((data) => ({ subject: data.subject })),
+  ],
 })
 
 const $saveMethodFired = sample({

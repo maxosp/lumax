@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <span class="title">Справочник</span>
+    <span class="title">Темы</span>
     <div class="buttons">
       <RouterLink :to="{ name: 'theme-creation' }">
         <BaseButton

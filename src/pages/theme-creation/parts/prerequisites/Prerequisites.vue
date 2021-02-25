@@ -7,7 +7,6 @@
       :data="$prerequisites"
       :store="{ $item, $itemsDropdown, $searchString }"
       :selected-data="$selectedPrerequisites"
-      :disabled="!$canSetPrerequisites"
     />
     <div class="selected-prerequisite">
       <div
@@ -48,7 +47,6 @@ import {
   prerequisiteDropdownModule,
   deletePrerequisite,
 } from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
-import { $canSetPrerequisites } from '@/pages/theme-creation/theme-creation-page.model'
 
 export default Vue.extend({
   components: {
@@ -58,7 +56,6 @@ export default Vue.extend({
   },
   effector: {
     $prerequisites,
-    $canSetPrerequisites,
     $selectedPrerequisites,
     ...prerequisiteDropdownModule.store,
   },

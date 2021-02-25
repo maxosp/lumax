@@ -56,8 +56,7 @@ export default Vue.extend({
   },
   computed: {
     indent() {
-      if (this.depth === 0) return { paddingLeft: '20px' }
-      return { paddingLeft: `${this.depth * 50}px` }
+      return { paddingLeft: `${(this.depth + 1) * 20}px` }
     },
     showTick() {
       if (this.selectedItemsIds && this.selectedItemsIds.find((el: any) => el.id === this.item.id))
@@ -90,7 +89,7 @@ li {
   min-height: 51px;
   padding: 16px var(--side-padding);
   font-size: 14px;
-  line-height: 18px;
+  line-height: 20px;
   color: var(--text-color);
   background-color: var(--bg-color);
   border-bottom: 1px solid var(--border-color);

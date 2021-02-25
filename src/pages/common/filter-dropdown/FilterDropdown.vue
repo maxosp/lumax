@@ -81,8 +81,9 @@ export default Vue.extend({
   watch: {
     data: {
       handler(val, oldVal) {
-        if ((!oldVal.length && !!val.length) || oldVal !== val)
+        if ((!oldVal.length && !!val.length) || oldVal !== val) {
           this.$props.methods.setItems(this.$props.data)
+        }
       },
     },
   },

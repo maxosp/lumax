@@ -32,17 +32,62 @@ export const createFilter = () => {
 
   debounced.watch((str) => {
     if ($item && str.length) itemChanged(null)
-    if (str.length) searchItem(str)
-    else restoreItems()
+    if (str.length) {
+      restoreItems()
+      searchItem(str)
+    } else restoreItems()
   })
+
+  // удалю, когда будет подтверждено, что нужно отображать всю вложенность при поиске
+  // функция возвращает отфильтрованный список без вложенностей
+  // function searchForItems(str: string, list: any) {
+  //   let res = list.filter((el: DropdownItem) => {
+  //     return el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1
+  //   })
+  //   res = res || []
+  //   for (let i = 0; i < list.length; i++) {
+  //     if (list[i].leaves && list[i].leaves.length)
+  //       res = res.concat(searchForItems(str, list[i].leaves))
+  //   }
+  //   // for (let i = 0; i < res.length; i++) {
+  //   //   if (res[i].leaves) res[i].leaves = []
+  //   // }
+  //   return res
+  // }
+
+  function filterItems(str: string, list: any) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].title.toLowerCase().indexOf(str.toLocaleLowerCase()) === -1) {
+        if (list[i].leaves) {
+          if (!list[i].leaves.length) {
+            list.splice(i, 1)
+            i--
+          } else {
+            list[i].leaves = filterItems(str, list[i].leaves)
+            if (!list[i].leaves.length) {
+              list.splice(i, 1)
+              i--
+            }
+          }
+        } else {
+          list.splice(i, 1)
+          i--
+        }
+      }
+    }
+    return list
+  }
 
   sample({
     source: $_itemsDropdown,
     clock: searchItem,
-    fn: (list, str) =>
-      list.filter((el) => el.title.toLowerCase().indexOf(str.toLowerCase()) !== -1),
+    fn: (list, str) => {
+      const arr = JSON.parse(JSON.stringify(list))
+      return filterItems(str, arr)
+    },
     target: $itemsDropdown,
   })
+
   sample({
     source: $_itemsDropdown,
     clock: restoreItems,

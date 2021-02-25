@@ -1,14 +1,15 @@
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { findItem } from '@/pages/common/filter-dropdown/lib'
 import { DropdownItem } from '@/pages/common/types'
-import { createEvent, createStore, forward, sample } from 'effector'
+import { createEvent, createStore, forward, restore, sample } from 'effector'
 import { subjectDropdownModule } from '@/pages/theme-creation/parts/subjects/subjects.model'
 
 export const themeDropdownModule = createFilter()
 
 export const $themes = createStore<DropdownItem[]>([])
 
-export const $selectedThemes = createStore<DropdownItem[]>([])
+export const setSelectedThemes = createEvent<DropdownItem[]>()
+export const $selectedThemes = restore<DropdownItem[]>(setSelectedThemes, [])
 export const resetSelectedThemes = createEvent()
 export const deleteTheme = createEvent<string>()
 
@@ -18,11 +19,12 @@ sample({
     all: themeDropdownModule.store.$itemsDropdown,
   },
   clock: themeDropdownModule.methods.itemChanged,
-  fn: (list, element) => {
+  fn: (list, elementId) => {
+    if (!list.all.length) return []
     const arr = list.selected.slice()
-    if (arr.find((el) => el.id === +element!) === undefined || arr.length === 0) {
-      const elem = findItem(element!, list.all)
-      arr.push(elem!)
+    if (arr.find((el) => el.id === +elementId!) === undefined) {
+      const elem = findItem(elementId!, list.all)
+      if (elem) arr.push(elem!)
     }
     return [...arr]
   },
