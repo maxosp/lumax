@@ -6,6 +6,7 @@ import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
 import ThemesPage from '@/pages/themes/ThemesPage.vue'
 import ThemeCreationPage from '@/pages/theme-creation/ThemeCreationPage.vue'
+import ThemeEditionPage from '@/pages/theme-edition/ThemeEditionPage.vue'
 import LessonTaskCreationPage from '@/pages/task-creation/lesson/TaskCreationPage.vue'
 import OlympiadTaskCreationPage from '@/pages/task-creation/olympiad/TaskCreationPage.vue'
 import TestTaskCreationPage from '@/pages/task-creation/test/TaskCreationPage.vue'
@@ -57,6 +58,14 @@ export const routes: RouteConfig[] = [
         component: ThemeCreationPage,
         meta: {
           title: 'Создание темы - Школа Летово',
+        },
+      },
+      {
+        name: 'theme-edition',
+        path: '/theme/edit/:id',
+        component: ThemeEditionPage,
+        meta: {
+          title: 'Редактирование темы - Школа Летово',
         },
       },
       {

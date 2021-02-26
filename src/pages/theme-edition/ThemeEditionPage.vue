@@ -2,8 +2,8 @@
   <div class="theme-page">
     <ThemeHeader
       :title="correctTitle"
-      @save="create"
-      @saveWithRedirect="createWithRedirect"
+      @save="edit"
+      @saveWithRedirect="editWithRedirect"
     />
     <ThemeContent />
   </div>
@@ -11,15 +11,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ThemeHeader from '@/pages/theme-creation/parts/header/Header.vue'
-import ThemeContent from '@/pages/theme-creation/parts/Content.vue'
+import ThemeHeader from '@/pages/theme-edition/parts/header/Header.vue'
+import ThemeContent from '@/pages/theme-edition/parts/Content.vue'
 import {
-  create,
   $formToSend,
   $formToSendPrerequisite,
   clearFields,
   redirectAfterSaveChanged,
-} from '@/pages/theme-creation/theme-creation-page.model'
+  getThemeToUpdate,
+  edit,
+} from '@/pages/theme-edition/theme-edition-page.model'
 import { $isPrerequisite } from '@/pages/theme-creation/parts/header/header.model'
 
 export default Vue.extend({
@@ -35,17 +36,21 @@ export default Vue.extend({
   },
   computed: {
     correctTitle() {
-      return `Создание ${this.$isPrerequisite ? 'пререквизита' : 'темы'}`
+      return `Редактирование ${this.$isPrerequisite ? 'пререквизита' : 'темы'}`
     },
   },
   methods: {
     redirectAfterSaveChanged,
     clearFields,
-    create,
-    createWithRedirect() {
+    getThemeToUpdate,
+    edit,
+    editWithRedirect() {
       redirectAfterSaveChanged(true)
-      create()
+      edit()
     },
+  },
+  mounted() {
+    getThemeToUpdate(+this.$route.params.id)
   },
   beforeDestroy() {
     redirectAfterSaveChanged(false)

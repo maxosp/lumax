@@ -79,7 +79,7 @@ export default Vue.extend({
     },
     handleAction(item: SelectItemI) {
       if (item.name === 'edit') {
-        navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
+        navigatePush({ name: 'theme-edition', params: { id: this.$props.id } })
       } else if (item.name === 'delete') {
         this.$emit('onRemove', this.$props.id)
       } else if (item.name === 'delete-all') {

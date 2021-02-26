@@ -28,7 +28,7 @@
           :value="qa.isCorrect ? 'is-correct' : 'non-correct'"
           @change="handleIsCorrectChange({ questionId: qa.id })"
         />
-      </div> 
+      </div>
       <FormInput
         v-if="$marksEnabled"
         :label="idx === 0 ? 'Баллы' : ''"
@@ -97,7 +97,6 @@ export default Vue.extend({
         }
         return { ...qa, isCorrect: false }
       })
-      console.log(questionsAnswers)
       setQuestionsAnswers(questionsAnswers)
     },
     handleMarkChange({ questionId, mark }) {

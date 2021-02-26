@@ -2,7 +2,7 @@ import { getThemeFx } from '@/features/api/subject/get-theme'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { attach, createEvent, createStore, forward, restore, sample } from 'effector-root'
+import { attach, createEvent, createStore, forward, restore, sample } from 'effector'
 
 export const getThemeData = attach({
   effect: getThemeFx,
@@ -34,7 +34,6 @@ sample({
   },
   clock: prerequisiteDropdownModule.methods.itemChanged,
   fn: (list, element) => {
-    if (!list.all.length) return []
     const arr = list.selected.slice()
     if (!arr.find(((el: any) => el.name === element) || !arr.length) && element) {
       const elem = list.all.find((full) => full.name === element)
@@ -44,7 +43,6 @@ sample({
   },
   target: $selectedPrerequisites,
 })
-
 sample({
   source: $selectedPrerequisites,
   clock: resetSelectedPrerequisites,

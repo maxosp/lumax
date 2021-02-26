@@ -1,7 +1,7 @@
 <template>
   <Card class="header">
     <div class="left">
-      <p class="title"> {{ correctTitle }} </p>
+      <p class="title"> {{ title }} </p>
     </div>
     <div class="right">
       <BaseSwitch
@@ -14,14 +14,14 @@
       <BaseButton
         class="btn"
         yellow
-        @click="save"
+        @click="$emit('save')"
       >
         Сохранить
       </BaseButton>
       <BaseButton
         class="btn"
         yellow
-        @click="handleClick"
+        @click="$emit('saveWithRedirect')"
       >
         Сохранить и вернуться к списку
       </BaseButton>
@@ -30,17 +30,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Card from '@/ui/card/Card.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $isPrerequisite,
   toggleIsPrerequisite,
-  save,
-  redirectAfterSaveChanged,
-  $isEditingTheme,
-} from '@/pages/theme-creation/theme-creation-page.model'
+} from '@/pages/theme-creation/parts/header/header.model'
 
 export default Vue.extend({
   components: {
@@ -50,23 +47,12 @@ export default Vue.extend({
   },
   effector: {
     $isPrerequisite,
-    $isEditingTheme,
   },
-  computed: {
-    correctTitle() {
-      return `${this.$isEditingTheme ? 'Редактирование' : 'Создание'} ${
-        this.$isPrerequisite ? 'пререквизита' : 'темы'
-      }`
-    },
+  props: {
+    title: { type: String as PropType<string> },
   },
   methods: {
     toggleIsPrerequisite,
-    save,
-    redirectAfterSaveChanged,
-    handleClick() {
-      redirectAfterSaveChanged(true)
-      save()
-    },
   },
 })
 </script>

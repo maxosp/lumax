@@ -88,7 +88,7 @@ export default Vue.extend({
           navigatePush({ name: 'theme-creation' })
           break
         case 'edit':
-          navigatePush({ name: 'theme-creation', params: { id: this.$props.id } })
+          navigatePush({ name: 'theme-edition', params: { id: this.$props.id } })
           break
         case 'delete':
           this.$emit('onRemove', this.$props.id)

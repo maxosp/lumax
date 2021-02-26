@@ -1,24 +1,26 @@
 import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
 import { condition, debounce, every } from 'patronum'
-import { subjectDropdownModule } from '@/pages/theme-creation/parts/subjects/subjects.model'
+import { subjectDropdownModule } from '@/pages/theme-edition/parts/subjects/subjects.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
   resetSelectedThemes,
   themeDropdownModule,
-} from '@/pages/theme-creation/parts/themes/themes.model'
-import { classDropdownModule } from '@/pages/theme-creation/parts/class/class.model'
-import { positionDropdownModule } from '@/pages/theme-creation/parts/position/position.model'
+} from '@/pages/theme-edition/parts/themes/themes.model'
+import { classDropdownModule } from '@/pages/theme-edition/parts/class/class.model'
+import { positionDropdownModule } from '@/pages/theme-edition/parts/position/position.model'
 import {
   $selectedPrerequisites,
   prerequisiteDropdownModule,
   resetSelectedPrerequisites,
-} from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
+  setSelectedPrerequisites,
+} from '@/pages/theme-edition/parts/prerequisites/prerequisites.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { GetListQueryParams } from '@/features/api/types'
-import { createThemeFx } from '@/features/api/subject/create-theme'
-import { CreateThemeType } from '@/features/api/subject/types'
+import { CreateThemeType, Theme } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
+import { updateThemeFx } from '@/features/api/subject/update-theme'
+import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/theme-creation/constants'
 import {
   $isPrerequisite,
@@ -31,23 +33,29 @@ const getThemesTreeList = attach({
   mapParams: (params: GetListQueryParams) => params,
 })
 
-const saveThemeFx = attach({
-  effect: createThemeFx,
+const updateThemeDataFx = attach({
+  effect: updateThemeFx,
   mapParams: (params: CreateThemeType) => params,
 })
-
-const savePrerequisiteFx = attach({
-  effect: createThemeFx,
+const updatePrerequisiteFx = attach({
+  effect: updateThemeFx,
   mapParams: (params: Partial<CreateThemeType>) => params,
 })
 
+export const getThemeToUpdate = attach({
+  effect: getThemeFx,
+  mapParams: (params: number) => params,
+})
+
+const updateTheme = createEvent<void>()
+const updatePrerequisite = createEvent<void>()
+
 export const clearFields = createEvent<void>()
 
-export const create = createEvent<void>()
+export const edit = createEvent<void>()
 const checkIfThemeCanBeSend = createEvent<void>()
 const checkIfPrerequisiteCanBeSend = createEvent<void>()
-const saveTheme = createEvent<void>()
-const savePrerequisite = createEvent<void>()
+
 export const redirectAfterSaveChanged = createEvent<boolean>()
 const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
 
@@ -94,7 +102,7 @@ export const $formToSend = combine({
       list: classDropdownModule.store.$itemsDropdown,
       elem: classDropdownModule.store.$item,
     },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
+    ({ list, elem }) => list.find((item) => item.name === elem)?.id!
   ),
   subject_id: combine(
     {
@@ -122,6 +130,28 @@ export const $formToSendPrerequisite = combine({
     ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
   ),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
+})
+
+sample({
+  clock: getThemeToUpdate.done,
+  source: getThemeFx.doneData.map((data) => data.body),
+  fn: (theme: Theme) => {
+    isPrerequisiteChanged(theme.is_prerequisite)
+    themeTitleChanged(theme.name)
+    prerequisiteTitleChanged(theme.name)
+    classDropdownModule.methods.itemChanged(`${theme.study_year ? theme.study_year.number : null}`)
+    subjectDropdownModule.methods.itemChanged(`${theme.subject.id}`)
+    const prerequisites = theme.prerequisites.map((el) => ({ name: `${el.id}`, title: el.name }))
+    setSelectedPrerequisites(prerequisites)
+    const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name, id: el.id }))
+    themeDropdownModule.methods.setItems(themes)
+    themes.forEach((el) => {
+      themeDropdownModule.methods.itemChanged(el.name)
+    })
+    theme.parent_theme && positionDropdownModule.methods.itemChanged(`${theme.parent_theme.id}`)
+    $formToSend.map((el) => (el.id = theme.id))
+    $formToSendPrerequisite.map((el) => (el.id = theme.id))
+  },
 })
 
 const setThemeTitleError = createEvent<boolean>()
@@ -177,12 +207,7 @@ forward({
 
 forward({
   from: [classDropdownModule.methods.itemChanged, subjectDropdownModule.methods.itemChanged],
-  to: positionDropdownModule.methods.resetItem.prepend(() => ({})),
-})
-
-forward({
-  from: subjectDropdownModule.methods.itemChanged,
-  to: [resetSelectedPrerequisites, prerequisiteDropdownModule.methods.resetItem],
+  to: [positionDropdownModule.methods.resetItem.prepend(() => ({})), resetSelectedPrerequisites],
 })
 
 const canGetThemesList = combine(
@@ -217,7 +242,7 @@ forward({
 
 const $saveMethodFired = sample({
   source: $isPrerequisite,
-  clock: create,
+  clock: edit,
   fn: (isPrerequisite) => isPrerequisite,
 })
 
@@ -232,7 +257,7 @@ sample({
   source: $formToSend,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) saveTheme()
+    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) updateTheme()
     else {
       if (!obj.name.trim().length) setThemeTitleError(true)
       if (!obj.study_year_id) setClassError(true)
@@ -243,19 +268,21 @@ sample({
 })
 
 sample({
-  clock: saveTheme,
+  clock: updateTheme,
   source: $formToSend,
-  target: saveThemeFx,
-})
-sample({
-  source: $formToSendPrerequisite,
-  clock: savePrerequisite,
-  target: savePrerequisiteFx,
+  target: updateThemeDataFx,
 })
 
-const { noInternetConnection } = split(merge([saveThemeFx.failData, savePrerequisiteFx.failData]), {
-  noInternetConnection: ({ status }) => status === undefined,
+sample({
+  source: $formToSendPrerequisite,
+  clock: updatePrerequisite,
+  target: updatePrerequisiteFx,
 })
+
+const { noInternetConnection } = split(
+  merge([updateThemeDataFx.failData, updatePrerequisiteFx.failData]),
+  { noInternetConnection: ({ status }) => status === undefined }
+)
 
 forward({
   from: noInternetConnection,
@@ -263,27 +290,27 @@ forward({
 })
 
 const $ifRedirect = sample({
-  clock: [saveThemeFx, savePrerequisiteFx],
+  clock: [updateThemeDataFx, updatePrerequisiteFx],
   source: $redirectAfterSave,
   fn: (isRedirect: boolean) => isRedirect,
 })
 
 sample({
   source: $ifRedirect,
-  clock: saveThemeFx.doneData.map((data) => data.body.id),
+  clock: updateThemeDataFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Тема успешно создана!' })
+    addToast({ type: 'success', message: 'Тема успешно обновлена!' })
     if (ifRedirect) navigatePush({ name: 'themes' })
-    else navigatePush({ name: 'theme-edition', params: { id: id.toString() } })
+    else getThemeToUpdate(id)
   },
 })
 sample({
   source: $ifRedirect,
-  clock: savePrerequisiteFx.doneData.map((data) => data.body.id),
+  clock: updatePrerequisiteFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Пререквизит успешно создан!' })
+    addToast({ type: 'success', message: 'Пререквизит успешно обновлен!' })
     if (ifRedirect) navigatePush({ name: 'themes' })
-    else navigatePush({ name: 'theme-edition', params: { id: id.toString() } })
+    else getThemeToUpdate(id)
   },
 })
 
@@ -291,10 +318,10 @@ sample({
   source: $formToSendPrerequisite,
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
-    if (obj.name.length && obj.subject_id) savePrerequisite()
+    if (obj.name.length && obj.subject_id !== null) updatePrerequisite()
     else {
       if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (obj.subject_id === null) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },

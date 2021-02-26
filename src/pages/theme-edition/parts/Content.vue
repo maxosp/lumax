@@ -17,6 +17,7 @@
           @input="themeTitleChanged"
         />
         <PositionDropdown :class="{'--error': $positionError}" />
+        <TeachingResources />
         <Prerequisites />
       </div>
       <div class="right">
@@ -40,6 +41,7 @@
           @clear="resetPrerequisiteTitle"
           @input="prerequisiteTitleChanged"
         />
+        <TeachingResources />
         <Themes />
       </div>
       <div class="right">
@@ -53,11 +55,12 @@
 import Vue from 'vue'
 import Card from '@/ui/card/Card.vue'
 import FormInput from '@/ui/input/FormInput.vue'
-import PositionDropdown from '@/pages/theme-creation/parts/position/PositionDropdown.vue'
-import Prerequisites from '@/pages/theme-creation/parts/prerequisites/Prerequisites.vue'
-import SubjectDropdown from '@/pages/theme-creation/parts/subjects/SubjectDropdown.vue'
-import ClassDropdown from '@/pages/theme-creation/parts/class/ClassDropdown.vue'
-import Themes from '@/pages/theme-creation/parts/themes/Themes.vue'
+import PositionDropdown from '@/pages/theme-edition/parts/position/PositionDropdown.vue'
+import Prerequisites from '@/pages/theme-edition/parts/prerequisites/Prerequisites.vue'
+import SubjectDropdown from '@/pages/theme-edition/parts/subjects/SubjectDropdown.vue'
+import ClassDropdown from '@/pages/theme-edition/parts/class/ClassDropdown.vue'
+import TeachingResources from '@/pages/theme-edition/parts/teaching-resources/TeachingResources.vue'
+import Themes from '@/pages/theme-edition/parts/themes/Themes.vue'
 import {
   $themeTitle,
   resetThemeTitle,
@@ -70,7 +73,7 @@ import {
   $positionError,
   $subjectError,
   $classError,
-} from '@/pages/theme-creation/theme-creation-page.model'
+} from '@/pages/theme-edition/theme-edition-page.model'
 import { $isPrerequisite } from '@/pages/theme-creation/parts/header/header.model'
 
 export default Vue.extend({
@@ -81,6 +84,7 @@ export default Vue.extend({
     Prerequisites,
     SubjectDropdown,
     ClassDropdown,
+    TeachingResources,
     Themes,
   },
   effector: {

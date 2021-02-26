@@ -40,13 +40,13 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import PrerequisiteMenu from '@/pages/theme-creation/parts/prerequisites/PrerequisiteMenu.vue'
+import PrerequisiteMenu from '@/pages/theme-edition/parts/prerequisites/PrerequisiteMenu.vue'
 import {
   $prerequisites,
   $selectedPrerequisites,
   prerequisiteDropdownModule,
   deletePrerequisite,
-} from '@/pages/theme-creation/parts/prerequisites/prerequisites.model'
+} from '@/pages/theme-edition/parts/prerequisites/prerequisites.model'
 
 export default Vue.extend({
   components: {
