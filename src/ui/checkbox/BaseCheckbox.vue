@@ -47,6 +47,8 @@ export default Vue.extend({
 
     .checkmark,
     .text {
+      cursor: pointer;
+      color: var(--base-text-primary);
       margin-left: 14px;
       display: block;
       font-size: 12px;

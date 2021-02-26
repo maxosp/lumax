@@ -44,3 +44,9 @@ export type CorrectSequenceQuestion = {
   question: string
   order: number
 }
+
+export type ConnectLinesMatch = {
+  id: number
+  matchA: string
+  matchB: string
+}
