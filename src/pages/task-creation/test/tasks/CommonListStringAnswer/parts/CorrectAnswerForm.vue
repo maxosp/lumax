@@ -102,8 +102,6 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $answersOptions,
   setAnswersOptions,
-  $makrsEnabled,
-  toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/task-creation/test/tasks/CommonListStringAnswer/common-list-string-answer.model'
@@ -120,11 +118,9 @@ export default Vue.extend({
   },
   effector: {
     $answersOptions,
-    $makrsEnabled,
     $questionsAnswers,
   },
   methods: {
-    toggleMarksEnabling,
     handleAnswerOptionChange({ id, value }) {
       const answersOptions = this.$answersOptions.map((option) =>
         option.id === id ? { ...option, name: value, title: value } : option

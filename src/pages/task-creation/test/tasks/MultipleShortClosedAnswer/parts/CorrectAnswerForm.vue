@@ -3,7 +3,7 @@
     <div class="left-border" />
     <BaseSwitch
       class="switch toggler"
-      :checked="$makrsEnabled"
+      :checked="$marksEnabled"
       @change="toggleMarksEnabling"
     >
       <p>Указать количество баллов за каждый верный ответ</p>
@@ -34,7 +34,7 @@
             @input="(value) => handleAnswerChange({ questionId: qa.id, id: answer.id, value })"
           />
           <FormInput
-            v-if="$makrsEnabled"
+            v-if="$marksEnabled"
             :label="idx === 0 && asnwerIdx === 0 ? 'Баллы' : ''"
             :value="answer.mark"
             placeholder="Баллов"
@@ -81,7 +81,7 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import {
-  $makrsEnabled,
+  $marksEnabled,
   toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
@@ -98,7 +98,7 @@ export default Vue.extend({
     BaseTextarea,
   },
   effector: {
-    $makrsEnabled,
+    $marksEnabled,
     $questionsAnswers,
   },
   methods: {

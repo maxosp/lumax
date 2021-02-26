@@ -38,3 +38,9 @@ export type CommonListStringQuestion = {
 export type AnswerOption = {
   id: number
 } & DropdownItem
+
+export type CorrectSequenceQuestion = {
+  id: number
+  question: string
+  order: number
+}

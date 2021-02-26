@@ -25,9 +25,6 @@ export const $answerExample = restore(setAnswerExample, '')
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 
-export const toggleMarksEnabling = createEvent<boolean>()
-export const $makrsEnabled = restore(toggleMarksEnabling, false)
-
 export const uploadAudioFiles = createEvent<FileList>()
 
 const uploadAudioFilesFx = createEffect({

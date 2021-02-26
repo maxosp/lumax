@@ -3,7 +3,7 @@
     <div class="left-border" />
     <BaseSwitch
       class="switch toggler"
-      :checked="$makrsEnabled"
+      :checked="$marksEnabled"
       @change="toggleMarksEnabling"
     >
       <p>Указать количество баллов за каждый верный ответ</p>
@@ -30,7 +30,7 @@
         />
       </div> 
       <FormInput
-        v-if="$makrsEnabled"
+        v-if="$marksEnabled"
         :label="idx === 0 ? 'Баллы' : ''"
         :value="qa.mark"
         placeholder="Баллов"
@@ -63,8 +63,6 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import RadioButton from '@/ui/radio/RadioButton.vue'
 import {
-  $makrsEnabled,
-  toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/task-creation/test/tasks/MultipleChoiceOneAnswer/multiple-choice-one-answer.model'
@@ -80,11 +78,9 @@ export default Vue.extend({
     RadioButton,
   },
   effector: {
-    $makrsEnabled,
     $questionsAnswers,
   },
   methods: {
-    toggleMarksEnabling,
     handleQuestionChange({ id, question }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
         qa.id === id ? { ...qa, question } : qa
