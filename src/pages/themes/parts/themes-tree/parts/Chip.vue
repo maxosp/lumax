@@ -1,44 +1,39 @@
 <template>
-  <div v-if="item && item.count">
-    <WithTooltip
-      position="right"
-      class="tooltip"
-      show-on="mouseenter"
-      hide-on="mouseleave"
-    >
-      <template #activator>
-        <div :class="{ chip: true, primary: $props.primary }">
-          <Icon
-            :type="$props.icon"
-            class="chip-icon"
-            size="12"
-          />
-          <span>{{ item.count }}</span>
-        </div>
-      </template>
-      <template #tooltip-content>
-        <span>{{ item.description }}</span>
-      </template>
-    </WithTooltip>
+  <div
+    v-tooltip.right="options"
+    v-if="item && item.count"
+    :class="{ chip: true, primary: $props.primary }"
+  >
+    <Icon
+      :type="$props.icon"
+      class="chip-icon"
+      size="12"
+    />
+    <span>{{ item.count }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import WithTooltip from '@/ui/tooltip/WithTooltip.vue'
 import { ResourceChip } from '@/pages/themes/types'
 
 export default Vue.extend({
   name: 'Chip',
   components: {
     Icon,
-    WithTooltip,
   },
   props: {
     icon: { type: String, required: true },
     item: { type: Object as PropType<ResourceChip>, required: true },
     primary: { type: Boolean, required: false, default: false },
+  },
+  computed: {
+    options() {
+      return {
+        content: this.item.description,
+      }
+    },
   },
 })
 </script>

@@ -1,68 +1,50 @@
 <template>
   <div class="base-input-wrap">
-    <WithError :disabled="!hasError">
-      <label>
-        <span class="label">
-          {{ label }}
-        </span>
-        <BaseInput
-          :value="value"
-          :type="type"
-          :max-length="maxLength"
-          :placeholder="placeholder"
-          :disabled="disabled"
-          :readonly="readOnlyDropdown"
-          class="inner-input"
-          :class="{'--error': hasError, '--disabled': disabled}"
-          v-on="{
-            ...$listeners,
-            input: (e) => $emit('input', e),
-          }"
-        />
-        <span
-          v-if="$slots.icon || showClearBtn"
-          class="icon-wrap"
-          :class="{'has-error': hasError, '--disabled': disabled}"
-        >
-          <Icon
-            v-if="showClearBtn"
-            type="close"
-            size="10"
-            class="icon cross"
-            @click="$emit('clear')"
-          />
-          <slot name="icon" />
-        </span>
-      </label>
-      <template
-        v-if="hasError"
-        #error
+    <label v-tooltip.right-end="{content: errorMessage}">
+      <span class="label">
+        {{ label }}
+      </span>
+      <BaseInput
+        :value="value"
+        :type="type"
+        :max-length="maxLength"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :readonly="readOnlyDropdown"
+        class="inner-input"
+        :class="{'--error': hasError, '--disabled': disabled}"
+        v-on="{
+          ...$listeners,
+          input: (e) => $emit('input', e),
+        }"
+      />
+      <span
+        v-if="$slots.icon || showClearBtn"
+        class="icon-wrap"
+        :class="{'has-error': hasError, '--disabled': disabled}"
       >
-        <slot
-          v-if="$slots.error"
-          name="error"
+        <Icon
+          v-if="showClearBtn"
+          type="close"
+          size="10"
+          class="icon cross"
+          @click="$emit('clear')"
         />
-        <ErrorContainer v-else>
-          {{ errorMessage }}
-        </ErrorContainer>
-      </template>
-    </WithError>
+        <slot name="icon" />
+      </span>
+    </label>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import WithError from '@/ui/input/parts/WithError.vue'
 import BaseInput from '@/ui/input/BaseInput.vue'
-import ErrorContainer from '@/ui/input/parts/ErrorContainer.vue'
 import Icon from '@/ui/icon/Icon.vue'
 
 export default Vue.extend({
   name: 'FormInput',
   components: {
-    WithError,
     BaseInput,
-    ErrorContainer,
     Icon,
   },
   props: {

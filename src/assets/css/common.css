@@ -34,3 +34,46 @@ a:focus {
 }
 
 
+.tooltip {
+  .tooltip-inner {
+    background-color: var(--tooltip-bg-color);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 15px;
+    box-sizing: border-box;
+    max-width: 300px;
+    white-space: break-spaces;
+    border-radius: 10px;
+    margin-left: 15px;
+  }
+
+  &[x-placement^="top"] {
+    margin-bottom: 5px;
+  }
+
+  &[x-placement^="bottom"] {
+    margin-top: 5px;
+  }
+
+  &[x-placement^="right"] {
+    /* margin-left: 5px; */
+  }
+
+  &[x-placement^="left"] {
+    margin-right: 5px;
+  }
+
+  &[aria-hidden='true'] {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .15s, visibility .15s;
+  }
+
+  &[aria-hidden='false'] {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .15s;
+  }
+}

@@ -7,6 +7,7 @@ import { loadSession } from '@/features/session'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Cookies from 'js-cookie'
+import VTooltip from 'v-tooltip'
 import App from './App.vue'
 import { routes } from './routes'
 import 'dayjs/locale/ru'
@@ -14,6 +15,8 @@ import '@/assets/css/common.css'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ru')
+
+Vue.use(VTooltip)
 
 Vue.use(VueEffector)
 
