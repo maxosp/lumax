@@ -2,7 +2,7 @@
   <div :id="`cell-${$props.rowId}`">
     <span v-if="$props.title.length <= 30">{{ $props.title }}</span>
     <div v-else>
-      <span v-tooltip.top-end="options">
+      <span v-tooltip.top-end="options" class="activator">
         {{ `${$props.title.slice(0,30)}...` }}
       </span>
     </div>
@@ -22,6 +22,7 @@ export default Vue.extend({
     options() {
       return {
         content: this.title.length > 250 ? `${this.title.slice(0, 250)}...` : this.title,
+        offset: '6',
       }
     },
   },
