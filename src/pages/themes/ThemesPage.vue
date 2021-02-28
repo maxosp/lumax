@@ -70,6 +70,9 @@
       :selected="$treeView ? [] : selectedRows"
       :style="contextMenuStyles"
       :type="contextMenuType"
+      :subject="subject"
+      :study-year="studyYear"
+      :theme="theme"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
@@ -148,6 +151,9 @@ export default Vue.extend({
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
+      subject: null,
+      studyYear: null,
+      theme: null,
     }
   },
   computed: {
@@ -218,6 +224,9 @@ export default Vue.extend({
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+      this.subject = data.subject
+      this.studyYear = data.studyYear
+      this.theme = data.theme
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.showContextMenu = true

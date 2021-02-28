@@ -21,6 +21,9 @@ import {
   redirectAfterSaveChanged,
 } from '@/pages/theme-creation/theme-creation-page.model'
 import { $isPrerequisite } from '@/pages/theme-creation/parts/header/header.model'
+import { subjectDropdownModule } from '@/pages/theme-creation/parts/subjects/subjects.model'
+import { classDropdownModule } from '@/pages/theme-creation/parts/class/class.model'
+import { positionDropdownModule } from '@/pages/theme-creation/parts/position/position.model'
 
 export default Vue.extend({
   name: 'ThemeCreationPage',
@@ -46,6 +49,14 @@ export default Vue.extend({
       redirectAfterSaveChanged(true)
       create()
     },
+  },
+  mounted() {
+    if (this.$route.params) {
+      const { subject, studyYear, theme } = this.$route.params
+      subject && subjectDropdownModule.methods.itemChanged(subject)
+      studyYear && classDropdownModule.methods.itemChanged(studyYear)
+      theme && positionDropdownModule.methods.itemChanged(theme)
+    }
   },
   beforeDestroy() {
     redirectAfterSaveChanged(false)

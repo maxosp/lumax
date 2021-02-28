@@ -116,7 +116,16 @@ export default Vue.extend({
         }
       }
 
-      this.$emit('onRightClick', { data: { id: this.$props.nodeId }, event, type })
+      this.$emit('onRightClick', {
+        data: {
+          id: this.$props.nodeId,
+          subject: this.$props.node.subject.id,
+          studyYear: this.$props.node.study_year.id,
+          theme: this.$props.node.theme.id,
+        },
+        event,
+        type,
+      })
     },
   },
   mounted() {

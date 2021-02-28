@@ -160,7 +160,6 @@ export default Vue.extend({
       })
     },
     updateTypeSubject(id: number, isMondatory: boolean) {
-      console.log(isMondatory)
       changeIsMondatory(isMondatory)
       changeIdSubject(id)
     },
