@@ -11,11 +11,3 @@ export default Vue.extend({
   name: 'DefaultLayout',
 })
 </script>
-
-<style scoped>
-.layout {
-  height: 100vh;
-}
-</style>
-
-

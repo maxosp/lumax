@@ -4,14 +4,8 @@ import LoginLayout from '@/layouts/LoginLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
-import ThemesPage from '@/pages/themes/ThemesPage.vue'
-import ThemeCreationPage from '@/pages/theme-creation/ThemeCreationPage.vue'
-import ThemeEditionPage from '@/pages/theme-edition/ThemeEditionPage.vue'
-import LessonTaskCreationPage from '@/pages/task-creation/lesson/TaskCreationPage.vue'
-import OlympiadTaskCreationPage from '@/pages/task-creation/olympiad/TaskCreationPage.vue'
-import TestTaskCreationPage from '@/pages/task-creation/test/TaskCreationPage.vue'
-import subjectRoutes from '@/pages/subjects/subjects-routes'
-// import { checkUserAuthedMiddleware, checkUserGuestMiddleware } from '@/features/session/middlewares'
+import bankRoutes from '@/pages/bank/bank-routes'
+import dictionaryRoutes from '@/pages/dictionary/dictionary-routes'
 
 export const routes: RouteConfig[] = [
   {
@@ -44,55 +38,8 @@ export const routes: RouteConfig[] = [
           title: 'Стартовая страница - Школа Летово',
         },
       },
-      {
-        name: 'themes',
-        path: '/themes',
-        component: ThemesPage,
-        meta: {
-          title: 'Темы - Школа Летово',
-        },
-      },
-      {
-        name: 'theme-creation',
-        path: '/theme-creation',
-        component: ThemeCreationPage,
-        meta: {
-          title: 'Создание темы - Школа Летово',
-        },
-      },
-      {
-        name: 'theme-edition',
-        path: '/theme/edit/:id',
-        component: ThemeEditionPage,
-        meta: {
-          title: 'Редактирование темы - Школа Летово',
-        },
-      },
-      {
-        name: 'test-task-creation',
-        path: '/tasks/create/test-type',
-        component: TestTaskCreationPage,
-        meta: {
-          title: 'Создание тестового задания - Школа Летово',
-        },
-      },
-      {
-        name: 'olympiad-task-creation',
-        path: '/tasks/create/olympiad-type',
-        component: OlympiadTaskCreationPage,
-        meta: {
-          title: 'Создание олимпиадного задания - Школа Летово',
-        },
-      },
-      {
-        name: 'lesson-task-creation',
-        path: '/tasks/create/lesson-type',
-        component: LessonTaskCreationPage,
-        meta: {
-          title: 'Создание задания для уроков - Школа Летово',
-        },
-      },
-      ...subjectRoutes,
+      ...bankRoutes,
+      ...dictionaryRoutes,
       { name: 'default-route', path: '*', redirect: { name: 'home' } },
     ],
   },

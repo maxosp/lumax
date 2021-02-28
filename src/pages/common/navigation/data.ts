@@ -16,9 +16,9 @@ export const data: NavItem[] = [
     title: 'Банк заданий',
     icon: 'tasks',
     children: [
-      { title: 'Тестовые задания', link: 'test-task-creation' },
-      { title: 'Олимпиадные задания', link: 'olympiad-task-creation' },
-      { title: 'Задания для уроков', link: 'lesson-task-creation' },
+      { title: 'Тестовые задания', link: 'test-tasks-list' },
+      { title: 'Олимпиадные задания', link: 'olympiad-tasks-creation' },
+      { title: 'Задания для уроков', link: 'lesson-tasks-creation' },
     ],
   },
   {
@@ -94,8 +94,8 @@ export const data: NavItem[] = [
     title: 'Справочник',
     icon: 'folder',
     children: [
-      { title: 'Темы', link: 'themes' },
-      { title: 'Предметы', link: 'subject-list' },
+      { title: 'Темы', link: 'themes-list' },
+      { title: 'Предметы', link: 'subjects-list' },
       { title: 'Библиотека ресурсов', link: '/' },
       { title: 'Файлы пользователей', link: '/' },
       { title: 'Метки для тестовых заданий', link: '/' },

@@ -51,5 +51,3 @@ export default Vue.extend({
   width: calc(100vw - 240px);
 }
 </style>
-
-
