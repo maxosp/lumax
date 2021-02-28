@@ -4,7 +4,6 @@ import { subjectDropdownModule } from '@/pages/theme-edition/parts/subjects/subj
 import { addToast } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
-  resetSelectedThemes,
   themeDropdownModule,
 } from '@/pages/theme-edition/parts/themes/themes.model'
 import { classDropdownModule } from '@/pages/theme-edition/parts/class/class.model'
@@ -22,10 +21,6 @@ import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/theme-creation/constants'
-import {
-  $isPrerequisite,
-  isPrerequisiteChanged,
-} from '@/pages/theme-creation/parts/header/header.model'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 
 const getThemesTreeList = attach({
@@ -69,10 +64,12 @@ export const $prerequisiteTitle = restore(prerequisiteTitleChanged, '').reset(
   resetPrerequisiteTitle
 )
 
+export const isPrerequisiteChanged = createEvent<boolean>()
+export const $isPrerequisite = restore(isPrerequisiteChanged, false)
+
 forward({
   from: clearFields,
   to: [
-    isPrerequisiteChanged.prepend(() => false),
     resetThemeTitle,
     resetPrerequisiteTitle,
     classDropdownModule.methods.resetItem,
@@ -186,22 +183,6 @@ forward({
     resetClassError,
     resetPositionError,
     resetSubjectError,
-  ],
-})
-
-forward({
-  from: isPrerequisiteChanged,
-  to: [
-    resetThemeTitle,
-    resetPrerequisiteTitle,
-    classDropdownModule.methods.resetItem,
-    subjectDropdownModule.methods.resetItem,
-    positionDropdownModule.methods.resetItem,
-    prerequisiteDropdownModule.methods.resetItem,
-    themeDropdownModule.methods.resetItem,
-    resetSelectedPrerequisites,
-    resetSelectedThemes,
-    resetErrors,
   ],
 })
 
