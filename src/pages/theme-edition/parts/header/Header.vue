@@ -4,13 +4,6 @@
       <p class="title"> {{ title }} </p>
     </div>
     <div class="right">
-      <BaseSwitch
-        class="switch"
-        :checked="$isPrerequisite"
-        @change="toggleIsPrerequisite"
-      >
-        <p> Является пререквизитом </p>
-      </BaseSwitch>
       <BaseButton
         class="btn"
         yellow
@@ -32,27 +25,15 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Card from '@/ui/card/Card.vue'
-import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import {
-  $isPrerequisite,
-  toggleIsPrerequisite,
-} from '@/pages/theme-creation/parts/header/header.model'
 
 export default Vue.extend({
   components: {
     Card,
-    BaseSwitch,
     BaseButton,
-  },
-  effector: {
-    $isPrerequisite,
   },
   props: {
     title: { type: String as PropType<string> },
-  },
-  methods: {
-    toggleIsPrerequisite,
   },
 })
 </script>
@@ -76,10 +57,6 @@ export default Vue.extend({
   }
   .right {
     @mixin flex-row-central;
-    .switch {
-      margin-right: 30px;
-      margin-top: 0px;
-    }
     .btn {
       width: fit-content;
     }

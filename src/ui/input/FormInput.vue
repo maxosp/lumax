@@ -90,6 +90,7 @@ label {
   width: 100%;
   @mixin flex-column-central;
   align-items: flex-start;
+  position: relative;
   &.label {
     cursor: default;
   }

@@ -16,7 +16,9 @@ import '@/assets/css/common.css'
 dayjs.extend(relativeTime)
 dayjs.locale('ru')
 
-Vue.use(VTooltip)
+Vue.use(VTooltip, {
+  defaultBoundariesElement: document.body,
+})
 
 Vue.use(VueEffector)
 

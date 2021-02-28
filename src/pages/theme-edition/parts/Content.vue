@@ -73,8 +73,8 @@ import {
   $positionError,
   $subjectError,
   $classError,
+  $isPrerequisite,
 } from '@/pages/theme-edition/theme-edition-page.model'
-import { $isPrerequisite } from '@/pages/theme-creation/parts/header/header.model'
 
 export default Vue.extend({
   components: {

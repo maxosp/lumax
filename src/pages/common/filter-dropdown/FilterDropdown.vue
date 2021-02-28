@@ -100,7 +100,7 @@ export default Vue.extend({
       this.$props.methods.resetSearchString()
     },
     showTick(id: string) {
-      return this.selectedData && !!this.selectedData.find((el: any) => el.name === id)
+      return this.selectedData && !!this.selectedData.find((el: any) => +el.name === +id)
     },
     handleClick(val: DropdownItem, cb: any) {
       this.onSelectItem(val, cb)
