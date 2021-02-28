@@ -2,6 +2,7 @@ export const url = 'https://cdn.ckeditor.com/4.16.0/full/ckeditor.js'
 
 export const config = {
   language: 'ru',
+  allowedContent: true,
   toolbar: [
     [
       'Bold',
@@ -23,4 +24,31 @@ export const config = {
     ['BulletedList', 'NumberedList', 'Link', 'Table', 'Image', 'Iframe', 'Maximize', 'Source'],
   ],
   removeButtons: '',
+}
+
+// eslint-disable-next-line
+export const enableRules = (e: any): void => {
+  const { writer } = e.editor.dataProcessor
+  const rules = {
+    indent: false,
+    breakBeforeOpen: false,
+    breakAfterOpen: false,
+    breakBeforeClose: false,
+    breakAfterClose: false,
+  }
+  writer.setRules('p', rules)
+  writer.setRules('ul', rules)
+  writer.setRules('li', rules)
+  writer.setRules('ol', rules)
+  writer.setRules('blockquote', rules)
+  writer.setRules('table', rules)
+  writer.setRules('theader', rules)
+  writer.setRules('tbody', rules)
+  writer.setRules('tr', rules)
+  writer.setRules('td', rules)
+  writer.setRules('caption', rules)
+  writer.setRules('hr', rules)
+  writer.setRules('div', rules)
+  writer.setRules('address', rules)
+  writer.setRules('pre', rules)
 }

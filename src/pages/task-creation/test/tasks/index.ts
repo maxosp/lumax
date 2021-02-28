@@ -2,7 +2,7 @@ export { default as BroadFileAnswer } from './BroadFileAnswer/BroadFileAnswer.vu
 export { default as BroadOpenAnswer } from './BroadOpenAnswer/BroadOpenAnswer.vue'
 export { default as ColorHighlightAnswer } from './ColorHighlightAnswer.vue'
 export { default as CommonListStringAnswer } from './CommonListStringAnswer/CommonListStringAnswer.vue'
-export { default as CommonListTextAnswer } from './CommonListTextAnswer.vue'
+export { default as CommonListTextAnswer } from './CommonListTextAnswer/CommonListTextAnswer.vue'
 export { default as ConnectLinesAnswer } from './ConnectLinesAnswer/ConnectLinesAnswer.vue'
 export { default as CorrectSequenceAnswer } from './CorrectSequenceAnswer/CorrectSequenceAnswer.vue'
 export { default as MovingImagesImageInputAnswer } from './MovingImagesImageInputAnswer.vue'

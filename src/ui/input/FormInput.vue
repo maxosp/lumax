@@ -12,7 +12,7 @@
         :disabled="disabled"
         :readonly="readOnlyDropdown"
         class="inner-input"
-        :class="{'--error': hasError, '--disabled': disabled}"
+        :class="{filled: !!value, '--error': hasError, '--disabled': disabled}"
         v-on="{
           ...$listeners,
           input: (e) => $emit('input', e),
@@ -122,6 +122,10 @@ label {
       cursor: default;
     }
   }
+}
+.filled {
+  background: #fff;
+  border: 2px solid var(--c-grey-4);
 }
 .label {
   margin-bottom: 5px;

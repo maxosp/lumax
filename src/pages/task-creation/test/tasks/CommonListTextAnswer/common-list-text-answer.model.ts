@@ -5,7 +5,7 @@ import { LANGUAGE_DATA } from '@/pages/task-creation/test/parts/languages-dropdo
 import { getRandomId } from '@/pages/task-creation/test/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, ConnectLinesMatch } from '@/pages/task-creation/test/tasks/types'
+import { AudioFile, AnswerOption } from '@/pages/task-creation/test/tasks/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -23,8 +23,16 @@ export const $audioFiles = restore(setAudioFiles, [])
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '')
 
-export const setMatches = createEvent<ConnectLinesMatch[]>()
-export const $matches = restore(setMatches, [{ id: getRandomId(), matchA: '', matchB: '' }])
+export const setAnswersOptions = createEvent<AnswerOption[]>()
+export const $answersOptions = restore(setAnswersOptions, [
+  { id: getRandomId(), name: '', title: '' },
+])
+
+export const setCorrectAnswers = createEvent<DropdownItem[]>()
+export const $correctAnswers = restore(setCorrectAnswers, [])
+
+export const setTextTemplate = createEvent<string>()
+export const $textTemplate = restore(setTextTemplate, '')
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])

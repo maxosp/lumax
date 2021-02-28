@@ -1,6 +1,7 @@
 <template>
   <div class='wysiwyg'>
     <Ckeditor
+      :id="$props.editorId"
       :value="$props.value"
       :config="editorConfig"
       :editor-url="editorUrl"
@@ -12,7 +13,7 @@
 <script>
 import Vue from 'vue'
 import Ckeditor from 'ckeditor4-vue'
-import { config, url } from '@/ui/wysiwyg/constants'
+import { config, url, enableRules } from '@/ui/wysiwyg/constants'
 
 export default Vue.extend({
   name: 'Wysiwyg',
@@ -21,11 +22,35 @@ export default Vue.extend({
   },
   props: {
     value: { type: String, required: true, default: '' },
+    listenInsertion: { type: Boolean, required: false, default: false },
+    editorId: { type: String, required: false },
   },
   data() {
     return {
       editorUrl: url,
       editorConfig: config,
+    }
+  },
+  methods: {
+    handleInsert(event) {
+      const editor = window.CKEDITOR.instances.editor2
+
+      editor.focus()
+      editor.insertHtml(event.detail)
+    },
+  },
+  mounted() {
+    window.CKEDITOR.on('instanceReady', enableRules)
+
+    if (this.$props.listenInsertion) {
+      const editor = document.querySelector(`#${this.$props.editorId}`)
+      editor && editor.addEventListener('insert', this.handleInsert)
+    }
+  },
+  berforeDestroy() {
+    if (this.$props.listenInsertion) {
+      const editor = document.querySelector(`#${this.$props.editorId}`)
+      editor && editor.removeEventListener('insert', this.handleInsert)
     }
   },
 })
