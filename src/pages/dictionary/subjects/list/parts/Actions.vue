@@ -46,6 +46,10 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { navigatePush } from '@/features/navigation'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
+import {
+  contextMethodsOneSubject,
+  contextMethodsManySubjects,
+} from '@/pages/dictionary/subjects/list/constants'
 
 export default Vue.extend({
   name: 'Actions',
@@ -64,15 +68,7 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные предметы' }]
-      }
-      return [
-        { name: 'edit', title: 'Редактировать' },
-        { name: 'do_mandatory', title: 'Сделать обязательным' },
-        { name: 'do_optional', title: 'Сделать необязательным' },
-        { name: 'delete', title: 'Удалить' },
-      ]
+      return this.$props.selected.length ? contextMethodsManySubjects : contextMethodsOneSubject
     },
   },
   methods: {
@@ -87,8 +83,14 @@ export default Vue.extend({
         case 'delete':
           this.$emit('onRemove', this.$props.id)
           break
-        case 'delete-all':
+        case 'delete_all':
           this.$emit('onRemove', this.$props.selected)
+          break
+        case 'do_mandatory_all':
+          this.$emit('doMondatoryAll', this.$props.selected)
+          break
+        case 'do_optional_all':
+          this.$emit('doOptionalAll', this.$props.selected)
           break
         case 'do_mandatory':
           this.$emit('doMondatory', this.$props.id)

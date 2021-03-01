@@ -13,15 +13,27 @@
     />
     <div class='field'>
       <span class='label'>Описание</span>
-      <Wysiwyg :value="$subjectDescription" @input="subjectDescriptionChanged" />
+      <Wysiwyg
+        :value="$subjectDescription"
+        placeholder="Введите текст описания"
+        @input="subjectDescriptionChanged"
+      />
     </div>
     <div class='field'>
       <span class='label'>Краткая полезная информаиция</span>
-      <Wysiwyg :value="$useFulInfo" @input="useFulInfoChanged" />
+      <Wysiwyg
+        :value="$useFulInfo"
+        placeholder="Введите текст полезной информации для ученика"
+        @input="useFulInfoChanged"
+      />
     </div>
     <div class='field'>
       <span class='label'>Полезная информаиция</span>
-      <Wysiwyg :value="$shortUsefulInfo" @input="shortUsefulInfoChanged" />
+      <Wysiwyg
+        :value="$shortUsefulInfo"
+        placeholder="Введите текст полезной информации для ученика"
+        @input="shortUsefulInfoChanged"
+      />
     </div>
   </div>
 </template>

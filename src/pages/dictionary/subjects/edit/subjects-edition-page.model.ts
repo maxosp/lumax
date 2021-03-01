@@ -53,8 +53,11 @@ sample({
   source: $formToSend,
   clock: checkIfSubjectCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.name) {
+    if (obj.name && obj.name.trim().length < 31) {
       updateSubject()
+    } else if (obj.name && obj.name.trim().length > 30) {
+      subjectTitleErrorChanged(true)
+      addToast({ type: 'error', message: 'Название предмета содержит более 30 символов' })
     } else {
       if (!obj.name.trim().length) subjectTitleErrorChanged(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })

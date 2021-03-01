@@ -24,11 +24,12 @@ export default Vue.extend({
     value: { type: String, required: true, default: '' },
     listenInsertion: { type: Boolean, required: false, default: false },
     editorId: { type: String, required: false },
+    placeholder: { type: String, default: '' },
   },
   data() {
     return {
       editorUrl: url,
-      editorConfig: config,
+      editorConfig: { ...config, editorplaceholder: this.placeholder },
     }
   },
   methods: {

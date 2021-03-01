@@ -24,6 +24,7 @@ export const config = {
     ['BulletedList', 'NumberedList', 'Link', 'Table', 'Image', 'Iframe', 'Maximize', 'Source'],
   ],
   removeButtons: '',
+  editorplaceholder: '',
 }
 
 // eslint-disable-next-line

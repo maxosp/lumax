@@ -37,3 +37,11 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.dropdown /deep/ input {
+  &::placeholder {
+    color: var(--base-text-primary);
+  }
+}
+</style>

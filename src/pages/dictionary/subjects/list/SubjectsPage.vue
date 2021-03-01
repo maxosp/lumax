@@ -41,6 +41,8 @@
             @onRemove="removeSelected"
             @doMondatory="updateTypeSubject($event, true)"
             @doOptional="updateTypeSubject($event, false)"
+            @doMondatoryAll="updateTypeSubject($event, true)"
+            @doOptionalAll="updateTypeSubject($event, false)"
           />
         </template>
       </Vuetable>
@@ -64,6 +66,8 @@
       @onRemove="removeSelected"
       @doMondatory="updateTypeSubject($event, true)"
       @doOptional="updateTypeSubject($event, false)"
+      @doMondatoryAll="updateTypeSubject($event, true)"
+      @doOptionalAll="updateTypeSubject($event, false)"
     />
   </div>
 </template>
@@ -128,12 +132,6 @@ export default Vue.extend({
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
-      optionsActions: [
-        { name: 'edit', title: 'Редактировать' },
-        { name: 'do_mandatory', title: 'Сделать обязательным' },
-        { name: 'do_optional', title: 'Сделать необязательным' },
-        { name: 'delete', title: 'Удалить' },
-      ],
     }
   },
   computed: {
@@ -156,12 +154,8 @@ export default Vue.extend({
   methods: {
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
-        params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
+        params: { sort: computeSortParam(httpOptions.params.sort) },
       })
-    },
-    updateTypeSubject(id: number, isMondatory: boolean) {
-      changeIsMondatory(isMondatory)
-      changeIdSubject(id)
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
@@ -189,6 +183,14 @@ export default Vue.extend({
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
+    // TODO like removeSelected
+    updateTypeSubject(ids: number | number[], isMondatory: boolean) {
+      if (typeof ids === 'number') {
+        changeIsMondatory(isMondatory)
+        changeIdSubject(ids)
+      }
+    },
+    // TODO delete all
     async removeSelected(ids: number | number[]) {
       if (typeof ids === 'number') {
         await deleteSubject(ids)

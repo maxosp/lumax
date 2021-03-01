@@ -39,6 +39,10 @@ import ClickOutside from '@/features/directives/click-outside'
 import { DropdownItem } from '@/pages/common/types'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { navigatePush } from '@/features/navigation'
+import {
+  contextMethodsOneSubject,
+  contextMethodsManySubjects,
+} from '@/pages/dictionary/subjects/list/constants'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -56,24 +60,9 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.type === 'table_subjects') {
-        if (this.$props.selected.length) {
-          return [{ name: 'delete-all', title: 'Удалить выделенные предметы' }]
-        }
-      }
-      if (this.$props.type === 'subject') {
-        return [
-          { name: 'create', title: 'Создать предмет' },
-          { name: 'edit', title: 'Редактировать' },
-          { name: 'delete', title: 'Удалить' },
-        ]
-      }
-      return [
-        { name: 'edit', title: 'Редактировать' },
-        { name: 'do_mandatory', title: 'Сделать обязательным' },
-        { name: 'do_optional', title: 'Сделать необязательным' },
-        { name: 'delete', title: 'Удалить' },
-      ]
+      return this.$props.type === 'table_subjects' && this.$props.selected.length
+        ? contextMethodsManySubjects
+        : contextMethodsOneSubject
     },
   },
   methods: {
@@ -88,8 +77,14 @@ export default Vue.extend({
         case 'delete':
           this.$emit('onRemove', this.$props.id)
           break
-        case 'delete-all':
+        case 'delete_all':
           this.$emit('onRemove', this.$props.selected)
+          break
+        case 'do_mandatory_all':
+          this.$emit('doMondatoryAll', this.$props.selected)
+          break
+        case 'do_optional_all':
+          this.$emit('doOptionalAll', this.$props.selected)
           break
         case 'do_mandatory':
           this.$emit('doMondatory', this.$props.id)

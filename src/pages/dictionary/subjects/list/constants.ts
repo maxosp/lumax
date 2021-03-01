@@ -68,3 +68,15 @@ export const searchFieldsData = [
   { name: 'name', title: 'Название предмета' },
   { name: 'required_subject', title: 'Обязательный предмет' },
 ]
+
+export const contextMethodsOneSubject = [
+  { name: 'edit', title: 'Редактировать' },
+  { name: 'do_mandatory', title: 'Сделать обязательным' },
+  { name: 'do_optional', title: 'Сделать необязательным' },
+  { name: 'delete', title: 'Удалить' },
+]
+export const contextMethodsManySubjects = [
+  { name: 'delete_all', title: 'Удалить' },
+  { name: 'do_mandatory_all', title: 'Сделать обязательными' },
+  { name: 'do_optional_all', title: 'Сделать необязательными' },
+]
