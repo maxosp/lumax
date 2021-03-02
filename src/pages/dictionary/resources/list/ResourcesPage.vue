@@ -1,0 +1,321 @@
+<template>
+  <div id="themes-page">
+    <PageHeader />
+    <GeneralFilter
+      :search-fields="searchFields"
+      @setFilter="onFilterSet"
+      @handleFilterVisibility="toggleVisibility(!$visibility)"
+    >
+      <template #filter>
+        <ThemesFilter
+          :visible="$visibility"
+          :filter-params="filterParams"
+          @setFilter="onFilterSet"
+          @resetFilter="onFilterReset"
+        />
+      </template>
+    </GeneralFilter>
+    <div :class="{ invisible: !$treeView }">
+      <ThemesTree @onRightClick="handleRightClick" />
+    </div>
+    <ContextMenu
+      v-if="showContextMenu"
+      :id="clickedRowId"
+      :selected="$treeView ? [] : selectedRows"
+      :style="contextMenuStyles"
+      :type="contextMenuType"
+      :subject="subject"
+      :study-year="studyYear"
+      :theme="theme"
+      class="context-menu"
+      @onOutsideClick="hideContextMenu"
+      @onRemove="removeSelected"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import VueEvents from 'vue-events'
+import PageHeader from '@/pages/dictionary/resources/list/parts/PageHeader.vue'
+// UPDATE
+import ContextMenu from '@/pages/dictionary/themes/list/parts/ContextMenu.vue'
+import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
+import ThemesFilter from '@/pages/dictionary/themes/list/parts/themes-filter/ThemesFilter.vue'
+import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
+import {
+  $treeView,
+  loadTree,
+  $themesTreeTotal,
+  deleteTheme,
+} from '@/pages/dictionary/themes/list/themes-page.model'
+import {
+  toggleVisibility,
+  $visibility,
+} from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
+import { reset } from '@/pages/common/general-filter/general-filter.model'
+import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
+import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
+
+Vue.use(VueEvents)
+
+type RightClickParams = {
+  data: any
+  event: any
+  type?: ContextMenuType
+}
+
+export default Vue.extend({
+  name: 'ThemesPage',
+  components: {
+    PageHeader,
+    GeneralFilter,
+    ThemesFilter,
+    ContextMenu,
+    ThemesTree,
+  },
+  effector: {
+    $visibility,
+    $treeView,
+    $themesTreeTotal,
+  },
+  data() {
+    return {
+      clickedRowId: 0,
+      showContextMenu: false,
+      contextMenuType: 'table_theme',
+      contextMenuStyles: { top: '0', left: '0' },
+      fields: themesTableFields,
+      searchFields: searchFieldsData,
+      total: 0,
+      filterParams: {},
+      subject: null,
+      studyYear: null,
+      theme: null,
+    }
+  },
+  computed: {
+    selectedRows(): number[] {
+      // @ts-ignore
+      if (!this.$refs.vuetable) return []
+      // @ts-ignore
+      return this.$refs.vuetable.selectedTo
+    },
+  },
+  methods: {
+    toggleVisibility,
+    onFilterSet(newFilter: any) {
+      this.filterParams = newFilter
+      loadTree({ ...this.filterParams })
+      // @ts-ignore
+      Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+    onFilterReset() {
+      this.filterParams = {}
+      reset() // search string and field
+
+      // reload data
+      loadTree({})
+      // @ts-ignore
+      Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+    async removeSelected(ids: number | number[]) {
+      if (typeof ids === 'number') {
+        await deleteTheme(ids)
+        // @ts-ignore
+        await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      }
+    },
+    handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+      this.subject = data.subject
+      this.studyYear = data.studyYear
+      this.theme = data.theme
+      const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
+      this.clickedRowId = data.id
+      this.showContextMenu = true
+      this.contextMenuType = type
+      this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
+      event.preventDefault()
+    },
+    hideContextMenu() {
+      this.showContextMenu = false
+    },
+  },
+  mounted() {
+    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
+    this.$events.$on('filter-reset', () => this.onFilterReset())
+    loadTree({})
+  },
+})
+</script>
+
+<style scoped>
+.invisible {
+  display: none;
+}
+
+.table-container {
+  overflow-x: auto;
+  background-color: #fff;
+}
+
+.table /deep/ tr:nth-child(2n) {
+  background-color: var(--c-grey-7);
+}
+
+.table /deep/ .ui.table thead th {
+  background-color: #fff;
+}
+
+.table /deep/ .ui.table {
+  border-radius: 0px;
+  border: none;
+}
+
+.table /deep/ .ui.table,
+.table /deep/ .ui.table thead th,
+.table /deep/ .ui.celled.table tr td,
+.table /deep/ .ui.celled.table tr th {
+  border-bottom: none;
+  border-left: none;
+  border-top: none;
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.table /deep/ .vuetable-slot {
+  overflow: initial !important;
+}
+
+.table /deep/ th[class^='vuetable-th'] {
+  color: var(--base-text-primary);
+  font-weight: 600;
+}
+
+.table /deep/ [type='checkbox'] {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  background: #d0d7e0;
+  border-radius: 7px;
+  border: none;
+  appearance: none;
+}
+
+.table /deep/ [type='checkbox']:checked {
+  width: 24px;
+  height: 24px;
+  background: var(--base-text-primary);
+  border-radius: 7px;
+  border: none;
+  appearance: none;
+  position: relative;
+  &::after {
+    content: '\2143';
+    color: #fff;
+    text-align: center;
+    position: absolute;
+    left: 6px;
+    bottom: 4px;
+    font-size: 16px;
+    transform: rotate(35deg);
+    font-weight: bold;
+  }
+}
+
+.no-data-content {
+  width: 100%;
+  min-height: 550px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--base-text-secondary);
+  & > div + div {
+    margin-top: 10px;
+  }
+}
+.vuetable-pagination {
+  display: flex;
+  justify-content: center;
+  background-color: transparent !important;
+  margin: 30px 0 !important;
+  position: sticky;
+  left: 0;
+  & ::v-deep .pagination {
+    min-height: unset;
+    border: unset;
+    box-shadow: unset;
+    background-color: transparent;
+    .item {
+      width: 30px;
+      min-width: unset;
+      height: 30px;
+      padding: 0;
+      border-radius: 7px !important;
+      border: 2px solid var(--base-text-primary);
+      background-color: transparent;
+      line-height: 18px;
+      font-weight: 600;
+      color: var(--base-text-primary);
+      @mixin flex-center;
+      &.active {
+        padding: 0;
+        border-top: 2px solid var(--base-text-primary);
+        color: #fff;
+        background-color: var(--base-text-primary);
+      }
+      &.disabled {
+        opacity: 0.5;
+      }
+      &::before {
+        display: none;
+      }
+      &.btn-nav {
+        @mixin flex-center;
+        .icon {
+          height: fit-content;
+          width: 10px;
+          opacity: 1;
+          margin: 0;
+        }
+        .icon.chevron {
+          content: url('~assets/icons/icons/chevron-single.svg');
+          position: relative;
+          left: 1px;
+        }
+        .icon.right.chevron {
+          transform: rotate(180deg);
+          left: -1px;
+        }
+        .icon.double {
+          content: url('~assets/icons/icons/chevron-double.svg');
+        }
+        .icon.double.right {
+          transform: rotate(180deg);
+        }
+        .icon::before,
+        .icon::after {
+          content: '';
+        }
+      }
+    }
+    .item:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+}
+.reset-filters {
+  color: var(--base-text-primary);
+  cursor: pointer;
+  @mixin underline-text;
+}
+
+.context-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>

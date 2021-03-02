@@ -7,6 +7,8 @@ import SubjectEditionPage from '@/pages/dictionary/subjects/edit/SubjectEditionP
 import ThemesPage from '@/pages/dictionary/themes/list/ThemesPage.vue'
 import ThemeCreationPage from '@/pages/dictionary/themes/create/ThemeCreationPage.vue'
 import ThemeEditionPage from '@/pages/dictionary/themes/edit/ThemeEditionPage.vue'
+// resources
+import ResourcesPage from '@/pages/dictionary/resources/list/ResourcesPage.vue'
 
 export default [
   {
@@ -81,6 +83,41 @@ export default [
             component: ThemeEditionPage,
             meta: {
               title: 'Редактирование темы - Школа Летово',
+            },
+          },
+        ],
+      },
+      {
+        name: 'resources',
+        path: 'resources',
+        meta: {
+          title: 'Библиотека ресурсов - Школа Летово',
+        },
+        redirect: { name: 'resources-list' },
+        component: DefaultLayout,
+        children: [
+          {
+            name: 'resources-list',
+            path: 'list',
+            component: ResourcesPage,
+            meta: {
+              title: 'Библиотека ресурсов - Школа Летово',
+            },
+          },
+          {
+            name: 'resources-create',
+            path: 'create',
+            component: ThemeCreationPage,
+            meta: {
+              title: 'Создание ресурса - Школа Летово',
+            },
+          },
+          {
+            name: 'resources-edit',
+            path: 'edit/:id',
+            component: ThemeEditionPage,
+            meta: {
+              title: 'Редактирование ресурса - Школа Летово',
             },
           },
         ],
