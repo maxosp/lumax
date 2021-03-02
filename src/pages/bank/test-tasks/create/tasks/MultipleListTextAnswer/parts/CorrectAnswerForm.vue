@@ -45,7 +45,7 @@
             :value="answer.value"
             placeholder="Введите ответ"
             class="input"
-            @input="(value) => handleAnswerChange({ id: answer.id, listId: list.id })"
+            @input="(value) => handleAnswerChange({ id: answer.id, listId: list.id, value })"
           />
           <div
             v-if="index === list.answers.length - 1"
