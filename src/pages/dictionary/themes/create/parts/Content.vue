@@ -134,4 +134,20 @@ export default Vue.extend({
 .--error ::v-deep .inner-input {
   border: 2px solid var(--c-red-0) !important;
 }
+@media screen and (max-width: 1340px) {
+  .content ::v-deep .content {
+    justify-content: flex-start;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding-bottom: 30px;
+  }
+  .left {
+    margin-right: 30px;
+    min-width: 630px;
+  }
+  .right {
+    min-width: 320px;
+  }
+}
 </style>
