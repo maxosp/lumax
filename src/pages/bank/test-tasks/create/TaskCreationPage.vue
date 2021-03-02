@@ -1,6 +1,6 @@
 <template>
   <div class="test-task-creation">
-    <TaskHeader 
+    <TaskHeader
       title="Создание тестового задания"
       @save="updateSubject(false)"
       @saveAndBackToList="updateSubject(true)"

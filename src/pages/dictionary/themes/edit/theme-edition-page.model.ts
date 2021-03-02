@@ -1,12 +1,20 @@
 import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
 import { condition, debounce, every } from 'patronum'
-import { subjectDropdownModule } from '@/pages/dictionary/themes/edit/parts/subjects/subjects.model'
+import {
+  $selectedSubject,
+  setSelectedSubject,
+  subjectDropdownModule,
+} from '@/pages/dictionary/themes/edit/parts/subjects/subjects.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
   themeDropdownModule,
 } from '@/pages/dictionary/themes/edit/parts/themes/themes.model'
-import { classDropdownModule } from '@/pages/dictionary/themes/edit/parts/class/class.model'
+import {
+  $selectedClass,
+  classDropdownModule,
+  setSelectedClass,
+} from '@/pages/dictionary/themes/edit/parts/class/class.model'
 import { positionDropdownModule } from '@/pages/dictionary/themes/edit/parts/position/position.model'
 import {
   $selectedPrerequisites,
@@ -82,32 +90,22 @@ forward({
     prerequisiteDropdownModule.methods.resetSearchString,
     themeDropdownModule.methods.resetItem,
     themeDropdownModule.methods.resetSearchString,
+    setSelectedSubject.prepend(() => null),
+    setSelectedClass.prepend(() => null),
   ],
 })
 
 export const $canSetThemePosition = every({
   predicate: (value) => value !== null,
-  stores: [subjectDropdownModule.store.$item, classDropdownModule.store.$item],
+  stores: [$selectedSubject, $selectedClass],
 })
 
 export const $formToSend = combine({
   id: DEFAULT_ID,
   name: $themeTitle,
   is_prerequisite: $isPrerequisite,
-  study_year_id: combine(
-    {
-      list: classDropdownModule.store.$itemsDropdown,
-      elem: classDropdownModule.store.$item,
-    },
-    ({ list, elem }) => list.find((item) => item.name === elem)?.id!
-  ),
-  subject_id: combine(
-    {
-      list: subjectDropdownModule.store.$itemsDropdown,
-      elem: subjectDropdownModule.store.$item,
-    },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
-  ),
+  study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => data && +data.name)),
   prerequisites_ids: $selectedPrerequisites.map((arr) => arr.map((data) => +data.name)),
   parent_theme_id: positionDropdownModule.store.$item.map((data) =>
@@ -119,13 +117,7 @@ export const $formToSendPrerequisite = combine({
   id: DEFAULT_ID,
   name: $prerequisiteTitle,
   is_prerequisite: $isPrerequisite,
-  subject_id: combine(
-    {
-      list: subjectDropdownModule.store.$itemsDropdown,
-      elem: subjectDropdownModule.store.$item,
-    },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
-  ),
+  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
 
@@ -137,7 +129,19 @@ sample({
     themeTitleChanged(theme.name)
     prerequisiteTitleChanged(theme.name)
     classDropdownModule.methods.itemChanged(`${theme.study_year ? theme.study_year.number : null}`)
+    theme.study_year &&
+      setSelectedClass({
+        id: theme.study_year.id,
+        name: `${theme.study_year.id}`,
+        title: theme.study_year.name,
+      })
     subjectDropdownModule.methods.itemChanged(`${theme.subject.id}`)
+    theme.subject &&
+      setSelectedSubject({
+        id: theme.subject.id,
+        name: `${theme.subject.id}`,
+        title: theme.subject.name,
+      })
     const prerequisites = theme.prerequisites.map((el) => ({ name: `${el.id}`, title: el.name }))
     setSelectedPrerequisites(prerequisites)
     const themes = theme.themes.map((el) => ({ name: `${el.id}`, title: el.name, id: el.id }))
@@ -191,14 +195,13 @@ forward({
   to: [positionDropdownModule.methods.resetItem.prepend(() => ({})), resetSelectedPrerequisites],
 })
 
-const canGetThemesList = combine(
-  classDropdownModule.store.$item,
-  subjectDropdownModule.store.$item,
-  (cl, obj) => ({ study_year: +cl!, subject: +obj! })
-)
+const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
+  study_year: cl && +cl.name,
+  subject: obj && +obj.name,
+}))
 
 const debounced = debounce({
-  source: canGetThemesList,
+  source: $formToGetThemeList,
   timeout: 150,
 })
 
@@ -206,18 +209,13 @@ forward({
   from: debounced,
   to: [
     getThemesTreeList.prepend((data) => {
-      if (data.study_year > 0)
-        return {
-          study_year: data.study_year,
-          subject: data.subject,
-          is_prerequisite: false,
-        }
       return {
-        subject: data.subject,
+        study_year: data.study_year ? data.study_year : undefined,
+        subject: data.subject ? data.subject : undefined,
         is_prerequisite: false,
       }
     }),
-    getThemesListFx.prepend((data) => ({ subject: data.subject })),
+    getThemesListFx.prepend((data) => ({ subject: data.subject || undefined })),
   ],
 })
 

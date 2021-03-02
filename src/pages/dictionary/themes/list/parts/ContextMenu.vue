@@ -53,9 +53,9 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
     type: { type: String as PropType<ContextMenuType>, required: true },
-    subject: { type: Number as PropType<number | null> },
-    studyYear: { type: Number as PropType<number | null> },
-    theme: { type: Number as PropType<number | null> },
+    subject: { type: [Number, null] as PropType<number | null> },
+    studyYear: { type: [Number, null] as PropType<number | null> },
+    theme: { type: [Number, null] as PropType<number | null> },
   },
   computed: {
     items(): DropdownItem[] {

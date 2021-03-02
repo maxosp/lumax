@@ -30,7 +30,6 @@ export default Vue.extend({
   },
   methods: {
     ...classesDropdownModule.methods,
-    loadClasses,
     onSelectItem(item: DropdownItem | null) {
       this.$emit('setItem', item ? item.name : null)
     },

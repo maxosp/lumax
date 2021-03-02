@@ -8,7 +8,11 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Cookies from 'js-cookie'
 import VTooltip from 'v-tooltip'
+
+import { formatTagTitle } from '@/pages/tags/utils'
+import { formatThemeTitle } from '@/pages/dictionary/themes/utils'
 import { formatTotalAmount } from '@/pages/dictionary/themes/list/utils'
+
 import App from './App.vue'
 import { routes } from './routes'
 import 'dayjs/locale/ru'
@@ -21,8 +25,11 @@ Vue.use(VTooltip, {
   defaultBoundariesElement: document.body,
 })
 
-Vue.use(VueEffector)
+Vue.filter('formatTagTitle', formatTagTitle)
+Vue.filter('formatThemeTitle', formatThemeTitle)
 Vue.filter('formatTotalAmount', formatTotalAmount)
+
+Vue.use(VueEffector)
 
 Vue.config.productionTip = false
 

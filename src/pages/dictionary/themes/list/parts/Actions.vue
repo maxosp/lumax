@@ -78,12 +78,18 @@ export default Vue.extend({
       this.isOpen = !this.isOpen
     },
     handleAction(item: SelectItemI) {
-      if (item.name === 'edit') {
-        navigatePush({ name: 'themes-edit', params: { id: this.$props.id } })
-      } else if (item.name === 'delete') {
-        this.$emit('onRemove', this.$props.id)
-      } else if (item.name === 'delete-all') {
-        this.$emit('onRemove', this.$props.selected)
+      switch (item.name) {
+        case 'edit':
+          navigatePush({ name: 'themes-edit', params: { id: this.$props.id } })
+          break
+        case 'delete':
+          this.$emit('onRemove', this.$props.id)
+          break
+        case 'delete-all':
+          this.$emit('onRemove', this.$props.selected)
+          break
+        default:
+          break
       }
     },
     closeMenu() {
