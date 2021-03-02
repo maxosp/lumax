@@ -35,6 +35,11 @@ export default Vue.extend({
     handleInsert(event) {
       const editor = window.CKEDITOR.instances.editor2
 
+      if (!editor) {
+        alert('Editor did not instanced, try to reload page')
+        return
+      }
+
       editor.focus()
       editor.insertHtml(event.detail)
     },
