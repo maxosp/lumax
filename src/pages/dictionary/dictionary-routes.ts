@@ -9,6 +9,7 @@ import ThemeCreationPage from '@/pages/dictionary/themes/create/ThemeCreationPag
 import ThemeEditionPage from '@/pages/dictionary/themes/edit/ThemeEditionPage.vue'
 // resources
 import ResourcesPage from '@/pages/dictionary/resources/list/ResourcesPage.vue'
+import ResourceCreationPage from '@/pages/dictionary/resources/create/ResourceCreationPage.vue'
 
 export default [
   {
@@ -107,7 +108,7 @@ export default [
           {
             name: 'resources-create',
             path: 'create',
-            component: ThemeCreationPage,
+            component: ResourceCreationPage,
             meta: {
               title: 'Создание ресурса - Школа Летово',
             },

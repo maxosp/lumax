@@ -1,5 +1,5 @@
 <template>
-  <div id="themes-page">
+  <div id="resources-page">
     <PageHeader />
     <GeneralFilter
       :search-fields="searchFields"
@@ -7,7 +7,7 @@
       @handleFilterVisibility="toggleVisibility(!$visibility)"
     >
       <template #filter>
-        <ThemesFilter
+        <ResourcesFilter
           :visible="$visibility"
           :filter-params="filterParams"
           @setFilter="onFilterSet"
@@ -41,7 +41,7 @@ import PageHeader from '@/pages/dictionary/resources/list/parts/PageHeader.vue'
 // UPDATE
 import ContextMenu from '@/pages/dictionary/themes/list/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
-import ThemesFilter from '@/pages/dictionary/themes/list/parts/themes-filter/ThemesFilter.vue'
+import ResourcesFilter from '@/pages/dictionary/resources/list/parts/resources-filter/ResourcesFilter.vue'
 import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
 import {
   $treeView,
@@ -52,9 +52,9 @@ import {
 import {
   toggleVisibility,
   $visibility,
-} from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
+} from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
-import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
+import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 
 Vue.use(VueEvents)
@@ -66,11 +66,11 @@ type RightClickParams = {
 }
 
 export default Vue.extend({
-  name: 'ThemesPage',
+  name: 'ResourcesPage',
   components: {
     PageHeader,
     GeneralFilter,
-    ThemesFilter,
+    ResourcesFilter,
     ContextMenu,
     ThemesTree,
   },
@@ -85,7 +85,6 @@ export default Vue.extend({
       showContextMenu: false,
       contextMenuType: 'table_theme',
       contextMenuStyles: { top: '0', left: '0' },
-      fields: themesTableFields,
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
@@ -107,8 +106,6 @@ export default Vue.extend({
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadTree({ ...this.filterParams })
-      // @ts-ignore
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
       this.filterParams = {}
@@ -116,14 +113,10 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    async removeSelected(ids: number | number[]) {
+    removeSelected(ids: number | number[]) {
       if (typeof ids === 'number') {
-        await deleteTheme(ids)
-        // @ts-ignore
-        await Vue.nextTick(() => this.$refs.vuetable.refresh())
+        deleteTheme(ids)
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {

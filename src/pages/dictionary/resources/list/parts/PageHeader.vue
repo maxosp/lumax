@@ -10,7 +10,7 @@
           Добавить папку
         </BaseButton>
       </RouterLink>
-      <RouterLink :to="{ name: 'themes-create' }">
+      <RouterLink :to="{ name: 'resources-create' }">
         <BaseButton
           class="btn"
           yellow

@@ -2,64 +2,26 @@
   <div
     v-click-outside="closeFilter"
     v-if="$props.visible"
-    class="themes-filter"
+    class="resources-filter"
   >
     <div class="section">
+      <BaseSwitch
+        class="switch"
+        :checked="$createdByMe"
+        @change="createdByMeChanged"
+      >
+        <p>Созданные мной</p>
+      </BaseSwitch>
+    </div>
+    <div class="section">
+      <!-- тип пререквизита -->
       <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
-      <BaseSwitch
-        class="switch"
-        :checked="$togglers.hide_prerequisites"
-        @change="val => {
-          setToggler('hide_prerequisites', val)
-          if (val) {
-            setToggler('show_only_prerequisites', false)
-          }
-        }"
-      >
-        <p>Скрыть пререквизиты</p>
-      </BaseSwitch>
-      <BaseSwitch
-        class="switch"
-        :checked="$togglers.show_only_prerequisites"
-        @change="val => {
-          setToggler('show_only_prerequisites', val)
-          if (val) {
-            setToggler('hide_prerequisites', false)
-          }
-        }"
-      >
-        <p>Отобразить только пререквизиты</p>
-      </BaseSwitch>
-    </div>
-    <div class="section">
+      <!-- тема -->
       <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
-      <BaseSwitch
-        class="switch"
-        :checked="$togglers.show_without_tasks"
-        @change="val => {
-          setToggler('show_without_tasks', val)
-          if (val) {
-            setToggler('show_with_tasks', false)
-          }
-        }"
-      >
-        <p>Отобразить только темы без заданий</p>
-      </BaseSwitch>
-      <BaseSwitch
-        class="switch"
-        :checked="$togglers.show_with_tasks"
-        @change="val => {
-          setToggler('show_with_tasks', val)
-          if (val) {
-            setToggler('show_without_tasks', false)
-          }
-        }"
-      >
-        <p>Отобразить только темы с заданиями</p>
-      </BaseSwitch>
     </div>
     <div class="section">
-      <AuthorsDropdown @setItem="val => changeFilter('created_by', val)" />
+      <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
+      <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
       <div class="buttons">
         <div class="btn">
           <BaseButton
@@ -96,35 +58,32 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import AuthorsDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/authors-dropdown/AuthorsDropdown.vue'
 import ClassesDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/ClassesDropdown.vue'
 import SubjectsDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/SubjectsDropdown.vue'
 import { authorsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/authors-dropdown/authors-dropdown.model'
 import { classesDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
 import {
-  $togglers,
-  setTogglers,
+  $createdByMe,
+  createdByMeChanged,
   reset,
   toggleVisibility,
-} from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
-import { mapTogglerToEntity } from '@/pages/dictionary/themes/list/parts/themes-filter/constants'
+} from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
 
 Vue.directive('click-outside', ClickOutside)
 
 export default Vue.extend({
-  name: 'ThemesFilter',
+  name: 'ResourcesFilter',
   components: {
     Icon,
     BaseSwitch,
     BaseButton,
-    AuthorsDropdown,
     ClassesDropdown,
     SubjectsDropdown,
   },
   effector: {
-    $togglers,
+    $createdByMe,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
@@ -141,6 +100,7 @@ export default Vue.extend({
   },
   methods: {
     toggleVisibility,
+    createdByMeChanged,
     closeFilter(event) {
       // check for close icon (clear filter dropdown)
       if (event.target.href && event.target.href.baseVal === '#close-icon') {
@@ -155,24 +115,13 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    setToggler(name, value) {
-      setTogglers({
-        ...this.$togglers,
-        [name]: value,
-      })
-    },
     changeFilter(name, value) {
       this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
     },
     applyFilters() {
       // set switchers values to filter
       const filter = {}
-      Object.keys(this.$togglers).forEach((toggler) => {
-        if (this.$togglers[toggler]) {
-          const togglerEntity = mapTogglerToEntity[toggler]
-          filter[togglerEntity.name] = togglerEntity.value
-        }
-      })
+      // TO DO ADD Toggler
       // set dropdowns value to filter
       Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
         if (this.dropdownsFilter[dropdownFilterKey]) {
@@ -197,26 +146,29 @@ export default Vue.extend({
     },
   },
   mounted() {
-    const container = document.querySelector('#themes-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
+    const container = document.querySelector('#resources-page')
+    container && container.addEventListener('reset-resources-filter', this.resetFilters, false)
   },
   beforeDestroy() {
-    const container = document.querySelector('#themes-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
+    const container = document.querySelector('#resources-page')
+    container && container.removeEventListener('reset-resources-filter', this.resetFilters, false)
   },
 })
 </script>
 
 <style scoped>
-.themes-filter {
+.resources-filter {
   position: absolute;
   top: 50px;
   left: 0;
   width: 100%;
-  padding: 30px 20px;
+  padding: 20px;
   background-color: #fff;
   z-index: 1;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.1);
   border-radius: 7px;
 }
@@ -224,25 +176,35 @@ export default Vue.extend({
 .section {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex-grow: 1;
-  & + .section {
-    margin-left: 40px;
+  .dropdown:first-child {
+    margin-bottom: 20px;
   }
+}
+
+.section:first-child {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.section:nth-child(2) {
+  width: calc((100% - 40px) / 3 * 2);
+  max-width: 720px;
+}
+.section:nth-child(3) {
+  width: calc((100% - 40px) / 3);
+  max-width: 360px;
+  margin-left: 40px;
 }
 
 .switch {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 20px;
-  & + .switch {
-    margin-top: 15px;
-  }
 }
 
 .buttons {
   display: flex;
+  margin-top: 20px;
 }
 
 .btn {
@@ -252,20 +214,23 @@ export default Vue.extend({
 .borderless {
   border-color: transparent !important;
   @mixin underline-text;
+  margin-left: 20px;
 }
 
 .close-icon {
   cursor: pointer;
-  position: relative;
-  top: -10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
   fill: var(--c-grey-3);
 }
 
 .arrow-up {
-  position: relative;
+  position: absolute;
   width: 0;
   height: 0;
-  top: -40px;
+  right: 19px;
+  top: -10px;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid #fff;
