@@ -50,3 +50,14 @@ export type ConnectLinesMatch = {
   matchA: string
   matchB: string
 }
+
+export type MultipleListTextAnswerOption = {
+  id: number
+  value: string
+  isCorrect: boolean
+}
+
+export type MultipleListTextAnswer = {
+  id: number
+  answers: MultipleListTextAnswerOption[]
+}

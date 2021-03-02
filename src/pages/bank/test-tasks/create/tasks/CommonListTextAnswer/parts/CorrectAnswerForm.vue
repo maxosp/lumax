@@ -23,6 +23,11 @@
         :key="answer.id"
         class="correct-answer"
       >
+        <div
+          :class="{ 's-bookmark': true, 'first-mark': idx === 0}"
+        >
+          S{{ idx + 1 }}
+        </div>
         <BaseDropdown
           class="dropdown"
           :placeholder="answer.title"
@@ -42,7 +47,6 @@
           </template>
         </BaseDropdown>
         <div
-          v-if="$correctAnswers.length > 1 && idx !== $correctAnswers.length - 1"
           :class="{ transparent: true, 'icon-btn': true, 'first-icon': idx === 0 }"
           @click="removeCorrectAnswer({ id: answer.id })"
         >
@@ -116,7 +120,11 @@ import {
   $textTemplate,
   setTextTemplate,
 } from '@/pages/bank/test-tasks/create/tasks/CommonListTextAnswer/common-list-text-answer.model'
-import { getRandomId } from '@/pages/bank/test-tasks/create/tasks/utils'
+import {
+  getRandomId,
+  getInputsIds,
+  getArraysDiff,
+} from '@/pages/bank/test-tasks/create/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -138,8 +146,13 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        console.log('current', val)
-        console.log('old', oldVal)
+        if (val.split('<input').length < oldVal.split('<input').length) {
+          const oldInputsIds = getInputsIds(oldVal)
+          const newInputsIds = getInputsIds(val)
+
+          const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
+          this.removeCorrectAnswer({ id: diffInputId })
+        }
       },
     },
   },
@@ -154,12 +167,25 @@ export default Vue.extend({
       setCorrectAnswers(correctAnswers)
       cb()
     },
-    addCorrectAnswer() {
-      setCorrectAnswers([...this.$correctAnswers, { id: getRandomId(), name: '', title: '' }])
+    addCorrectAnswer({ id }) {
+      setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
     removeCorrectAnswer({ id }) {
       const correctAnswers = this.$correctAnswers.filter((answer) => answer.id !== id)
       setCorrectAnswers(correctAnswers)
+
+      // remove from editor
+      const inputStr = `<input id="${id}" type="" value="`
+      const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
+      const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
+      const indexOfInputEnding = cuttedBeginning.indexOf('/>')
+      const inputToRemove = this.$textTemplate.slice(
+        indexOfInputBeginning,
+        // 2 - length of "/>" string
+        indexOfInputBeginning + indexOfInputEnding + 2
+      )
+      const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+      setTextTemplate(newTextTemplate)
     },
     handleAnswerOptionChange({ id, value }) {
       const answersOptions = this.$answersOptions.map((option) =>
@@ -175,9 +201,10 @@ export default Vue.extend({
       setAnswersOptions(answersOptions)
     },
     addList() {
-      this.addCorrectAnswer()
+      const id = `input-${getRandomId()}`
+      this.addCorrectAnswer({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="input-${this.$correctAnswers.length}" type="" value="S${this.$correctAnswers.length}" />`,
+        detail: `<input id="${id}" type="" value="S${this.$correctAnswers.length}" />`,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
 
@@ -220,11 +247,34 @@ export default Vue.extend({
   margin-bottom: 25px;
 }
 
+.correct-answer,
 .answer-option {
+  position: relative;
   display: flex;
   align-items: center;
 }
 
+.s-bookmark {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border-radius: 7px;
+  background-color: var(--base-text-primary);
+  width: 46px;
+  height: 46px;
+  top: 4px;
+  left: -76px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.first-mark {
+  top: 18px;
+}
+
+.dropdown,
 .answer-option-input {
   flex-grow: 1;
 }

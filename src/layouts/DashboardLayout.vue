@@ -43,7 +43,6 @@ export default Vue.extend({
 }
 .content {
   width: calc(100vw - 60px);
-  overflow-x: auto;
   padding: 30px;
   box-sizing: border-box;
 }
