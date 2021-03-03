@@ -15,13 +15,13 @@
     </div>
     <div class="section">
       <!-- тип пререквизита -->
-      <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
+      <TypeDropdown @setItem="val => changeFilter('type', val)" />
       <!-- тема -->
-      <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
+      <ThemeDropdown @setItem="val => changeFilter('theme', val)" />
     </div>
     <div class="section">
-      <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
-      <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
+      <SubjectDropdown @setItem="val => changeFilter('subject', val)" />
+      <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
       <div class="buttons">
         <div class="btn">
           <BaseButton
@@ -58,11 +58,14 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import ClassesDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/ClassesDropdown.vue'
-import SubjectsDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/SubjectsDropdown.vue'
-import { authorsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/authors-dropdown/authors-dropdown.model'
-import { classesDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
+import ClassDropdown from '@/pages/dictionary/resources/list/parts/resources-filter/parts/class/ClassDropdown.vue'
+import SubjectDropdown from '@/pages/dictionary/resources/list/parts/resources-filter/parts/subject/SubjectDropdown.vue'
+import ThemeDropdown from '@/pages/dictionary/resources/list/parts/resources-filter/parts/theme/ThemeDropdown.vue'
+import TypeDropdown from '@/pages/dictionary/resources/list/parts/resources-filter/parts/type/TypeDropdown.vue'
+import { classDropdownModule } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/class/class-dropdown.model'
+import { subjectDropdownModule } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/subject/subject-dropdown.model'
+import { themeDropdownModule } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/theme/theme-dropdown.model'
+import { typeDropdownModule } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/type/type-dropdown.model'
 import {
   $createdByMe,
   createdByMeChanged,
@@ -79,8 +82,10 @@ export default Vue.extend({
     Icon,
     BaseSwitch,
     BaseButton,
-    ClassesDropdown,
-    SubjectsDropdown,
+    ClassDropdown,
+    SubjectDropdown,
+    ThemeDropdown,
+    TypeDropdown,
   },
   effector: {
     $createdByMe,
@@ -93,9 +98,10 @@ export default Vue.extend({
     return {
       dropdownsFilter: { subject: null, study_year: null, created_by: null },
       // modules methods should be here for reset
-      authorsModuleMethods: authorsDropdownModule.methods,
-      classesModuleMethods: classesDropdownModule.methods,
-      subjectsModuleMethods: subjectsDropdownModule.methods,
+      classModuleMethods: classDropdownModule.methods,
+      subjectModuleMethods: subjectDropdownModule.methods,
+      themeModuleMethods: themeDropdownModule.methods,
+      typeModuleMethods: typeDropdownModule.methods,
     }
   },
   methods: {
@@ -121,7 +127,7 @@ export default Vue.extend({
     applyFilters() {
       // set switchers values to filter
       const filter = {}
-      // TO DO ADD Toggler
+      if (this.$createdByMe) filter.created_by_me = this.$createdByMe
       // set dropdowns value to filter
       Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
         if (this.dropdownsFilter[dropdownFilterKey]) {
@@ -138,9 +144,11 @@ export default Vue.extend({
     resetFilters() {
       this.dropdownsFilter = {}
 
-      this.authorsModuleMethods.resetItem()
-      this.classesModuleMethods.resetItem()
-      this.subjectsModuleMethods.resetItem()
+      this.classModuleMethods.resetItem()
+      this.subjectModuleMethods.resetItem()
+      this.themeModuleMethods.resetItem()
+      this.typeModuleMethods.resetItem()
+      this.createdByMeChanged(false)
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },

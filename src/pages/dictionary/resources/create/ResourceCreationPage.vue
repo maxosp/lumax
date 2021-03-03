@@ -5,14 +5,14 @@
       @save="create"
       @saveWithRedirect="createWithRedirect"
     />
-    <ThemeContent />
+    <ResourceContent />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import ThemeHeader from '@/pages/dictionary/themes/create/parts/header/Header.vue'
-import ThemeContent from '@/pages/dictionary/themes/create/parts/Content.vue'
+import ResourceContent from '@/pages/dictionary/resources/create/parts/Content.vue'
 import {
   create,
   $formToSend,
@@ -26,7 +26,7 @@ import { classDropdownModule } from '@/pages/dictionary/themes/create/parts/clas
 import { positionDropdownModule } from '@/pages/dictionary/themes/create/parts/position/position.model'
 
 export default Vue.extend({
-  name: 'ThemeCreationPage',
+  name: 'ResourceCreationPage',
   effector: {
     $formToSend,
     $formToSendPrerequisite,
@@ -34,7 +34,7 @@ export default Vue.extend({
   },
   components: {
     ThemeHeader,
-    ThemeContent,
+    ResourceContent,
   },
   methods: {
     redirectAfterSaveChanged,

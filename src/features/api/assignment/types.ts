@@ -50,3 +50,8 @@ export type GetLabelsTreeQueryParams = {
 export type DeleteTagsType = {
   olympiad_tags: number[]
 }
+
+export type GetTypesResponse = {
+  code: string
+  name: string
+}
