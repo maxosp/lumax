@@ -13,27 +13,31 @@
     <div class="arrow-up" />
     <div class="section">
       <SubjectDropdown @setItem="val => changeFilter('subject', val)" />
-      <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
-      <ThemeDropdown @setItem="val => changeFilter('theme', val)" />
     </div>
-    <div class="btns">
-      <div class="btn">
-        <BaseButton
-          small
-          @click="applyFilters"
-        >
-          Применить
-        </BaseButton>
-      </div>
-      <div class="btn">
-        <BaseButton
-          class="borderless"
-          small
-          border-without-bg
-          @click="resetFilters"
-        >
-          Сбросить фильтры
-        </BaseButton>
+    <div class="section">
+      <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
+    </div>
+    <div class="section">
+      <ThemeDropdown @setItem="val => changeFilter('theme', val)" />
+      <div class="btns">
+        <div class="btn">
+          <BaseButton
+            small
+            @click="applyFilters"
+          >
+            Применить
+          </BaseButton>
+        </div>
+        <div class="btn">
+          <BaseButton
+            class="borderless"
+            small
+            border-without-bg
+            @click="resetFilters"
+          >
+            Сбросить фильтры
+          </BaseButton>
+        </div>
       </div>
     </div>
   </div>
@@ -41,7 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ClickOutside from '@/features/directives/click-outside.ts'
+import ClickOutside from '@/features/directives/click-outside'
 import Icon from '@/ui/icon/Icon.vue'
 import { toggleVisibility, reset } from '@/pages/labels/parts/labels-filter/labels-filter.model'
 import SubjectDropdown from '@/pages/labels/parts/labels-filter/parts/subject/SubjectDropdown.vue'
@@ -50,6 +54,7 @@ import ThemeDropdown from '@/pages/labels/parts/labels-filter/parts/theme/ThemeD
 import BaseButton from '@/ui/button/BaseButton.vue'
 import { classDropdownModule } from '@/pages/labels/parts/labels-filter/parts/class/class-dropdown.model'
 import { subjectDropdownModule } from '@/pages/labels/parts/labels-filter/parts/subject/subject-dropdown.model'
+import { themesDropdownModule } from '@/pages/labels/parts/labels-filter/parts/theme/theme-dropdown.model'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -71,6 +76,7 @@ export default Vue.extend({
       dropdownsFilter: { subject: null, study_year: null, created_by: null } as any,
       classModuleMethods: classDropdownModule.methods,
       subjectModuleMethods: subjectDropdownModule.methods,
+      themeModuleMethods: themesDropdownModule.methods,
     }
   },
   methods: {
@@ -113,6 +119,7 @@ export default Vue.extend({
 
       this.classModuleMethods.resetItem()
       this.subjectModuleMethods.resetItem()
+      this.themeModuleMethods.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // visibility
     },
@@ -134,11 +141,11 @@ export default Vue.extend({
   top: 50px;
   left: 0;
   width: 100%;
-  padding: 43px 20px;
+  padding: 30px 20px;
   background-color: #fff;
   z-index: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.1);
   border-radius: 7px;
 }
@@ -161,13 +168,19 @@ export default Vue.extend({
 }
 .section {
   @mixin flex-row-central;
-  margin-bottom: 20px;
+  flex-direction: column;
+  width: calc((100% - 120px) / 3);
   .input {
-    width: calc((100% - 120px) / 3);
+    width: 100%;
   }
 }
 .btns {
+  width: 100%;
   @mixin flex-row-central;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  .btn {
+    margin-left: 10px;
+  }
 }
 </style>

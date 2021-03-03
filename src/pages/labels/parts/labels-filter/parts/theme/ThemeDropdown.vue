@@ -6,6 +6,7 @@
     :data="$themes"
     :store="{ $item, $itemsDropdown, $searchString }"
     is-recursive
+    @item-changed="onSelectItem"
   />
 </template>
 
@@ -18,6 +19,7 @@ import {
   themesDropdownModule,
   loadThemes,
 } from '@/pages/labels/parts/labels-filter/parts/theme/theme-dropdown.model'
+import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   components: {
@@ -32,7 +34,12 @@ export default Vue.extend({
       themesDropdownMethods: themesDropdownModule.methods,
     }
   },
-  methods: { loadThemes },
+  methods: {
+    loadThemes,
+    onSelectItem(item: DropdownItem | null) {
+      this.$emit('setItem', item ? item.name : null)
+    },
+  },
   mounted() {
     loadThemes()
   },
