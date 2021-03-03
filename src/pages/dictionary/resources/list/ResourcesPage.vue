@@ -16,7 +16,7 @@
       </template>
     </GeneralFilter>
     <div :class="{ invisible: !$treeView }">
-      <ThemesTree @onRightClick="handleRightClick" />
+      <ResourcesTree @onRightClick="handleRightClick" />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -42,13 +42,13 @@ import PageHeader from '@/pages/dictionary/resources/list/parts/PageHeader.vue'
 import ContextMenu from '@/pages/dictionary/themes/list/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ResourcesFilter from '@/pages/dictionary/resources/list/parts/resources-filter/ResourcesFilter.vue'
-import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
+import ResourcesTree from '@/pages/dictionary/resources/list/parts/tree/ResourcesTree.vue'
 import {
   $treeView,
   loadTree,
-  $themesTreeTotal,
+  $resourcesTreeTotal,
   deleteTheme,
-} from '@/pages/dictionary/themes/list/themes-page.model'
+} from '@/pages/dictionary/resources/list/resources-page.model'
 import {
   toggleVisibility,
   $visibility,
@@ -72,12 +72,12 @@ export default Vue.extend({
     GeneralFilter,
     ResourcesFilter,
     ContextMenu,
-    ThemesTree,
+    ResourcesTree,
   },
   effector: {
     $visibility,
     $treeView,
-    $themesTreeTotal,
+    $resourcesTreeTotal,
   },
   data() {
     return {
@@ -110,7 +110,6 @@ export default Vue.extend({
     onFilterReset() {
       this.filterParams = {}
       reset() // search string and field
-
       // reload data
       loadTree({})
     },

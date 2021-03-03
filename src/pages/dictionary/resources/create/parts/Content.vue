@@ -4,6 +4,18 @@
       <div class="left">
         <ThemeDropdown :class="{'--error': $themeError}" />
         <TypeDropdown :class="{'--error': $typeError}" />
+        <FormInput
+          :value="$videoLink"
+          label="Ссылка"
+          placeholder="Вставьте вашу ссылку"
+          :max-length="200"
+          :class="{'--error': $videoLinkError}"
+          class="input"
+          clear-btn
+          @clear="resetVideoLink"
+          @input="videoLinkChanged"
+        />
+        <FileUploadBlock />
         <div class='field'>
           <span class='label'>Описание</span>
           <Wysiwyg
@@ -24,11 +36,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import Card from '@/ui/card/Card.vue'
-// import FormInput from '@/ui/input/FormInput.vue'
+import FormInput from '@/ui/input/FormInput.vue'
 import ThemeDropdown from '@/pages/dictionary/resources/create/parts/theme/ThemeDropdown.vue'
 import TypeDropdown from '@/pages/dictionary/resources/create/parts/type/TypeDropdown.vue'
 import SubjectDropdown from '@/pages/dictionary/resources/create/parts/subjects/SubjectDropdown.vue'
 import ClassDropdown from '@/pages/dictionary/resources/create/parts/class/ClassDropdown.vue'
+import FileUploadBlock from '@/pages/dictionary/resources/create/parts/file-upload/FileUploadBlock.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import {
   $themeError,
@@ -37,17 +50,22 @@ import {
   $typeError,
   $resourceDescription,
   resourceDescriptionChanged,
+  $videoLink,
+  videoLinkChanged,
+  resetVideoLink,
+  $videoLinkError,
 } from '@/pages/dictionary/resources/create/resource-creation-page.model'
 
 export default Vue.extend({
   components: {
     Card,
-    // FormInput,
+    FormInput,
     TypeDropdown,
     ThemeDropdown,
     SubjectDropdown,
     ClassDropdown,
     Wysiwyg,
+    FileUploadBlock,
   },
   effector: {
     $themeError,
@@ -55,9 +73,13 @@ export default Vue.extend({
     $classError,
     $typeError,
     $resourceDescription,
+    $videoLink,
+    $videoLinkError,
   },
   methods: {
     resourceDescriptionChanged,
+    videoLinkChanged,
+    resetVideoLink,
   },
 })
 </script>

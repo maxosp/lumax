@@ -34,6 +34,10 @@ export const create = createEvent<void>()
 export const resourceDescriptionChanged = createEvent<string>()
 export const $resourceDescription = restore(resourceDescriptionChanged, '').reset(clearFields)
 
+export const videoLinkChanged = createEvent<string>()
+export const resetVideoLink = createEvent<void>()
+export const $videoLink = restore(videoLinkChanged, '').reset(resetVideoLink)
+
 // const checkIfThemeCanBeSend = createEvent<void>()
 // const saveTheme = createEvent<void>()
 export const redirectAfterSaveChanged = createEvent<boolean>()
@@ -82,6 +86,10 @@ export const $themeError = restore(setThemeError, false).reset(resetThemeError)
 const setSubjectError = createEvent<boolean>()
 const resetSubjectError = createEvent<void>()
 export const $subjectError = restore(setSubjectError, false).reset(resetSubjectError)
+
+const setVideoLinkError = createEvent<boolean>()
+const resetVideoLinkError = createEvent<void>()
+export const $videoLinkError = restore(setVideoLinkError, false).reset(resetVideoLinkError)
 
 const resetErrors = createEvent<void>()
 

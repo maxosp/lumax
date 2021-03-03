@@ -5,6 +5,7 @@
       :value="$props.value"
       :config="editorConfig"
       :editor-url="editorUrl"
+      class="editor"
       @input="$emit('input', $event)"
     />
   </div>
@@ -69,7 +70,7 @@ export default Vue.extend({
   background: var(--base-bg-color);
   border-radius: 5px;
   padding: 2px;
-  & ::v-deep #cke_editor1 {
+  & ::v-deep .editor {
     background: var(--c-grey-4);
     border-radius: 5px;
     border: 0px;
