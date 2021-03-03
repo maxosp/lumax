@@ -37,13 +37,16 @@
         />
       </div>
       <Actions
-        v-if="node.element_type === 'olympiad_tag'"
-        :id="node.olympiad_tag && node.olympiad_tag.id"
+        v-if="showActions"
+        :id="node.olympiad_tag && node.olympiad_tag.id || node.study_year.id"
+        :is-study-year="node.element_type === 'study_year'"
         :selected="[]"
         class="action"
+        :data-to-create-tag="dataToCreateTag"
         @onRemove="(val) => loadModalToDelete(val)"
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
+        @create="(val) => createTagFromTree(val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -68,6 +71,7 @@ import { TreeData } from '@/features/api/types'
 import { loadModalToDelete } from '@/pages/tags/parts/modals/tag-deletion/tag-deletion.model'
 import { loadModalToEdit } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
+import { createTagFromTree } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -110,11 +114,27 @@ export default Vue.extend({
         },
       }
     },
+    dataToCreateTag() {
+      // @ts-ignore
+      const { study_year } = this.$props.node
+      if (study_year)
+        return {
+          class_id: study_year.id,
+          subject_id: study_year.subject_id,
+        }
+      return null
+    },
+    showActions() {
+      // @ts-ignore
+      const { element_type } = this.$props.node
+      return element_type === 'olympiad_tag' || element_type === 'study_year'
+    },
   },
   methods: {
     loadModalToDelete,
     loadModalToEdit,
     loadModal,
+    createTagFromTree,
     toggle(evt: any) {
       if (evt.target.closest('.action')) return
       // @ts-ignore

@@ -58,13 +58,17 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
     isStudyYear: { type: Boolean },
+    isTheme: { type: Boolean },
+    dataToCreateTag: {
+      type: [Object, null] as PropType<{ class_id: number; subject_id: number } | null>,
+    },
   },
   data: () => ({
     isOpen: false,
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.isStudyYear) return [{ name: 'create', title: 'Создать тег' }]
+      if (this.isStudyYear || this.isTheme) return [{ name: 'create', title: 'Создать тег' }]
       if (this.selected.length > 1) {
         return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
       }
@@ -85,13 +89,16 @@ export default Vue.extend({
           this.$emit('onEdit', this.id)
           break
         case 'delete':
-          this.$emit('onRemove', this.id)
+          this.$emit('onRemove', [this.id])
           break
         case 'delete-all':
           this.$emit('onRemove', this.selected)
           break
         case 'show-tasks':
           this.$emit('showTasks', this.id)
+          break
+        case 'create':
+          this.$emit('create', this.dataToCreateTag)
           break
         default:
           break

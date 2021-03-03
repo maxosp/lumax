@@ -85,7 +85,7 @@ export default Vue.extend({
           this.$emit('onRemove', this.selected)
           break
         case 'delete':
-          this.$emit('onRemove', this.id)
+          this.$emit('onRemove', [this.id])
           break
         case 'show-tasks':
           this.$emit('showTasks', this.id)

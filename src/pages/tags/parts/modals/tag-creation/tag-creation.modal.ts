@@ -49,8 +49,8 @@ export const $titleError = restore(titleErrorChanged, false)
 
 const $form = combine({
   name: $tagTitle,
-  study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
-  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
+  study_year_id: $selectedClass.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
 })
 
 sample({
@@ -71,7 +71,9 @@ sample({
   clock: createTagFromTree,
   fn: (tag: { class_id: number; subject_id: number }) => {
     classDropdownModule.methods.itemChanged(`${tag.class_id}`)
+    setSelectedClass({ id: tag.class_id })
     subjectDropdownModule.methods.itemChanged(`${tag.subject_id}`)
+    setSelectedSubject({ id: tag.subject_id })
     modalVisibilityChanged(true)
   },
 })

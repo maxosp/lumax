@@ -56,8 +56,8 @@ const titleErrorChanged = createEvent<boolean>()
 export const $titleError = restore(titleErrorChanged, false)
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
-  study_year: cl && +cl.name,
-  subject: obj && +obj.name,
+  study_year: cl && cl.id,
+  subject: obj && obj.id,
 }))
 
 const debounced = debounce({
@@ -85,9 +85,9 @@ export const $canSetThemePosition = every({
 
 const $form = combine({
   name: $labelTitle,
-  study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
-  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
-  theme_id: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
+  study_year_id: $selectedClass.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
+  theme_id: $selectedTheme.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
 })
 
 sample({
@@ -110,8 +110,11 @@ sample({
   clock: createLabelFromTree,
   fn: (label: { class_id: number; subject_id: number; theme_id: number }) => {
     classDropdownModule.methods.itemChanged(`${label.class_id}`)
+    setSelectedClass({ id: label.class_id })
     subjectDropdownModule.methods.itemChanged(`${label.subject_id}`)
+    setSelectedSubject({ id: label.subject_id })
     themesDropdownModule.methods.itemChanged(`${label.theme_id}`)
+    setSelectedTheme({ id: label.theme_id })
     modalVisibilityChanged(true)
   },
 })

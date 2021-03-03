@@ -37,13 +37,15 @@
         />
       </div>
       <Actions
-        v-if="node.element_type === 'label'"
-        :id="node.label.id"
+        v-if="showActions"
+        :id="node.label && node.label.id || node.theme.id"
+        :is-theme="node.element_type === 'theme'"
         :selected="[]"
         class="action"
         @onRemove="(val) => loadModalToDelete(val)"
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
+        @create="(val) => createLabelFromTree(val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -68,6 +70,7 @@ import { TreeData } from '@/features/api/types'
 import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
 import { loadModalToDelete } from '@/pages/labels/parts/modals/label-deletion/label-deletion.model'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
+import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -110,11 +113,17 @@ export default Vue.extend({
         },
       }
     },
+    showActions() {
+      // @ts-ignore
+      const { element_type } = this.$props.node
+      return element_type === 'label' || element_type === 'theme'
+    },
   },
   methods: {
     loadModal,
     loadModalToDelete,
     loadModalToEdit,
+    createLabelFromTree,
     toggle() {
       // @ts-ignore
       if (this.node.leaves && this.node.leaves.length) {
