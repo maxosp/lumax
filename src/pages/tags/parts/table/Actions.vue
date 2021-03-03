@@ -62,13 +62,21 @@ export default Vue.extend({
     dataToCreateTag: {
       type: [Object, null] as PropType<{ class_id: number; subject_id: number } | null>,
     },
+    dataToCreateLabel: {
+      type: [Object, null] as PropType<{
+        class_id: number
+        subject_id: number
+        theme: number
+      } | null>,
+    },
   },
   data: () => ({
     isOpen: false,
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.isStudyYear || this.isTheme) return [{ name: 'create', title: 'Создать тег' }]
+      if (this.isStudyYear) return [{ name: 'create', title: 'Создать тег' }]
+      if (this.isTheme) return [{ name: 'create', title: 'Создать метку' }]
       if (this.selected.length > 1) {
         return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
       }
@@ -98,7 +106,7 @@ export default Vue.extend({
           this.$emit('showTasks', this.id)
           break
         case 'create':
-          this.$emit('create', this.dataToCreateTag)
+          this.$emit('create', this.dataToCreateLabel)
           break
         default:
           break

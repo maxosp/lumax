@@ -39,6 +39,7 @@
       <Actions
         v-if="showActions"
         :id="node.label && node.label.id || node.theme.id"
+        :data-to-create-label="dataToCreateLabel"
         :is-theme="node.element_type === 'theme'"
         :selected="[]"
         class="action"
@@ -118,13 +119,25 @@ export default Vue.extend({
       const { element_type } = this.$props.node
       return element_type === 'label' || element_type === 'theme'
     },
+    dataToCreateLabel() {
+      // @ts-ignore
+      const { theme } = this.$props.node
+      if (theme)
+        return {
+          class_id: theme.study_year_id,
+          subject_id: theme.subject_id,
+          theme_id: theme.id,
+        }
+      return null
+    },
   },
   methods: {
     loadModal,
     loadModalToDelete,
     loadModalToEdit,
     createLabelFromTree,
-    toggle() {
+    toggle(evt: any) {
+      if (evt.target.closest('.action')) return
       // @ts-ignore
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
