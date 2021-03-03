@@ -98,8 +98,8 @@ export const data: NavItem[] = [
       { title: 'Предметы', link: 'subjects-list' },
       { title: 'Библиотека ресурсов', link: 'resources-list' },
       { title: 'Файлы пользователей', link: '/' },
-      { title: 'Метки для тестовых заданий', link: '/' },
-      { title: 'Теги для олимпиадных заданий', link: '/' },
+      { title: 'Метки для тестовых заданий', link: 'labels-list' },
+      { title: 'Теги для олимпиадных заданий', link: 'tags-list' },
     ],
   },
   {

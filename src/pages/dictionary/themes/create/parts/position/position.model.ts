@@ -4,7 +4,7 @@ import { $themes } from '@/pages/dictionary/themes/create/parts/themes/themes.mo
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { DropdownItem } from '@/pages/common/types'
 import { GetThemeTreeFilterListResponse } from '@/features/api/types'
-import { getThemeData } from '../prerequisites/prerequisites.model'
+import { getThemeData } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
 
 export const positionDropdownModule = createFilter()
 

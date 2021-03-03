@@ -1,7 +1,7 @@
 import { addToast } from '@/features/toasts/toasts.model'
 import { createEvent, restore, sample } from 'effector-root'
 import { condition } from 'patronum'
-import { $selectedThemes } from '../themes/themes.model'
+import { $selectedThemes } from '@/pages/dictionary/themes/create/parts/themes/themes.model'
 
 export const isPrerequisiteChanged = createEvent<boolean>()
 export const $isPrerequisite = restore(isPrerequisiteChanged, false)

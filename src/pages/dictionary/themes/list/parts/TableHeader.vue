@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <span>{{ totalTitle }}</span>
+    <span> {{ total | formatTotalAmount }} {{ totalText }}</span>
     <BaseSwitch
       :checked="$treeView"
       @change="toggleTreeView"
@@ -27,7 +27,7 @@ export default Vue.extend({
     total: { type: Number, required: true },
   },
   computed: {
-    totalTitle() {
+    totalText() {
       let title = 'тем'
       const lastDigit = `${this.$props.total}`.slice(-1)
       if (lastDigit === '1') {
@@ -35,7 +35,7 @@ export default Vue.extend({
       } else if (['2', '3', '4'].includes(lastDigit)) {
         title = 'темы'
       }
-      return `${this.$props.total} ${title}`
+      return `${title}`
     },
   },
   methods: {

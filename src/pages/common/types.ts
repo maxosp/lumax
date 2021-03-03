@@ -21,3 +21,7 @@ export type DropdownItem = {
   created_by?: User
   leaves?: TreeData[]
 }
+
+export type SelectedObjectType = {
+  id: number
+}
