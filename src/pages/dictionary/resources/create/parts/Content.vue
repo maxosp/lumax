@@ -1,7 +1,22 @@
 <template>
   <Card class="content">
-    <div class="left">
-      <PositionDropdown :class="{'--error': $positionError}" />
+    <div class="contents">
+      <div class="left">
+        <ThemeDropdown :class="{'--error': $themeError}" />
+        <TypeDropdown :class="{'--error': $typeError}" />
+        <div class='field'>
+          <span class='label'>Описание</span>
+          <Wysiwyg
+            :value="$resourceDescription"
+            placeholder="Введите текст"
+            @input="resourceDescriptionChanged"
+          />
+        </div>
+      </div>
+      <div class="right">
+        <SubjectDropdown :class="{'--error': $subjectError}" />
+        <ClassDropdown :class="{'--error': $classError}" />
+      </div>
     </div>
   </Card>
 </template>
@@ -10,29 +25,47 @@
 import Vue from 'vue'
 import Card from '@/ui/card/Card.vue'
 // import FormInput from '@/ui/input/FormInput.vue'
-import PositionDropdown from '@/pages/dictionary/themes/create/parts/position/PositionDropdown.vue'
+import ThemeDropdown from '@/pages/dictionary/resources/create/parts/theme/ThemeDropdown.vue'
+import TypeDropdown from '@/pages/dictionary/resources/create/parts/type/TypeDropdown.vue'
+import SubjectDropdown from '@/pages/dictionary/resources/create/parts/subjects/SubjectDropdown.vue'
+import ClassDropdown from '@/pages/dictionary/resources/create/parts/class/ClassDropdown.vue'
+import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import {
-  $positionError,
+  $themeError,
   $subjectError,
   $classError,
-} from '@/pages/dictionary/themes/create/theme-creation-page.model'
+  $typeError,
+  $resourceDescription,
+  resourceDescriptionChanged,
+} from '@/pages/dictionary/resources/create/resource-creation-page.model'
 
 export default Vue.extend({
   components: {
     Card,
     // FormInput,
-    PositionDropdown,
+    TypeDropdown,
+    ThemeDropdown,
+    SubjectDropdown,
+    ClassDropdown,
+    Wysiwyg,
   },
   effector: {
-    $positionError,
+    $themeError,
     $subjectError,
     $classError,
+    $typeError,
+    $resourceDescription,
   },
-  methods: {},
+  methods: {
+    resourceDescriptionChanged,
+  },
 })
 </script>
 
 <style scoped>
+.contents {
+  display: contents;
+}
 .content {
   width: 100%;
   height: fit-content;
@@ -52,7 +85,19 @@ export default Vue.extend({
     margin-bottom: 20px;
   }
 }
-
+.field {
+  .label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 7px;
+  }
+}
+.right {
+  width: 320px;
+  .input:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
 .--error ::v-deep .inner-input {
   border: 2px solid var(--c-red-0) !important;
 }
@@ -67,6 +112,9 @@ export default Vue.extend({
   .left {
     margin-right: 30px;
     min-width: 630px;
+  }
+  .right {
+    min-width: 320px;
   }
 }
 </style>

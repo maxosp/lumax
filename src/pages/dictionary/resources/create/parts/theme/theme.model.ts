@@ -1,10 +1,9 @@
-import { createEvent, createStore, forward } from 'effector-root'
-import { GetThemeTreeFilterListResponse } from '@/features/api/types'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { DropdownItem } from '@/pages/common/types'
+import { createStore, forward, sample } from 'effector-root'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-
-export const loadThemes = createEvent<void>()
+import { DropdownItem } from '@/pages/common/types'
+import { GetThemeTreeFilterListResponse } from '@/features/api/types'
+import { getThemeData } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
 
 export const themeDropdownModule = createFilter()
 
@@ -24,7 +23,10 @@ forward({
   to: $themes,
 })
 
-forward({
-  from: loadThemes,
-  to: getThemesTreeListFx.prepend(() => ({ is_prerequisite: false })),
+sample({
+  clock: themeDropdownModule.methods.itemChanged,
+  source: themeDropdownModule.store.$item,
+  fn: (item: string | null) => {
+    if (item) getThemeData(+item)
+  },
 })

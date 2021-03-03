@@ -2,24 +2,22 @@
   <FilterDropdown
     label="Тема"
     placeholder="Выберите тему"
-    :methods="themesDropdownMethods"
+    :methods="themeModuleMethods"
     :data="$themes"
     :store="{ $item, $itemsDropdown, $searchString }"
+    :disabled="!$canSetTheme"
     is-recursive
-    @item-changed="onSelectItem"
   />
 </template>
-
 
 <script lang="ts">
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
+import { $canSetTheme } from '@/pages/dictionary/resources/create/resource-creation-page.model'
 import {
   $themes,
   themeDropdownModule,
-  loadThemes,
-} from '@/pages/dictionary/resources/list/parts/resources-filter/parts/theme/theme-dropdown.model'
-import { DropdownItem } from '@/pages/common/types'
+} from '@/pages/dictionary/resources/create/parts/theme/theme.model'
 
 export default Vue.extend({
   components: {
@@ -27,22 +25,13 @@ export default Vue.extend({
   },
   effector: {
     $themes,
+    $canSetTheme,
     ...themeDropdownModule.store,
   },
   data() {
     return {
-      themesDropdownMethods: themeDropdownModule.methods,
+      themeModuleMethods: themeDropdownModule.methods,
     }
-  },
-  methods: {
-    loadThemes,
-    onSelectItem(item: DropdownItem | null) {
-      this.$emit('setItem', item ? item.name : null)
-    },
-  },
-  mounted() {
-    loadThemes()
   },
 })
 </script>
-

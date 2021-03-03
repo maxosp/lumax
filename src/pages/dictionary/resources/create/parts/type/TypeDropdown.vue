@@ -18,7 +18,7 @@ import {
   loadTypes,
   $types,
   setSelectedType,
-} from '@/pages/dictionary/resources/list/parts/resources-filter/parts/type/type-dropdown.model'
+} from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
