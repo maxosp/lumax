@@ -2,7 +2,7 @@ import { createEvent, createStore, forward, attach, restore } from 'effector-roo
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { GetListQueryParams } from '@/features/api/types'
 import { DropdownItem } from '@/pages/common/types'
-import { getTypesListFx } from '@/features/api/assignment/get-types-list'
+import { getTypesListFx } from '@/features/api/media/get-types-list'
 
 export const typeDropdownModule = createFilter()
 
