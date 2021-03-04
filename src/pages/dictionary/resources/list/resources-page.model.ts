@@ -13,9 +13,6 @@ export const deleteTheme = attach({
   effect: deleteThemeFx,
 })
 
-export const toggleTreeView = createEvent<boolean>()
-export const $treeView = restore(toggleTreeView, false)
-
 export const loadTree = createEvent<GetThemesTreeQueryParams>()
 export const setResourcesTree = createEvent<TreeData | null>()
 export const $resourcesTree = restore<TreeData | null>(setResourcesTree, null)

@@ -2,7 +2,7 @@ import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, merge, restore, split } from 'effector-root'
 import { UploadedFilyType } from './types'
 
 const uploadMedia = attach({
@@ -36,6 +36,15 @@ export const uploadFileFx = createEffect({
   },
 })
 
+const { noInternet } = split(merge([uploadMediaFx.failData, deleteMediaFx.failData]), {
+  noInternet: ({ status }) => status === undefined,
+})
+
+forward({
+  from: noInternet,
+  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
+})
+
 forward({
   from: uploadFile,
   to: [
@@ -54,4 +63,9 @@ forward({
     })),
     addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
   ],
+})
+
+forward({
+  from: deleteMedia.doneData,
+  to: addToast.prepend(() => ({ type: 'success', message: 'Файл был успешно удален!' })),
 })

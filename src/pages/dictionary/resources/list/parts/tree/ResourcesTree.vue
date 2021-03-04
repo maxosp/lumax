@@ -1,5 +1,5 @@
 <template>
-  <div class="themes-tree">
+  <div class="resources-tree">
     <TreeNode
       v-for="leaf in $resourcesTree"
       :key="leaf[leaf.element_type].id"
@@ -27,7 +27,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.themes-tree {
+.resources-tree {
   display: flex;
   flex-direction: column;
   width: 100%;

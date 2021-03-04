@@ -15,7 +15,7 @@
         <BaseButton
           class='btn'
           small
-          @click="handleClick"
+          @click="imitInputClick"
         >
           Загрузить файл
         </BaseButton>
@@ -37,6 +37,7 @@
       <BaseButton
         class='btn'
         small
+        @click="replaceFile($fileData.id)"
       >
         Заменить файл
       </BaseButton>
@@ -44,7 +45,7 @@
         class='btn'
         border-without-bg
         small
-        @click="deleteMEdia($fileData.id)"
+        @click="deleteMedia($fileData.id)"
       >
         Удалить файл
       </BaseButton>
@@ -60,6 +61,7 @@ import {
   $fileData,
   deleteMedia,
 } from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
+import { deleteMediaFx } from '@/features/api/media/delete-media'
 
 export default Vue.extend({
   components: {
@@ -81,13 +83,17 @@ export default Vue.extend({
   methods: {
     uploadFile,
     deleteMedia,
-    handleClick() {
+    imitInputClick() {
       document.getElementById('fileInput')!.click()
     },
     handleFileUpload() {
       const { fileInput } = this.$refs
       // @ts-ignore
       uploadFile(fileInput.files)
+    },
+    replaceFile(id: number) {
+      deleteMediaFx(id)
+      this.imitInputClick()
     },
   },
 })

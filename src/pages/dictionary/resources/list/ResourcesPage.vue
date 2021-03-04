@@ -15,13 +15,11 @@
         />
       </template>
     </GeneralFilter>
-    <div :class="{ invisible: !$treeView }">
-      <ResourcesTree @onRightClick="handleRightClick" />
-    </div>
+    <ResourcesTree @onRightClick="handleRightClick" />
     <ContextMenu
       v-if="showContextMenu"
       :id="clickedRowId"
-      :selected="$treeView ? [] : selectedRows"
+      :selected="[]"
       :style="contextMenuStyles"
       :type="contextMenuType"
       :subject="subject"
@@ -44,7 +42,6 @@ import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ResourcesFilter from '@/pages/dictionary/resources/list/parts/resources-filter/ResourcesFilter.vue'
 import ResourcesTree from '@/pages/dictionary/resources/list/parts/tree/ResourcesTree.vue'
 import {
-  $treeView,
   loadTree,
   $resourcesTreeTotal,
   deleteTheme,
@@ -76,7 +73,6 @@ export default Vue.extend({
   },
   effector: {
     $visibility,
-    $treeView,
     $resourcesTreeTotal,
   },
   data() {
