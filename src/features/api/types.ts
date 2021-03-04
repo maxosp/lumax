@@ -1,6 +1,6 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 
-export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder'
+export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder' | 'assignment'
 
 export type VirtualFolder = {
   name: string
@@ -46,7 +46,23 @@ export type GetThemeTreeFilterListResponse = {
   }
   virtual_folder: VirtualFolder | null
 }
-
+type OlympiadTag = {
+  id: number
+  text: string
+}
+export type TreeDataLight = {
+  element_type: TreeElementType
+  ordering_number: number
+  leaves: TreeData[]
+  subject: Subject | null
+  study_year: StudyYear | null
+  theme: Theme | null
+  olympiad_tag: OlympiadTag[]
+}
+export type TreeLightDataResponse = {
+  total: number
+  data: TreeDataLight
+}
 export type TreeDataResponse = {
   total: number
   data: TreeData

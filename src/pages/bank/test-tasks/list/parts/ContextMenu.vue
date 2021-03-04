@@ -37,7 +37,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import ClickOutside from '@/features/directives/click-outside'
 import { DropdownItem } from '@/pages/common/types'
-import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
+import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
 import { navigatePush } from '@/features/navigation'
 import {
   contextMethodsOneTask,
@@ -77,8 +77,20 @@ export default Vue.extend({
         case 'delete':
           this.$emit('onRemove', this.$props.id)
           break
-        case 'delete-all':
+        case 'delete_all':
           this.$emit('onRemove', this.$props.selected)
+          break
+        case 'send_to_check':
+          this.$emit('onCheck', this.$props.id)
+          break
+        case 'send_to_check_all':
+          this.$emit('onCheck', this.$props.selected)
+          break
+        case 'public':
+          this.$emit('onPublish', this.$props.id)
+          break
+        case 'public_all':
+          this.$emit('onPublish', this.$props.selected)
           break
         default:
           break

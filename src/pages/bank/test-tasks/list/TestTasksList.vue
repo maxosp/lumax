@@ -15,7 +15,10 @@
         />
       </template>
     </GeneralFilter>
-    <TableHeader :total="$treeView ? $tasksTreeTotal : total" />
+    <TableHeader
+      :total="$treeView ? $tasksTreeTotal : total"
+      :selected-rows="selectedRows"
+    />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
         ref="vuetable"
@@ -43,6 +46,8 @@
             :id="props.rowData.id"
             :selected="selectedRows"
             @onRemove="removeSelected"
+            @onCheck="sendToModerationAssignments"
+            @onPublish="publishAssignments"
           />
         </template>
       </Vuetable>
@@ -62,7 +67,7 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <ThemesTree @onRightClick="handleRightClick" />
+      <TasksTree @onRightClick="handleRightClick" />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -73,6 +78,8 @@
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
+      @onCheck="sendToModerationAssignments"
+      @onPublish="publishAssignments"
     />
   </div>
 </template>
@@ -91,18 +98,21 @@ import TooltipCell from '@/pages/bank/test-tasks/list/parts/TooltipCell.vue'
 import Actions from '@/pages/bank/test-tasks/list/parts/Actions.vue'
 import ContextMenu from '@/pages/bank/test-tasks/list/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
-import ThemesFilter from '@/pages/bank/test-tasks/list/parts/themes-filter/ThemesFilter.vue'
-import ThemesTree from '@/pages/bank/test-tasks/list/parts/themes-tree/ThemesTree.vue'
+import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
+import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
   $treeView,
-  loadTree,
+  loadTreeLight,
   $tasksTreeTotal,
-  // deleteTheme,
-} from '@/pages/bank/test-tasks/list/themes-page.model'
+  deleteAssignment,
+  deleteManyAssignments,
+  sendAssignmentsPublish,
+  sendAssignmentsToModeration,
+} from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
   toggleVisibility,
   $visibility,
-} from '@/pages/bank/test-tasks/list/parts/themes-filter/themes-filter.model'
+} from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
@@ -130,7 +140,7 @@ export default Vue.extend({
     TooltipCell,
     Actions,
     ContextMenu,
-    ThemesTree,
+    TasksTree,
   },
   effector: {
     $token,
@@ -186,13 +196,13 @@ export default Vue.extend({
       container && container.dispatchEvent(resetEvent)
 
       // reload data
-      loadTree({})
+      loadTreeLight({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
-      loadTree({ ...this.filterParams })
+      loadTreeLight({ ...this.filterParams })
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -201,16 +211,28 @@ export default Vue.extend({
       reset() // search string and field
 
       // reload data
-      loadTree({})
+      loadTreeLight({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') {
-        // await deleteTheme(ids)
-        // @ts-ignore
-        await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      }
+      const currentMethod = typeof ids === 'number' ? deleteAssignment : deleteManyAssignments
+      // @ts-ignore
+      await currentMethod(ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      // @ts-ignore
+      if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
+    },
+    async publishAssignments(ids: number | number[]) {
+      await sendAssignmentsPublish(typeof ids === 'number' ? [ids] : ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+    },
+    async sendToModerationAssignments(ids: number | number[]) {
+      await sendAssignmentsToModeration(typeof ids === 'number' ? [ids] : ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -232,7 +254,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree({})
+    loadTreeLight({})
   },
   created() {
     // Authorization request
