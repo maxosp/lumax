@@ -58,11 +58,12 @@ sample({
   source: $form,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) updateTag(obj)
+    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+      updateTag(obj)
     else {
       if (!obj.name.trim().length) titleErrorChanged(true)
-      if (!obj.study_year_id) classErrorChanged(true)
-      if (!obj.subject_id) subjectErrorChanged(true)
+      if (obj.study_year_id === DEFAULT_ID) classErrorChanged(true)
+      if (obj.subject_id === DEFAULT_ID) subjectErrorChanged(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },

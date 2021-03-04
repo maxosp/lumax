@@ -4,6 +4,7 @@ import { deleteThemeFx } from '@/features/api/subject/delete-theme'
 import { addToast } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
+import { deleteThemesFx } from '@/features/api/subject/delete-themes'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -11,6 +12,10 @@ const getThemesTree = attach({
 
 export const deleteTheme = attach({
   effect: deleteThemeFx,
+})
+
+export const deleteThemes = attach({
+  effect: deleteThemesFx,
 })
 
 export const toggleTreeView = createEvent<boolean>()

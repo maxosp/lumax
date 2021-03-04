@@ -106,7 +106,7 @@ export default Vue.extend({
           this.$emit('showTasks', this.id)
           break
         case 'create':
-          this.$emit('create', this.dataToCreateLabel)
+          this.$emit('create', this.isTheme ? this.dataToCreateLabel : this.dataToCreateTag)
           break
         default:
           break

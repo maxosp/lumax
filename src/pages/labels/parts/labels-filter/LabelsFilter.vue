@@ -146,6 +146,7 @@ export default Vue.extend({
   z-index: 1;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.1);
   border-radius: 7px;
 }
@@ -169,7 +170,7 @@ export default Vue.extend({
 .section {
   @mixin flex-row-central;
   flex-direction: column;
-  width: calc((100% - 120px) / 3);
+  width: calc((100% - 100px) / 3);
   .input {
     width: 100%;
   }
@@ -179,8 +180,5 @@ export default Vue.extend({
   @mixin flex-row-central;
   justify-content: flex-start;
   margin-top: 20px;
-  .btn {
-    margin-left: 10px;
-  }
 }
 </style>

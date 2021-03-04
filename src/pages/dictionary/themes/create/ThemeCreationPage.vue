@@ -21,8 +21,14 @@ import {
   redirectAfterSaveChanged,
 } from '@/pages/dictionary/themes/create/theme-creation-page.model'
 import { $isPrerequisite } from '@/pages/dictionary/themes/create/parts/header/header.model'
-import { subjectDropdownModule } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
-import { classDropdownModule } from '@/pages/dictionary/themes/create/parts/class/class.model'
+import {
+  subjectDropdownModule,
+  setSelectedSubject,
+} from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
+import {
+  classDropdownModule,
+  setSelectedClass,
+} from '@/pages/dictionary/themes/create/parts/class/class.model'
 import { positionDropdownModule } from '@/pages/dictionary/themes/create/parts/position/position.model'
 
 export default Vue.extend({
@@ -54,7 +60,9 @@ export default Vue.extend({
     if (this.$route.params) {
       const { subject, studyYear, theme } = this.$route.params
       subject && subjectDropdownModule.methods.itemChanged(subject)
+      subject && setSelectedSubject({ id: +subject })
       studyYear && classDropdownModule.methods.itemChanged(studyYear)
+      studyYear && setSelectedClass({ id: +studyYear })
       theme && positionDropdownModule.methods.itemChanged(theme)
     }
   },

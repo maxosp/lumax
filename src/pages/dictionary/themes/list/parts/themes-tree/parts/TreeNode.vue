@@ -115,8 +115,15 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
-
-      this.$emit('onRightClick', { data: { id: this.$props.nodeId }, event, type })
+      this.$emit('onRightClick', {
+        data: {
+          id: this.$props.nodeId,
+          subject: this.$props.node.subject.id,
+          studyYear: this.$props.node.study_year.id,
+        },
+        event,
+        type,
+      })
     },
   },
   mounted() {
