@@ -26,5 +26,13 @@ forward({
   from: getTypesList.doneData.map((res) =>
     res.body.map((type) => ({ name: type.code, title: type.name }))
   ),
-  to: $types,
+  to: [
+    $types,
+    setSelectedType.prepend((data) => data.filter((el) => el.name === 'text')[0]),
+    typeDropdownModule.methods.itemChanged.prepend(
+      (data) => data.find((el) => el.name === 'text')!.name
+    ),
+  ],
 })
+
+typeDropdownModule.methods.itemChanged.watch((data) => console.log(data))

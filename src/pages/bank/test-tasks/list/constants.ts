@@ -141,8 +141,8 @@ export const contextMethodsOneTask = [
   { name: 'preview', title: 'Предпросмотр' },
 ]
 export const contextMethodsManyTasks = [
-  { name: 'delete-all', title: 'Удалить выделенные задания' },
-  { name: 'send-to-check-all', title: 'Отправить на проверку' },
-  { name: 'public-all', title: 'Опубликовать' },
-  { name: 'preview-all', title: 'Предпросмотр' },
+  { name: 'delete_all', title: 'Удалить выделенные задания' },
+  { name: 'send_to_check_all', title: 'Отправить на проверку' },
+  { name: 'public_all', title: 'Опубликовать' },
+  { name: 'preview_all', title: 'Предпросмотр' },
 ]

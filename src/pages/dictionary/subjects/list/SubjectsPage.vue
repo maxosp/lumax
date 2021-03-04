@@ -89,6 +89,7 @@ import ContextMenu from '@/pages/dictionary/subjects/list/parts/ContextMenu.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   deleteSubject,
+  deleteManySubjects,
   changeIdSubject,
   changeIsMondatory,
   $triggerToRefreshTable,
@@ -192,11 +193,13 @@ export default Vue.extend({
     },
     // TODO delete all
     async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') {
-        await deleteSubject(ids)
-        // @ts-ignore
-        await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      }
+      const currentMethod = typeof ids === 'number' ? deleteSubject : deleteManySubjects
+      // @ts-ignore
+      await currentMethod(ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      // @ts-ignore
+      if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
     },
     handleLoadError(res: any) {
       if (!res.response) {

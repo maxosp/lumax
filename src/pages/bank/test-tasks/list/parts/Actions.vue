@@ -83,8 +83,20 @@ export default Vue.extend({
         case 'delete':
           this.$emit('onRemove', this.$props.id)
           break
-        case 'delete-all':
+        case 'delete_all':
           this.$emit('onRemove', this.$props.selected)
+          break
+        case 'send_to_check':
+          this.$emit('onCheck', this.$props.id)
+          break
+        case 'send_to_check_all':
+          this.$emit('onCheck', this.$props.selected)
+          break
+        case 'public':
+          this.$emit('onPublish', this.$props.id)
+          break
+        case 'public_all':
+          this.$emit('onPublish', this.$props.selected)
           break
         default:
           break

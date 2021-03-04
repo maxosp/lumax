@@ -5,8 +5,21 @@
         <ThemeDropdown :class="{'--error': $themeError}" />
         <TypeDropdown :class="{'--error': $typeError}" />
         <FormInput
-          :value="$videoLink"
+          v-if="$selectedType && $selectedType.name === 'link'"
+          :value="$basicLink"
           label="Ссылка"
+          placeholder="Вставьте вашу ссылку"
+          :max-length="200"
+          :class="{'--error': $basicLinkError}"
+          class="input"
+          clear-btn
+          @clear="resetBasicLink"
+          @input="basicLinkChanged"
+        />
+        <FormInput
+          v-if="$selectedType && $selectedType.name === 'video'"
+          :value="$videoLink"
+          label="Ссылка на видео"
           placeholder="Вставьте вашу ссылку"
           :max-length="200"
           :class="{'--error': $videoLinkError}"
@@ -15,7 +28,7 @@
           @clear="resetVideoLink"
           @input="videoLinkChanged"
         />
-        <FileUploadBlock />
+        <FileUploadBlock v-if="$selectedType && $selectedType.name === 'file'" />
         <div class='field'>
           <span class='label'>Описание</span>
           <Wysiwyg
@@ -54,7 +67,12 @@ import {
   videoLinkChanged,
   resetVideoLink,
   $videoLinkError,
+  $basicLink,
+  basicLinkChanged,
+  $basicLinkError,
+  resetBasicLink,
 } from '@/pages/dictionary/resources/create/resource-creation-page.model'
+import { $selectedType } from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
 
 export default Vue.extend({
   components: {
@@ -75,11 +93,16 @@ export default Vue.extend({
     $resourceDescription,
     $videoLink,
     $videoLinkError,
+    $selectedType,
+    $basicLink,
+    $basicLinkError,
   },
   methods: {
     resourceDescriptionChanged,
     videoLinkChanged,
     resetVideoLink,
+    basicLinkChanged,
+    resetBasicLink,
   },
 })
 </script>

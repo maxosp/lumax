@@ -1,0 +1,8 @@
+export { default as ClassesDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/classes-dropdown/ClassesDropdown.vue'
+export { default as SubjectsDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/subjects-dropdown/SubjectsDropdown.vue'
+export { default as DifficultyDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/difficulty-dropdown/DifficultyDropdown.vue'
+export { default as ThemeDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/theme-dropdown/ThemeDropdown.vue'
+export { default as StatusDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/status-dropdown/StatusDropdown.vue'
+export { default as TypeDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/type-dropdown/TypeDropdown.vue'
+export { default as LanguageDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/language-dropdown/LanguageDropdown.vue'
+export { default as TagsDropdown } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/tags-dropdown/TagsDropdown.vue'

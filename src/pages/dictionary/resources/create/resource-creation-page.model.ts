@@ -16,6 +16,7 @@ import { GetListQueryParams } from '@/features/api/types'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { themeDropdownModule } from './parts/theme/theme.model'
 import { typeDropdownModule } from './parts/type/type-dropdown.model'
+import { DEFAULT_ID } from '../constants'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -37,6 +38,10 @@ export const $resourceDescription = restore(resourceDescriptionChanged, '').rese
 export const videoLinkChanged = createEvent<string>()
 export const resetVideoLink = createEvent<void>()
 export const $videoLink = restore(videoLinkChanged, '').reset(resetVideoLink)
+
+export const basicLinkChanged = createEvent<string>()
+export const resetBasicLink = createEvent<void>()
+export const $basicLink = restore(basicLinkChanged, '').reset(resetBasicLink)
 
 // const checkIfThemeCanBeSend = createEvent<void>()
 // const saveTheme = createEvent<void>()
@@ -90,6 +95,10 @@ export const $subjectError = restore(setSubjectError, false).reset(resetSubjectE
 const setVideoLinkError = createEvent<boolean>()
 const resetVideoLinkError = createEvent<void>()
 export const $videoLinkError = restore(setVideoLinkError, false).reset(resetVideoLinkError)
+
+const setBasicLinkError = createEvent<boolean>()
+const resetBasicLinkError = createEvent<void>()
+export const $basicLinkError = restore(setBasicLinkError, false).reset(resetBasicLinkError)
 
 const resetErrors = createEvent<void>()
 

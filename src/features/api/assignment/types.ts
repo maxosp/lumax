@@ -55,3 +55,24 @@ export type GetTypesResponse = {
   code: string
   name: string
 }
+
+export type GetAssignmentTreeQueryParams = {
+  sort?: string
+  subject?: number
+  study_year?: number
+  difficulty?: number
+  status?: number
+  type?: number
+  interface_language?: number
+  labels?: number
+  is_prerequisite?: boolean
+  is_test_assignment?: boolean
+  is_lesson_assignment?: boolean
+  is_olympiad_assignment?: boolean
+  search?: string
+}
+
+export type ListType = {
+  code: string | number
+  name: string
+}

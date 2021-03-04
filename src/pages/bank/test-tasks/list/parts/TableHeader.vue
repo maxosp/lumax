@@ -35,8 +35,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
+import { toggleTreeView, $treeView } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import Divider from '@/ui/divider/Divider.vue'
-import { toggleTreeView, $treeView } from '@/pages/dictionary/themes/list/themes-page.model'
 
 export default Vue.extend({
   name: 'TableHeader',

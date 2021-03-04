@@ -6,3 +6,11 @@ export const deleteSubjectFx = createApiEffect<number, void>({
     url: `/api/subject/subjects/${id}/`,
   }),
 })
+
+export const deleteSubjectsFx = createApiEffect<number[], number[]>({
+  requestMapper: (subjects) => ({
+    method: 'PATCH',
+    url: '/api/subject/subjects/bulk-delete/',
+    body: { subjects },
+  }),
+})
