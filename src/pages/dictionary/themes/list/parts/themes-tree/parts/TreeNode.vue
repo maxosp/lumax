@@ -175,6 +175,7 @@ export default Vue.extend({
   }
 }
 .chip {
+  @mixin flex-row-central;
   padding: 4px 8px;
   font-weight: 600;
   line-height: 14px;
@@ -182,6 +183,9 @@ export default Vue.extend({
   background-color: var(--c-grey-3);
   margin-left: 5px;
   color: #fff;
+  & ::v-deep span {
+    margin-left: 5px;
+  }
 }
 
 .primary {

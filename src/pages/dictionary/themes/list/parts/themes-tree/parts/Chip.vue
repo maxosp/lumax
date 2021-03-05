@@ -5,6 +5,7 @@
     :class="{ chip: true, primary: $props.primary }"
   >
     <Icon
+      v-if="icon"
       :type="$props.icon"
       class="chip-icon"
       size="12"
@@ -24,7 +25,7 @@ export default Vue.extend({
     Icon,
   },
   props: {
-    icon: { type: String, required: true },
+    icon: { type: String },
     item: { type: Object as PropType<ResourceChip>, required: true },
     primary: { type: Boolean, required: false, default: false },
   },

@@ -11,3 +11,7 @@ export const formatTotalAmount = (total: number) => {
   res = res.map((el, index) => (index % 3 === 0 ? `${el} ` : `${el}`))
   return res.reverse().join('')
 }
+
+export const removeHtmlTags = (str: string) => {
+  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
+}
