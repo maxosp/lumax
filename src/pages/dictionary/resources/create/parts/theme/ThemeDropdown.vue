@@ -7,6 +7,7 @@
     :store="{ $item, $itemsDropdown, $searchString }"
     :disabled="!$canSetTheme"
     is-recursive
+    @item-changed="setSelectedTheme"
   />
 </template>
 
@@ -17,6 +18,7 @@ import { $canSetTheme } from '@/pages/dictionary/resources/create/resource-creat
 import {
   $themes,
   themeDropdownModule,
+  setSelectedTheme,
 } from '@/pages/dictionary/resources/create/parts/theme/theme.model'
 
 export default Vue.extend({
@@ -33,5 +35,6 @@ export default Vue.extend({
       themeModuleMethods: themeDropdownModule.methods,
     }
   },
+  methods: { setSelectedTheme },
 })
 </script>

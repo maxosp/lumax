@@ -1,11 +1,14 @@
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { createStore, forward, sample } from 'effector-root'
+import { createEvent, createStore, forward, restore, sample } from 'effector-root'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { DropdownItem } from '@/pages/common/types'
 import { GetThemeTreeFilterListResponse } from '@/features/api/types'
 import { getThemeData } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
 
 export const themeDropdownModule = createFilter()
+
+export const setSelectedTheme = createEvent<DropdownItem | null>()
+export const $selectedTheme = restore(setSelectedTheme, null)
 
 export const $themes = createStore<DropdownItem[]>([])
 

@@ -6,41 +6,45 @@
         <TypeDropdown :class="{'--error': $typeError}" />
         <FormInput
           v-if="$selectedType && $selectedType.name === 'link'"
-          :value="$basicLink"
+          :value="$link"
           label="Ссылка"
           placeholder="Вставьте вашу ссылку"
           :max-length="200"
-          :class="{'--error': $basicLinkError}"
+          :class="{'--error': $linkError}"
           class="input"
           clear-btn
-          @clear="resetBasicLink"
-          @input="basicLinkChanged"
+          @clear="resetLink"
+          @input="linkChanged"
         />
         <FormInput
           v-if="$selectedType && $selectedType.name === 'video'"
-          :value="$videoLink"
+          :value="$link"
           label="Ссылка на видео"
           placeholder="Вставьте вашу ссылку"
           :max-length="200"
-          :class="{'--error': $videoLinkError}"
+          :class="{'--error': $linkError}"
           class="input"
           clear-btn
-          @clear="resetVideoLink"
-          @input="videoLinkChanged"
+          @clear="resetLink"
+          @input="linkChanged"
         />
-        <FileUploadBlock v-if="$selectedType && $selectedType.name === 'file'" />
+        <FileUploadBlock
+          v-if="$selectedType && $selectedType.name === 'file'"
+          :class="{'--error': $fileError}"
+        />
         <div class='field'>
           <span class='label'>Описание</span>
           <Wysiwyg
             :value="$resourceDescription"
             placeholder="Введите текст"
+            :class="{'--error': $descriptionError}"
             @input="resourceDescriptionChanged"
           />
         </div>
       </div>
       <div class="right">
-        <SubjectDropdown :class="{'--error': $subjectError}" />
-        <ClassDropdown :class="{'--error': $classError}" />
+        <SubjectDropdown />
+        <ClassDropdown />
       </div>
     </div>
   </Card>
@@ -58,19 +62,15 @@ import FileUploadBlock from '@/pages/dictionary/resources/create/parts/file-uplo
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import {
   $themeError,
-  $subjectError,
-  $classError,
   $typeError,
   $resourceDescription,
   resourceDescriptionChanged,
-  $videoLink,
-  videoLinkChanged,
-  resetVideoLink,
-  $videoLinkError,
-  $basicLink,
-  basicLinkChanged,
-  $basicLinkError,
-  resetBasicLink,
+  $link,
+  linkChanged,
+  resetLink,
+  $linkError,
+  $fileError,
+  $descriptionError,
 } from '@/pages/dictionary/resources/create/resource-creation-page.model'
 import { $selectedType } from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
 
@@ -87,22 +87,18 @@ export default Vue.extend({
   },
   effector: {
     $themeError,
-    $subjectError,
-    $classError,
     $typeError,
     $resourceDescription,
-    $videoLink,
-    $videoLinkError,
+    $link,
+    $linkError,
     $selectedType,
-    $basicLink,
-    $basicLinkError,
+    $fileError,
+    $descriptionError,
   },
   methods: {
     resourceDescriptionChanged,
-    videoLinkChanged,
-    resetVideoLink,
-    basicLinkChanged,
-    resetBasicLink,
+    linkChanged,
+    resetLink,
   },
 })
 </script>
@@ -143,9 +139,16 @@ export default Vue.extend({
     margin-bottom: 20px;
   }
 }
-.--error ::v-deep .inner-input {
+.--error ::v-deep .inner-input,
+.--error ::v-deep .cke_contents {
   border: 2px solid var(--c-red-0) !important;
 }
+
+.--error ::v-deep label .label {
+  text-decoration-color: var(--c-red-0);
+  color: var(--c-red-0);
+}
+
 @media screen and (max-width: 1340px) {
   .content ::v-deep .content {
     justify-content: flex-start;

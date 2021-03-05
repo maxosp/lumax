@@ -67,5 +67,8 @@ forward({
 
 forward({
   from: deleteMedia.doneData,
-  to: addToast.prepend(() => ({ type: 'success', message: 'Файл был успешно удален!' })),
+  to: [
+    addToast.prepend(() => ({ type: 'success', message: 'Файл был успешно удален!' })),
+    fileDataChanged.prepend(() => null),
+  ],
 })

@@ -1,7 +1,7 @@
 <template>
   <div class="file-upload">
     <div class="left">
-      <label v-if="!$fileData">
+      <label :class="{'--invisible': $fileData}">
         <span class="label" @click.prevent>
           Загрузите файл
         </span>
@@ -12,16 +12,9 @@
           name="file"
           @change="handleFileUpload"
         >
-        <BaseButton
-          class='btn'
-          small
-          @click="imitInputClick"
-        >
-          Загрузить файл
-        </BaseButton>
       </label>
       <div
-        v-else
+        v-if="$fileData"
         class="file-wrapper"
       >
         <div class="ext">
@@ -30,11 +23,17 @@
         <span> {{ formatName }} </span>
       </div>
     </div>
-    <div
-      v-if="$fileData"
-      class="right"
-    >
+    <div class="right">
       <BaseButton
+        v-if="!$fileData"
+        class='btn'
+        small
+        @click="imitInputClick"
+      >
+        Загрузить файл
+      </BaseButton>
+      <BaseButton
+        v-if="$fileData"
         class='btn'
         small
         @click="replaceFile($fileData.id)"
@@ -42,6 +41,7 @@
         Заменить файл
       </BaseButton>
       <BaseButton
+        v-if="$fileData"
         class='btn'
         border-without-bg
         small
@@ -84,6 +84,7 @@ export default Vue.extend({
     uploadFile,
     deleteMedia,
     imitInputClick() {
+      console.log(document.getElementById('fileInput'))
       document.getElementById('fileInput')!.click()
     },
     handleFileUpload() {
@@ -101,8 +102,10 @@ export default Vue.extend({
 
 <style scoped>
 .file-upload {
-  outline: 1px solid lime;
   margin-bottom: 20px;
+  outline: 1px solid;
+  @mixin flex-row-central;
+  justify-content: space-between;
   input {
     display: none;
   }
@@ -135,5 +138,9 @@ export default Vue.extend({
       margin-right: 15px;
     }
   }
+}
+.--invisible {
+  visibility: hidden;
+  height: 0;
 }
 </style>

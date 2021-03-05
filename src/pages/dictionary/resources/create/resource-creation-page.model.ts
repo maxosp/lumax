@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
 import { debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -14,39 +14,51 @@ import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list
 import { GetListQueryParams } from '@/features/api/types'
 
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
-import { themeDropdownModule } from './parts/theme/theme.model'
-import { typeDropdownModule } from './parts/type/type-dropdown.model'
-import { DEFAULT_ID } from '../constants'
+import {
+  $selectedTheme,
+  themeDropdownModule,
+} from '@/pages/dictionary/resources/create/parts/theme/theme.model'
+import {
+  $selectedType,
+  setSelectedType,
+  typeDropdownModule,
+} from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
+import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
+import {
+  $fileData,
+  uploadFileFx,
+} from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
+import { isLinkValid } from '@/lib/validators/url'
+import { createResourceFx } from '@/features/api/media/create-resource'
+import { CreateResourceType } from '@/features/api/media/types'
+import { addToast } from '@/features/toasts/toasts.model'
+import { navigatePush } from '@/features/navigation'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
   mapParams: (params: GetListQueryParams) => params,
 })
 
-// const saveThemeFx = attach({
-//   effect: createThemeFx,
-//   mapParams: (params: CreateThemeType) => params,
-// })
+const createResource = attach({
+  effect: createResourceFx,
+  mapParams: (params: CreateResourceType) => params,
+})
 
 export const clearFields = createEvent<void>()
 
 export const create = createEvent<void>()
+const checkIfResourceCanBeSend = createEvent<void>()
 
 export const resourceDescriptionChanged = createEvent<string>()
 export const $resourceDescription = restore(resourceDescriptionChanged, '').reset(clearFields)
 
-export const videoLinkChanged = createEvent<string>()
-export const resetVideoLink = createEvent<void>()
-export const $videoLink = restore(videoLinkChanged, '').reset(resetVideoLink)
+export const linkChanged = createEvent<string>()
+export const resetLink = createEvent<void>()
+export const $link = restore(linkChanged, '').reset(resetLink)
 
-export const basicLinkChanged = createEvent<string>()
-export const resetBasicLink = createEvent<void>()
-export const $basicLink = restore(basicLinkChanged, '').reset(resetBasicLink)
-
-// const checkIfThemeCanBeSend = createEvent<void>()
-// const saveTheme = createEvent<void>()
+const saveResource = createEvent<void>()
 export const redirectAfterSaveChanged = createEvent<boolean>()
-// const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
+const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
 
 forward({
   from: clearFields,
@@ -69,42 +81,41 @@ export const $canSetTheme = every({
   stores: [$selectedSubject, $selectedClass],
 })
 
-// export const $formToSend = combine({
-//   id: DEFAULT_ID,
-//   name: $themeTitle,
-//   study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
-//   subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
-// })
+// link: string ; theme_id: number ; text: string; media_id: number
+export const $formToSend = combine({
+  id: DEFAULT_ID,
+  text: $resourceDescription,
+  link: $link,
+  theme_id: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
+  media_id: $fileData.map((data) => (data ? data.id : undefined)),
+  resource_type: $selectedType.map((data) => (data ? data.name : '')),
+})
 
 const setTypeError = createEvent<boolean>()
 const resetTypeError = createEvent<void>()
 export const $typeError = restore(setTypeError, false).reset(resetTypeError)
 
-const setClassError = createEvent<boolean>()
-const resetClassError = createEvent<void>()
-export const $classError = restore(setClassError, false).reset(resetClassError)
-
 const setThemeError = createEvent<boolean>()
 const resetThemeError = createEvent<void>()
 export const $themeError = restore(setThemeError, false).reset(resetThemeError)
 
-const setSubjectError = createEvent<boolean>()
-const resetSubjectError = createEvent<void>()
-export const $subjectError = restore(setSubjectError, false).reset(resetSubjectError)
+const setDescriptionError = createEvent<boolean>()
+const resetDescriptionError = createEvent<void>()
+export const $descriptionError = restore(setDescriptionError, false).reset(resetDescriptionError)
 
-const setVideoLinkError = createEvent<boolean>()
-const resetVideoLinkError = createEvent<void>()
-export const $videoLinkError = restore(setVideoLinkError, false).reset(resetVideoLinkError)
+const setlinkError = createEvent<boolean>()
+const resetlinkError = createEvent<void>()
+export const $linkError = restore(setlinkError, false).reset(resetlinkError)
 
-const setBasicLinkError = createEvent<boolean>()
-const resetBasicLinkError = createEvent<void>()
-export const $basicLinkError = restore(setBasicLinkError, false).reset(resetBasicLinkError)
+const setFileError = createEvent<boolean>()
+const resetFileError = createEvent<void>()
+export const $fileError = restore(setFileError, false).reset(resetFileError)
 
 const resetErrors = createEvent<void>()
 
 forward({
   from: resetErrors,
-  to: [resetTypeError, resetClassError, resetThemeError, resetSubjectError],
+  to: [resetTypeError, resetThemeError, resetDescriptionError, resetLink, resetFileError],
 })
 
 forward({
@@ -136,59 +147,82 @@ forward({
   ],
 })
 
-// sample({
-//   source: $formToSend,
-//   clock: checkIfThemeCanBeSend,
-//   fn: (obj) => {
-//     if (obj.name.trim().length && obj.study_year_id && obj.subject_id) saveTheme()
-//     else {
-//       if (!obj.name.trim().length) setThemeTitleError(true)
-//       if (!obj.study_year_id) setClassError(true)
-//       if (!obj.subject_id) setSubjectError(true)
-//       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
-//     }
-//   },
-// })
-
-// sample({
-//   clock: saveTheme,
-//   source: $formToSend,
-//   target: saveThemeFx,
-// })
-
-// const { noInternetConnection } = split(merge([saveThemeFx.failData, savePrerequisiteFx.failData]), {
-//   noInternetConnection: ({ status }) => status === undefined,
-// })
-
-// forward({
-//   from: noInternetConnection,
-//   to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-// })
-
-// const $ifRedirect = sample({
-//   clock: [saveThemeFx],
-//   source: $redirectAfterSave,
-//   fn: (isRedirect: boolean) => isRedirect,
-// })
-
-// sample({
-//   source: $ifRedirect,
-//   clock: saveThemeFx.doneData.map((data) => data.body.id),
-//   fn: (ifRedirect: boolean, id: number) => {
-//     addToast({ type: 'success', message: 'Тема успешно создана!' })
-//     if (ifRedirect) navigatePush({ name: 'themes-list' })
-//     else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
-//   },
-// })
-
 forward({
-  from: typeDropdownModule.methods.itemChanged,
-  to: setTypeError.prepend(() => false),
+  from: create,
+  to: checkIfResourceCanBeSend,
+})
+
+sample({
+  source: $formToSend,
+  clock: checkIfResourceCanBeSend,
+  fn: (obj) => {
+    console.log(obj)
+    let errors = 0
+    if (!obj.resource_type) {
+      setTypeError(true)
+      errors += 1
+    }
+    if (!obj.theme_id) {
+      setThemeError(true)
+      errors += 1
+    }
+    if (obj.resource_type === 'text' && !obj.text.trim().length) {
+      setDescriptionError(true)
+      errors += 1
+    } else if (
+      (obj.resource_type === 'link' || obj.resource_type === 'video') &&
+      (!obj.link.trim().length || !isLinkValid(obj.link))
+    ) {
+      setlinkError(true)
+      errors += 1
+    } else if (obj.resource_type === 'file' && !obj.media_id) {
+      setFileError(true)
+      errors += 1
+    }
+    if (errors === 0) saveResource()
+    else if (errors > 0)
+      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+  },
+})
+
+sample({
+  clock: saveResource,
+  source: $formToSend,
+  target: createResource,
+})
+
+const { noInternetConnection } = split(createResourceFx.failData, {
+  noInternetConnection: ({ status }) => status === undefined,
 })
 
 forward({
-  from: classDropdownModule.methods.itemChanged,
-  to: setClassError.prepend(() => false),
+  from: noInternetConnection,
+  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
+})
+
+const $ifRedirect = sample({
+  clock: createResource,
+  source: $redirectAfterSave,
+  fn: (isRedirect: boolean) => isRedirect,
+})
+
+sample({
+  source: $ifRedirect,
+  clock: createResourceFx.doneData.map((data) => data.body.id),
+  fn: (ifRedirect: boolean, id: number) => {
+    addToast({ type: 'success', message: 'Обучающий ресурс успешно создан!' })
+    if (ifRedirect) navigatePush({ name: 'resources-list' })
+    else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
+  },
+})
+
+forward({
+  from: setSelectedType,
+  to: resetErrors,
+})
+forward({
+  from: typeDropdownModule.methods.itemChanged,
+  to: setTypeError.prepend(() => false),
 })
 
 forward({
@@ -197,6 +231,16 @@ forward({
 })
 
 forward({
-  from: subjectDropdownModule.methods.itemChanged,
-  to: setSubjectError.prepend(() => false),
+  from: resourceDescriptionChanged,
+  to: setDescriptionError.prepend(() => false),
+})
+
+forward({
+  from: linkChanged,
+  to: setlinkError.prepend(() => false),
+})
+
+forward({
+  from: uploadFileFx,
+  to: setFileError.prepend(() => false),
 })
