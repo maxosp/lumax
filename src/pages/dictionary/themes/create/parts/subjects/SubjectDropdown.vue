@@ -6,7 +6,7 @@
     :methods="subjectModuleMethods"
     :data="$subjects"
     :store="{ $item, $itemsDropdown, $searchString }"
-    @item-changed="setSelectedSubject"
+    @item-changed="(val) => setSelectedSubject({ id: +val.name })"
   />
 </template>
 

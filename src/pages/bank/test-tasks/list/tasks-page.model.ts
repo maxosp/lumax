@@ -44,6 +44,7 @@ export const sendAssignmentsToModeration = attach({
 export const toggleTreeView = createEvent<boolean>()
 export const $treeView = restore(toggleTreeView, false)
 
+export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<GetAssignmentTreeQueryParams>()
 export const setTasksTree = createEvent<TreeDataLight | null>()
 export const $tasksTree = restore<TreeDataLight | null>(setTasksTree, null)
@@ -56,7 +57,18 @@ forward({
 })
 
 forward({
+  from: loadTree,
+  to: getTasksTree,
+})
+forward({
   from: getTasksTreeLight.doneData,
+  to: [
+    setTasksTree.prepend((res) => res.body.data),
+    setTasksTreeTotal.prepend((res) => res.body.total),
+  ],
+})
+forward({
+  from: getTasksTree.doneData,
   to: [
     setTasksTree.prepend((res) => res.body.data),
     setTasksTreeTotal.prepend((res) => res.body.total),
@@ -66,7 +78,7 @@ forward({
 forward({
   from: deleteAssignment.doneData,
   to: [
-    loadTreeLight.prepend(() => ({})),
+    loadTree.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Задание была успешно удалено!' })),
   ],
 })

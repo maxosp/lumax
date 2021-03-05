@@ -102,7 +102,7 @@ import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/T
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
   $treeView,
-  loadTreeLight,
+  loadTree,
   $tasksTreeTotal,
   deleteAssignment,
   deleteManyAssignments,
@@ -196,13 +196,13 @@ export default Vue.extend({
       container && container.dispatchEvent(resetEvent)
 
       // reload data
-      loadTreeLight({})
+      loadTree({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
-      loadTreeLight({ ...this.filterParams })
+      loadTree({ ...this.filterParams })
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -211,7 +211,7 @@ export default Vue.extend({
       reset() // search string and field
 
       // reload data
-      loadTreeLight({})
+      loadTree({})
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -254,7 +254,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTreeLight({})
+    loadTree({})
   },
   created() {
     // Authorization request

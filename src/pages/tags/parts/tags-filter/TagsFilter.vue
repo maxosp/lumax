@@ -158,6 +158,7 @@ export default Vue.extend({
 }
 .section {
   @mixin flex-row-central;
+  justify-content: space-between;
   margin-bottom: 20px;
   .input {
     width: calc((100% - 20px) / 2);

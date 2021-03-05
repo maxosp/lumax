@@ -22,9 +22,9 @@
       class="textarea"
       :class="{'--error': $titleError}"
       :max-length="200"
-      placeholder="Введите название тега"
+      placeholder="Введите название метки"
       :value="$labelTitle"
-      label="Название тега"
+      label="Название метки"
       @input="labelTitleChanged"
     />
     <div class="btns-wrapper">

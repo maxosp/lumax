@@ -42,8 +42,7 @@ export default Vue.extend({
   },
   methods: {
     handleRemove() {
-      const data = this.selectedRows
-      this.$emit('onRemove', data)
+      this.$emit('onRemove', this.selectedRows)
     },
   },
 })

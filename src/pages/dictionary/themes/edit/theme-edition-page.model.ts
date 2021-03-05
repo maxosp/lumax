@@ -236,11 +236,12 @@ sample({
   source: $formToSend,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) updateTheme()
+    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+      updateTheme()
     else {
       if (!obj.name.trim().length) setThemeTitleError(true)
-      if (!obj.study_year_id) setClassError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (obj.study_year_id === DEFAULT_ID) setClassError(true)
+      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -297,10 +298,10 @@ sample({
   source: $formToSendPrerequisite,
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
-    if (obj.name.length && obj.subject_id !== null) updatePrerequisite()
+    if (obj.name.length && obj.subject_id !== DEFAULT_ID) updatePrerequisite()
     else {
       if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (obj.subject_id === null) setSubjectError(true)
+      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },

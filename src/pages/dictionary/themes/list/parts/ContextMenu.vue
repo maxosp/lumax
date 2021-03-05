@@ -89,7 +89,7 @@ export default Vue.extend({
       switch (item.name) {
         case 'create':
           navigatePush({
-            name: 'theme-creation',
+            name: 'themes-create',
             params: {
               subject: `${this.$props.subject}`,
               studyYear: `${this.$props.studyYear}`,

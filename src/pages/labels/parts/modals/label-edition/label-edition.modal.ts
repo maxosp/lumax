@@ -92,13 +92,18 @@ sample({
   source: $form,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id && obj.theme_id)
+    if (
+      obj.name.trim().length &&
+      obj.study_year_id !== DEFAULT_ID &&
+      obj.subject_id !== DEFAULT_ID &&
+      obj.theme_id !== DEFAULT_ID
+    )
       updateLabel(obj)
     else {
       if (!obj.name.trim().length) titleErrorChanged(true)
-      if (!obj.study_year_id) classErrorChanged(true)
-      if (!obj.subject_id) subjectErrorChanged(true)
-      if (!obj.theme_id) themeErrorChanged(true)
+      if (obj.study_year_id === DEFAULT_ID) classErrorChanged(true)
+      if (obj.subject_id === DEFAULT_ID) subjectErrorChanged(true)
+      if (obj.theme_id === DEFAULT_ID) themeErrorChanged(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },

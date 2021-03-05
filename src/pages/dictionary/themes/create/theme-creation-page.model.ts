@@ -99,8 +99,8 @@ export const $formToSend = combine({
   id: DEFAULT_ID,
   name: $themeTitle,
   is_prerequisite: $isPrerequisite,
-  study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
-  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
+  study_year_id: $selectedClass.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => data && +data.name)),
   prerequisites_ids: $selectedPrerequisites.map((arr) => arr.map((data) => +data.name)),
   parent_theme_id: positionDropdownModule.store.$item.map((data) =>
@@ -112,10 +112,9 @@ export const $formToSendPrerequisite = combine({
   id: DEFAULT_ID,
   name: $prerequisiteTitle,
   is_prerequisite: $isPrerequisite,
-  subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
-
 const setThemeTitleError = createEvent<boolean>()
 const resetThemeTitleError = createEvent<void>()
 export const $themeTitleError = restore(setThemeTitleError, false).reset(resetThemeTitleError)
@@ -180,8 +179,8 @@ forward({
 })
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
-  study_year: cl && +cl.name,
-  subject: obj && +obj.name,
+  study_year: cl && cl.id,
+  subject: obj && obj.id,
 }))
 
 const debounced = debounce({
@@ -220,11 +219,12 @@ sample({
   source: $formToSend,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) saveTheme()
+    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+      saveTheme()
     else {
       if (!obj.name.trim().length) setThemeTitleError(true)
-      if (!obj.study_year_id) setClassError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (obj.study_year_id === DEFAULT_ID) setClassError(true)
+      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -279,10 +279,10 @@ sample({
   source: $formToSendPrerequisite,
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
-    if (obj.name.length && obj.subject_id) savePrerequisite()
+    if (obj.name.length && obj.subject_id !== DEFAULT_ID) savePrerequisite()
     else {
       if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },

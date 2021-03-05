@@ -107,6 +107,7 @@ import {
   loadTree,
   $themesTreeTotal,
   deleteTheme,
+  deleteThemes,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -114,9 +115,9 @@ import {
 } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
-import { navigatePush } from '@/features/navigation'
 import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -224,15 +225,16 @@ export default Vue.extend({
       // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
-    async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') {
-        await deleteTheme(ids)
-        // @ts-ignore
-        await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      }
+    async removeSelected(ids: number[]) {
+      if (ids.length === 1) await deleteTheme(ids[0])
+      else await deleteThemes(ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      // @ts-ignore
+      this.selectedRows = []
     },
     handleEditTheme(id: number) {
-      navigatePush({ name: 'theme-edition', params: { id: `${id}` } })
+      navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -243,7 +245,7 @@ export default Vue.extend({
       if (this.$treeView) {
         this.subject = data.subject
         this.studyYear = data.studyYear
-        this.theme = data.theme
+        this.theme = data.id
       }
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
