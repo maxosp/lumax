@@ -1,16 +1,17 @@
 import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
-import { deleteThemeFx } from '@/features/api/subject/delete-theme'
 import { addToast } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
+import { deleteResourceFx } from '@/features/api/media/delete-resource'
 
 const getResourcesTree = attach({
   effect: getResourcesTreeFx,
 })
 
-export const deleteTheme = attach({
-  effect: deleteThemeFx,
+export const deleteResource = attach({
+  effect: deleteResourceFx,
+  mapParams: (params: number) => params,
 })
 
 export const loadTree = createEvent<GetThemesTreeQueryParams>()
@@ -33,14 +34,14 @@ forward({
 })
 
 forward({
-  from: deleteTheme.doneData,
+  from: deleteResource.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Тема была успешно удалена!' })),
+    addToast.prepend(() => ({ type: 'success', message: 'Обучающий ресурс был успешно удален!' })),
   ],
 })
 
-const { noInternet } = split(merge([getResourcesTree.failData, deleteTheme.failData]), {
+const { noInternet } = split(merge([getResourcesTree.failData, deleteResource.failData]), {
   noInternet: ({ status }) => status === undefined,
 })
 

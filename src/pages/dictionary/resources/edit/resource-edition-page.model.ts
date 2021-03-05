@@ -2,64 +2,63 @@ import { attach, combine, createEvent, forward, restore, sample, split } from 'e
 import { debounce, every } from 'patronum'
 import {
   $selectedSubject,
-  setSelectedSubject,
   subjectDropdownModule,
-} from '@/pages/dictionary/resources/create/parts/subjects/subjects.model'
+} from '@/pages/dictionary/resources/edit/parts/subjects/subjects.model'
 import {
   $selectedClass,
   classDropdownModule,
-  setSelectedClass,
-} from '@/pages/dictionary/resources/create/parts/class/class.model'
-import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { GetListQueryParams } from '@/features/api/types'
-
-import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+} from '@/pages/dictionary/resources/edit/parts/class/class.model'
+import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
+import { CreateResourceType, Resource } from '@/features/api/media/types'
+import { getResourceFx } from '@/features/api/media/get-resource'
 import {
   $selectedTheme,
+  setSelectedTheme,
   themeDropdownModule,
-} from '@/pages/dictionary/resources/create/parts/theme/theme.model'
+  getThemeData,
+} from '@/pages/dictionary/resources/edit/parts/theme/theme.model'
+import {
+  $fileData,
+  uploadFileFx,
+  fileDataChanged,
+} from '@/pages/dictionary/resources/edit/parts/file-upload/file-upload.model'
 import {
   $selectedType,
   setSelectedType,
   typeDropdownModule,
-} from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
-import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
-import {
-  $fileData,
-  uploadFileFx,
-} from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
-import { isLinkValid } from '@/lib/validators/url'
-import { createResourceFx } from '@/features/api/media/create-resource'
-import { CreateResourceType } from '@/features/api/media/types'
+} from '@/pages/dictionary/resources/edit/parts/type/type-dropdown.model'
+import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { addToast } from '@/features/toasts/toasts.model'
+import { isLinkValid } from '@/lib/validators/url'
+import { updateResourceFx } from '@/features/api/media/update-resource'
 import { navigatePush } from '@/features/navigation'
 
-const getThemesTreeList = attach({
-  effect: getThemesTreeListFx,
-  mapParams: (params: GetListQueryParams) => params,
-})
-
-const createResource = attach({
-  effect: createResourceFx,
+const updateResourceDataFx = attach({
+  effect: updateResourceFx,
   mapParams: (params: CreateResourceType) => params,
 })
 
+export const getResourceToUpdate = attach({
+  effect: getResourceFx,
+  mapParams: (params: number) => params,
+})
+
+const updateResource = createEvent<void>()
+
 export const clearFields = createEvent<void>()
 
-export const create = createEvent<void>()
+export const edit = createEvent<void>()
 const checkIfResourceCanBeSend = createEvent<void>()
+
+export const redirectAfterSaveChanged = createEvent<boolean>()
+const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
 
 export const resourceDescriptionChanged = createEvent<string>()
 export const $resourceDescription = restore(resourceDescriptionChanged, '').reset(clearFields)
 
 export const linkChanged = createEvent<string>()
 export const resetLink = createEvent<void>()
-export const $link = restore(linkChanged, '').reset(resetLink)
-
-const saveResource = createEvent<void>()
-
-export const redirectAfterSaveChanged = createEvent<boolean>()
-const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
+export const $link = restore(linkChanged, '').reset(clearFields)
 
 forward({
   from: clearFields,
@@ -70,10 +69,7 @@ forward({
     subjectDropdownModule.methods.resetSearchString,
     themeDropdownModule.methods.resetItem,
     themeDropdownModule.methods.resetSearchString,
-    typeDropdownModule.methods.resetItem,
-    typeDropdownModule.methods.resetSearchString,
-    setSelectedSubject.prepend(() => null),
-    setSelectedClass.prepend(() => null),
+    fileDataChanged.prepend(() => null),
   ],
 })
 
@@ -89,6 +85,21 @@ export const $formToSend = combine({
   theme: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
   media_id: $fileData.map((data) => (data ? data.id : undefined)),
   resource_type: $selectedType.map((data) => (data ? data.name : '')),
+})
+sample({
+  clock: getResourceToUpdate.done,
+  source: getResourceFx.doneData.map((data) => data.body),
+  fn: (resource: Resource) => {
+    getThemeData(resource.theme!)
+    linkChanged(resource.link!)
+    typeDropdownModule.methods.itemChanged(resource.resource_type)
+    setSelectedType({ name: resource.resource_type, title: '' })
+    $formToSend.map((el) => (el.id = resource.id))
+    themeDropdownModule.methods.itemChanged(`${resource.theme}`)
+    setSelectedTheme({ name: `${resource.theme}`, title: '' })
+    resourceDescriptionChanged(resource.text!)
+    fileDataChanged({ id: resource.media_id! })
+  },
 })
 
 const setTypeError = createEvent<boolean>()
@@ -118,11 +129,6 @@ forward({
   to: [resetTypeError, resetThemeError, resetDescriptionError, resetLink, resetFileError],
 })
 
-// forward({
-//   from: [classDropdownModule.methods.itemChanged, subjectDropdownModule.methods.itemChanged],
-//   to: themeDropdownModule.methods.resetItem.prepend(() => ({})),
-// })
-
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
   study_year: cl && +cl.name,
   subject: obj && +obj.name,
@@ -135,20 +141,17 @@ const debounced = debounce({
 
 forward({
   from: debounced,
-  to: [
-    getThemesTreeList.prepend((data) => {
-      return {
-        study_year: data.study_year ? data.study_year : undefined,
-        subject: data.subject ? data.subject : undefined,
-        is_prerequisite: false,
-      }
-    }),
-    getThemesListFx.prepend((data) => ({ subject: data.subject || undefined })),
-  ],
+  to: getThemesTreeListFx.prepend((data) => {
+    return {
+      study_year: data.study_year ? data.study_year : undefined,
+      subject: data.subject ? data.subject : undefined,
+      is_prerequisite: false,
+    }
+  }),
 })
 
 forward({
-  from: create,
+  from: edit,
   to: checkIfResourceCanBeSend,
 })
 
@@ -178,19 +181,19 @@ sample({
       setFileError(true)
       errors += 1
     }
-    if (errors === 0) saveResource()
+    if (errors === 0) updateResource()
     else if (errors > 0)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
   },
 })
 
 sample({
-  clock: saveResource,
+  clock: updateResource,
   source: $formToSend,
-  target: createResource,
+  target: updateResourceDataFx,
 })
 
-const { noInternetConnection } = split(createResourceFx.failData, {
+const { noInternetConnection } = split(updateResourceFx.failData, {
   noInternetConnection: ({ status }) => status === undefined,
 })
 
@@ -200,18 +203,18 @@ forward({
 })
 
 const $ifRedirect = sample({
-  clock: createResource,
+  clock: updateResourceDataFx,
   source: $redirectAfterSave,
   fn: (isRedirect: boolean) => isRedirect,
 })
 
 sample({
   source: $ifRedirect,
-  clock: createResourceFx.doneData.map((data) => data.body.id),
+  clock: updateResourceDataFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Обучающий ресурс успешно создан!' })
+    addToast({ type: 'success', message: 'Ресурс успешно обновлен!' })
     if (ifRedirect) navigatePush({ name: 'resources-list' })
-    else navigatePush({ name: 'resource-edit', params: { id: `${id}` } })
+    else getResourceToUpdate(id)
   },
 })
 

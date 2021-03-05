@@ -19,9 +19,7 @@ import {
   clearFields,
   redirectAfterSaveChanged,
 } from '@/pages/dictionary/resources/create/resource-creation-page.model'
-// import { subjectDropdownModule } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
-// import { classDropdownModule } from '@/pages/dictionary/themes/create/parts/class/class.model'
-// import { positionDropdownModule } from '@/pages/dictionary/themes/create/parts/position/position.model'
+import { getThemeData } from '@/pages/dictionary/resources/create/parts/theme/theme.model'
 
 export default Vue.extend({
   name: 'ResourceCreationPage',
@@ -42,11 +40,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    if (this.$route.params) {
-      // const { subject, studyYear, theme } = this.$route.params
-      // // subject && subjectDropdownModule.methods.itemChanged(subject)
-      // // studyYear && classDropdownModule.methods.itemChanged(studyYear)
-      // // theme && positionDropdownModule.methods.itemChanged(theme)
+    if (this.$route.params.id) {
+      getThemeData(+this.$route.params.id)
     }
   },
   beforeDestroy() {

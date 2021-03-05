@@ -3,15 +3,15 @@ import { attach, createEvent, createStore, forward, restore } from 'effector-roo
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { DropdownItem } from '@/pages/common/types'
 import { GetThemeTreeFilterListResponse } from '@/features/api/types'
-import { getThemeFx } from '@/features/api/subject/get-theme'
 import {
   setSelectedSubject,
   subjectDropdownModule,
-} from '@/pages/dictionary/resources/create/parts/subjects/subjects.model'
+} from '@/pages/dictionary/resources/edit/parts/subjects/subjects.model'
 import {
   classDropdownModule,
   setSelectedClass,
-} from '@/pages/dictionary/resources/create/parts/class/class.model'
+} from '@/pages/dictionary/resources/edit/parts/class/class.model'
+import { getThemeFx } from '@/features/api/subject/get-theme'
 
 export const getThemeData = attach({
   effect: getThemeFx,
@@ -38,6 +38,7 @@ forward({
   from: getThemesTreeListFx.doneData.map((data) => formatData(data.body)),
   to: $themes,
 })
+
 forward({
   from: getThemeData.doneData.map((res) => res.body),
   to: [

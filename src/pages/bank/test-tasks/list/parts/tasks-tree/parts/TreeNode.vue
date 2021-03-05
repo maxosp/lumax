@@ -105,8 +105,8 @@ export default Vue.extend({
           fullName = `${fullName.slice(0, 100)}...`
         }
       } else {
-        fullName = entity ? entity.text : ''
-        if (!entity.text) return ''
+        fullName = entity ? entity.wording : ''
+        if (!entity.wording) return ''
         fullName = removeHtmlTags(fullName)
         fullName = `${fullName.slice(0, 30)}...`
       }

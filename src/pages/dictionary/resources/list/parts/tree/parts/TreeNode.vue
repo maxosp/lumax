@@ -1,7 +1,7 @@
 <template>
   <div class="tree-node">
     <div
-      :id="`node-${$props.nodeId}`"
+      :id="`node-${$props.nodeId}-${$props.node.element_type}`"
       class="label"
       @click="toggle"
     >
@@ -12,20 +12,26 @@
         size="35"
       />
       <Icon
-        v-else
-        :type="node.is_prerequisite ? 'folder-prerequisite' : 'tree-folder'"
+        v-else-if="!opened && node.element_type !== 'study_resource'"
+        :type="prerequisiteFolder ? 'folder-prerequisite' : 'tree-folder'"
         :class="{ 'folder-icon': true, transapent: node.is_prerequisite }"
         size="35"
       />
+      <div
+        v-else
+        class="fake-icon"
+      >
+        <Icon
+          :type="`resource-${node.study_resource.resource_type}`"
+          size="20"
+          class="icon"
+        />
+      </div>
       <span>{{ title }}</span>
-      <Chip
-        primary
-        :item="resources.tasks"
-        icon="copy"
-      />
       <Chip :item="resources.videos" icon="play" />
       <Chip :item="resources.texts" icon="text" />
       <Chip :item="resources.links" icon="link" />
+      <Chip :item="resources.files" icon="file" />
     </div>
     <div v-if="opened" class="leaf">
       <TreeNode
@@ -45,6 +51,7 @@ import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
 import { TreeData } from '@/features/api/types'
+import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -65,33 +72,70 @@ export default Vue.extend({
   },
   computed: {
     title() {
+      // @ts-ignore
       const entity = this.node[this.node.element_type]
-      let fullName = entity ? entity.name : ''
-      if (fullName.length > 100) {
-        fullName = `${fullName.slice(0, 100)}...`
+      let fullName = ''
+      // @ts-ignore
+      if (this.node.element_type !== 'study_resource') {
+        fullName = entity ? entity.name : ''
+        if (fullName.length > 100) {
+          fullName = `${fullName.slice(0, 100)}...`
+        }
+      } else {
+        if (!entity) fullName = ''
+        else if (entity.text && entity.text.length) fullName = removeHtmlTags(entity.text)
+        else if (entity.file_name && entity.file_name.length)
+          fullName = entity.file_name.slice(entity.file_name.lastIndexOf('/') + 1)
+        else if (entity.link && entity.link.length) fullName = entity.link
+        fullName = fullName.length > 30 ? `${fullName.slice(0, 30)}...` : fullName
       }
       return fullName
     },
     resources() {
       return {
-        tasks: {
-          count: '8',
-          description: 'Количество заданий',
-        },
         videos: {
           // @ts-ignore
-          count: this.node.media_resource_count,
+          count: this.node.leaves.filter(
+            (el) =>
+              // @ts-ignore
+              el.element_type === 'study_resource' &&
+              // @ts-ignore
+              el.study_resource.resource_type === 'video'
+          ).length,
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
           // @ts-ignore
-          count: this.node.text_resource_count,
+          count: this.node.leaves.filter(
+            (el) =>
+              // @ts-ignore
+              el.element_type === 'study_resource' &&
+              // @ts-ignore
+              el.study_resource.resource_type === 'text'
+          ).length,
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
           // @ts-ignore
-          count: this.node.link_resource_count,
+          count: this.node.leaves.filter(
+            (el) =>
+              // @ts-ignore
+              el.element_type === 'study_resource' &&
+              // @ts-ignore
+              el.study_resource.resource_type === 'link'
+          ).length,
           description: 'Количество ресурсов типа "Ссылка"',
+        },
+        files: {
+          // @ts-ignore
+          count: this.node.leaves.filter(
+            (el) =>
+              // @ts-ignore
+              el.element_type === 'study_resource' &&
+              // @ts-ignore
+              el.study_resource.resource_type === 'file'
+          ).length,
+          description: 'Количество ресурсов типа "Файл"',
         },
       }
     },
@@ -115,24 +159,36 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
-
-      this.$emit('onRightClick', { data: { id: this.$props.nodeId }, event, type })
+      this.$emit('onRightClick', {
+        data: {
+          id: this.$props.nodeId,
+          theme: this.$props.node.theme ? this.$props.node.theme.id : undefined,
+        },
+        event,
+        type,
+      })
     },
   },
   mounted() {
     // @ts-ignore
-    if (this.$props.node.element_type === 'theme') {
-      // @ts-ignore
-      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+    const { element_type } = this.$props.node
+    if (element_type === 'theme' || element_type === 'study_resource') {
+      const nodeElement = document.querySelector(
+        // @ts-ignore
+        `#node-${this.$props.nodeId}-${element_type}`
+      )
       // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
     // @ts-ignore
-    if (this.$props.node.element_type === 'theme') {
-      // @ts-ignore
-      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+    const { element_type } = this.$props.node
+    if (element_type === 'theme' || element_type === 'study_resource') {
+      const nodeElement = document.querySelector(
+        // @ts-ignore
+        `#node-${this.$props.nodeId}-${element_type}`
+      )
       // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
@@ -146,6 +202,7 @@ export default Vue.extend({
 }
 .folder-icon {
   stroke: var(--c-grey-3);
+  fill: transparent;
   margin-right: 15px;
   &.transparent {
     opacity: 0.5;
@@ -176,13 +233,19 @@ export default Vue.extend({
   margin-left: 5px;
   color: #fff;
 }
-
-.primary {
-  background-color: var(--c-yellow-1);
+.chip:first-child {
   margin-left: 15px;
 }
 
 .chip-icon {
   fill: #fff;
+}
+.fake-icon {
+  @mixin flex-center;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  margin-right: 15px;
 }
 </style>

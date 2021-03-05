@@ -1,3 +1,5 @@
+import { File } from '@/features/api/subject/types'
+
 export type FileType =
   | 'file'
   | 'pdf'
@@ -23,7 +25,7 @@ export type CreateResourceType = {
   link: string
   text: string
   resource_type: string
-  theme_id: number
+  theme: number
   media_id?: number
 }
 
@@ -35,5 +37,18 @@ export type Resource = {
   file_name?: string
   resource_type: string
   media_id?: number
-  theme_id?: number
+  theme?: number
+  media?: File
+}
+
+export type GetResourcesTreeQueryParams = {
+  sort?: string
+  subject?: string
+  study_year?: number
+  search?: string
+  search_all?: ''
+  search_id?: ''
+  search_name?: ''
+  search_subject?: ''
+  search_study_year?: ''
 }

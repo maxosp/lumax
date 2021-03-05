@@ -1,9 +1,9 @@
 import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
+import { File } from '@/features/api/subject/types'
 import { addToast } from '@/features/toasts/toasts.model'
 import { attach, createEffect, createEvent, forward, merge, restore, split } from 'effector-root'
-import { UploadedFilyType } from './types'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -16,7 +16,7 @@ export const deleteMedia = attach({
 
 export const uploadFile = createEvent<FileList>()
 
-export const fileDataChanged = createEvent<UploadedFilyType | null>()
+export const fileDataChanged = createEvent<Partial<File> | null>()
 const resetFileId = createEvent<void>()
 export const $fileData = restore(fileDataChanged, null).reset(resetFileId)
 

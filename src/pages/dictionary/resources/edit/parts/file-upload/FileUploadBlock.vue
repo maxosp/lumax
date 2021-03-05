@@ -60,7 +60,7 @@ import {
   uploadFile,
   $fileData,
   deleteMedia,
-} from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
+} from '@/pages/dictionary/resources/edit/parts/file-upload/file-upload.model'
 import { deleteMediaFx } from '@/features/api/media/delete-media'
 
 export default Vue.extend({
@@ -72,12 +72,18 @@ export default Vue.extend({
   },
   computed: {
     formatName() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('/') + 1)
+      return (
+        this.$fileData &&
+        this.$fileData.file_name &&
+        this.$fileData?.file_name.slice(this.$fileData.file_name.lastIndexOf('/') + 1)
+      )
     },
     fileExtenstion() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('.') + 1)
+      return (
+        this.$fileData &&
+        this.$fileData.file_name &&
+        this.$fileData?.file_name.slice(this.$fileData.file_name.lastIndexOf('.') + 1)
+      )
     },
   },
   methods: {

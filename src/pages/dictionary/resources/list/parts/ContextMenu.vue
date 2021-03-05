@@ -53,23 +53,12 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
     type: { type: String as PropType<ContextMenuType>, required: true },
-    subject: { type: [Number, null] as PropType<number | null> },
-    studyYear: { type: [Number, null] as PropType<number | null> },
     theme: { type: [Number, null] as PropType<number | null> },
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.type === 'table_theme') {
-        if (this.$props.selected.length) {
-          return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
-        }
-      }
       if (this.$props.type === 'theme') {
-        return [
-          { name: 'create', title: 'Создать тему' },
-          { name: 'edit', title: 'Редактировать' },
-          { name: 'delete', title: 'Удалить' },
-        ]
+        return [{ name: 'create', title: 'Создать обучающий ресурс' }]
       }
       if (this.$props.type === 'prerequisite_general') {
         return [
@@ -77,7 +66,6 @@ export default Vue.extend({
           { name: 'show', title: 'Показать в папке "Пререквизиты"' },
         ]
       }
-      // prerequisite_own || table_theme without selected
       return [
         { name: 'edit', title: 'Редактировать' },
         { name: 'delete', title: 'Удалить' },
@@ -89,16 +77,12 @@ export default Vue.extend({
       switch (item.name) {
         case 'create':
           navigatePush({
-            name: 'themes-create',
-            params: {
-              subject: `${this.$props.subject}`,
-              studyYear: `${this.$props.studyYear}`,
-              theme: `${this.$props.theme}`,
-            },
+            name: 'resources-create',
+            params: { id: `${this.$props.theme}` },
           })
           break
         case 'edit':
-          navigatePush({ name: 'themes-edit', params: { id: this.$props.id } })
+          navigatePush({ name: 'resources-edit', params: { id: this.$props.id } })
           break
         case 'delete':
           this.$emit('onRemove', [this.$props.id])

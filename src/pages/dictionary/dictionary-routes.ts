@@ -10,6 +10,7 @@ import ThemeEditionPage from '@/pages/dictionary/themes/edit/ThemeEditionPage.vu
 // resources
 import ResourcesPage from '@/pages/dictionary/resources/list/ResourcesPage.vue'
 import ResourceCreationPage from '@/pages/dictionary/resources/create/ResourceCreationPage.vue'
+import ResourceEditionPage from '@/pages/dictionary/resources/edit/ResourceEditionPage.vue'
 
 export default [
   {
@@ -116,7 +117,7 @@ export default [
           {
             name: 'resources-edit',
             path: 'edit/:id',
-            component: ThemeEditionPage,
+            component: ResourceEditionPage,
             meta: {
               title: 'Редактирование ресурса - Школа Летово',
             },
