@@ -12,7 +12,6 @@ export const getLabelsTree = attach({
 
 export const deleteLabel = attach({
   effect: deleteLabelFx,
-  mapParams: (params: number) => params,
 })
 
 export const loadTree = createEvent<any>()

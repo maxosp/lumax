@@ -15,7 +15,6 @@ import {
 
 export const getThemeData = attach({
   effect: getThemeFx,
-  mapParams: (params: number) => params,
 })
 
 export const themeDropdownModule = createFilter()

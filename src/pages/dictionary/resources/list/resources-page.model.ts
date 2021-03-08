@@ -11,7 +11,6 @@ const getResourcesTree = attach({
 
 export const deleteResource = attach({
   effect: deleteResourceFx,
-  mapParams: (params: number) => params,
 })
 
 export const loadTree = createEvent<GetThemesTreeQueryParams>()

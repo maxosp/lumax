@@ -4,7 +4,6 @@ import { spread } from 'patronum'
 
 export const getTag = attach({
   effect: getTagFx,
-  mapParams: (params: number) => params,
 })
 
 export const loadModal = createEvent<number>()

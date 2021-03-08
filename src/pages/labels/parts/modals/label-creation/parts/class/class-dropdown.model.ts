@@ -1,4 +1,3 @@
-import { GetListQueryParams } from '@/features/api/types'
 import { getUserStudyYearsListFx } from '@/features/api/user/get-user-study-years-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { attach, createEvent, createStore, forward, restore } from 'effector-root'
@@ -11,7 +10,6 @@ export const $selectedClass = restore(setSelectedClass, null)
 
 const getClasses = attach({
   effect: getUserStudyYearsListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 export const loadClasses = createEvent<void>()

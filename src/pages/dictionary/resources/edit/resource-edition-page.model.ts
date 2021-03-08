@@ -9,7 +9,7 @@ import {
   classDropdownModule,
 } from '@/pages/dictionary/resources/edit/parts/class/class.model'
 import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
-import { CreateResourceType, Resource } from '@/features/api/media/types'
+import { Resource } from '@/features/api/media/types'
 import { getResourceFx } from '@/features/api/media/get-resource'
 import {
   $selectedTheme,
@@ -35,12 +35,10 @@ import { navigatePush } from '@/features/navigation'
 
 const updateResourceDataFx = attach({
   effect: updateResourceFx,
-  mapParams: (params: CreateResourceType) => params,
 })
 
 export const getResourceToUpdate = attach({
   effect: getResourceFx,
-  mapParams: (params: number) => params,
 })
 
 const updateResource = createEvent<void>()
@@ -98,7 +96,8 @@ sample({
     themeDropdownModule.methods.itemChanged(`${resource.theme}`)
     setSelectedTheme({ name: `${resource.theme}`, title: '' })
     resourceDescriptionChanged(resource.text!)
-    fileDataChanged({ id: resource.media_id! })
+    fileDataChanged(resource.media!)
+    // fileDataChanged({ id: resource.media_id! })
   },
 })
 

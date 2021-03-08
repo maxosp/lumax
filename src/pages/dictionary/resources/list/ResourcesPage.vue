@@ -112,13 +112,13 @@ export default Vue.extend({
       loadModalToDelete(id)
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+      event.preventDefault()
       this.theme = data.theme
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
-      event.preventDefault()
     },
     hideContextMenu() {
       this.showContextMenu = false

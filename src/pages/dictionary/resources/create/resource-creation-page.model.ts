@@ -11,8 +11,6 @@ import {
   setSelectedClass,
 } from '@/pages/dictionary/resources/create/parts/class/class.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { GetListQueryParams } from '@/features/api/types'
-
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import {
   $selectedTheme,
@@ -30,18 +28,15 @@ import {
 } from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
 import { isLinkValid } from '@/lib/validators/url'
 import { createResourceFx } from '@/features/api/media/create-resource'
-import { CreateResourceType } from '@/features/api/media/types'
 import { addToast } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 const createResource = attach({
   effect: createResourceFx,
-  mapParams: (params: CreateResourceType) => params,
 })
 
 export const clearFields = createEvent<void>()
@@ -117,11 +112,6 @@ forward({
   from: resetErrors,
   to: [resetTypeError, resetThemeError, resetDescriptionError, resetLink, resetFileError],
 })
-
-// forward({
-//   from: [classDropdownModule.methods.itemChanged, subjectDropdownModule.methods.itemChanged],
-//   to: themeDropdownModule.methods.resetItem.prepend(() => ({})),
-// })
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
   study_year: cl && +cl.name,

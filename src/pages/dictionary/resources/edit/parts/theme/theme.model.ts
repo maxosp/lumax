@@ -15,7 +15,6 @@ import { getThemeFx } from '@/features/api/subject/get-theme'
 
 export const getThemeData = attach({
   effect: getThemeFx,
-  mapParams: (params: number) => params,
 })
 
 export const themeDropdownModule = createFilter()

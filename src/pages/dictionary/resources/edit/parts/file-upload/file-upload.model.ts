@@ -1,9 +1,9 @@
+import { attach, createEffect, createEvent, forward, merge, restore, split } from 'effector-root'
 import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { File } from '@/features/api/subject/types'
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, createEffect, createEvent, forward, merge, restore, split } from 'effector-root'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -11,7 +11,6 @@ const uploadMedia = attach({
 
 export const deleteMedia = attach({
   effect: deleteMediaFx,
-  mapParams: (params: number) => params,
 })
 
 export const uploadFile = createEvent<FileList>()
@@ -53,14 +52,14 @@ forward({
 })
 
 forward({
-  from: uploadMediaFx.doneData,
+  from: uploadMedia.doneData,
   to: [
     fileDataChanged.prepend((file) => ({
       id: file.body.id,
-      name: file.body.file_name,
-      type: file.body.file_type,
+      file_name: file.body.file_name,
+      file_type: file.body.file_type,
     })),
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
+    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена!' })),
   ],
 })
 

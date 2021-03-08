@@ -1,6 +1,5 @@
 import { attach, createEvent, createStore, forward, restore } from 'effector-root'
 import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem, SelectedObjectType } from '@/pages/common/types'
 
@@ -11,7 +10,6 @@ export const $selectedSubject = restore(setSelectedSubject, null)
 
 const getSubjects = attach({
   effect: getSubjectsListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 export const loadSubjects = createEvent<void>()

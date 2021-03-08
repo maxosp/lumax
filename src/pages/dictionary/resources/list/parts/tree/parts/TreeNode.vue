@@ -32,6 +32,17 @@
       <Chip :item="resources.texts" icon="text" />
       <Chip :item="resources.links" icon="link" />
       <Chip :item="resources.files" icon="file" />
+      <Actions
+        v-if="showActions"
+        :id="node.study_resource && node.study_resource.id || node.theme.id"
+        :is-theme="node.element_type === 'theme'"
+        :selected="[]"
+        :theme-id="node.element_type === 'theme' ? node.theme.id : null"
+        class="action"
+        @onRemove="(val) => loadModalToDelete(val)"
+        @onEdit="(val) => handleEdit(val)"
+        @create="(val) => handleCreate(val)"
+      />
     </div>
     <div v-if="opened" class="leaf">
       <TreeNode
@@ -50,14 +61,18 @@
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
+import Actions from '@/pages/dictionary/resources/list/parts/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
+import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
+import { navigatePush } from '@/features/navigation'
 
 export default Vue.extend({
   name: 'TreeNode',
   components: {
     Icon,
     Chip,
+    Actions,
   },
   props: {
     node: { type: Object as PropType<TreeData> },
@@ -139,9 +154,16 @@ export default Vue.extend({
         },
       }
     },
+    showActions() {
+      // @ts-ignore
+      const { element_type } = this.$props.node
+      return element_type === 'study_resource' || element_type === 'theme'
+    },
   },
   methods: {
-    toggle() {
+    loadModalToDelete,
+    toggle(evt: any) {
+      if (evt.target.closest('.action')) return
       // @ts-ignore
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
@@ -166,6 +188,15 @@ export default Vue.extend({
         },
         event,
         type,
+      })
+    },
+    handleEdit(id: number) {
+      navigatePush({ name: 'resources-edit', params: { id: `${id}` } })
+    },
+    handleCreate(id: number) {
+      navigatePush({
+        name: 'resources-create',
+        params: { id: `${id}` },
       })
     },
   },
@@ -247,5 +278,8 @@ export default Vue.extend({
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   margin-right: 15px;
+}
+.action {
+  margin-left: 10px;
 }
 </style>

@@ -23,7 +23,6 @@ import {
   setSelectedPrerequisites,
 } from '@/pages/dictionary/themes/edit/parts/prerequisites/prerequisites.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { CreateThemeType, Theme } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
@@ -33,7 +32,6 @@ import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 const updateThemeDataFx = attach({
@@ -47,7 +45,6 @@ const updatePrerequisiteFx = attach({
 
 export const getThemeToUpdate = attach({
   effect: getThemeFx,
-  mapParams: (params: number) => params,
 })
 
 const updateTheme = createEvent<void>()
