@@ -23,17 +23,16 @@ import {
   setSelectedPrerequisites,
 } from '@/pages/dictionary/themes/edit/parts/prerequisites/prerequisites.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { CreateThemeType, Theme } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/dictionary/themes/edit/constants'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+import { createError } from '@/lib/effector/error-generator'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 const updateThemeDataFx = attach({
@@ -47,7 +46,6 @@ const updatePrerequisiteFx = attach({
 
 export const getThemeToUpdate = attach({
   effect: getThemeFx,
-  mapParams: (params: number) => params,
 })
 
 const updateTheme = createEvent<void>()
@@ -155,38 +153,25 @@ sample({
   },
 })
 
-const setThemeTitleError = createEvent<boolean>()
-const resetThemeTitleError = createEvent<void>()
-export const $themeTitleError = restore(setThemeTitleError, false).reset(resetThemeTitleError)
+export const $themeTitleErrorModule = createError()
 
-const setPrerequisiteTitleError = createEvent<boolean>()
-const resetPrerequisiteTitleError = createEvent<void>()
-export const $prerequisiteTitleError = restore(setPrerequisiteTitleError, false).reset(
-  resetPrerequisiteTitleError
-)
+export const $prerequisiteTitleErrorModule = createError()
+export const $classErrorModule = createError()
 
-const setClassError = createEvent<boolean>()
-const resetClassError = createEvent<void>()
-export const $classError = restore(setClassError, false).reset(resetClassError)
+export const $positionErrorModule = createError()
 
-const setPositionError = createEvent<boolean>()
-const resetPositionError = createEvent<void>()
-export const $positionError = restore(setPositionError, false).reset(resetPositionError)
-
-const setSubjectError = createEvent<boolean>()
-const resetSubjectError = createEvent<void>()
-export const $subjectError = restore(setSubjectError, false).reset(resetSubjectError)
+export const $subjectErrorModule = createError()
 
 const resetErrors = createEvent<void>()
 
 forward({
   from: resetErrors,
   to: [
-    resetThemeTitleError,
-    resetPrerequisiteTitleError,
-    resetClassError,
-    resetPositionError,
-    resetSubjectError,
+    $themeTitleErrorModule.methods.resetError,
+    $prerequisiteTitleErrorModule.methods.resetError,
+    $classErrorModule.methods.resetError,
+    $positionErrorModule.methods.resetError,
+    $subjectErrorModule.methods.resetError,
   ],
 })
 
@@ -239,9 +224,9 @@ sample({
     if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
       updateTheme()
     else {
-      if (!obj.name.trim().length) setThemeTitleError(true)
-      if (obj.study_year_id === DEFAULT_ID) setClassError(true)
-      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
+      if (!obj.name.trim().length) $themeTitleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -300,8 +285,8 @@ sample({
   fn: (obj) => {
     if (obj.name.length && obj.subject_id !== DEFAULT_ID) updatePrerequisite()
     else {
-      if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
+      if (obj.name.length === 0) $prerequisiteTitleErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -309,25 +294,25 @@ sample({
 
 forward({
   from: themeTitleChanged,
-  to: setThemeTitleError.prepend(() => false),
+  to: $themeTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: prerequisiteTitleChanged,
-  to: setPrerequisiteTitleError.prepend(() => false),
+  to: $prerequisiteTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: setClassError.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: positionDropdownModule.methods.itemChanged,
-  to: setPositionError.prepend(() => false),
+  to: $positionErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: setSubjectError.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })

@@ -4,7 +4,6 @@ import { spread } from 'patronum'
 
 export const getLabel = attach({
   effect: getLabelFx,
-  mapParams: (params: number) => params,
 })
 
 export const loadModal = createEvent<number>()

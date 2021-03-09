@@ -27,7 +27,6 @@ const updateSubjectDataFx = attach({
 })
 const getSubjectToUpdate = attach({
   effect: getSubjectFx,
-  mapParams: (params: number) => params,
 })
 
 export const changeIsMondatory = createEvent<boolean>()

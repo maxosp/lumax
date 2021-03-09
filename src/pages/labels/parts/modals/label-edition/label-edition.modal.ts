@@ -23,6 +23,7 @@ import { updateLabelFx } from '@/features/api/assignment/update-label'
 import { getLabelsTreeFx } from '@/features/api/assignment/get-labels-tree'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
+import { createError } from '@/lib/effector/error-generator'
 
 export const updateLabel = attach({
   effect: updateLabelFx,
@@ -40,17 +41,13 @@ export const labelTitleChanged = createEvent<string>()
 const labelTitleReset = createEvent<void>()
 export const $labelTitle = restore(labelTitleChanged, '').reset(labelTitleReset)
 
-const subjectErrorChanged = createEvent<boolean>()
-export const $subjectError = restore(subjectErrorChanged, false)
+export const $subjectErrorModule = createError()
 
-const classErrorChanged = createEvent<boolean>()
-export const $classError = restore(classErrorChanged, false)
+export const $classErrorModule = createError()
 
-const themeErrorChanged = createEvent<boolean>()
-export const $themeError = restore(themeErrorChanged, false)
+export const $themeErrorModule = createError()
 
-const titleErrorChanged = createEvent<boolean>()
-export const $titleError = restore(titleErrorChanged, false)
+export const $titleErrorModule = createError()
 
 const $form = combine({
   id: DEFAULT_ID,
@@ -100,10 +97,10 @@ sample({
     )
       updateLabel(obj)
     else {
-      if (!obj.name.trim().length) titleErrorChanged(true)
-      if (obj.study_year_id === DEFAULT_ID) classErrorChanged(true)
-      if (obj.subject_id === DEFAULT_ID) subjectErrorChanged(true)
-      if (obj.theme_id === DEFAULT_ID) themeErrorChanged(true)
+      if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
+      if (obj.theme_id === DEFAULT_ID) $themeErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -111,22 +108,22 @@ sample({
 
 forward({
   from: labelTitleChanged,
-  to: titleErrorChanged.prepend(() => false),
+  to: $titleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: subjectErrorChanged.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: classErrorChanged.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: themesDropdownModule.methods.itemChanged,
-  to: themeErrorChanged.prepend(() => false),
+  to: $themeErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({

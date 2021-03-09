@@ -1,6 +1,12 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 
-export type TreeElementType = 'subject' | 'study_year' | 'theme' | 'virtual_folder' | 'assignment'
+export type TreeElementType =
+  | 'subject'
+  | 'study_year'
+  | 'theme'
+  | 'virtual_folder'
+  | 'assignment'
+  | 'study_resource'
 
 export type VirtualFolder = {
   name: string

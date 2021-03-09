@@ -1,11 +1,9 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
 import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { DropdownItem } from '@/pages/common/types'
 
 const getTags = attach({
   effect: getTagsListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 export const loadTags = createEvent<void>()

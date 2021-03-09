@@ -13,7 +13,6 @@ export const getTagsTree = attach({
 
 export const deleteTag = attach({
   effect: deleteTagFx,
-  mapParams: (params: number) => params,
 })
 
 export const deleteTags = attach({

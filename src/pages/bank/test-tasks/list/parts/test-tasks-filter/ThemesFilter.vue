@@ -189,7 +189,7 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style scoped>
 .themes-filter {
   position: absolute;
   top: 50px;

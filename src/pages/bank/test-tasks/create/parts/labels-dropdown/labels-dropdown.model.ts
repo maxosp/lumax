@@ -1,11 +1,9 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
 import { getLabelsListFx } from '@/features/api/assignment/get-labels-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { DropdownItem } from '@/pages/common/types'
 
 const getLabels = attach({
   effect: getLabelsListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 export const loadLabels = createEvent<void>()

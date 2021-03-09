@@ -20,6 +20,8 @@ export type DropdownItem = {
   subject?: Subject
   created_by?: User
   leaves?: TreeData[]
+  // for types
+  code?: string
 }
 
 export type SelectedObjectType = {

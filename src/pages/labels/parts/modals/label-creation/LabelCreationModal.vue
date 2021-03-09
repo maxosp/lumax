@@ -15,12 +15,12 @@
         />
       </div>
     </div>
-    <SubjectDropdown :class="{'--error': $subjectError}" />
-    <ClassDropdown :class="{'--error': $classError}" />
-    <ThemeDropdown :class="{'--error': $themeError}" />
+    <SubjectDropdown :class="{'--error': subjectError}" />
+    <ClassDropdown :class="{'--error': classError}" />
+    <ThemeDropdown :class="{'--error': themeError}" />
     <BaseTextarea
       class="textarea"
-      :class="{'--error': $titleError}"
+      :class="{'--error': titleError}"
       :max-length="200"
       placeholder="Введите название метки"
       :value="$labelTitle"
@@ -59,13 +59,13 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $modalVisibility,
   modalVisibilityChanged,
-  $subjectError,
-  $classError,
-  $titleError,
+  $subjectErrorModule,
+  $classErrorModule,
+  $titleErrorModule,
+  $themeErrorModule,
   checkIfThemeCanBeSend,
   $labelTitle,
   labelTitleChanged,
-  $themeError,
 } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 
 export default Vue.extend({
@@ -80,11 +80,11 @@ export default Vue.extend({
   },
   effector: {
     $modalVisibility,
-    $subjectError,
-    $classError,
-    $titleError,
+    subjectError: $subjectErrorModule.store.$error,
+    classError: $classErrorModule.store.$error,
+    titleError: $titleErrorModule.store.$error,
+    themeError: $themeErrorModule.store.$error,
     $labelTitle,
-    $themeError,
   },
   methods: {
     modalVisibilityChanged,

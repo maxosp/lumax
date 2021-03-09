@@ -18,6 +18,7 @@ import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
 import { condition } from 'patronum'
 import { getTagsTreeFx } from '@/features/api/assignment/get-tags-tree'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
+import { createError } from '@/lib/effector/error-generator'
 
 export const updateTag = attach({
   effect: updateTagFx,
@@ -38,14 +39,11 @@ export const tagTitleChanged = createEvent<string>()
 const tagTitleReset = createEvent<void>()
 export const $tagTitle = restore(tagTitleChanged, '').reset(tagTitleReset)
 
-const subjectErrorChanged = createEvent<boolean>()
-export const $subjectError = restore(subjectErrorChanged, false)
+export const $subjectErrorModule = createError()
 
-const classErrorChanged = createEvent<boolean>()
-export const $classError = restore(classErrorChanged, false)
+export const $classErrorModule = createError()
 
-const titleErrorChanged = createEvent<boolean>()
-export const $titleError = restore(titleErrorChanged, false)
+export const $titleErrorModule = createError()
 
 const $form = combine({
   id: DEFAULT_ID,
@@ -61,9 +59,9 @@ sample({
     if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
       updateTag(obj)
     else {
-      if (!obj.name.trim().length) titleErrorChanged(true)
-      if (obj.study_year_id === DEFAULT_ID) classErrorChanged(true)
-      if (obj.subject_id === DEFAULT_ID) subjectErrorChanged(true)
+      if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -71,17 +69,17 @@ sample({
 
 forward({
   from: tagTitleChanged,
-  to: titleErrorChanged.prepend(() => false),
+  to: $titleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: subjectErrorChanged.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: classErrorChanged.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
@@ -145,6 +143,9 @@ forward({
     subjectDropdownModule.methods.resetSearchString,
     classDropdownModule.methods.resetItem,
     classDropdownModule.methods.resetSearchString,
+    $titleErrorModule.methods.resetError,
+    $subjectErrorModule.methods.resetError,
+    $classErrorModule.methods.resetError,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),
   ],
