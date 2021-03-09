@@ -10,18 +10,18 @@
           label="Название темы"
           placeholder="Введите название темы"
           :max-length="200"
-          :class="{'--error': $themeTitleError}"
+          :class="{'--error': themeTitleError}"
           class="input"
           clear-btn
           @clear="resetThemeTitle"
           @input="themeTitleChanged"
         />
-        <PositionDropdown :class="{'--error': $positionError}" />
+        <PositionDropdown :class="{'--error': positionError}" />
         <Prerequisites />
       </div>
       <div class="right">
-        <SubjectDropdown :class="{'--error': $subjectError}" />
-        <ClassDropdown :class="{'--error': $classError}" />
+        <SubjectDropdown :class="{'--error': subjectError}" />
+        <ClassDropdown :class="{'--error': classError}" />
       </div>
     </div>
     <div
@@ -34,7 +34,7 @@
           label="Название пререквизита"
           placeholder="Введите название пререквизита"
           :max-length="100"
-          :class="{'--error': $prerequisiteTitleError}"
+          :class="{'--error': prerequisiteTitleError}"
           class="input"
           clear-btn
           @clear="resetPrerequisiteTitle"
@@ -43,7 +43,7 @@
         <Themes />
       </div>
       <div class="right">
-        <SubjectDropdown :class="{'--error': $subjectError}" />
+        <SubjectDropdown :class="{'--error': subjectError}" />
       </div>
     </div>
   </Card>
@@ -62,14 +62,14 @@ import {
   $themeTitle,
   resetThemeTitle,
   themeTitleChanged,
-  $themeTitleError,
+  $themeTitleErrorModule,
   $prerequisiteTitle,
-  $prerequisiteTitleError,
+  $prerequisiteTitleErrorModule,
   resetPrerequisiteTitle,
   prerequisiteTitleChanged,
-  $positionError,
-  $subjectError,
-  $classError,
+  $positionErrorModule,
+  $subjectErrorModule,
+  $classErrorModule,
 } from '@/pages/dictionary/themes/create/theme-creation-page.model'
 import { $isPrerequisite } from '@/pages/dictionary/themes/create/parts/header/header.model'
 
@@ -85,12 +85,12 @@ export default Vue.extend({
   },
   effector: {
     $themeTitle,
-    $themeTitleError,
     $prerequisiteTitle,
-    $prerequisiteTitleError,
-    $positionError,
-    $subjectError,
-    $classError,
+    themeTitleError: $themeTitleErrorModule.store.$error,
+    prerequisiteTitleError: $prerequisiteTitleErrorModule.store.$error,
+    positionError: $positionErrorModule.store.$error,
+    subjectError: $subjectErrorModule.store.$error,
+    classError: $classErrorModule.store.$error,
     $isPrerequisite,
   },
   methods: {

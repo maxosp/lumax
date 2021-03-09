@@ -111,11 +111,11 @@ export type GetThemesTreeQueryParams = {
   created_by?: number
   has_assignment?: 'true' | 'false'
   search?: string
-  search_all?: ''
-  search_id?: ''
-  search_name?: ''
-  search_subject?: ''
-  search_study_year?: ''
+  search_all?: string
+  search_id?: string
+  search_name?: string
+  search_subject?: string
+  search_study_year?: string
 }
 
 export type CreateSubjectType = {

@@ -32,6 +32,7 @@ import {
   isPrerequisiteChanged,
 } from '@/pages/dictionary/themes/create/parts/header/header.model'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+import { createError } from '@/lib/effector/error-generator'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -113,38 +114,26 @@ export const $formToSendPrerequisite = combine({
   subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
-const setThemeTitleError = createEvent<boolean>()
-const resetThemeTitleError = createEvent<void>()
-export const $themeTitleError = restore(setThemeTitleError, false).reset(resetThemeTitleError)
+export const $themeTitleErrorModule = createError()
 
-const setPrerequisiteTitleError = createEvent<boolean>()
-const resetPrerequisiteTitleError = createEvent<void>()
-export const $prerequisiteTitleError = restore(setPrerequisiteTitleError, false).reset(
-  resetPrerequisiteTitleError
-)
+export const $prerequisiteTitleErrorModule = createError()
 
-const setClassError = createEvent<boolean>()
-const resetClassError = createEvent<void>()
-export const $classError = restore(setClassError, false).reset(resetClassError)
+export const $classErrorModule = createError()
 
-const setPositionError = createEvent<boolean>()
-const resetPositionError = createEvent<void>()
-export const $positionError = restore(setPositionError, false).reset(resetPositionError)
+export const $positionErrorModule = createError()
 
-const setSubjectError = createEvent<boolean>()
-const resetSubjectError = createEvent<void>()
-export const $subjectError = restore(setSubjectError, false).reset(resetSubjectError)
+export const $subjectErrorModule = createError()
 
 const resetErrors = createEvent<void>()
 
 forward({
   from: resetErrors,
   to: [
-    resetThemeTitleError,
-    resetPrerequisiteTitleError,
-    resetClassError,
-    resetPositionError,
-    resetSubjectError,
+    $themeTitleErrorModule.methods.resetError,
+    $prerequisiteTitleErrorModule.methods.resetError,
+    $classErrorModule.methods.resetError,
+    $positionErrorModule.methods.resetError,
+    $subjectErrorModule.methods.resetError,
   ],
 })
 
@@ -220,9 +209,9 @@ sample({
     if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
       saveTheme()
     else {
-      if (!obj.name.trim().length) setThemeTitleError(true)
-      if (obj.study_year_id === DEFAULT_ID) setClassError(true)
-      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
+      if (!obj.name.trim().length) $themeTitleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -279,8 +268,8 @@ sample({
   fn: (obj) => {
     if (obj.name.length && obj.subject_id !== DEFAULT_ID) savePrerequisite()
     else {
-      if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (obj.subject_id === DEFAULT_ID) setSubjectError(true)
+      if (obj.name.length === 0) $prerequisiteTitleErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -288,25 +277,25 @@ sample({
 
 forward({
   from: themeTitleChanged,
-  to: setThemeTitleError.prepend(() => false),
+  to: $themeTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: prerequisiteTitleChanged,
-  to: setPrerequisiteTitleError.prepend(() => false),
+  to: $prerequisiteTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: setClassError.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: positionDropdownModule.methods.itemChanged,
-  to: setPositionError.prepend(() => false),
+  to: $positionErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: setSubjectError.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })

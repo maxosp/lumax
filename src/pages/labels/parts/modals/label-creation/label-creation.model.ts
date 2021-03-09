@@ -21,6 +21,7 @@ import { createLabelFx } from '@/features/api/assignment/create-label'
 import { CreateLabelType } from '@/features/api/assignment/types'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
 import { DEFAULT_ID } from '@/pages/labels/constants'
+import { createError } from '@/lib/effector/error-generator'
 
 export const createLabel = attach({
   effect: createLabelFx,
@@ -43,17 +44,13 @@ export const labelTitleChanged = createEvent<string>()
 const labelTitleReset = createEvent<void>()
 export const $labelTitle = restore(labelTitleChanged, '').reset(labelTitleReset)
 
-const subjectErrorChanged = createEvent<boolean>()
-export const $subjectError = restore(subjectErrorChanged, false)
+export const $subjectErrorModule = createError()
 
-const classErrorChanged = createEvent<boolean>()
-export const $classError = restore(classErrorChanged, false)
+export const $classErrorModule = createError()
 
-const themeErrorChanged = createEvent<boolean>()
-export const $themeError = restore(themeErrorChanged, false)
+export const $themeErrorModule = createError()
 
-const titleErrorChanged = createEvent<boolean>()
-export const $titleError = restore(titleErrorChanged, false)
+export const $titleErrorModule = createError()
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
   study_year: cl && cl.id,
@@ -102,10 +99,10 @@ sample({
     )
       createLabel(obj)
     else {
-      if (!obj.name.trim().length) titleErrorChanged(true)
-      if (obj.study_year_id === DEFAULT_ID) classErrorChanged(true)
-      if (obj.subject_id === DEFAULT_ID) subjectErrorChanged(true)
-      if (obj.theme_id === DEFAULT_ID) themeErrorChanged(true)
+      if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
+      if (obj.theme_id === DEFAULT_ID) $themeErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -126,22 +123,22 @@ sample({
 
 forward({
   from: labelTitleChanged,
-  to: titleErrorChanged.prepend(() => false),
+  to: $titleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: subjectErrorChanged.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: classErrorChanged.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: themesDropdownModule.methods.itemChanged,
-  to: themeErrorChanged.prepend(() => false),
+  to: $themeErrorModule.methods.setError.prepend(() => false),
 })
 
 condition({
@@ -160,10 +157,10 @@ forward({
     classDropdownModule.methods.resetSearchString,
     themesDropdownModule.methods.resetItem,
     themesDropdownModule.methods.resetSearchString,
-    titleErrorChanged.prepend(() => false),
-    subjectErrorChanged.prepend(() => false),
-    classErrorChanged.prepend(() => false),
-    themeErrorChanged.prepend(() => false),
+    $titleErrorModule.methods.resetError,
+    $subjectErrorModule.methods.resetError,
+    $classErrorModule.methods.resetError,
+    $themeErrorModule.methods.resetError,
     setSelectedClass.prepend(() => null),
     setSelectedSubject.prepend(() => null),
     setSelectedTheme.prepend(() => null),

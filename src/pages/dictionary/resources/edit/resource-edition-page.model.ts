@@ -9,7 +9,7 @@ import {
   classDropdownModule,
 } from '@/pages/dictionary/resources/edit/parts/class/class.model'
 import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
-import { Resource } from '@/features/api/media/types'
+import { ResourceType } from '@/features/api/media/types'
 import { getResourceFx } from '@/features/api/media/get-resource'
 import {
   $selectedTheme,
@@ -32,6 +32,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { isLinkValid } from '@/lib/validators/url'
 import { updateResourceFx } from '@/features/api/media/update-resource'
 import { navigatePush } from '@/features/navigation'
+import { createError } from '@/lib/effector/error-generator'
 
 const updateResourceDataFx = attach({
   effect: updateResourceFx,
@@ -81,13 +82,13 @@ export const $formToSend = combine({
   text: $resourceDescription,
   link: $link,
   theme: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
-  media_id: $fileData.map((data) => (data ? data.id : undefined)),
+  media_id: $fileData.map((data) => (data ? data.id : DEFAULT_ID)),
   resource_type: $selectedType.map((data) => (data ? data.name : '')),
 })
 sample({
   clock: getResourceToUpdate.done,
   source: getResourceFx.doneData.map((data) => data.body),
-  fn: (resource: Resource) => {
+  fn: (resource: ResourceType) => {
     getThemeData(resource.theme!)
     linkChanged(resource.link!)
     typeDropdownModule.methods.itemChanged(resource.resource_type)
@@ -97,35 +98,30 @@ sample({
     setSelectedTheme({ name: `${resource.theme}`, title: '' })
     resourceDescriptionChanged(resource.text!)
     fileDataChanged(resource.media!)
-    // fileDataChanged({ id: resource.media_id! })
   },
 })
 
-const setTypeError = createEvent<boolean>()
-const resetTypeError = createEvent<void>()
-export const $typeError = restore(setTypeError, false).reset(resetTypeError)
+export const $typeErrorModule = createError()
 
-const setThemeError = createEvent<boolean>()
-const resetThemeError = createEvent<void>()
-export const $themeError = restore(setThemeError, false).reset(resetThemeError)
+export const $themeErrorModule = createError()
 
-const setDescriptionError = createEvent<boolean>()
-const resetDescriptionError = createEvent<void>()
-export const $descriptionError = restore(setDescriptionError, false).reset(resetDescriptionError)
+export const $descriptionErrorModule = createError()
 
-const setlinkError = createEvent<boolean>()
-const resetlinkError = createEvent<void>()
-export const $linkError = restore(setlinkError, false).reset(resetlinkError)
+export const $linkErrorModule = createError()
 
-const setFileError = createEvent<boolean>()
-const resetFileError = createEvent<void>()
-export const $fileError = restore(setFileError, false).reset(resetFileError)
+export const $fileErrorModule = createError()
 
 const resetErrors = createEvent<void>()
 
 forward({
   from: resetErrors,
-  to: [resetTypeError, resetThemeError, resetDescriptionError, resetLink, resetFileError],
+  to: [
+    $typeErrorModule.methods.resetError,
+    $themeErrorModule.methods.resetError,
+    $descriptionErrorModule.methods.resetError,
+    resetLink,
+    $fileErrorModule.methods.resetError,
+  ],
 })
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
@@ -160,24 +156,24 @@ sample({
   fn: (obj) => {
     let errors = 0
     if (!obj.resource_type) {
-      setTypeError(true)
+      $typeErrorModule.methods.setError(true)
       errors += 1
     }
-    if (!obj.theme) {
-      setThemeError(true)
+    if (obj.theme === DEFAULT_ID) {
+      $themeErrorModule.methods.setError(true)
       errors += 1
     }
     if (obj.resource_type === 'text' && !obj.text.trim().length) {
-      setDescriptionError(true)
+      $descriptionErrorModule.methods.setError(true)
       errors += 1
     } else if (
       (obj.resource_type === 'link' || obj.resource_type === 'video') &&
       (!obj.link.trim().length || !isLinkValid(obj.link))
     ) {
-      setlinkError(true)
+      $linkErrorModule.methods.setError(true)
       errors += 1
     } else if (obj.resource_type === 'file' && !obj.media_id) {
-      setFileError(true)
+      $fileErrorModule.methods.setError(true)
       errors += 1
     }
     if (errors === 0) updateResource()
@@ -223,25 +219,25 @@ forward({
 })
 forward({
   from: typeDropdownModule.methods.itemChanged,
-  to: setTypeError.prepend(() => false),
+  to: $typeErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: themeDropdownModule.methods.itemChanged,
-  to: setThemeError.prepend(() => false),
+  to: $themeErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: resourceDescriptionChanged,
-  to: setDescriptionError.prepend(() => false),
+  to: $descriptionErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: linkChanged,
-  to: setlinkError.prepend(() => false),
+  to: $linkErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: uploadFileFx,
-  to: setFileError.prepend(() => false),
+  to: $fileErrorModule.methods.setError.prepend(() => false),
 })

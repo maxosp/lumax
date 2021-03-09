@@ -20,35 +20,38 @@ export type UploadMediaResponse = {
   duration_sec: number
 }
 
+// export type CreateResourceType = {
+//   id?: number
+//   link: string
+//   text: string
+//   resource_type: string
+//   theme: number
+//   media_id?: number
+// }
+
 export type CreateResourceType = {
-  id?: number
   link: string
   text: string
   resource_type: string
   theme: number
   media_id?: number
 }
-
-export type Resource = {
-  id: number
-  link?: string
-  text?: string
+export type ResourceType = {
   file?: string
   file_name?: string
-  resource_type: string
-  media_id?: number
   theme?: number
   media?: File
-}
+  id: number
+} & CreateResourceType
 
 export type GetResourcesTreeQueryParams = {
   sort?: string
   subject?: string
   study_year?: number
   search?: string
-  search_all?: ''
-  search_id?: ''
-  search_name?: ''
-  search_subject?: ''
-  search_study_year?: ''
+  search_all?: string
+  search_id?: string
+  search_name?: string
+  search_subject?: string
+  search_study_year?: string
 }

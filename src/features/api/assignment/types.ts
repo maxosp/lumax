@@ -27,11 +27,11 @@ export type GetTagsTreeQueryParams = {
   subject?: string
   study_year?: number
   search?: string
-  search_all?: ''
-  search_id?: ''
-  search_name?: ''
-  search_subject?: ''
-  search_study_year?: ''
+  search_all?: string
+  search_id?: string
+  search_name?: string
+  search_subject?: string
+  search_study_year?: string
 }
 
 export type GetLabelsTreeQueryParams = {
@@ -40,11 +40,11 @@ export type GetLabelsTreeQueryParams = {
   study_year?: number
   theme?: number
   search?: string
-  search_all?: ''
-  search_id?: ''
-  search_name?: ''
-  search_subject?: ''
-  search_study_year?: ''
+  search_all?: string
+  search_id?: string
+  search_name?: string
+  search_subject?: string
+  search_study_year?: string
 }
 
 export type DeleteTagsType = {

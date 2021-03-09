@@ -2,15 +2,15 @@
   <Card class="content">
     <div class="contents">
       <div class="left">
-        <ThemeDropdown :class="{'--error': $themeError}" />
-        <TypeDropdown :class="{'--error': $typeError}" />
+        <ThemeDropdown :class="{'--error': themeError}" />
+        <TypeDropdown :class="{'--error': typeError}" />
         <FormInput
           v-if="$selectedType && $selectedType.name === 'link'"
           :value="$link"
           label="Ссылка"
           placeholder="Вставьте вашу ссылку"
           :max-length="200"
-          :class="{'--error': $linkError}"
+          :class="{'--error': linkError}"
           class="input"
           clear-btn
           @clear="resetLink"
@@ -22,7 +22,7 @@
           label="Ссылка на видео"
           placeholder="Вставьте вашу ссылку"
           :max-length="200"
-          :class="{'--error': $linkError}"
+          :class="{'--error': linkError}"
           class="input"
           clear-btn
           @clear="resetLink"
@@ -30,14 +30,14 @@
         />
         <FileUploadBlock
           v-if="$selectedType && $selectedType.name === 'file'"
-          :class="{'--error': $fileError}"
+          :class="{'--error': fileError}"
         />
         <div class='field'>
           <span class='label'>Описание</span>
           <Wysiwyg
             :value="$resourceDescription"
             placeholder="Введите текст"
-            :class="{'--error': $descriptionError}"
+            :class="{'--error': descriptionError}"
             @input="resourceDescriptionChanged"
           />
         </div>
@@ -61,16 +61,16 @@ import ClassDropdown from '@/pages/dictionary/resources/edit/parts/class/ClassDr
 import FileUploadBlock from '@/pages/dictionary/resources/edit/parts/file-upload/FileUploadBlock.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import {
-  $themeError,
-  $typeError,
+  $themeErrorModule,
+  $typeErrorModule,
   $resourceDescription,
   resourceDescriptionChanged,
   $link,
   linkChanged,
   resetLink,
-  $linkError,
-  $fileError,
-  $descriptionError,
+  $linkErrorModule,
+  $fileErrorModule,
+  $descriptionErrorModule,
 } from '@/pages/dictionary/resources/edit/resource-edition-page.model'
 import { $selectedType } from '@/pages/dictionary/resources/edit/parts/type/type-dropdown.model'
 
@@ -86,14 +86,14 @@ export default Vue.extend({
     FileUploadBlock,
   },
   effector: {
-    $themeError,
-    $typeError,
+    themeError: $themeErrorModule.store.$error,
+    typeError: $typeErrorModule.store.$error,
     $resourceDescription,
     $link,
-    $linkError,
+    linkError: $linkErrorModule.store.$error,
     $selectedType,
-    $fileError,
-    $descriptionError,
+    fileError: $fileErrorModule.store.$error,
+    descriptionError: $descriptionErrorModule.store.$error,
   },
   methods: {
     resourceDescriptionChanged,

@@ -15,11 +15,11 @@
         />
       </div>
     </div>
-    <SubjectDropdown :class="{'--error': $subjectError}" />
-    <ClassDropdown :class="{'--error': $classError}" />
+    <SubjectDropdown :class="{'--error': subjectError}" />
+    <ClassDropdown :class="{'--error': classError}" />
     <BaseTextarea
       class="textarea"
-      :class="{'--error': $titleError}"
+      :class="{'--error': titleError}"
       :max-length="200"
       placeholder="Введите название тега"
       :value="$tagTitle"
@@ -57,9 +57,9 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $modalVisibility,
   modalVisibilityChanged,
-  $subjectError,
-  $classError,
-  $titleError,
+  $subjectErrorModule,
+  $classErrorModule,
+  $titleErrorModule,
   checkIfThemeCanBeSend,
   $tagTitle,
   tagTitleChanged,
@@ -76,9 +76,9 @@ export default Vue.extend({
   },
   effector: {
     $modalVisibility,
-    $subjectError,
-    $classError,
-    $titleError,
+    subjectError: $subjectErrorModule.store.$error,
+    classError: $classErrorModule.store.$error,
+    titleError: $titleErrorModule.store.$error,
     $tagTitle,
   },
   methods: {

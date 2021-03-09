@@ -25,6 +25,7 @@
           :type="`resource-${node.study_resource.resource_type}`"
           size="20"
           class="icon"
+          :class="node.study_resource.resource_type"
         />
       </div>
       <span>{{ title }}</span>
@@ -110,46 +111,22 @@ export default Vue.extend({
       return {
         videos: {
           // @ts-ignore
-          count: this.node.leaves.filter(
-            (el) =>
-              // @ts-ignore
-              el.element_type === 'study_resource' &&
-              // @ts-ignore
-              el.study_resource.resource_type === 'video'
-          ).length,
+          count: this.calculateLeavesOfType('video'),
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
           // @ts-ignore
-          count: this.node.leaves.filter(
-            (el) =>
-              // @ts-ignore
-              el.element_type === 'study_resource' &&
-              // @ts-ignore
-              el.study_resource.resource_type === 'text'
-          ).length,
+          count: this.calculateLeavesOfType('text'),
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
           // @ts-ignore
-          count: this.node.leaves.filter(
-            (el) =>
-              // @ts-ignore
-              el.element_type === 'study_resource' &&
-              // @ts-ignore
-              el.study_resource.resource_type === 'link'
-          ).length,
+          count: this.calculateLeavesOfType('link'),
           description: 'Количество ресурсов типа "Ссылка"',
         },
         files: {
           // @ts-ignore
-          count: this.node.leaves.filter(
-            (el) =>
-              // @ts-ignore
-              el.element_type === 'study_resource' &&
-              // @ts-ignore
-              el.study_resource.resource_type === 'file'
-          ).length,
+          count: this.calculateLeavesOfType('file'),
           description: 'Количество ресурсов типа "Файл"',
         },
       }
@@ -162,6 +139,13 @@ export default Vue.extend({
   },
   methods: {
     loadModalToDelete,
+    calculateLeavesOfType(type: string): number {
+      // @ts-ignore
+      return this.node.leaves.filter(
+        // @ts-ignore
+        (el) => el.element_type === 'study_resource' && el.study_resource.resource_type === type
+      ).length
+    },
     toggle(evt: any) {
       if (evt.target.closest('.action')) return
       // @ts-ignore
@@ -278,6 +262,17 @@ export default Vue.extend({
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   margin-right: 15px;
+  .icon.text {
+    fill: var(--base-text-secondary);
+  }
+  .icon.file {
+    fill: transparent;
+    stroke: var(--c-dark-0);
+  }
+  .icon.link {
+    fill: transparent;
+    stroke: var(--c-yellow-1);
+  }
 }
 .action {
   margin-left: 10px;
