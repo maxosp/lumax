@@ -6,6 +6,7 @@
       class="wysiwyg"
       editor-id="common-list-wysiwyg"
       listen-insertion
+      :editor-index="2"
       :value="$textTemplate"
       @input="setTextTemplate"
     />

@@ -24,7 +24,6 @@ export type MultipleShortClosedQuestion = {
 export type MultipleChoiceOneOrManyQuestion = {
   id: number
   question: string
-  answer: string
   mark?: string
   isCorrect: boolean
 }

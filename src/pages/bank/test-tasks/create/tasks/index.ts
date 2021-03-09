@@ -1,6 +1,6 @@
 export { default as BroadFileAnswer } from './BroadFileAnswer/BroadFileAnswer.vue'
 export { default as BroadOpenAnswer } from './BroadOpenAnswer/BroadOpenAnswer.vue'
-export { default as ColorHighlightAnswer } from './ColorHighlightAnswer.vue'
+export { default as ColorHighlightAnswer } from './ColorHighlightAnswer/ColorHighlightAnswer.vue'
 export { default as CommonListStringAnswer } from './CommonListStringAnswer/CommonListStringAnswer.vue'
 export { default as CommonListTextAnswer } from './CommonListTextAnswer/CommonListTextAnswer.vue'
 export { default as ConnectLinesAnswer } from './ConnectLinesAnswer/ConnectLinesAnswer.vue'

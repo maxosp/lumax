@@ -1,4 +1,4 @@
-import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
+import { createEvent, forward, restore, attach, createEffect, combine } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dropdown/constants'
@@ -75,3 +75,38 @@ forward({
 })
 
 export const $isAudioUploadLoading = uploadAudioFilesFx.pending
+
+export const $isFilled = combine(
+  $wording,
+  $containing,
+  $answerExample,
+  $questionsAnswers,
+  (wording, containing, answerExample, questionsAnswers) =>
+    wording &&
+    containing &&
+    answerExample &&
+    questionsAnswers.reduce((acc, qa) => acc && !!qa.question && !!qa.answer, true)
+)
+
+export const $form = combine(
+  $wording,
+  $answerExample,
+  $containing,
+  $questionsAnswers,
+  $answersOptions,
+  $audioFiles,
+  $language,
+  (wording, example_answer, containing, questionsAnswers, answersOptions, audio, language) => ({
+    wording,
+    example_answer,
+    text: containing,
+    question_data: questionsAnswers.map(({ question }) => question),
+    correct_answer: questionsAnswers.map(({ question, answer }) => ({ [question]: answer })),
+    common_list_text_answer: answersOptions.map(({ title }) => title),
+    audio: audio.map(({ id, isLimited, limit }) => ({
+      id,
+      ...(isLimited ? { audio_limit_count: limit } : {}),
+    })),
+    interface_language: language.title,
+  })
+)
