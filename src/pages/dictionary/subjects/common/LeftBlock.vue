@@ -20,7 +20,7 @@
       />
     </div>
     <div class='field'>
-      <span class='label'>Краткая полезная информаиция</span>
+      <span class='label'>Краткая полезная информация</span>
       <Wysiwyg
         :value="$useFulInfo"
         placeholder="Введите текст полезной информации для ученика"
@@ -28,7 +28,7 @@
       />
     </div>
     <div class='field'>
-      <span class='label'>Полезная информаиция</span>
+      <span class='label'>Полезная информация</span>
       <Wysiwyg
         :value="$shortUsefulInfo"
         placeholder="Введите текст полезной информации для ученика"

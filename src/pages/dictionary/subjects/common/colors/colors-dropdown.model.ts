@@ -1,6 +1,5 @@
 import { attach, createEvent, createStore, forward } from 'effector-root'
 import { getColorsListFx } from '@/features/api/subject/get-subject-colors'
-import { GetListQueryParams } from '@/features/api/types'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -8,7 +7,6 @@ export const colorDropdownModule = createFilter()
 
 const getColors = attach({
   effect: getColorsListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 export const loadColors = createEvent<void>()

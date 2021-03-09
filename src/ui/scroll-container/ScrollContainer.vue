@@ -23,7 +23,7 @@ const SimpleBar = require('simplebar/dist/simplebar.min')
 export default Vue.extend({
   name: 'ScrollContainer',
   props: {
-    maxHeight: { type: Number as PropType<number | null>, default: null },
+    maxHeight: { type: [Number, null] as PropType<number | null>, default: null },
     hideHorizontal: { type: Boolean as PropType<boolean> },
     autoHide: { type: Boolean as PropType<boolean>, default: true },
     hideVertical: { type: Boolean as PropType<boolean> },
@@ -47,7 +47,7 @@ export default Vue.extend({
   beforeUpdate() {
     const content = document.getElementsByClassName('simplebar-content')[0] as HTMLElement
     const height = parseInt(getComputedStyle(content).height, 10)
-    if (height === 0) {
+    if (height === 0 && document.getElementsByClassName('select-item')[0]) {
       const block = document.getElementsByClassName('select-item')[0].parentNode
       if (block) content.appendChild(block)
     }

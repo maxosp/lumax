@@ -11,13 +11,19 @@
         :checked="value"
         :disabled="disabled"
         class="checkbox-input"
-        name="chbx"
+        :name="name"
         v-on="{
           ...$listeners,
           change: () => $emit('change', !value),
         }"
       >
-      <span class="checkmark" />
+      <span class="checkmark">
+        <Icon
+          type="tick"
+          size="18"
+          class="icon"
+        />
+      </span>
       <span class="text">
         <slot />
       </span>
@@ -27,11 +33,16 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import Icon from '@/ui/icon/Icon.vue'
 
 export default Vue.extend({
+  components: {
+    Icon,
+  },
   props: {
     disabled: { type: Boolean as PropType<boolean> },
     value: { type: Boolean as PropType<boolean> },
+    name: { type: String as PropType<string>, default: 'ckbx' },
   },
 })
 </script>
@@ -80,24 +91,14 @@ export default Vue.extend({
     }
   }
 
-  .checkmark:after {
-    content: url('../../assets/icons/icons/tick.svg');
-  }
-
-  .checkbox-label .checkbox-input[type='checkbox'] ~ .checkmark::after {
-    display: none;
-  }
-  .checkbox-label .checkbox-input[type='checkbox']:checked ~ .checkmark::after {
-    display: block;
-  }
-
   .checkbox-label .checkbox-input:disabled ~ .checkmark {
     border: solid 1.4px #d3d3d3;
     background-color: #d3d3d3;
-    &::before {
-      content: url('../../assets/icons/icons/tick.svg');
-    }
   }
+}
+.icon {
+  stroke: #fff;
+  fill: transparent;
 }
 </style>
 

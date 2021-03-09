@@ -6,6 +6,8 @@ import LoginPage from '@/pages/login/LoginPage.vue'
 import HomePage from '@/pages/home/HomePage.vue'
 import bankRoutes from '@/pages/bank/bank-routes'
 import dictionaryRoutes from '@/pages/dictionary/dictionary-routes'
+import tagsRoutes from '@/pages/tags/tags-routes'
+import labelsRoutes from '@/pages/labels/labels-routes'
 
 export const routes: RouteConfig[] = [
   {
@@ -38,6 +40,8 @@ export const routes: RouteConfig[] = [
           title: 'Стартовая страница - Школа Летово',
         },
       },
+      ...tagsRoutes,
+      ...labelsRoutes,
       ...bankRoutes,
       ...dictionaryRoutes,
       { name: 'default-route', path: '*', redirect: { name: 'home' } },

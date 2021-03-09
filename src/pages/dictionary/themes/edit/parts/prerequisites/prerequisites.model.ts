@@ -6,7 +6,6 @@ import { attach, createEvent, createStore, forward, restore, sample } from 'effe
 
 export const getThemeData = attach({
   effect: getThemeFx,
-  mapParams: (params: number) => params,
 })
 
 export const prerequisiteDropdownModule = createFilter()

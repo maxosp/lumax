@@ -53,9 +53,9 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
     type: { type: String as PropType<ContextMenuType>, required: true },
-    subject: { type: Number as PropType<number | null> },
-    studyYear: { type: Number as PropType<number | null> },
-    theme: { type: Number as PropType<number | null> },
+    subject: { type: [Number, null] as PropType<number | null> },
+    studyYear: { type: [Number, null] as PropType<number | null> },
+    theme: { type: [Number, null] as PropType<number | null> },
   },
   computed: {
     items(): DropdownItem[] {
@@ -89,7 +89,7 @@ export default Vue.extend({
       switch (item.name) {
         case 'create':
           navigatePush({
-            name: 'theme-creation',
+            name: 'themes-create',
             params: {
               subject: `${this.$props.subject}`,
               studyYear: `${this.$props.studyYear}`,
@@ -101,7 +101,7 @@ export default Vue.extend({
           navigatePush({ name: 'themes-edit', params: { id: this.$props.id } })
           break
         case 'delete':
-          this.$emit('onRemove', this.$props.id)
+          this.$emit('onRemove', [this.$props.id])
           break
         case 'delete-all':
           this.$emit('onRemove', this.$props.selected)

@@ -4,7 +4,7 @@ import { UploadMediaResponse } from '@/features/api/media/types'
 export const uploadMediaFx = createApiEffect<FormData, UploadMediaResponse>({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/media/upload/',
+    url: '/api/media/media/upload/',
     body,
   }),
 })

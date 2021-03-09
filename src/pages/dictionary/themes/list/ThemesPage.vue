@@ -15,7 +15,12 @@
         />
       </template>
     </GeneralFilter>
-    <TableHeader :total="$treeView ? $themesTreeTotal : total" />
+    <TableHeader
+      :total="$treeView ? $themesTreeTotal : total"
+      :selected-rows="selectedRows"
+      @onEdit="handleEditTheme"
+      @onRemove="removeSelected"
+    />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
         ref="vuetable"
@@ -30,6 +35,7 @@
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
+        @vuetable:row-clicked="handleRowClick"
       >
         <template #name="props">
           <TooltipCell
@@ -101,6 +107,7 @@ import {
   loadTree,
   $themesTreeTotal,
   deleteTheme,
+  deleteThemes,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -110,6 +117,7 @@ import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -151,6 +159,7 @@ export default Vue.extend({
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
+      selectedRows: [] as number[] | null,
       subject: null,
       studyYear: null,
       theme: null,
@@ -159,12 +168,6 @@ export default Vue.extend({
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/subject/themes/list/`
-    },
-    selectedRows(): number[] {
-      // @ts-ignore
-      if (!this.$refs.vuetable) return []
-      // @ts-ignore
-      return this.$refs.vuetable.selectedTo
     },
   },
   methods: {
@@ -211,12 +214,27 @@ export default Vue.extend({
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') {
-        await deleteTheme(ids)
-        // @ts-ignore
-        await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      }
+    handleRowClick(res: any) {
+      if (res.event.target.closest('.actions-activator')) return
+      // @ts-ignore
+      const { selectedTo } = this.$refs.vuetable
+      if (selectedTo.length === 0) selectedTo.push(res.data.id)
+      else if (selectedTo.find((el: number) => el === res.data.id)) {
+        selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
+      } else selectedTo.push(res.data.id)
+      // @ts-ignore
+      this.selectedRows = this.$refs.vuetable.selectedTo
+    },
+    async removeSelected(ids: number[]) {
+      if (ids.length === 1) await deleteTheme(ids[0])
+      else await deleteThemes(ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      // @ts-ignore
+      this.selectedRows = []
+    },
+    handleEditTheme(id: number) {
+      navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -224,9 +242,11 @@ export default Vue.extend({
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
-      this.subject = data.subject
-      this.studyYear = data.studyYear
-      this.theme = data.theme
+      if (this.$treeView) {
+        this.subject = data.subject
+        this.studyYear = data.studyYear
+        this.theme = data.id
+      }
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.showContextMenu = true
@@ -342,74 +362,7 @@ export default Vue.extend({
   }
 }
 .vuetable-pagination {
-  display: flex;
-  justify-content: center;
-  background-color: transparent !important;
-  margin: 30px 0 !important;
-  position: sticky;
-  left: 0;
-  & ::v-deep .pagination {
-    min-height: unset;
-    border: unset;
-    box-shadow: unset;
-    background-color: transparent;
-    .item {
-      width: 30px;
-      min-width: unset;
-      height: 30px;
-      padding: 0;
-      border-radius: 7px !important;
-      border: 2px solid var(--base-text-primary);
-      background-color: transparent;
-      line-height: 18px;
-      font-weight: 600;
-      color: var(--base-text-primary);
-      @mixin flex-center;
-      &.active {
-        padding: 0;
-        border-top: 2px solid var(--base-text-primary);
-        color: #fff;
-        background-color: var(--base-text-primary);
-      }
-      &.disabled {
-        opacity: 0.5;
-      }
-      &::before {
-        display: none;
-      }
-      &.btn-nav {
-        @mixin flex-center;
-        .icon {
-          height: fit-content;
-          width: 10px;
-          opacity: 1;
-          margin: 0;
-        }
-        .icon.chevron {
-          content: url('~assets/icons/icons/chevron-single.svg');
-          position: relative;
-          left: 1px;
-        }
-        .icon.right.chevron {
-          transform: rotate(180deg);
-          left: -1px;
-        }
-        .icon.double {
-          content: url('~assets/icons/icons/chevron-double.svg');
-        }
-        .icon.double.right {
-          transform: rotate(180deg);
-        }
-        .icon::before,
-        .icon::after {
-          content: '';
-        }
-      }
-    }
-    .item:not(:last-child) {
-      margin-right: 10px;
-    }
-  }
+  @mixin vuetable-pagination;
 }
 .reset-filters {
   color: var(--base-text-primary);

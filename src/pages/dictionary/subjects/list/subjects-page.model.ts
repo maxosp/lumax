@@ -11,12 +11,15 @@ import {
 } from 'effector-root'
 import { addToast } from '@/features/toasts/toasts.model'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
-import { deleteSubjectFx } from '@/features/api/subject/delete-subject'
+import { deleteSubjectFx, deleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { CreateSubjectType } from '@/features/api/subject/types'
 
 export const deleteSubject = attach({
   effect: deleteSubjectFx,
+})
+export const deleteManySubjects = attach({
+  effect: deleteSubjectsFx,
 })
 const updateSubjectDataFx = attach({
   effect: updateSubjectFx,
@@ -24,7 +27,6 @@ const updateSubjectDataFx = attach({
 })
 const getSubjectToUpdate = attach({
   effect: getSubjectFx,
-  mapParams: (params: number) => params,
 })
 
 export const changeIsMondatory = createEvent<boolean>()
@@ -66,7 +68,12 @@ forward({
   to: addToast.prepend(() => ({ type: 'success', message: 'Предмет был успешно изменен!' })),
 })
 const { noInternet } = split(
-  merge([deleteSubject.failData, updateSubjectDataFx.failData, getSubjectToUpdate.failData]),
+  merge([
+    deleteSubject.failData,
+    deleteManySubjects.failData,
+    updateSubjectDataFx.failData,
+    getSubjectToUpdate.failData,
+  ]),
   {
     noInternet: ({ status }) => status === undefined,
   }

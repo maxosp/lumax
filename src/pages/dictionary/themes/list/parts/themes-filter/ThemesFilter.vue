@@ -207,7 +207,7 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style scoped>
 .themes-filter {
   position: absolute;
   top: 50px;
@@ -217,6 +217,7 @@ export default Vue.extend({
   background-color: #fff;
   z-index: 1;
   display: flex;
+  flex-direction: row;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.1);
   border-radius: 7px;
 }
@@ -243,6 +244,8 @@ export default Vue.extend({
 
 .buttons {
   display: flex;
+  align-items: flex-start;
+  margin-left: 0;
 }
 
 .btn {
@@ -256,16 +259,18 @@ export default Vue.extend({
 
 .close-icon {
   cursor: pointer;
-  position: relative;
-  top: -10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
   fill: var(--c-grey-3);
 }
 
 .arrow-up {
-  position: relative;
+  position: absolute;
   width: 0;
   height: 0;
-  top: -40px;
+  top: -10px;
+  right: 18px;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid #fff;

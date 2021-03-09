@@ -28,13 +28,18 @@
           </SelectItem>
         </template>
       </BaseDropdown>
-      <Icon
-        v-if="isShowFilter"
+      <div
         id="filter-icon"
-        class="filter-settings"
-        type="filter-settings"
+        class="filter-wrapper"
         @click="$emit('handleFilterVisibility')"
-      />
+      >
+        <Icon
+          v-if="isShowFilter"
+          class="filter-settings"
+          type="filter-settings"
+        />
+        <span> Фильтр </span>
+      </div>
     </div>
     <slot name="filter" />
   </div>
@@ -110,7 +115,7 @@ export default Vue.extend({
   padding: 0 5px 0 20px;
   background-color: #fff;
   border-radius: 7px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .input {
@@ -139,6 +144,9 @@ export default Vue.extend({
 .right-section {
   display: flex;
   align-items: center;
+  & ::v-deep .inner-input {
+    min-width: 164px;
+  }
 }
 .dropdown {
   & /deep/ .label {
@@ -162,9 +170,16 @@ export default Vue.extend({
   }
 }
 
-.filter-settings {
+.filter-wrapper {
+  @mixin flex-row-central;
+  margin: 0 20px;
   cursor: pointer;
-  margin-left: 20px;
-  margin-right: 15px;
+  span {
+    font-weight: 600;
+    color: var(--base-text-primary);
+  }
+}
+.filter-settings {
+  margin-right: 10px;
 }
 </style>

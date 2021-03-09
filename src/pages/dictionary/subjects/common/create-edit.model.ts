@@ -12,11 +12,9 @@ export const uploadMedia = attach({
 })
 export const getMediaIcon = attach({
   effect: getMediaFx,
-  mapParams: (params: number) => params,
 })
 export const getMediaImage = attach({
   effect: getMediaFx,
-  mapParams: (params: number) => params,
 })
 
 export const clearFields = createEvent<void>()

@@ -6,6 +6,7 @@
     :methods="subjectModuleMethods"
     :data="$subjects"
     :store="{ $item, $itemsDropdown, $searchString }"
+    @item-changed="(val) => setSelectedSubject({ id: +val.name })"
   />
 </template>
 
@@ -16,6 +17,7 @@ import {
   $subjects,
   loadSubjects,
   subjectDropdownModule,
+  setSelectedSubject,
 } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
 
 export default Vue.extend({
@@ -31,9 +33,7 @@ export default Vue.extend({
       subjectModuleMethods: subjectDropdownModule.methods,
     }
   },
-  methods: {
-    loadSubjects,
-  },
+  methods: { setSelectedSubject },
   mounted() {
     loadSubjects()
   },

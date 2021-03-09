@@ -6,6 +6,7 @@
     :methods="classModuleMethods"
     :data="$classes"
     :store="{ $item, $itemsDropdown, $searchString }"
+    @item-changed="setSelectedClass"
   />
 </template>
 
@@ -16,6 +17,7 @@ import {
   $classes,
   classDropdownModule,
   loadClasses,
+  setSelectedClass,
 } from '@/pages/dictionary/themes/edit/parts/class/class.model'
 
 export default Vue.extend({
@@ -31,9 +33,7 @@ export default Vue.extend({
       classModuleMethods: classDropdownModule.methods,
     }
   },
-  methods: {
-    loadClasses,
-  },
+  methods: { setSelectedClass },
   mounted() {
     loadClasses()
   },

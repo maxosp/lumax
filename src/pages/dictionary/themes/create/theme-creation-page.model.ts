@@ -1,13 +1,21 @@
 import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
 import { condition, debounce, every } from 'patronum'
-import { subjectDropdownModule } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
+import {
+  $selectedSubject,
+  setSelectedSubject,
+  subjectDropdownModule,
+} from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
 import { addToast } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
   resetSelectedThemes,
   themeDropdownModule,
 } from '@/pages/dictionary/themes/create/parts/themes/themes.model'
-import { classDropdownModule } from '@/pages/dictionary/themes/create/parts/class/class.model'
+import {
+  $selectedClass,
+  classDropdownModule,
+  setSelectedClass,
+} from '@/pages/dictionary/themes/create/parts/class/class.model'
 import { positionDropdownModule } from '@/pages/dictionary/themes/create/parts/position/position.model'
 import {
   $selectedPrerequisites,
@@ -15,7 +23,6 @@ import {
   resetSelectedPrerequisites,
 } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { GetListQueryParams } from '@/features/api/types'
 import { createThemeFx } from '@/features/api/subject/create-theme'
 import { CreateThemeType } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
@@ -25,10 +32,10 @@ import {
   isPrerequisiteChanged,
 } from '@/pages/dictionary/themes/create/parts/header/header.model'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+import { createError } from '@/lib/effector/error-generator'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
-  mapParams: (params: GetListQueryParams) => params,
 })
 
 const saveThemeFx = attach({
@@ -77,32 +84,22 @@ forward({
     prerequisiteDropdownModule.methods.resetSearchString,
     themeDropdownModule.methods.resetItem,
     themeDropdownModule.methods.resetSearchString,
+    setSelectedSubject.prepend(() => null),
+    setSelectedClass.prepend(() => null),
   ],
 })
 
 export const $canSetThemePosition = every({
   predicate: (value) => value !== null,
-  stores: [subjectDropdownModule.store.$item, classDropdownModule.store.$item],
+  stores: [$selectedSubject, $selectedClass],
 })
 
 export const $formToSend = combine({
   id: DEFAULT_ID,
   name: $themeTitle,
   is_prerequisite: $isPrerequisite,
-  study_year_id: combine(
-    {
-      list: classDropdownModule.store.$itemsDropdown,
-      elem: classDropdownModule.store.$item,
-    },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
-  ),
-  subject_id: combine(
-    {
-      list: subjectDropdownModule.store.$itemsDropdown,
-      elem: subjectDropdownModule.store.$item,
-    },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
-  ),
+  study_year_id: $selectedClass.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => data && +data.name)),
   prerequisites_ids: $selectedPrerequisites.map((arr) => arr.map((data) => +data.name)),
   parent_theme_id: positionDropdownModule.store.$item.map((data) =>
@@ -114,48 +111,29 @@ export const $formToSendPrerequisite = combine({
   id: DEFAULT_ID,
   name: $prerequisiteTitle,
   is_prerequisite: $isPrerequisite,
-  subject_id: combine(
-    {
-      list: subjectDropdownModule.store.$itemsDropdown,
-      elem: subjectDropdownModule.store.$item,
-    },
-    ({ list, elem }) => +list.find((item) => item.name === elem)?.name!
-  ),
+  subject_id: $selectedSubject.map((data) => (data && data.id ? +data.id : DEFAULT_ID)),
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
+export const $themeTitleErrorModule = createError()
 
-const setThemeTitleError = createEvent<boolean>()
-const resetThemeTitleError = createEvent<void>()
-export const $themeTitleError = restore(setThemeTitleError, false).reset(resetThemeTitleError)
+export const $prerequisiteTitleErrorModule = createError()
 
-const setPrerequisiteTitleError = createEvent<boolean>()
-const resetPrerequisiteTitleError = createEvent<void>()
-export const $prerequisiteTitleError = restore(setPrerequisiteTitleError, false).reset(
-  resetPrerequisiteTitleError
-)
+export const $classErrorModule = createError()
 
-const setClassError = createEvent<boolean>()
-const resetClassError = createEvent<void>()
-export const $classError = restore(setClassError, false).reset(resetClassError)
+export const $positionErrorModule = createError()
 
-const setPositionError = createEvent<boolean>()
-const resetPositionError = createEvent<void>()
-export const $positionError = restore(setPositionError, false).reset(resetPositionError)
-
-const setSubjectError = createEvent<boolean>()
-const resetSubjectError = createEvent<void>()
-export const $subjectError = restore(setSubjectError, false).reset(resetSubjectError)
+export const $subjectErrorModule = createError()
 
 const resetErrors = createEvent<void>()
 
 forward({
   from: resetErrors,
   to: [
-    resetThemeTitleError,
-    resetPrerequisiteTitleError,
-    resetClassError,
-    resetPositionError,
-    resetSubjectError,
+    $themeTitleErrorModule.methods.resetError,
+    $prerequisiteTitleErrorModule.methods.resetError,
+    $classErrorModule.methods.resetError,
+    $positionErrorModule.methods.resetError,
+    $subjectErrorModule.methods.resetError,
   ],
 })
 
@@ -169,6 +147,8 @@ forward({
     positionDropdownModule.methods.resetItem,
     prerequisiteDropdownModule.methods.resetItem,
     themeDropdownModule.methods.resetItem,
+    setSelectedSubject.prepend(() => null),
+    setSelectedClass.prepend(() => null),
     resetSelectedPrerequisites,
     resetSelectedThemes,
     resetErrors,
@@ -185,14 +165,13 @@ forward({
   to: [resetSelectedPrerequisites, prerequisiteDropdownModule.methods.resetItem],
 })
 
-const canGetThemesList = combine(
-  classDropdownModule.store.$item,
-  subjectDropdownModule.store.$item,
-  (cl, obj) => ({ study_year: +cl!, subject: +obj! })
-)
+const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
+  study_year: cl && cl.id,
+  subject: obj && obj.id,
+}))
 
 const debounced = debounce({
-  source: canGetThemesList,
+  source: $formToGetThemeList,
   timeout: 150,
 })
 
@@ -200,18 +179,13 @@ forward({
   from: debounced,
   to: [
     getThemesTreeList.prepend((data) => {
-      if (data.study_year > 0)
-        return {
-          study_year: data.study_year,
-          subject: data.subject,
-          is_prerequisite: false,
-        }
       return {
-        subject: data.subject,
+        study_year: data.study_year ? data.study_year : undefined,
+        subject: data.subject ? data.subject : undefined,
         is_prerequisite: false,
       }
     }),
-    getThemesListFx.prepend((data) => ({ subject: data.subject })),
+    getThemesListFx.prepend((data) => ({ subject: data.subject || undefined })),
   ],
 })
 
@@ -232,11 +206,12 @@ sample({
   source: $formToSend,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id && obj.subject_id) saveTheme()
+    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+      saveTheme()
     else {
-      if (!obj.name.trim().length) setThemeTitleError(true)
-      if (!obj.study_year_id) setClassError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (!obj.name.trim().length) $themeTitleErrorModule.methods.setError(true)
+      if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -274,7 +249,7 @@ sample({
   fn: (ifRedirect: boolean, id: number) => {
     addToast({ type: 'success', message: 'Тема успешно создана!' })
     if (ifRedirect) navigatePush({ name: 'themes-list' })
-    else navigatePush({ name: 'themes-edit', params: { id: id.toString() } })
+    else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
   },
 })
 sample({
@@ -283,7 +258,7 @@ sample({
   fn: (ifRedirect: boolean, id: number) => {
     addToast({ type: 'success', message: 'Пререквизит успешно создан!' })
     if (ifRedirect) navigatePush({ name: 'themes-list' })
-    else navigatePush({ name: 'themes-edit', params: { id: id.toString() } })
+    else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
   },
 })
 
@@ -291,10 +266,10 @@ sample({
   source: $formToSendPrerequisite,
   clock: checkIfPrerequisiteCanBeSend,
   fn: (obj) => {
-    if (obj.name.length && obj.subject_id) savePrerequisite()
+    if (obj.name.length && obj.subject_id !== DEFAULT_ID) savePrerequisite()
     else {
-      if (obj.name.length === 0) setPrerequisiteTitleError(true)
-      if (!obj.subject_id) setSubjectError(true)
+      if (obj.name.length === 0) $prerequisiteTitleErrorModule.methods.setError(true)
+      if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
     }
   },
@@ -302,25 +277,25 @@ sample({
 
 forward({
   from: themeTitleChanged,
-  to: setThemeTitleError.prepend(() => false),
+  to: $themeTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: prerequisiteTitleChanged,
-  to: setPrerequisiteTitleError.prepend(() => false),
+  to: $prerequisiteTitleErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: setClassError.prepend(() => false),
+  to: $classErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: positionDropdownModule.methods.itemChanged,
-  to: setPositionError.prepend(() => false),
+  to: $positionErrorModule.methods.setError.prepend(() => false),
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: setSubjectError.prepend(() => false),
+  to: $subjectErrorModule.methods.setError.prepend(() => false),
 })

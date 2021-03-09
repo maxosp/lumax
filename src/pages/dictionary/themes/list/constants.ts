@@ -106,3 +106,28 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'study_year', title: 'Класс' },
   { name: 'subject', title: 'Предмет' },
 ]
+
+export const mapTypeToIcon = {
+  SHORT_CLOSED_ANSWER: 'type-0',
+  MULTIPLE_SHORT_CLOSED_ANSWER: 'type-1',
+  MULTIPLE_CHOICE_ONE_OR_MANY_ANSWERS: 'type-2',
+  MULTIPLE_CHOICE_ONE_ANSWER: 'type-3',
+  BROAD_OPEN_ANSWER: 'type-4',
+  COMMON_LIST_STRING_ANSWER: 'type-5',
+  COMMON_LIST_TEXT_ANSWER: 'type-5',
+  MULTIPLE_LIST_TEXT_ANSWER: 'type-5',
+  CORRECT_SEQUENCE_ANSWER: 'type-6',
+  CONNECT_LINES_ANSWER: 'type-6',
+  MOVING_IMAGES_IMAGE_INPUT_ANSWER: 'type-7',
+  MOVING_IMAGES_TEXT_INPUT_ANSWER: 'type-7',
+  BROAD_FILE_ANSWER: 'type-8',
+  COLOR_HIGHLIGHT_ANSWER: 'type-9',
+}
+export const mapTaskStatus = {
+  new: 'Новое',
+  reserve: 'Резерв',
+  moderation: 'На доработке',
+  revision: 'На проверке',
+  published: 'Опубликовано',
+  archive: 'Архив',
+}

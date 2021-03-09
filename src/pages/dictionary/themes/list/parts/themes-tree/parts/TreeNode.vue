@@ -115,8 +115,15 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
-
-      this.$emit('onRightClick', { data: { id: this.$props.nodeId }, event, type })
+      this.$emit('onRightClick', {
+        data: {
+          id: this.$props.nodeId,
+          subject: this.$props.node.subject.id,
+          studyYear: this.$props.node.study_year.id,
+        },
+        event,
+        type,
+      })
     },
   },
   mounted() {
@@ -168,6 +175,7 @@ export default Vue.extend({
   }
 }
 .chip {
+  @mixin flex-row-central;
   padding: 4px 8px;
   font-weight: 600;
   line-height: 14px;
@@ -175,6 +183,9 @@ export default Vue.extend({
   background-color: var(--c-grey-3);
   margin-left: 5px;
   color: #fff;
+  & ::v-deep span {
+    margin-left: 5px;
+  }
 }
 
 .primary {

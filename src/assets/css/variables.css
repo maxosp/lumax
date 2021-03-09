@@ -18,13 +18,19 @@
   --c-grey-12: #D1D1D1;
   --c-grey-13: #E8E8E8;
   --c-grey-14: #B5B5B5;
+  --c-grey-15: #DDDDDD;
+  --c-grey-16: #EFEFEF;
 
   --c-green-0: #62C16C;
 
   --c-red-0: #FF5757;
-
+  --c-red-1: #D00A0A;
+  --c-red-2: #EB4B28;
+  
   --c-yellow-0: #F9C961;
   --c-yellow-1: #EBAE28;
+
+  --c-blue-0: #3165AB;
 
   --c-dark-0: #0A234A;
   --c-dark-1: #2F4469;

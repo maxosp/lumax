@@ -1,6 +1,28 @@
 <template>
   <div class="header">
-    <span>{{ totalTitle }}</span>
+    <div class="left">
+      <span>{{ total | formatThemeTitle }}</span>
+      <Divider
+        v-if="selectedRows.length"
+        vertical
+        height="25px"
+        class="divider"
+      />
+      <span
+        v-if="selectedRows && selectedRows.length === 1"
+        class="--basic"
+        @click="$emit('onEdit', selectedRows)"
+      >
+        Редактировать
+      </span>
+      <span
+        v-if="selectedRows.length"
+        class="--red"
+        @click="handleRemove"
+      >
+        Удалить
+      </span>
+    </div>
     <BaseSwitch
       :checked="$treeView"
       @change="toggleTreeView"
@@ -11,35 +33,30 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
-import { toggleTreeView, $treeView } from '@/pages/dictionary/themes/list/themes-page.model'
+import { toggleTreeView, $treeView } from '@/pages/bank/test-tasks/list/tasks-page.model'
+import Divider from '@/ui/divider/Divider.vue'
 
 export default Vue.extend({
   name: 'TableHeader',
   components: {
     BaseSwitch,
+    Divider,
   },
   effector: {
     $treeView,
   },
   props: {
     total: { type: Number, required: true },
-  },
-  computed: {
-    totalTitle() {
-      let title = 'тем'
-      const lastDigit = `${this.$props.total}`.slice(-1)
-      if (lastDigit === '1') {
-        title = 'тема'
-      } else if (['2', '3', '4'].includes(lastDigit)) {
-        title = 'темы'
-      }
-      return `${this.$props.total} ${title}`
-    },
+    selectedRows: { type: Array as PropType<number[]> },
   },
   methods: {
     toggleTreeView,
+    handleRemove() {
+      const data = this.selectedRows?.length > 1 ? this.selectedRows : this.selectedRows[0]
+      this.$emit('onRemove', data)
+    },
   },
 })
 </script>
@@ -57,5 +74,23 @@ export default Vue.extend({
   font-size: 16px;
   line-height: 16px;
   border-bottom: 1px solid var(--c-grey-9);
+  .left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .divider {
+    background-color: var(--c-grey-15);
+    margin: 0 25px;
+  }
+  span {
+    cursor: pointer;
+  }
+  span.--basic {
+    margin-right: 25px;
+  }
+  span.--red {
+    color: var(--c-red-1);
+  }
 }
 </style>

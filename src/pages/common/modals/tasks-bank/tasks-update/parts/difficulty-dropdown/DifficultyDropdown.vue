@@ -1,48 +1,42 @@
 <template>
-  <BaseDropdown
-    class="input dropdown"
-    :value="$difficulty"
-    label="Сложность"
-    placeholder="Выберите предмет"
-  >
-    <template #default="{closeMenu}">
-      <SelectItem
-        v-for="(item, index) in $difficultysDropdown"
-        :key="index"
-        :placeholder="item"
-        @click="handleSubjectClick(item, closeMenu)"
-      >
-        {{ item }}
-      </SelectItem>
-    </template>
-  </BaseDropdown>
+  <FilterDropdown
+    v-if="$difficultys.length"
+    label="Слолжность"
+    placeholder="Выберите сложность"
+    :data="$difficultys"
+    :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
+    :store="{ $item, $itemsDropdown, $searchString }"
+    @item-changed="onSelectItem"
+  />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $difficulty,
-  $difficultysDropdown,
-  difficultyChanged,
-} from '@/pages/common/modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+  $difficultys,
+  difficultyDropdownModule,
+  loadDifficultys,
+} from '@/pages/common//modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   components: {
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   effector: {
-    $difficulty,
-    $difficultysDropdown,
+    $difficultys,
+    ...difficultyDropdownModule.store,
   },
   methods: {
-    difficultyChanged,
-    handleSubjectClick(item: string, cb: any) {
-      difficultyChanged(item)
-      cb()
+    loadDifficultys,
+    ...difficultyDropdownModule.methods,
+    onSelectItem(item: DropdownItem | null) {
+      this.$emit('setItem', item ? item.name : null)
     },
+  },
+  mounted() {
+    loadDifficultys()
   },
 })
 </script>
