@@ -48,7 +48,7 @@ import {
   $selectAll,
   selectAllChanged,
   download,
-} from '@/pages/tags/parts/header/header-popup/header-popup.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/header/header-popup/header-popup.model'
 
 const ClickOutside = require('vue-click-outside')
 
@@ -127,6 +127,9 @@ export default Vue.extend({
     margin-bottom: 20px;
     .text {
       margin-bottom: 0;
+    }
+    & ::v-deep label {
+      justify-content: flex-start;
     }
   }
   .text {

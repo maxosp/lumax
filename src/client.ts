@@ -12,6 +12,7 @@ import VTooltip from 'v-tooltip'
 import { formatTagTitle } from '@/pages/tags/utils'
 import { formatThemeTitle } from '@/pages/dictionary/themes/utils'
 import { formatTotalAmount } from '@/pages/dictionary/themes/list/utils'
+import { formatTasksTitle } from '@/pages/bank/olympiad-tasks/utils'
 
 import App from './App.vue'
 import { routes } from './routes'
@@ -28,6 +29,7 @@ Vue.use(VTooltip, {
 Vue.filter('formatTagTitle', formatTagTitle)
 Vue.filter('formatThemeTitle', formatThemeTitle)
 Vue.filter('formatTotalAmount', formatTotalAmount)
+Vue.filter('formatTasksTitle', formatTasksTitle)
 
 Vue.use(VueEffector)
 

@@ -143,7 +143,6 @@ sample({
   source: $formToSend,
   clock: checkIfResourceCanBeSend,
   fn: (obj) => {
-    console.log(obj)
     let errors = 0
     if (!obj.resource_type) {
       $typeErrorModule.methods.setError(true)

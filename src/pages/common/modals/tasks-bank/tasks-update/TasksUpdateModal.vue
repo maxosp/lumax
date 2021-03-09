@@ -52,7 +52,7 @@ import {
   submitForm,
   cancelForm,
 } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
-import { modalLoaded } from '@/pages/common/modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+import { loadDifficultys } from '@/pages/common/modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
 
 export default Vue.extend({
   name: 'ModalLogout',
@@ -71,12 +71,12 @@ export default Vue.extend({
   methods: {
     tasksUpdateModalVisibilityChanged,
     tasksIdsChanged,
-    modalLoaded,
+    loadDifficultys,
     submitForm,
     cancelForm,
   },
   mounted() {
-    modalLoaded()
+    loadDifficultys()
   },
 })
 </script>
@@ -100,6 +100,7 @@ export default Vue.extend({
   width: 100%;
   @mixin flex-row-central;
   justify-content: space-between;
+  margin-top: 20px;
   .btn {
     width: 144px;
   }

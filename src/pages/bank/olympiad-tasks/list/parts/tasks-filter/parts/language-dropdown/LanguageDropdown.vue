@@ -1,9 +1,9 @@
 <template>
   <FilterDropdown
-    v-if="$difficultys.length"
-    label="Слолжность"
-    placeholder="Выберите сложность"
-    :data="$difficultys"
+    v-if="$languages.length"
+    label="Язык"
+    placeholder="Выберите язык"
+    :data="$languages"
     :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
     :store="{ $item, $itemsDropdown, $searchString }"
     @item-changed="onSelectItem"
@@ -14,10 +14,10 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $difficultys,
-  difficultyDropdownModule,
-  loadDifficultys,
-} from '@/pages/common//modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+  languagesDropdownModule,
+  $languages,
+  loadLanguages,
+} from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/language-dropdown/language-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
@@ -25,18 +25,18 @@ export default Vue.extend({
     FilterDropdown,
   },
   effector: {
-    $difficultys,
-    ...difficultyDropdownModule.store,
+    $languages,
+    ...languagesDropdownModule.store,
   },
   methods: {
-    loadDifficultys,
-    ...difficultyDropdownModule.methods,
+    loadLanguages,
+    ...languagesDropdownModule.methods,
     onSelectItem(item: DropdownItem | null) {
       this.$emit('setItem', item ? item.name : null)
     },
   },
   mounted() {
-    loadDifficultys()
+    loadLanguages()
   },
 })
 </script>

@@ -10,7 +10,7 @@ import {
   getAssignmentTreeLightFx,
 } from '@/features/api/assignment/tree-assignment'
 import { addToast } from '@/features/toasts/toasts.model'
-import { TreeDataLight } from '@/features/api/types'
+import { TreeData, TreeDataLight } from '@/features/api/types'
 import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
 
 const getTasksTree = attach({
@@ -46,8 +46,8 @@ export const $treeView = restore(toggleTreeView, false)
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<GetAssignmentTreeQueryParams>()
-export const setTasksTree = createEvent<TreeDataLight | null>()
-export const $tasksTree = restore<TreeDataLight | null>(setTasksTree, null)
+export const setTasksTree = createEvent<TreeDataLight | TreeData | null>()
+export const $tasksTree = restore<TreeDataLight | TreeData | null>(setTasksTree, null)
 export const setTasksTreeTotal = createEvent<number>()
 export const $tasksTreeTotal = restore<number>(setTasksTreeTotal, 0)
 

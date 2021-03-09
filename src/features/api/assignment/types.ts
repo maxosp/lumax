@@ -1,4 +1,5 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
+import { User } from '@/features/api/user/types'
 
 export type Tag = {
   id: number
@@ -75,4 +76,22 @@ export type GetAssignmentTreeQueryParams = {
 export type ListType = {
   code: string | number
   name: string
+}
+
+export type Assignment = {
+  id: number
+  theme: Theme
+  score: number
+  type: string
+  status: string
+  wording: string
+  difficulty: string
+  interface_language: string
+  created_by: User
+  updated_by: User
+  verified_by: User
+  creation_datetime: string
+  update_datetime: string
+  verification_datetime: string
+  labels_string: string
 }

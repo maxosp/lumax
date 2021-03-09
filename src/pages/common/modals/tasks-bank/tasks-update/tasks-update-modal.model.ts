@@ -1,7 +1,9 @@
 import { createEvent, forward, restore } from 'effector-root'
 import { resetSwitchers } from '@/pages/common/modals/tasks-bank/tasks-update/parts/switchers/swichers.model'
-import { resetModerator } from '@/pages/common/modals/tasks-bank/tasks-update/parts/moderator-dropdown/moderator-dropdown.model'
-import { resetDifficulty } from '@/pages/common/modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+import {
+  moderatorDropdownModule,
+  setSelectedModerator,
+} from '@/pages/common/modals/tasks-bank/tasks-update/parts/moderator-dropdown/moderator-dropdown.model'
 
 export const tasksUpdateModalVisibilityChanged = createEvent<boolean>()
 export const $tasksUpdateModalVisibility = restore(tasksUpdateModalVisibilityChanged, false)
@@ -15,7 +17,13 @@ export const $tasksIds = restore<string>(tasksIdsChanged, '').reset(resetField)
 
 forward({
   from: [submitForm, cancelForm],
-  to: [resetField, resetSwitchers, resetModerator, resetDifficulty],
+  to: [
+    resetField,
+    resetSwitchers,
+    moderatorDropdownModule.methods.resetItem,
+    moderatorDropdownModule.methods.resetSearchString,
+    setSelectedModerator.prepend(() => null),
+  ],
 })
 
 forward({

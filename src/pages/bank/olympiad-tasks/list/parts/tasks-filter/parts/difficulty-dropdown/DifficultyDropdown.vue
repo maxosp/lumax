@@ -17,7 +17,7 @@ import {
   $difficultys,
   difficultyDropdownModule,
   loadDifficultys,
-} from '@/pages/common//modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/difficulty-dropdown/difficulty-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

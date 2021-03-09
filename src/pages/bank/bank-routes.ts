@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TestTasksLists from '@/pages/bank/test-tasks/list/TestTasksList.vue'
 import TestTaskCreationPage from '@/pages/bank/test-tasks/create/TaskCreationPage.vue'
 // olympiad-tasks
+import OlympiadTasksList from '@/pages/bank/olympiad-tasks/list/OlympiadList.vue'
 import OlympiadTaskCreationPage from '@/pages/bank/olympiad-tasks/create/TaskCreationPage.vue'
 // lesson-tasks
 import LessonTaskCreationPage from '@/pages/bank/lesson-tasks/create/TaskCreationPage.vue'
@@ -53,11 +54,11 @@ export default [
         redirect: { name: 'olympiad-tasks-creation' },
         children: [
           {
-            name: 'olympiad-tasks-creation',
-            path: 'create',
-            component: OlympiadTaskCreationPage,
+            name: 'olympiad-tasks-list',
+            path: 'list',
+            component: OlympiadTasksList,
             meta: {
-              title: 'Создание олимпиадного задания - Школа Летово',
+              title: 'Олимпиадные задания - Школа Летово',
             },
           },
           {
@@ -66,6 +67,14 @@ export default [
             component: OlympiadTaskCreationPage,
             meta: {
               title: 'Редактирование олимпиадного задания - Школа Летово',
+            },
+          },
+          {
+            name: 'olympiad-tasks-create',
+            path: 'create',
+            component: OlympiadTaskCreationPage,
+            meta: {
+              title: 'Создание олимпиадного задания - Школа Летово',
             },
           },
         ],
