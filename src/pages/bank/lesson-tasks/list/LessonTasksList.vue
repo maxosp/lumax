@@ -1,5 +1,5 @@
 <template>
-  <div id="tasks-page">
+  <div id="lessons-page">
     <PageHeader />
     <GeneralFilter
       :search-fields="searchFields"
@@ -7,7 +7,7 @@
       @handleFilterVisibility="toggleVisibility(!$visibility)"
     >
       <template #filter>
-        <ThemesFilter
+        <LessonsFilter
           :visible="$visibility"
           :filter-params="filterParams"
           @setFilter="onFilterSet"
@@ -16,8 +16,10 @@
       </template>
     </GeneralFilter>
     <TableHeader
-      :total="$treeView ? $tasksTreeTotal : total"
+      :total="total"
       :selected-rows="selectedRows"
+      @onEdit="editTask"
+      @onRemove="removeSelected"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
@@ -30,9 +32,11 @@
         :append-params="filterParams"
         no-data-template=""
         pagination-path=""
+        :per-page="25"
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
+        @vuetable:row-clicked="handleRowClick"
       >
         <template #assignments_ids="props">
           <TooltipCell
@@ -59,9 +63,8 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
+            @onEdit="editTask"
             @onRemove="removeSelected"
-            @onCheck="sendToModerationAssignments"
-            @onPublish="publishAssignments"
           />
         </template>
       </Vuetable>
@@ -81,7 +84,7 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <TasksTree @onRightClick="handleRightClick" />
+      <LessonsTree @onRightClick="handleRightClick" />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -92,9 +95,8 @@
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
-      @onCheck="sendToModerationAssignments"
-      @onPublish="publishAssignments"
     />
+    <TasksTypesModal />
   </div>
 </template>
 
@@ -106,32 +108,29 @@ import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
 import { computeSortParam, removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
-import PageHeader from '@/pages/bank/test-tasks/list/parts/PageHeader.vue'
-import TableHeader from '@/pages/bank/test-tasks/list/parts/table/TableHeader.vue'
+import PageHeader from '@/pages/bank/lesson-tasks/list/parts/PageHeader.vue'
+import TableHeader from '@/pages/bank/lesson-tasks/list/parts/table/TableHeader.vue'
 import TooltipCell from '@/pages/bank/olympiad-tasks/list/parts/table/TooltipCell.vue'
-import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
-import ContextMenu from '@/pages/bank/test-tasks/list/parts/table/ContextMenu.vue'
+import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
+import ContextMenu from '@/pages/bank/lesson-tasks/list/parts/table/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
-import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
-import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
+import LessonsFilter from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/LessonsFilter.vue'
+import LessonsTree from '@/pages/bank/lesson-tasks/list/parts/lessons-tree/LessonsTree.vue'
 import {
   $treeView,
   loadTree,
-  $tasksTreeTotal,
-  deleteAssignment,
-  deleteManyAssignments,
-  sendAssignmentsPublish,
-  sendAssignmentsToModeration,
-} from '@/pages/bank/test-tasks/list/tasks-page.model'
+  $lessonsTreeTotal,
+} from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
   $visibility,
-} from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
+} from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/lesson-tasks-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { addToast } from '@/features/toasts/toasts.model'
-import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
-import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
+import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
+import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
+import * as modals from '@/pages/bank/olympiad-tasks/index'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -144,46 +143,42 @@ type RightClickParams = {
 }
 
 export default Vue.extend({
-  name: 'TestTasksList',
+  name: 'LessonsTasksList',
   components: {
     Vuetable,
     VuetablePagination,
     PageHeader,
     TableHeader,
     GeneralFilter,
-    ThemesFilter,
+    LessonsFilter,
     TooltipCell,
     Actions,
     ContextMenu,
-    TasksTree,
+    LessonsTree,
+    TasksTypesModal: modals.TasksTypesModal,
   },
   effector: {
     $token,
     $visibility,
     $treeView,
-    $tasksTreeTotal,
+    $lessonsTreeTotal,
   },
   data() {
     return {
       clickedRowId: 0,
       showContextMenu: false,
-      contextMenuType: 'table_tasks',
+      contextMenuType: 'table_lessons',
       contextMenuStyles: { top: '0', left: '0' },
-      fields: themesTableFields,
+      fields: lessonsTableFields,
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
+      selectedRows: [] as number[] | null,
     }
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-test/list/`
-    },
-    selectedRows(): number[] {
-      // @ts-ignore
-      if (!this.$refs.vuetable) return []
-      // @ts-ignore
-      return this.$refs.vuetable.selectedTo
+      return `${config.BACKEND_URL}/api/assignment/assignment-lesson/list/`
     },
   },
   methods: {
@@ -213,7 +208,7 @@ export default Vue.extend({
       reset() // search string and field
 
       const resetEvent = new Event('reset-themes-filter')
-      const container = document.querySelector('#tasks-page')
+      const container = document.querySelector('#lessons-page')
       container && container.dispatchEvent(resetEvent)
 
       // reload data
@@ -236,37 +231,37 @@ export default Vue.extend({
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    async removeSelected(ids: number | number[]) {
-      const currentMethod = typeof ids === 'number' ? deleteAssignment : deleteManyAssignments
-      // @ts-ignore
-      await currentMethod(ids)
-      // @ts-ignore
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      // @ts-ignore
-      if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
+    editTask(id: number) {
+      // loadModalToEdit(id)
+      console.log('EDIT ', id)
     },
-    async publishAssignments(ids: number | number[]) {
-      await sendAssignmentsPublish(typeof ids === 'number' ? [ids] : ids)
-      // @ts-ignore
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
-    },
-    async sendToModerationAssignments(ids: number | number[]) {
-      await sendAssignmentsToModeration(typeof ids === 'number' ? [ids] : ids)
-      // @ts-ignore
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+    removeSelected(ids: number[]) {
+      // loadModalToDelete(ids)
+      console.log('REMOVE ', ids)
     },
     handleLoadError(res: any) {
       if (!res.response) {
         addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
       }
     },
-    handleRightClick({ data, event, type = 'table_tasks' }: RightClickParams) {
+    handleRightClick({ data, event, type = 'table_lessons' }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
+    },
+    handleRowClick(res: any) {
+      if (res.event.target.closest('.actions-activator')) return
+      // @ts-ignore
+      const { selectedTo } = this.$refs.vuetable
+      if (selectedTo.length === 0) selectedTo.push(res.data.id)
+      else if (selectedTo.find((el: number) => el === res.data.id)) {
+        selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
+      } else selectedTo.push(res.data.id)
+      // @ts-ignore
+      this.selectedRows = this.$refs.vuetable.selectedTo
     },
     hideContextMenu() {
       this.showContextMenu = false

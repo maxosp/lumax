@@ -18,7 +18,7 @@ export const data: NavItem[] = [
     children: [
       { title: 'Тестовые задания', link: 'test-tasks-list' },
       { title: 'Олимпиадные задания', link: 'olympiad-tasks-list' },
-      { title: 'Задания для уроков', link: 'lesson-tasks-creation' },
+      { title: 'Задания для уроков', link: 'lesson-tasks-list' },
     ],
   },
   {

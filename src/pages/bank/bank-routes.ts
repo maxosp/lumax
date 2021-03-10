@@ -6,6 +6,7 @@ import TestTaskCreationPage from '@/pages/bank/test-tasks/create/TaskCreationPag
 import OlympiadTasksList from '@/pages/bank/olympiad-tasks/list/OlympiadList.vue'
 import OlympiadTaskCreationPage from '@/pages/bank/olympiad-tasks/create/TaskCreationPage.vue'
 // lesson-tasks
+import LessonsTasksLists from '@/pages/bank/lesson-tasks/list/LessonTasksList.vue'
 import LessonTaskCreationPage from '@/pages/bank/lesson-tasks/create/TaskCreationPage.vue'
 
 export default [
@@ -85,6 +86,14 @@ export default [
         component: DefaultLayout,
         redirect: { name: 'lesson-tasks-creation' },
         children: [
+          {
+            name: 'lesson-tasks-list',
+            path: 'list',
+            component: LessonsTasksLists,
+            meta: {
+              title: 'Задания для уроков - Школа Летово',
+            },
+          },
           {
             name: 'lesson-tasks-creation',
             path: 'create',

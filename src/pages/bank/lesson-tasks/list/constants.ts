@@ -3,7 +3,7 @@ import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { DropdownItem } from '@/pages/common/types'
 
-export const themesTableFields: TableField[] = [
+export const lessonsTableFields: TableField[] = [
   {
     name: '__checkbox',
     title: '',
@@ -18,11 +18,19 @@ export const themesTableFields: TableField[] = [
     width: '130px',
   },
   {
-    name: 'theme',
-    title: 'Предмет',
+    name: 'course_theme',
+    title: 'Курс',
     width: '130px',
-    formatter: (data) => {
-      return data && data.subject && data.subject.name ? data.subject.name : '–'
+    formatter(data: string) {
+      return data || '–'
+    },
+  },
+  {
+    name: 'id',
+    title: 'Расположение',
+    width: '130px',
+    formatter(data: string) {
+      return data || '–'
     },
   },
   {
@@ -35,35 +43,10 @@ export const themesTableFields: TableField[] = [
     },
   },
   {
-    name: 'theme',
-    title: 'Класс',
-    width: '130px',
-    formatter: (data) => {
-      return data && data.study_year && data.study_year.name ? data.study_year.name : '–'
-    },
-  },
-  {
-    name: 'theme',
-    title: 'Тема',
-    width: '150px',
-    formatter: (data) => {
-      return data && data.name ? data.name : '–'
-    },
-  },
-  {
-    name: 'difficulty',
-    sortField: 'difficulty',
-    title: 'Сложность',
-    width: '150px',
-    formatter: (data) => {
-      return data ? 'Продвинутый' : 'Базовый'
-    },
-  },
-  {
     name: 'wording',
     sortField: 'wording',
     title: 'Формулировка задания',
-    width: '250px',
+    width: '220px',
     formatter(data: string) {
       return data || '–'
     },
@@ -71,7 +54,7 @@ export const themesTableFields: TableField[] = [
   {
     name: 'type',
     sortField: 'type',
-    title: 'Тип',
+    title: 'Тип задания',
     width: '150px',
     titleClass: 'center aligned',
     dataClass: 'center aligned',
@@ -80,23 +63,34 @@ export const themesTableFields: TableField[] = [
     },
   },
   {
-    name: 'labels_string',
-    sortField: 'labels_string',
-    title: 'Метки',
-    width: '200px',
-    formatter(data: string) {
-      return data || '–'
+    name: 'score',
+    sortField: 'score',
+    title: 'Баллы',
+    width: '100px',
+    titleClass: 'center aligned',
+    dataClass: 'center aligned',
+    formatter(text: string) {
+      return text || '-'
     },
   },
   {
     name: 'interface_language',
     sortField: 'interface_language',
     title: 'Язык',
-    width: '130px',
+    width: '80px',
     titleClass: 'center aligned',
     dataClass: 'center aligned',
     formatter(text: string) {
       return text || '-'
+    },
+  },
+  {
+    name: 'created_by',
+    sortField: 'created_by',
+    title: 'Создатель',
+    width: '200px',
+    formatter(data: string) {
+      return data || '–'
     },
   },
   {
@@ -119,8 +113,9 @@ export const themesTableFields: TableField[] = [
   },
   {
     name: 'updated_by',
+    sortField: 'updated_by',
     title: 'Посл. изменение',
-    width: '150px',
+    width: '180px',
     formatter: (data) => {
       return data && data.id && data.first_name && data.last_name
         ? `${data.id} ${data.first_name} ${data.last_name}`
@@ -137,18 +132,13 @@ export const themesTableFields: TableField[] = [
 
 export const searchFieldsData: DropdownItem[] = [] // TODO add elements to array
 
-export const contextMethodsOneTask = [
+export const contextMethodsOneLesson = [
   { name: 'edit', title: 'Редактирование' },
   { name: 'delete', title: 'Удалить задание' },
   { name: 'double_task', title: 'Дублировать задание' },
   { name: 'double_n_task', title: 'Дублировать задание n раз' },
-  { name: 'send_to_check', title: 'Отправить заявку на проверку' },
-  { name: 'public', title: 'Опубликовать' },
   { name: 'preview', title: 'Предпросмотр' },
 ]
-export const contextMethodsManyTasks = [
+export const contextMethodsManyLessons = [
   { name: 'delete_all', title: 'Удалить выделенные задания' },
-  { name: 'send_to_check_all', title: 'Отправить на проверку' },
-  { name: 'public_all', title: 'Опубликовать' },
-  { name: 'preview_all', title: 'Предпросмотр' },
 ]

@@ -134,7 +134,7 @@ export const $formToSend = combine(
       }
     }
     if (activeColor) {
-      data.color_id = activeColor.id
+      data.color_id = +activeColor.name
       data.color = {
         id: +activeColor.name,
         name: activeColor.title,
