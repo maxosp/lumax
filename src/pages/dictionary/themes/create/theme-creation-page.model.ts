@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { condition, debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -26,7 +26,7 @@ import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list
 import { createThemeFx } from '@/features/api/subject/create-theme'
 import { CreateThemeType } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
-import { DEFAULT_ID } from '@/pages/dictionary/themes/create/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import {
   $isPrerequisite,
   isPrerequisiteChanged,
@@ -228,15 +228,6 @@ sample({
   target: savePrerequisiteFx,
 })
 
-const { noInternetConnection } = split(merge([saveThemeFx.failData, savePrerequisiteFx.failData]), {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-})
-
 const $ifRedirect = sample({
   clock: [saveThemeFx, savePrerequisiteFx],
   source: $redirectAfterSave,
@@ -277,25 +268,25 @@ sample({
 
 forward({
   from: themeTitleChanged,
-  to: $themeTitleErrorModule.methods.setError.prepend(() => false),
+  to: $themeTitleErrorModule.methods.resetError,
 })
 
 forward({
   from: prerequisiteTitleChanged,
-  to: $prerequisiteTitleErrorModule.methods.setError.prepend(() => false),
+  to: $prerequisiteTitleErrorModule.methods.resetError,
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: $classErrorModule.methods.setError.prepend(() => false),
+  to: $classErrorModule.methods.resetError,
 })
 
 forward({
   from: positionDropdownModule.methods.itemChanged,
-  to: $positionErrorModule.methods.setError.prepend(() => false),
+  to: $positionErrorModule.methods.resetError,
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: $subjectErrorModule.methods.setError.prepend(() => false),
+  to: $subjectErrorModule.methods.resetError,
 })

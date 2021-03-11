@@ -1,4 +1,4 @@
-import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
+import { attach, createEvent, forward, restore } from 'effector-root'
 import { addToast } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
@@ -38,13 +38,4 @@ forward({
     loadTree.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Обучающий ресурс был успешно удален!' })),
   ],
-})
-
-const { noInternet } = split(merge([getResourcesTree.failData, deleteResource.failData]), {
-  noInternet: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })

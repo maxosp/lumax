@@ -5,6 +5,7 @@
     :methods="moderatorModuleMethods"
     :data="$moderators"
     :store="{ $item, $itemsDropdown, $searchString }"
+    :disabled="!$canSetModerator"
     @item-changed="setSelectedModerator"
   />
 </template>
@@ -17,7 +18,8 @@ import {
   moderatorDropdownModule,
   loadModerators,
   setSelectedModerator,
-} from '@/pages/common/modals/tasks-bank/moderator-select/parts/moderator/moderator-dropdown.model'
+} from '@/pages/common/modals/tasks-bank/tasks-update/parts/moderator-dropdown/moderator-dropdown.model'
+import { $canSetModerator } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
 
 export default Vue.extend({
   components: {
@@ -25,6 +27,7 @@ export default Vue.extend({
   },
   effector: {
     $moderators,
+    $canSetModerator,
     ...moderatorDropdownModule.store,
   },
   data() {

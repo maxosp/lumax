@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -8,7 +8,7 @@ import {
   $selectedClass,
   classDropdownModule,
 } from '@/pages/dictionary/resources/edit/parts/class/class.model'
-import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import { ResourceType } from '@/features/api/media/types'
 import { getResourceFx } from '@/features/api/media/get-resource'
 import {
@@ -188,15 +188,6 @@ sample({
   target: updateResourceDataFx,
 })
 
-const { noInternetConnection } = split(updateResourceFx.failData, {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-})
-
 const $ifRedirect = sample({
   clock: updateResourceDataFx,
   source: $redirectAfterSave,
@@ -219,25 +210,25 @@ forward({
 })
 forward({
   from: typeDropdownModule.methods.itemChanged,
-  to: $typeErrorModule.methods.setError.prepend(() => false),
+  to: $typeErrorModule.methods.resetError,
 })
 
 forward({
   from: themeDropdownModule.methods.itemChanged,
-  to: $themeErrorModule.methods.setError.prepend(() => false),
+  to: $themeErrorModule.methods.resetError,
 })
 
 forward({
   from: resourceDescriptionChanged,
-  to: $descriptionErrorModule.methods.setError.prepend(() => false),
+  to: $descriptionErrorModule.methods.resetError,
 })
 
 forward({
   from: linkChanged,
-  to: $linkErrorModule.methods.setError.prepend(() => false),
+  to: $linkErrorModule.methods.resetError,
 })
 
 forward({
   from: uploadFileFx,
-  to: $fileErrorModule.methods.setError.prepend(() => false),
+  to: $fileErrorModule.methods.resetError,
 })

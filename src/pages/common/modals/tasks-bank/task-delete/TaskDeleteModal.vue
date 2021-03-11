@@ -4,12 +4,13 @@
     :value="$modalTaskDeleteVisibility"
     @change="modalTaskDeleteVisibilityChanged"
   >
-    <p class="title"> Задание будет удалено. <br> Продолжить? </p>
+    <p class="title"> {{ correctTitle }} <br> Продолжить? </p>
     <div class="btns-wrapper">
       <BaseButton
         class="btn"
         big
         border-without-bg
+        @click="handleDeletion"
       >
         Продолжить
       </BaseButton>
@@ -31,7 +32,12 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $modalTaskDeleteVisibility,
   modalTaskDeleteVisibilityChanged,
+  $selectedIds,
 } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
+import {
+  deleteAssignment,
+  deleteAssignments,
+} from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 
 export default Vue.extend({
   name: 'ModalLogout',
@@ -41,9 +47,20 @@ export default Vue.extend({
   },
   effector: {
     $modalTaskDeleteVisibility,
+    $selectedIds,
+  },
+  computed: {
+    correctTitle() {
+      return this.$selectedIds.length === 1 ? 'Задание будет удалено.' : 'Задания будут удалены.'
+    },
   },
   methods: {
     modalTaskDeleteVisibilityChanged,
+    handleDeletion() {
+      this.$selectedIds.length === 1
+        ? deleteAssignment(this.$selectedIds[0])
+        : deleteAssignments(this.$selectedIds)
+    },
   },
 })
 </script>

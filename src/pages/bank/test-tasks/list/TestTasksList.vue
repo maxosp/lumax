@@ -251,7 +251,8 @@ export default Vue.extend({
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     async sendToModerationAssignments(ids: number | number[]) {
-      await sendAssignmentsToModeration(typeof ids === 'number' ? [ids] : ids)
+      const data = typeof ids === 'number' ? [ids] : ids
+      await sendAssignmentsToModeration({ assignments: data })
       // @ts-ignore
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
     },

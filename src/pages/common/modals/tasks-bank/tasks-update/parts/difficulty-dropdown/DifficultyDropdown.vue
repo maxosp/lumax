@@ -17,6 +17,7 @@ import {
   $difficultys,
   difficultyDropdownModule,
   loadDifficultys,
+  setSelectedDifficulty,
 } from '@/pages/common//modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -31,8 +32,10 @@ export default Vue.extend({
   methods: {
     loadDifficultys,
     ...difficultyDropdownModule.methods,
+    setSelectedDifficulty,
     onSelectItem(item: DropdownItem | null) {
       this.$emit('setItem', item ? item.name : null)
+      setSelectedDifficulty(item)
     },
   },
   mounted() {

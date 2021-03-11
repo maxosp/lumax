@@ -1,5 +1,5 @@
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   $selectedClass,
   classDropdownModule,
@@ -12,13 +12,12 @@ import {
 } from '@/pages/tags/parts/modals/tag-edition/parts/subject/subject-dropdown.model'
 import { getTagFx } from '@/features/api/assignment/get-tag'
 import { CreateTagType, Tag } from '@/features/api/assignment/types'
-import { DEFAULT_ID } from '@/pages/tags/constants'
 import { updateTagFx } from '@/features/api/assignment/update-tag'
 import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
 import { condition } from 'patronum'
-import { getTagsTreeFx } from '@/features/api/assignment/get-tags-tree'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
 import { createError } from '@/lib/effector/error-generator'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 export const updateTag = attach({
   effect: updateTagFx,
@@ -69,17 +68,17 @@ sample({
 
 forward({
   from: tagTitleChanged,
-  to: $titleErrorModule.methods.setError.prepend(() => false),
+  to: $titleErrorModule.methods.resetError,
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: $subjectErrorModule.methods.setError.prepend(() => false),
+  to: $subjectErrorModule.methods.resetError,
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: $classErrorModule.methods.setError.prepend(() => false),
+  to: $classErrorModule.methods.resetError,
 })
 
 forward({
@@ -117,16 +116,6 @@ forward({
     modalVisibilityChanged.prepend(() => false),
     canRefreshTableChanged.prepend(() => true),
   ],
-})
-
-const { noInternetConnection } = split(
-  merge([getTagsListFx.failData, getTagFx.failData, updateTagFx.failData, getTagsTreeFx.failData]),
-  { noInternetConnection: ({ status }) => status === undefined }
-)
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 condition({

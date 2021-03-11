@@ -28,6 +28,7 @@
       <span
         v-if="showAdditionalActions"
         class="--basic"
+        @click="$emit('duplicate', selectedRows[0])"
       >
         Дублировать
       </span>
@@ -40,6 +41,7 @@
       <span
         v-if="showAdditionalActions"
         class="--basic"
+        @click="$emit('showPreview', selectedRows[0])"
       >
         Предпросмотр
       </span>

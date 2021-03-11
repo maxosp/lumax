@@ -1,6 +1,6 @@
 export type SwitchersOptionsType = {
-  isInArchive: boolean
-  isInReserve: boolean
-  isPublish: boolean
-  isSend: boolean
+  archive: boolean
+  reserve: boolean
+  published: boolean
+  revision: boolean
 }

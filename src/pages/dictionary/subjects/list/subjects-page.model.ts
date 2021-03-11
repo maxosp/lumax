@@ -1,14 +1,4 @@
-import {
-  attach,
-  combine,
-  createEvent,
-  createStore,
-  forward,
-  merge,
-  restore,
-  sample,
-  split,
-} from 'effector-root'
+import { attach, combine, createEvent, createStore, forward, restore, sample } from 'effector-root'
 import { addToast } from '@/features/toasts/toasts.model'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { deleteSubjectFx, deleteSubjectsFx } from '@/features/api/subject/delete-subject'
@@ -66,20 +56,4 @@ forward({
 forward({
   from: updateSubjectDataFx.doneData,
   to: addToast.prepend(() => ({ type: 'success', message: 'Предмет был успешно изменен!' })),
-})
-const { noInternet } = split(
-  merge([
-    deleteSubject.failData,
-    deleteManySubjects.failData,
-    updateSubjectDataFx.failData,
-    getSubjectToUpdate.failData,
-  ]),
-  {
-    noInternet: ({ status }) => status === undefined,
-  }
-)
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })

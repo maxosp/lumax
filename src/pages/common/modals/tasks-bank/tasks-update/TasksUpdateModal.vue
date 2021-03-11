@@ -11,6 +11,7 @@
       placeholder="Перечислите id заданий через запятую"
       :value="$tasksIds"
       label="id заданий"
+      :class="{'--error': idsError}"
       @input="tasksIdsChanged"
     />
     <DifficultyDropdown />
@@ -51,11 +52,12 @@ import {
   tasksIdsChanged,
   submitForm,
   cancelForm,
+  $tasksIdsErrorModule,
 } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
 import { loadDifficultys } from '@/pages/common/modals/tasks-bank/tasks-update/parts/difficulty-dropdown/difficulty.model'
 
 export default Vue.extend({
-  name: 'ModalLogout',
+  name: 'TasksUpdateLogout',
   components: {
     Modal,
     BaseTextarea,
@@ -67,6 +69,7 @@ export default Vue.extend({
   effector: {
     $tasksUpdateModalVisibility,
     $tasksIds,
+    idsError: $tasksIdsErrorModule.store.$error,
   },
   methods: {
     tasksUpdateModalVisibilityChanged,
@@ -104,5 +107,8 @@ export default Vue.extend({
   .btn {
     width: 144px;
   }
+}
+.--error ::v-deep .base-textarea {
+  border: 2px solid var(--c-red-0) !important;
 }
 </style>

@@ -152,5 +152,3 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'score', title: 'Баллы' },
   { name: 'created_by', title: 'Создатель' },
 ]
-
-export const DEFAULT_ID = -1

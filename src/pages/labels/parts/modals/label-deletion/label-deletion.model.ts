@@ -1,5 +1,5 @@
 import { deleteLabelFx } from '@/features/api/assignment/delete-label'
-import { DEFAULT_ID } from '@/pages/dictionary/subjects/create/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import { createEvent, forward, restore } from 'effector-root'
 
 export const loadModalToDelete = createEvent<number>()

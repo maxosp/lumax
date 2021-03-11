@@ -1,4 +1,4 @@
-import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
+import { attach, createEvent, forward, restore } from 'effector-root'
 import {
   deleteAssignmentFx,
   deleteAssignmentsFx,
@@ -73,19 +73,4 @@ forward({
     loadTree.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Задание была успешно удалено!' })),
   ],
-})
-
-const { noInternet } = split(
-  merge([
-    getLessonsTree.failData,
-    getLessonsTreeLight.failData,
-    deleteAssignment.failData,
-    deleteManyAssignments.failData,
-  ]),
-  { noInternet: ({ status }) => status === undefined }
-)
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })

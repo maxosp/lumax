@@ -95,3 +95,20 @@ export type Assignment = {
   verification_datetime: string
   labels_string: string
 }
+
+export type DuplicateAssignmentType = {
+  assignments: number[]
+  number_of_duplicates?: number
+}
+
+export type SendToModerationParams = {
+  assignments: number[]
+  moderator_id?: number
+}
+
+export type UpdateAssignmentsBulkParams = {
+  assignments: number[]
+  status?: string
+  difficulty?: number
+  moderator_id?: number
+}

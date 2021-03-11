@@ -28,7 +28,7 @@
           <span>
             Выгрузить
           </span>
-          <Divider vertical height="40px" />
+          <Divider vertical />
           <Icon
             type="settings"
             size="20"

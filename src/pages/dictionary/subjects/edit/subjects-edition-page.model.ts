@@ -1,4 +1,4 @@
-import { combine, forward, attach, sample, createEvent, split, merge, restore } from 'effector-root'
+import { combine, forward, attach, sample, createEvent, restore } from 'effector-root'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { CreateSubjectType, Subject } from '@/features/api/subject/types'
@@ -6,9 +6,6 @@ import {
   $formToSend,
   clearFields,
   subjectTitleErrorChanged,
-  getMediaIcon,
-  getMediaImage,
-  uploadMedia,
   toggleIsMondatory,
   subjectTitleChanged,
   subjectDescriptionChanged,
@@ -95,20 +92,6 @@ sample({
     if (subject.image) imageSubjectIdChanged(subject.image)
     if (subject.color) colorDropdownModule.methods.itemChanged(`${subject.color.id}`)
   },
-})
-
-const { noInternetConnection } = split(
-  merge([
-    updateSubjectDataFx.failData,
-    getMediaIcon.failData,
-    getMediaImage.failData,
-    uploadMedia.failData,
-  ]),
-  { noInternetConnection: ({ status }) => status === undefined }
-)
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 // очистка полей

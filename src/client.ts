@@ -37,6 +37,7 @@ Vue.config.productionTip = false
 
 router.addRoutes(routes)
 
+// не реактивный
 const token = Cookies.get(config.TOKEN_KEY)
 if (token) {
   setTokenForRequest(token)

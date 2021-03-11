@@ -1,5 +1,5 @@
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   $selectedClass,
   classDropdownModule,
@@ -16,8 +16,8 @@ import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
 import { condition } from 'patronum'
 import { canRefreshTableChanged } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
-import { DEFAULT_ID } from '@/pages/dictionary/themes/create/constants'
 import { createError } from '@/lib/effector/error-generator'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 export const createTag = attach({
   effect: createTagFx,
@@ -79,17 +79,17 @@ sample({
 
 forward({
   from: tagTitleChanged,
-  to: $titleErrorModule.methods.setError.prepend(() => false),
+  to: $titleErrorModule.methods.resetError,
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: $subjectErrorModule.methods.setError.prepend(() => false),
+  to: $subjectErrorModule.methods.resetError,
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: $classErrorModule.methods.setError.prepend(() => false),
+  to: $classErrorModule.methods.resetError,
 })
 
 condition({
@@ -113,15 +113,6 @@ forward({
     setSelectedClass.prepend(() => null),
     setSelectedSubject.prepend(() => null),
   ],
-})
-
-const { noInternetConnection } = split(createTagFx.failData, {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 forward({

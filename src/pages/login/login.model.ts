@@ -64,10 +64,6 @@ sample({
   target: sendLoginFormFx,
 })
 
-const { noInternetConnection } = split(sendLoginFormFx.failData, {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
 const { userNotFound } = split(sendLoginFormFx.failData, {
   userNotFound: ({ status }) => status === 404 || status === 401,
 })
@@ -89,11 +85,6 @@ forward({
 forward({
   from: loadCurrentSessionFx.doneData,
   to: [navigateReplace.prepend(() => ({ name: 'home' })), resetField],
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 forward({

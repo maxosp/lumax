@@ -15,12 +15,12 @@
         />
       </div>
     </div>
-    <ModeratorDropdown :class="{'--error': false}" />
+    <ModeratorDropdown :class="{'--error': moderatorError}" />
     <div class="btns-wrapper">
       <BaseButton
         class="btn"
         big
-        @click="checkIfThemeCanBeSend"
+        @click="checkIfTaskCanBeSend"
       >
         Продолжить
       </BaseButton>
@@ -45,7 +45,8 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $modalVisibility,
   modalVisibilityChanged,
-  checkIfThemeCanBeSend,
+  checkIfTaskCanBeSend,
+  $moderatorErrorModule,
 } from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
 
 export default Vue.extend({
@@ -57,10 +58,11 @@ export default Vue.extend({
   },
   effector: {
     $modalVisibility,
+    moderatorError: $moderatorErrorModule.store.$error,
   },
   methods: {
     modalVisibilityChanged,
-    checkIfThemeCanBeSend,
+    checkIfTaskCanBeSend,
   },
 })
 </script>
@@ -89,7 +91,9 @@ export default Vue.extend({
 .input {
   margin-bottom: 20px;
 }
-.--error ::v-deep .inner-input,
+.--error ::v-deep .inner-input {
+  border: 2px solid var(--c-red-0) !important;
+}
 .btns-wrapper {
   @mixin flex-row-central;
   justify-content: center;

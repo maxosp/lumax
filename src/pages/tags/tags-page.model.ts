@@ -4,7 +4,7 @@ import { getTagsTreeFx } from '@/features/api/assignment/get-tags-tree'
 import { DeleteTagsType, GetTagsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
+import { attach, createEvent, forward, restore } from 'effector-root'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -62,14 +62,4 @@ forward({
     addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
   ],
-})
-
-const { noInternet } = split(
-  merge([deleteTagFx.failData, deleteTagsFx.failData, getTagsTreeFx.failData]),
-  { noInternet: ({ status }) => status === undefined }
-)
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })

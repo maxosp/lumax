@@ -2,7 +2,7 @@ import { getThemeFx } from '@/features/api/subject/get-theme'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { attach, createEvent, createStore, forward, restore, sample } from 'effector'
+import { attach, createEvent, createStore, forward, restore, sample } from 'effector-root'
 
 export const getThemeData = attach({
   effect: getThemeFx,

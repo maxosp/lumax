@@ -1,13 +1,10 @@
-import { forward, attach, sample, createEvent, split, merge, restore } from 'effector-root'
+import { forward, attach, sample, createEvent, restore } from 'effector-root'
 import { createSubjectFx } from '@/features/api/subject/create-subject'
 import { addToast } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 import {
   $formToSend,
   subjectTitleErrorChanged,
-  getMediaIcon,
-  getMediaImage,
-  uploadMedia,
 } from '@/pages/dictionary/subjects/common/create-edit.model'
 
 const saveSubjectFx = attach({
@@ -54,18 +51,4 @@ sample({
     if (ifRedirect) navigatePush({ name: 'subjects-list' })
     else navigatePush({ name: 'subjects-edit', params: { id: `${id}` } })
   },
-})
-
-const { noInternetConnection } = split(
-  merge([
-    saveSubjectFx.failData,
-    getMediaIcon.failData,
-    getMediaImage.failData,
-    uploadMedia.failData,
-  ]),
-  { noInternetConnection: ({ status }) => status === undefined }
-)
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })

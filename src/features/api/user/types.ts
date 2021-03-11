@@ -10,6 +10,14 @@ export type LoginFxResponse = {
   refresh: string
 }
 
+export type PermissionsType = {
+  [key: string]: {
+    add: boolean
+    change: boolean
+    delete: boolean
+    view: boolean
+  }
+}
 export type User = {
   id: number
   first_name: string
@@ -19,6 +27,7 @@ export type User = {
   is_teacher: boolean
   is_student: boolean
   date_joined: string
+  permissions?: PermissionsType
 }
 
 export type GetUsersListQueryParams = {

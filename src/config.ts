@@ -3,4 +3,5 @@ const dataSource = process.env.BUILD_TARGET === 'client' ? window.env : process.
 export const config = {
   BACKEND_URL: dataSource.BACKEND_URL,
   TOKEN_KEY: 'token',
+  PREVIEW_URL: dataSource.PREVIEW_URL,
 }

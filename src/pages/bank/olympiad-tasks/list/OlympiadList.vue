@@ -1,6 +1,6 @@
 <template>
   <div id="tags-page">
-    <PageHeader :table-columns-names="fields" />
+    <PageHeader :table-columns-names="fields" :selected-rows="selectedRows" />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
@@ -20,6 +20,8 @@
       :selected-rows="selectedRows"
       @onEdit="editTask"
       @onRemove="removeSelected"
+      @duplicate="duplicateTask"
+      @showPreview="showPreview"
     />
 
     <div :class="{ 'table-container': true, hideHeader: !total }">
@@ -68,6 +70,7 @@
             @onEdit="editTask"
             @showPreview="showPreview"
             @sendForCheck="sendForCheck"
+            @duplicate="duplicateTask"
           />
         </template>
       </Vuetable>
@@ -96,10 +99,13 @@
       @onEdit="editTask"
       @showPreview="showPreview"
       @sendForCheck="sendForCheck"
+      @duplicate="duplicateTask"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
     <ModeratorSelectModal />
+    <TaskDeleteModal />
+    <DeletionRequsetModal />
   </div>
 </template>
 
@@ -125,13 +131,22 @@ import { addToast } from '@/features/toasts/toasts.model'
 import {
   loadList,
   $canRefreshTableAfterDeletion,
+  duplicateAssignment,
+  $canRefreshAfterDuplicate,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
   toggleVisibility,
   $visibility,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
 import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
-import { loadModalToSendForCheck } from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
+import {
+  loadModalToSendForCheck,
+  $canRefreshAfterSendingForModeration,
+} from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
+import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
+import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
+import { $canRefreshAfterMultiChanges } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
+import { $session } from '@/features/session'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -149,13 +164,17 @@ export default Vue.extend({
     TasksTypesModal: modals.TasksTypesModal,
     TasksUpdateModal: modals.TasksUpdateModal,
     ModeratorSelectModal: modals.ModeratorSelectModal,
+    TaskDeleteModal: modals.TaskDeletionModal,
+    DeletionRequsetModal: modals.DeletionRequestModal,
   },
   effector: {
     $visibility,
     $token,
-    // $canRefreshTable,
-    // $canRefreshTableAfterCreation,
+    $canRefreshAfterSendingForModeration,
     $canRefreshTableAfterDeletion,
+    $session,
+    $canRefreshAfterMultiChanges,
+    $canRefreshAfterDuplicate,
   },
   data() {
     return {
@@ -184,16 +203,37 @@ export default Vue.extend({
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
-    $canRefreshTableAfterCreation: {
+    $canRefreshAfterSendingForModeration: {
       handler(newVal) {
         // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
+      },
+    },
+    $canRefreshAfterDuplicate: {
+      handler(newVal) {
+        // @ts-ignore
+        if (newVal) this.$refs.vuetable.refresh()
+        // @ts-ignore
+        this.$refs.vuetable.selectedTo = []
+        this.selectedRows = []
+      },
+    },
+    $canRefreshAfterMultiChanges: {
+      handler(newVal) {
+        // @ts-ignore
+        if (newVal) this.$refs.vuetable.refresh()
+        // @ts-ignore
+        this.$refs.vuetable.selectedTo = []
+        this.selectedRows = []
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
         // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
+        // @ts-ignore
+        this.$refs.vuetable.selectedTo = []
+        this.selectedRows = []
       },
     },
   },
@@ -201,6 +241,14 @@ export default Vue.extend({
     toggleVisibility,
     loadList,
     reset,
+    loadModalToDelete,
+    loadModalToRequestDeletion,
+    duplicateTask(id: number) {
+      duplicateAssignment({ assignments: [id] })
+    },
+    duplicateNTasks(ids: number[]) {
+      console.log(ids)
+    },
     clearWording(str: string) {
       return removeHtmlTags(str)
     },
@@ -208,15 +256,18 @@ export default Vue.extend({
       return mapTypeToIcon[type]
     },
     sendForCheck(id: number) {
-      loadModalToSendForCheck(id)
+      loadModalToSendForCheck([id])
     },
     showPreview(id: number) {
-      console.log(id)
-      // loadModal(id)
+      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
     },
     editTask(id: number) {
-      // loadModalToEdit(id)
       console.log('EDIT ', id)
+    },
+    removeSelected(ids: number[]) {
+      this.$session!.permissions!.assignments_assignment.delete
+        ? loadModalToDelete(ids)
+        : loadModalToRequestDeletion(ids)
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -269,10 +320,6 @@ export default Vue.extend({
       } else selectedTo.push(res.data.id)
       // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
-    },
-    removeSelected(ids: number[]) {
-      // loadModalToDelete(ids)
-      console.log('REMOVE ', ids)
     },
     hideContextMenu() {
       this.showContextMenu = false

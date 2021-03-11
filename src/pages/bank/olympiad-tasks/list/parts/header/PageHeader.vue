@@ -10,7 +10,7 @@
       </BaseButton>
       <BaseButton
         class="btn --square"
-        @click="tasksUpdateModalVisibilityChanged(true)"
+        @click="loadModalForMultiChanges(selectedRows)"
       >
         <Icon
           type="edit"
@@ -29,7 +29,7 @@
           <span>
             Выгрузить
           </span>
-          <Divider vertical height="40px" />
+          <Divider vertical />
           <Icon
             type="settings"
             size="20"
@@ -53,7 +53,7 @@ import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderPopup from '@/pages/bank/olympiad-tasks/list/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
-import { tasksUpdateModalVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
+import { loadModalForMultiChanges } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
 
 export default Vue.extend({
   components: {
@@ -64,13 +64,14 @@ export default Vue.extend({
   },
   props: {
     tableColumnsNames: { type: Array as PropType<TableField[]> },
+    selectedRows: { type: Array as PropType<number[]> },
   },
   data() {
     return {
       showPopup: false,
     }
   },
-  methods: { tasksUpdateModalVisibilityChanged },
+  methods: { loadModalForMultiChanges },
 })
 </script>
 

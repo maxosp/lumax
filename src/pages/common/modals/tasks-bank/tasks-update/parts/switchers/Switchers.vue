@@ -2,29 +2,29 @@
   <div class="switchers-container">
     <BaseSwitch
       class="switch"
-      :checked="$switchers.isInArchive"
-      @change="(val) => toggleSwitchers({ name: 'isInArchive', value: val })"
+      :checked="$switchers.archive"
+      @change="(val) => toggleSwitchers({ name: 'archive', value: val })"
     >
       <p> Перевести в архив </p>
     </BaseSwitch>
     <BaseSwitch
       class="switch"
-      :checked="$switchers.isInReserve"
-      @change="(val) => toggleSwitchers({name: 'isInReserve', value: val })"
+      :checked="$switchers.reserve"
+      @change="(val) => toggleSwitchers({name: 'reserve', value: val })"
     >
       <p> Перевести в резерв </p>
     </BaseSwitch>
     <BaseSwitch
       class="switch"
-      :checked="$switchers.isPublish"
-      @change="(val) => toggleSwitchers({ name: 'isPublish', value: val })"
+      :checked="$switchers.published"
+      @change="(val) => toggleSwitchers({ name: 'published', value: val })"
     >
       <p> Опубликовать </p>
     </BaseSwitch>
     <BaseSwitch
       class="switch"
-      :checked="$switchers.isSend"
-      @change="(val) => toggleSwitchers({ name: 'isSend', value: val })"
+      :checked="$switchers.revision"
+      @change="(val) => toggleSwitchers({ name: 'revision', value: val })"
     >
       <p> Отправить заявки на проверку </p>
     </BaseSwitch>

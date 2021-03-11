@@ -1,5 +1,5 @@
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   $selectedClass,
   classDropdownModule,
@@ -20,7 +20,7 @@ import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list
 import { createLabelFx } from '@/features/api/assignment/create-label'
 import { CreateLabelType } from '@/features/api/assignment/types'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
-import { DEFAULT_ID } from '@/pages/labels/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import { createError } from '@/lib/effector/error-generator'
 
 export const createLabel = attach({
@@ -123,22 +123,22 @@ sample({
 
 forward({
   from: labelTitleChanged,
-  to: $titleErrorModule.methods.setError.prepend(() => false),
+  to: $titleErrorModule.methods.resetError,
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: $subjectErrorModule.methods.setError.prepend(() => false),
+  to: $subjectErrorModule.methods.resetError,
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: $classErrorModule.methods.setError.prepend(() => false),
+  to: $classErrorModule.methods.resetError,
 })
 
 forward({
   from: themesDropdownModule.methods.itemChanged,
-  to: $themeErrorModule.methods.setError.prepend(() => false),
+  to: $themeErrorModule.methods.resetError,
 })
 
 condition({
@@ -165,15 +165,6 @@ forward({
     setSelectedSubject.prepend(() => null),
     setSelectedTheme.prepend(() => null),
   ],
-})
-
-const { noInternetConnection } = split(createLabelFx.failData, {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 forward({

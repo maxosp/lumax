@@ -7,5 +7,3 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'study_year', title: 'Класс' },
   { name: 'theme', title: 'Тема' },
 ]
-
-export const DEFAULT_ID = -1

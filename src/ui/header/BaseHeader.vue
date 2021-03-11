@@ -2,7 +2,7 @@
   <div class="base-header">
     <div class="left-section">
       <slot name="left" />
-      <Divider vertical />
+      <Divider vertical class="divider" />
     </div>
     <div class="center-section">
       <slot name="center" />
@@ -41,6 +41,9 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   box-sizing: border-box;
+}
+.divider {
+  height: 100%;
 }
 </style>
 

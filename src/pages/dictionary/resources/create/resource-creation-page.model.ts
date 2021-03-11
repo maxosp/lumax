@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, guard, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, guard, restore, sample } from 'effector-root'
 import { debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -21,7 +21,7 @@ import {
   setSelectedType,
   typeDropdownModule,
 } from '@/pages/dictionary/resources/create/parts/type/type-dropdown.model'
-import { DEFAULT_ID } from '@/pages/dictionary/resources/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import {
   $fileData,
   uploadFileFx,
@@ -177,15 +177,6 @@ sample({
   target: createResource,
 })
 
-const { noInternetConnection } = split(createResourceFx.failData, {
-  noInternetConnection: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-})
-
 const $ifRedirect = guard({
   clock: createResource,
   source: $redirectAfterSave,
@@ -208,25 +199,25 @@ forward({
 })
 forward({
   from: typeDropdownModule.methods.itemChanged,
-  to: $typeErrorModule.methods.setError.prepend(() => false),
+  to: $typeErrorModule.methods.resetError,
 })
 
 forward({
   from: themeDropdownModule.methods.itemChanged,
-  to: $themeErrorModule.methods.setError.prepend(() => false),
+  to: $themeErrorModule.methods.resetError,
 })
 
 forward({
   from: resourceDescriptionChanged,
-  to: $descriptionErrorModule.methods.setError.prepend(() => false),
+  to: $descriptionErrorModule.methods.resetError,
 })
 
 forward({
   from: linkChanged,
-  to: $linkErrorModule.methods.setError.prepend(() => false),
+  to: $linkErrorModule.methods.resetError,
 })
 
 forward({
   from: uploadFileFx,
-  to: $fileErrorModule.methods.setError.prepend(() => false),
+  to: $fileErrorModule.methods.resetError,
 })

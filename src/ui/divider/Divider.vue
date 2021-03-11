@@ -9,14 +9,12 @@ export default Vue.extend({
   name: 'Divider',
   props: {
     vertical: { type: Boolean as PropType<boolean>, required: false },
-    height: { type: String as PropType<string>, required: false, default: '60px' },
   },
   methods: {
     getStyles() {
       if (this.$props.vertical) {
         return {
           width: '1px',
-          height: this.$props.height,
         }
       }
 
@@ -32,6 +30,7 @@ export default Vue.extend({
 <style scoped>
 .divider {
   background-color: var(--c-grey-4);
+  height: 40px;
 }
 </style>
 

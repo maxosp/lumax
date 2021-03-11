@@ -1,18 +1,33 @@
-import { getOlympiadTasksListFx } from '@/features/api/assignment/get-olympiad-tasks-list'
 import { attach, createEvent, forward, restore } from 'effector-root'
+import { duplicateAssignmentFx } from '@/features/api/assignment/duplicate'
+import { getOlympiadTasksListFx } from '@/features/api/assignment/get-olympiad-tasks-list'
+import { DuplicateAssignmentType } from '@/features/api/assignment/types'
+import { addToast } from '@/features/toasts/toasts.model'
+import {
+  deleteAssignmentFx,
+  deleteAssignmentsFx,
+} from '@/features/api/assignment/delete-assignment'
+import { modalTaskDeleteVisibilityChanged } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
 })
-// export const deleteTag = attach({
-//   effect: deleteTagFx,
-//   mapParams: (params: number) => params,
-// })
 
-// export const deleteTags = attach({
-//   effect: deleteTagsFx,
-//   mapParams: (params: DeleteTagsType) => params,
-// })
+export const deleteAssignment = attach({
+  effect: deleteAssignmentFx,
+})
+
+export const deleteAssignments = attach({
+  effect: deleteAssignmentsFx,
+})
+
+export const duplicateAssignment = attach({
+  effect: duplicateAssignmentFx,
+  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
+})
+
+export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
+export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)
 
 export const canrefreshTableAfterDeletionChanged = createEvent<boolean>()
 export const $canRefreshTableAfterDeletion = restore<boolean>(
@@ -27,30 +42,39 @@ forward({
   to: getOlympiadsTasksList,
 })
 
-// forward({
-//   from: deleteTag.doneData,
-//   to: [
-//     loadTree.prepend(() => ({})),
-//     addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно удален!' })),
-//     canrefreshTableAfterDeletionChanged.prepend(() => true),
-//   ],
-// })
+forward({
+  from: duplicateAssignment,
+  to: canRefreshAfterDuplicateChanged.prepend(() => false),
+})
 
-// forward({
-//   from: deleteTags.doneData,
-//   to: [
-//     loadTree.prepend(() => ({})),
-//     addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
-//     canrefreshTableAfterDeletionChanged.prepend(() => true),
-//   ],
-// })
+forward({
+  from: duplicateAssignment.doneData,
+  to: [
+    addToast.prepend(() => ({
+      type: 'success',
+      message: 'Задание было успешно дублировано!',
+    })),
+    loadList.prepend(() => ({})),
+    canRefreshAfterDuplicateChanged.prepend(() => true),
+  ],
+})
 
-// const { noInternet } = split(
-//   merge([deleteTagFx.failData, deleteTagsFx.failData, getOlympiadsTasksList.failData]),
-//   { noInternet: ({ status }) => status === undefined }
-// )
+forward({
+  from: deleteAssignment.doneData,
+  to: [
+    loadList,
+    addToast.prepend(() => ({ type: 'success', message: 'Задание было успешно удалено!' })),
+    canrefreshTableAfterDeletionChanged.prepend(() => true),
+    modalTaskDeleteVisibilityChanged.prepend(() => false),
+  ],
+})
 
-// forward({
-//   from: noInternet,
-//   to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-// })
+forward({
+  from: deleteAssignments.doneData,
+  to: [
+    loadList,
+    addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
+    canrefreshTableAfterDeletionChanged.prepend(() => true),
+    modalTaskDeleteVisibilityChanged.prepend(() => false),
+  ],
+})

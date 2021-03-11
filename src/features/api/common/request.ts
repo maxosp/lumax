@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 import { config } from '@/config'
 import { navigatePush } from '@/features/navigation'
 import { request, RequestParams, Response } from '@/lib/request'
+import { addToast } from '@/features/toasts/toasts.model'
 
 export const setTokenForRefresh = createEvent<string>()
 export const setTokenForRequest = createEvent<string>()
@@ -36,9 +37,14 @@ split({
   match: {
     unauthorized: ({ status }) => status === 401,
     forbidden: ({ status }) => status === 403,
+    noInternet: ({ status }) => status === undefined,
   },
   cases: {
     unauthorized: navigatePush.prepend<Response>(() => ({ name: 'auth.login' })),
     forbidden: navigatePush.prepend<Response>(() => ({ name: 'home' })),
+    noInternet: addToast.prepend(() => ({
+      type: 'no-internet',
+      message: 'Отсутствует подключение',
+    })),
   },
 })

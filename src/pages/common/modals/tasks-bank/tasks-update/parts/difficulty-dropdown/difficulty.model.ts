@@ -1,10 +1,13 @@
-import { createStore, attach, createEvent, forward, sample } from 'effector-root'
+import { createStore, attach, createEvent, forward, sample, restore } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 import { getListDifficultyFx } from '@/features/api/assignment/get-list-difficulty'
-import { DEFAULT_ID } from '@/pages/bank/olympiad-tasks/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 export const difficultyDropdownModule = createFilter()
+
+export const setSelectedDifficulty = createEvent<DropdownItem | null>()
+export const $selectedDifficulty = restore(setSelectedDifficulty, null)
 
 const getDifficultysList = attach({
   effect: getListDifficultyFx,

@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, merge, restore, sample, split } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { condition, debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -27,7 +27,7 @@ import { CreateThemeType, Theme } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
 import { updateThemeFx } from '@/features/api/subject/update-theme'
 import { getThemeFx } from '@/features/api/subject/get-theme'
-import { DEFAULT_ID } from '@/pages/dictionary/themes/edit/constants'
+import { DEFAULT_ID } from '@/pages/common/constants'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { createError } from '@/lib/effector/error-generator'
 
@@ -244,16 +244,6 @@ sample({
   target: updatePrerequisiteFx,
 })
 
-const { noInternetConnection } = split(
-  merge([updateThemeDataFx.failData, updatePrerequisiteFx.failData]),
-  { noInternetConnection: ({ status }) => status === undefined }
-)
-
-forward({
-  from: noInternetConnection,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
-})
-
 const $ifRedirect = sample({
   clock: [updateThemeDataFx, updatePrerequisiteFx],
   source: $redirectAfterSave,
@@ -294,25 +284,25 @@ sample({
 
 forward({
   from: themeTitleChanged,
-  to: $themeTitleErrorModule.methods.setError.prepend(() => false),
+  to: $themeTitleErrorModule.methods.resetError,
 })
 
 forward({
   from: prerequisiteTitleChanged,
-  to: $prerequisiteTitleErrorModule.methods.setError.prepend(() => false),
+  to: $prerequisiteTitleErrorModule.methods.resetError,
 })
 
 forward({
   from: classDropdownModule.methods.itemChanged,
-  to: $classErrorModule.methods.setError.prepend(() => false),
+  to: $classErrorModule.methods.resetError,
 })
 
 forward({
   from: positionDropdownModule.methods.itemChanged,
-  to: $positionErrorModule.methods.setError.prepend(() => false),
+  to: $positionErrorModule.methods.resetError,
 })
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: $subjectErrorModule.methods.setError.prepend(() => false),
+  to: $subjectErrorModule.methods.resetError,
 })

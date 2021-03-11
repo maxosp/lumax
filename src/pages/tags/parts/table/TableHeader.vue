@@ -7,7 +7,6 @@
     <Divider
       v-if="selectedRows.length"
       vertical
-      height="25px"
       class="divider"
     />
     <span

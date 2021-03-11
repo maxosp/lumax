@@ -1,4 +1,4 @@
-import { attach, createEffect, createEvent, forward, merge, restore, split } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
 import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
@@ -32,15 +32,6 @@ export const uploadFileFx = createEffect({
         })
     )[0]
   },
-})
-
-const { noInternet } = split(merge([uploadMediaFx.failData, deleteMediaFx.failData]), {
-  noInternet: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
 
 forward({

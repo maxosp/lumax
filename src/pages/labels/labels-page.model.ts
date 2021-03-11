@@ -3,7 +3,7 @@ import { getLabelsTreeFx } from '@/features/api/assignment/get-labels-tree'
 import { GetLabelsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 import { addToast } from '@/features/toasts/toasts.model'
-import { attach, createEvent, forward, merge, restore, split } from 'effector-root'
+import { attach, createEvent, forward, restore } from 'effector-root'
 
 export const getLabelsTree = attach({
   effect: getLabelsTreeFx,
@@ -39,13 +39,4 @@ forward({
     loadTree.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Метка была успешно удалена!' })),
   ],
-})
-
-const { noInternet } = split(merge([deleteLabelFx.failData, getLabelsTreeFx.failData]), {
-  noInternet: ({ status }) => status === undefined,
-})
-
-forward({
-  from: noInternet,
-  to: addToast.prepend(() => ({ type: 'no-internet', message: 'Отсутствует подключение' })),
 })
