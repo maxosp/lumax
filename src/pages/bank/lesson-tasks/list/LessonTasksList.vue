@@ -18,7 +18,6 @@
     <TableHeader
       :total="total"
       :selected-rows="selectedRows"
-      @onEdit="editTask"
       @onRemove="removeSelected"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
@@ -63,7 +62,6 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onEdit="editTask"
             @onRemove="removeSelected"
           />
         </template>
@@ -120,6 +118,8 @@ import {
   $treeView,
   loadTree,
   $lessonsTreeTotal,
+  deleteAssignment,
+  deleteManyAssignments,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -235,9 +235,18 @@ export default Vue.extend({
       // loadModalToEdit(id)
       console.log('EDIT ', id)
     },
-    removeSelected(ids: number[]) {
-      // loadModalToDelete(ids)
-      console.log('REMOVE ', ids)
+    async removeSelected(ids: number | number[]) {
+      const currentMethod =
+        typeof ids === 'number' || ids.length === 1 ? deleteAssignment : deleteManyAssignments
+      // @ts-ignore
+      await currentMethod(typeof ids !== 'number' && ids.length === 1 ? ids[0] : ids)
+      // @ts-ignore
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      if (typeof ids !== 'number') {
+        // @ts-ignore
+        this.$refs.vuetable.selectedTo = []
+        this.selectedRows = []
+      }
     },
     handleLoadError(res: any) {
       if (!res.response) {

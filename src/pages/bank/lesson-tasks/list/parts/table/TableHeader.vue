@@ -14,7 +14,7 @@
       <span
         v-if="showAdditionalActions"
         class="--basic"
-        @click="$emit('onEdit', selectedRows)"
+        @click="navigatePush({ name: 'lesson-tasks-edit', params: { id: selectedRows[0] } })"
       >
         Редактировать
       </span>
@@ -66,6 +66,7 @@ import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
+import { navigatePush } from '@/features/navigation'
 import { toggleTreeView, $treeView } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
 
@@ -89,6 +90,7 @@ export default Vue.extend({
     },
   },
   methods: {
+    navigatePush,
     toggleTreeView,
     modalTasksTypesVisibilityChanged,
     handleRemove() {
