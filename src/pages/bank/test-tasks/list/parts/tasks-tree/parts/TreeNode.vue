@@ -54,6 +54,18 @@
         :item="resources.tasks"
         icon="copy"
       />
+      <Actions
+        v-if="showActions"
+        :id="node.assignment && node.assignment.id || node.theme.id"
+        light
+        :is-theme="node.element_type === 'theme'"
+        :selected="[]"
+        :theme-id="node.element_type === 'theme' ? node.theme.id : null"
+        class="action"
+        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
+        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
+        @onPreview="(val) => $emit('onPreview', val)"
+      />
     </div>
     <div v-if="opened" class="leaf">
       <TreeNode
@@ -63,6 +75,9 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
+        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
+        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
+        @onPreview="(val) => $emit('onPreview', val)"
       />
     </div>
   </div>
@@ -72,6 +87,7 @@
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
+import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { mapTaskStatus, mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
@@ -81,6 +97,7 @@ export default Vue.extend({
   components: {
     Icon,
     Chip,
+    Actions,
   },
   props: {
     node: { type: Object as PropType<TreeData> },
@@ -146,9 +163,15 @@ export default Vue.extend({
           return { title: '', class: 'invisible' }
       }
     },
+    showActions() {
+      // @ts-ignore
+      const { element_type } = this.$props.node
+      return element_type === 'assignment' || element_type === 'theme'
+    },
   },
   methods: {
-    toggle() {
+    toggle(evt: any) {
+      if (evt.target.closest('.action')) return
       // @ts-ignore
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
@@ -169,8 +192,9 @@ export default Vue.extend({
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
-          subject: this.$props.node.subject.id,
-          studyYear: this.$props.node.study_year.id,
+          isTheme: this.$props.node.element_type === 'theme',
+          // subject: this.$props.node.subject.id,
+          // studyYear: this.$props.node.study_year.id,
         },
         event,
         type,
@@ -179,7 +203,8 @@ export default Vue.extend({
   },
   mounted() {
     // @ts-ignore
-    if (this.$props.node.element_type === 'theme') {
+    const { element_type } = this.$props.node
+    if (element_type === 'theme' || element_type === 'assignment') {
       // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       // @ts-ignore
@@ -188,7 +213,8 @@ export default Vue.extend({
   },
   beforeDestroy() {
     // @ts-ignore
-    if (this.$props.node.element_type === 'theme') {
+    const { element_type } = this.$props.node
+    if (element_type === 'theme' || element_type === 'assignment') {
       // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       // @ts-ignore
@@ -294,5 +320,8 @@ export default Vue.extend({
   margin-right: 0;
   color: var(--base-text-primary);
   background-color: var(--c-grey-8);
+}
+.action {
+  margin-left: 10px;
 }
 </style>

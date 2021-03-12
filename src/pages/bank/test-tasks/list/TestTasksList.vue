@@ -84,21 +84,33 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <TasksTree @onRightClick="handleRightClick" />
+      <TasksTree
+        @onRightClick="handleRightClick"
+        @onRemoveTask="removeSelectedTask"
+        @onRemoveTheme="removeSelectedTheme"
+        @onPreview="showPreview"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
       :id="clickedRowId"
+      :key="clickedRowId"
       :selected="$treeView ? [] : selectedRows"
       :style="contextMenuStyles"
       :type="contextMenuType"
+      :light="$treeView"
+      :is-theme="isTheme"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
       @onCheck="sendToModerationAssignments"
       @onPublish="publishAssignments"
+      @onRemoveTask="removeSelectedTask"
+      @onRemoveTheme="removeSelectedTheme"
       @onPreview="showPreview"
     />
+    <TaskDeleteModal />
+    <DeletionRequsetModal />
   </div>
 </template>
 
@@ -117,6 +129,7 @@ import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import ContextMenu from '@/pages/bank/test-tasks/list/parts/table/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
+import * as modals from '@/pages/bank/test-tasks/'
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
   $treeView,
@@ -136,6 +149,10 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
 import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
 import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
+import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
+import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
+import { $session } from '@/features/session'
+import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -160,12 +177,15 @@ export default Vue.extend({
     Actions,
     ContextMenu,
     TasksTree,
+    TaskDeleteModal: modals.TaskDeletionModal,
+    DeletionRequsetModal: modals.DeletionRequestModal,
   },
   effector: {
     $token,
     $visibility,
     $treeView,
     $tasksTreeTotal,
+    $session,
   },
   data() {
     return {
@@ -178,6 +198,7 @@ export default Vue.extend({
       total: 0,
       filterParams: {},
       selectedRows: [] as number[] | null,
+      isTheme: false,
     }
   },
   computed: {
@@ -238,6 +259,14 @@ export default Vue.extend({
       // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
+    removeSelectedTask(ids: number[]) {
+      this.$session!.permissions!.assignments_assignment.delete
+        ? loadModalToDelete(ids)
+        : loadModalToRequestDeletion(ids)
+    },
+    async removeSelectedTheme(ids: number[]) {
+      await deleteTheme(ids[0])
+    },
     async removeSelected(ids: number | number[]) {
       const currentMethod = typeof ids === 'number' ? deleteAssignment : deleteManyAssignments
       // @ts-ignore
@@ -266,6 +295,7 @@ export default Vue.extend({
     handleRightClick({ data, event, type = 'table_tasks' }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
+      this.isTheme = data.isTheme
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }

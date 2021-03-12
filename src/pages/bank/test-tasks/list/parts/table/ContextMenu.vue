@@ -57,9 +57,24 @@ export default Vue.extend({
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
     type: { type: String as PropType<ContextMenuType>, required: true },
+    light: { type: Boolean, default: false },
+    isTheme: { type: Boolean },
   },
   computed: {
     items(): DropdownItem[] {
+      if (this.light && this.isTheme)
+        return [
+          { name: 'create-theme', title: 'Создать тему' },
+          { name: 'create-task', title: 'Создать задание' },
+          { name: 'edit-theme', title: 'Редактировать' },
+          { name: 'delete-theme', title: 'Удалить' },
+        ]
+      if (this.light && !this.isTheme)
+        return [
+          { name: 'edit-task', title: 'Редактировать' },
+          { name: 'preview', title: 'Предпросмотр' },
+          { name: 'delete-task', title: 'Удалить' },
+        ]
       return this.$props.type === 'table_tasks' && this.$props.selected.length
         ? contextMethodsManyTasks
         : contextMethodsOneTask
@@ -73,6 +88,12 @@ export default Vue.extend({
           break
         case 'edit':
           navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } })
+          break
+        case 'delete-theme':
+          this.$emit('onRemoveTheme', [this.$props.id])
+          break
+        case 'delete-task':
+          this.$emit('onRemoveTask', [this.$props.id])
           break
         case 'delete':
           this.$emit('onRemove', this.$props.id)
@@ -94,6 +115,16 @@ export default Vue.extend({
           break
         case 'preview':
           this.$emit('onPreview', this.$props.id)
+          break
+        case 'create-theme':
+          navigatePush({
+            name: 'themes-create',
+            params: {
+              subject: `${this.$props.subject}`,
+              studyYear: `${this.$props.studyYear}`,
+              theme: `${this.$props.theme}`,
+            },
+          })
           break
         default:
           break
