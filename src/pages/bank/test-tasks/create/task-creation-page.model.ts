@@ -1,6 +1,7 @@
-import { attach, combine, createEvent, restore, sample } from 'effector-root'
+import { attach, combine, createEffect, createEvent, restore, sample } from 'effector-root'
 import { $session } from '@/features/session'
 import { createAssignmentFx } from '@/features/api/assignment/create-assignment'
+import { uploadAudioFx } from '@/features/api/assignment/upload-audio'
 import { $themesData } from '@/pages/bank/test-tasks/create/parts/themes-dropdown/themes-dropdown.model'
 import {
   $isFilled as $isFilledBroadFile,
@@ -50,7 +51,10 @@ import {
   $isFilled as $isFilledShortClosed,
   $form as $formShortClosed,
 } from '@/pages/bank/test-tasks/create/tasks/ShortClosedAnswer/short-closed-answer.model'
+import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
+import { AssignmentAudioFile } from '@/features/api/assignment/types'
+import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
 
 const createAssignment = attach({
   effect: createAssignmentFx,
@@ -70,6 +74,9 @@ export const $needDuplicate = restore(toggleNeedDuplicate, false)
 
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
+
+export const setAudioIds = createEvent<AssignmentAudioFile[]>()
+export const $audioIds = restore(setAudioIds, [])
 
 export const save = createEvent<void>()
 
@@ -122,7 +129,8 @@ const $baseForm = combine(
   $session,
   $needDuplicate,
   $count,
-  (theme_id, themes, difficulty, taskType, user, needDuplicate, count) => ({
+  $selectedLabels,
+  (theme_id, themes, difficulty, taskType, user, needDuplicate, count, labels) => ({
     status: 'new',
     is_test_assignment: true,
     creation_datetime: new Date(),
@@ -131,9 +139,26 @@ const $baseForm = combine(
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,
     difficulty,
+    labels: labels.map(({ name }) => name),
     ...(needDuplicate ? { duplicate_count: count } : {}),
   })
 )
+
+const uploadAudioFilesFx = createEffect({
+  handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>
+    Promise.all(
+      audioFiles.map(
+        (file) =>
+          new Promise<AssignmentAudioFile>((resolve) => {
+            const res = uploadAudioFx({
+              media: file.id,
+              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
+            }).then((r) => r.body)
+            resolve(res)
+          })
+      )
+    ),
+})
 
 const $generalForm = combine($baseForm, $taskType, $taskform, (baseForm, taskType, taskform) => {
   const form = taskType ? taskform[mapTaskTypeToComponent[taskType]] : {}
@@ -146,6 +171,18 @@ const $generalForm = combine($baseForm, $taskType, $taskform, (baseForm, taskTyp
 sample({
   source: $generalForm,
   clock: save,
-  fn: (form) => form,
+  fn: ({ audio }) => audio,
+  target: uploadAudioFilesFx,
+})
+
+sample({
+  source: $generalForm,
+  clock: uploadAudioFilesFx.doneData,
+  fn: (form: any, audio: AssignmentAudioFile[]) => {
+    return {
+      ...form,
+      audio_ids: audio.map(({ media }) => media),
+    }
+  },
   target: createAssignment,
 })

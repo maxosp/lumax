@@ -108,6 +108,7 @@ export default Vue.extend({
   margin-bottom: 20px;
 }
 .switch {
+  display: flex;
   margin-top: 0px;
 }
 </style>

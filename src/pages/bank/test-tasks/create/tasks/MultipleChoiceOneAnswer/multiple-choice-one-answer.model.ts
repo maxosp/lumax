@@ -1,4 +1,4 @@
-import { createEvent, forward, restore, attach, createEffect, combine } from 'effector-root'
+import { createEvent, forward, restore, attach, createEffect, combine, sample } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dropdown/constants'
@@ -31,6 +31,9 @@ export const $questionsAnswers = restore(setQuestionsAnswers, [
   { id: getRandomId(), question: '', mark: '', isCorrect: true },
 ])
 
+export const toggleMarksEnabling = createEvent<boolean>()
+export const $marksEnabled = restore(toggleMarksEnabling, false)
+
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 
@@ -60,12 +63,14 @@ forward({
   ],
 })
 
-forward({
-  from: uploadAudioFilesFx.doneData,
-  to: [
-    setAudioFiles.prepend((files) => files.map((file) => ({ ...file, isLimited: true, limit: 0 }))),
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
-  ],
+sample({
+  source: $audioFiles,
+  clock: uploadAudioFilesFx.doneData,
+  fn: (existFiles: AudioFile[], newFiles: UploadMediaResponse[]) => {
+    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' }))
+    return [...existFiles, ...newFiles.map((file) => ({ ...file, isLimited: true, limit: 0 }))]
+  },
+  target: setAudioFiles,
 })
 
 export const $isAudioUploadLoading = uploadAudioFilesFx.pending
@@ -90,7 +95,8 @@ export const $form = combine(
   $questionsAnswers,
   $audioFiles,
   $language,
-  (wording, example_answer, containing, questionsAnswers, audio, language) => ({
+  $marksEnabled,
+  (wording, example_answer, containing, questionsAnswers, audio, language, marks) => ({
     wording,
     example_answer,
     text: containing,
@@ -98,7 +104,14 @@ export const $form = combine(
       variants: questionsAnswers.map(({ question }) => question),
     },
     correct_answer: questionsAnswers
-      .map((q, idx) => (q.isCorrect ? `${idx}` : null))
+      .map((q, idx) =>
+        q.isCorrect
+          ? {
+              index: `${idx}`,
+              ...(marks ? { score: q.mark } : {}),
+            }
+          : null
+      )
       .filter(Boolean),
     common_list_text_answer: null,
     audio: audio.map(({ id, isLimited, limit }) => ({
@@ -106,5 +119,6 @@ export const $form = combine(
       ...(isLimited ? { audio_limit_count: limit } : {}),
     })),
     interface_language: language.title,
+    is_add_score_for_each_answer: marks,
   })
 )

@@ -103,7 +103,8 @@ export type AssignmentStatus =
   | 'archive'
 
 export type AssignmentAudioFile = {
-  id: number
+  id?: number
+  media?: number
   audio_limit_count?: number
 }
 
@@ -120,10 +121,10 @@ export type CreateAssignmentFxParams = {
   theme_id: number
   score?: number
   media?: number[]
-  audio?: AssignmentAudioFile[]
   difficulty: string
   olympiad_clue?: any
   olympiad_tags?: number[]
+  is_add_score_for_each_answer?: boolean
   labels?: number[]
   created_by?: Partial<User>
   updated_by?: Partial<User>
@@ -139,6 +140,7 @@ export type CreateAssignmentFxParams = {
   labels_ids?: number[]
   olympiad_tags_ids?: number[]
   duplicate_count?: number
+  audio_ids?: number[]
 }
 
 export type Assignment = {

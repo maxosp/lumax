@@ -19,8 +19,8 @@
       <span class="label">Аудиофайлы</span>
       <AudioFiles
         :audio-files="$audioFiles"
-        @change="setAudioFiles"
-        @upload="uploadAudioFiles"
+        @change-files="setAudioFiles"
+        @upload-files="uploadAudioFiles"
       />
     </div>
     <div class='field annotation-container'>
