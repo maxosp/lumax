@@ -60,7 +60,7 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      return this.$props.type === 'table_lessons' && this.$props.selected.length
+      return this.$props.type === 'table_lessons' && this.$props.selected.length > 1
         ? contextMethodsManyLessons
         : contextMethodsOneLesson
     },

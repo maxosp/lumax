@@ -22,6 +22,13 @@
       >
         Удалить
       </span>
+      <span
+        v-if="showAdditionalActions"
+        class="--basic"
+        @click="$emit('showPreview', selectedRows[0])"
+      >
+        Предпросмотр
+      </span>
     </div>
     <BaseSwitch
       :checked="$treeView"
@@ -50,6 +57,11 @@ export default Vue.extend({
   props: {
     total: { type: Number, required: true },
     selectedRows: { type: Array as PropType<number[]> },
+  },
+  computed: {
+    showAdditionalActions() {
+      return this.selectedRows.length === 1
+    },
   },
   methods: {
     toggleTreeView,
@@ -89,8 +101,12 @@ export default Vue.extend({
   span.--basic {
     margin-right: 25px;
   }
+  span.--basic:last-of-type {
+    margin-right: 0;
+  }
   span.--red {
     color: var(--c-red-1);
+    margin-right: 25px;
   }
 }
 </style>

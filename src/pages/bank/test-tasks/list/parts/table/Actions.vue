@@ -98,6 +98,9 @@ export default Vue.extend({
         case 'public_all':
           this.$emit('onPublish', this.$props.selected)
           break
+        case 'preview':
+          this.$emit('onPreview', this.$props.id)
+          break
         default:
           break
       }

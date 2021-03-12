@@ -68,7 +68,7 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      return this.$props.selected.length ? contextMethodsManyLessons : contextMethodsOneLesson
+      return this.$props.selected.length > 1 ? contextMethodsManyLessons : contextMethodsOneLesson
     },
   },
   methods: {

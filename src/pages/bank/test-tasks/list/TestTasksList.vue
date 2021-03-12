@@ -18,6 +18,7 @@
     <TableHeader
       :total="$treeView ? $tasksTreeTotal : total"
       :selected-rows="selectedRows"
+      @showPreview="showPreview"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
@@ -33,6 +34,7 @@
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
+        @vuetable:row-clicked="handleRowClick"
       >
         <template #assignments_ids="props">
           <TooltipCell
@@ -62,6 +64,7 @@
             @onRemove="removeSelected"
             @onCheck="sendToModerationAssignments"
             @onPublish="publishAssignments"
+            @onPreview="showPreview"
           />
         </template>
       </Vuetable>
@@ -94,6 +97,7 @@
       @onRemove="removeSelected"
       @onCheck="sendToModerationAssignments"
       @onPublish="publishAssignments"
+      @onPreview="showPreview"
     />
   </div>
 </template>
@@ -173,21 +177,19 @@ export default Vue.extend({
       searchFields: searchFieldsData,
       total: 0,
       filterParams: {},
+      selectedRows: [] as number[] | null,
     }
   },
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/assignment/assignment-test/list/`
     },
-    selectedRows(): number[] {
-      // @ts-ignore
-      if (!this.$refs.vuetable) return []
-      // @ts-ignore
-      return this.$refs.vuetable.selectedTo
-    },
   },
   methods: {
     toggleVisibility,
+    showPreview(id: number) {
+      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+    },
     clearWording(str: string) {
       return removeHtmlTags(str)
     },
@@ -268,6 +270,17 @@ export default Vue.extend({
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
+    },
+    handleRowClick(res: any) {
+      if (res.event.target.closest('.actions-activator')) return
+      // @ts-ignore
+      const { selectedTo } = this.$refs.vuetable
+      if (selectedTo.length === 0) selectedTo.push(res.data.id)
+      else if (selectedTo.find((el: number) => el === res.data.id)) {
+        selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
+      } else selectedTo.push(res.data.id)
+      // @ts-ignore
+      this.selectedRows = this.$refs.vuetable.selectedTo
     },
     hideContextMenu() {
       this.showContextMenu = false

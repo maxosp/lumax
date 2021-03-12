@@ -19,6 +19,7 @@
       :total="total"
       :selected-rows="selectedRows"
       @onRemove="removeSelected"
+      @onPreview="showPreview"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
@@ -63,6 +64,7 @@
             :id="props.rowData.id"
             :selected="selectedRows"
             @onRemove="removeSelected"
+            @onPreview="showPreview"
           />
         </template>
       </Vuetable>
@@ -93,6 +95,7 @@
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
+      @onPreview="showPreview"
     />
     <TasksTypesModal />
   </div>
@@ -183,6 +186,9 @@ export default Vue.extend({
   },
   methods: {
     toggleVisibility,
+    showPreview(id: number) {
+      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+    },
     clearWording(str: string) {
       return removeHtmlTags(str)
     },
