@@ -4,7 +4,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dropdown/constants'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, ShortClosedAnswer } from '@/pages/bank/test-tasks/create/tasks/types'
+import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -22,11 +22,20 @@ export const $audioFiles = restore(setAudioFiles, [])
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '')
 
-export const setCorrectAnswerInputs = createEvent<ShortClosedAnswer[]>()
-export const $correctAnswerInputs = restore(setCorrectAnswerInputs, [{ id: 0, value: '' }])
+export const setTextTemplate = createEvent<string>()
+export const $textTemplate = restore(setTextTemplate, '')
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
+
+export const togglePopover = createEvent<boolean>()
+export const $popover = restore(togglePopover, false)
+
+export const toggleContextMenu = createEvent<boolean>()
+export const $contextMenu = restore(toggleContextMenu, false)
+
+export const setColorsPalette = createEvent<string[]>()
+export const $colorsPalette = restore(setColorsPalette, [])
 
 export const uploadAudioFiles = createEvent<FileList>()
 
@@ -70,34 +79,28 @@ export const $isFilled = combine(
   $wording,
   $containing,
   $answerExample,
-  $correctAnswerInputs,
-  (wording, containing, answerExample, correctAnswerInputs) =>
-    wording &&
-    containing &&
-    answerExample &&
-    correctAnswerInputs.reduce((acc, input) => acc && !!input.value, true)
+  $textTemplate,
+  (wording, containing, answerExample, textTemplate) =>
+    wording && containing && answerExample && textTemplate
 )
 
 export const $form = combine(
   $wording,
   $answerExample,
   $containing,
-  $correctAnswerInputs,
   $audioFiles,
   $language,
-  (wording, example_answer, containing, inputs, audio, language) => {
-    return {
-      wording,
-      example_answer,
-      text: containing,
-      question_data: null,
-      correct_answer: inputs.map(({ value }) => value),
-      common_list_text_answer: null,
-      audio: audio.map(({ id, isLimited, limit }) => ({
-        id,
-        ...(isLimited ? { audio_limit_count: limit } : {}),
-      })),
-      interface_language: language.title,
-    }
-  }
+  (wording, example_answer, containing, audio, language) => ({
+    wording,
+    example_answer,
+    text: containing,
+    question_data: null,
+    correct_answer: null,
+    common_list_text_answer: null,
+    audio: audio.map(({ id, isLimited, limit }) => ({
+      id,
+      ...(isLimited ? { audio_limit_count: limit } : {}),
+    })),
+    interface_language: language.title,
+  })
 )

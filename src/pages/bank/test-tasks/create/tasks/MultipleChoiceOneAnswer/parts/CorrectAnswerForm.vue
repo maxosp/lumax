@@ -63,6 +63,8 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import RadioButton from '@/ui/radio/RadioButton.vue'
 import {
+  $marksEnabled,
+  toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/bank/test-tasks/create/tasks/MultipleChoiceOneAnswer/multiple-choice-one-answer.model'
@@ -79,8 +81,10 @@ export default Vue.extend({
   },
   effector: {
     $questionsAnswers,
+    $marksEnabled,
   },
   methods: {
+    toggleMarksEnabling,
     handleQuestionChange({ id, question }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
         qa.id === id ? { ...qa, question } : qa

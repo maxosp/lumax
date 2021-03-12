@@ -62,6 +62,8 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseCheckbox from '@/ui/checkbox/BaseCheckbox.vue'
 import {
+  $marksEnabled,
+  toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/bank/test-tasks/create/tasks/MultipleChoiceOneOrManyAnswers/multiple-choice-one-or-many-answers.model'
@@ -78,8 +80,10 @@ export default Vue.extend({
   },
   effector: {
     $questionsAnswers,
+    $marksEnabled,
   },
   methods: {
+    toggleMarksEnabling,
     handleQuestionChange({ id, question }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
         qa.id === id ? { ...qa, question } : qa

@@ -42,7 +42,7 @@ import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import AudioFiles from '@/pages/bank/test-tasks/create/parts/audio-files/AudioFiles.vue'
 import LanguagesDropdown from '@/pages/bank/test-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
-import CorrectAnswerForm from '@/pages/bank/test-tasks/create/tasks/ConnectLinesAnswer/parts/CorrectAnswerForm.vue'
+import CorrectAnswerForm from '@/pages/bank/test-tasks/create/tasks/ColorHighlightAnswer/parts/CorrectAnswerForm.vue'
 import {
   $wording,
   setWording,
@@ -56,10 +56,10 @@ import {
   setAnswerExample,
   $language,
   setLanguage,
-} from '@/pages/bank/test-tasks/create/tasks/ConnectLinesAnswer/connect-lines-answer.model'
+} from '@/pages/bank/test-tasks/create/tasks/ColorHighlightAnswer/color-highlight-answer.model'
 
 export default Vue.extend({
-  name: 'ConnectLinesAnswer',
+  name: 'ColorHighlightAnswer',
   components: {
     BaseTextarea,
     Wysiwyg,

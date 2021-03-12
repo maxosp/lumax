@@ -1,7 +1,7 @@
 <template>
   <div class="audio-files-container">
     <AudioFileInput
-      @change="$emit('upload', $event)"
+      @change="$emit('upload-files', $event)"
     />
     <div v-if="$props.audioFiles.length" class='files-container'>
       <div
@@ -81,23 +81,23 @@ export default Vue.extend({
       const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, file_name: value } : file
       )
-      this.$emit('change', newFiles)
+      this.$emit('change-files', newFiles)
     },
     handleIsLimitedChange({ id, value }) {
       const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, isLimited: value } : file
       )
-      this.$emit('change', newFiles)
+      this.$emit('change-files', newFiles)
     },
     handleLimitChange({ id, value }) {
       const newFiles = this.$props.audioFiles.map((file) =>
         file.id === id ? { ...file, limit: value } : file
       )
-      this.$emit('change', newFiles)
+      this.$emit('change-files', newFiles)
     },
     handleRemoveAudio({ id }) {
       const newFiles = this.$props.audioFiles.filter((file) => file.id !== id)
-      this.$emit('change', newFiles)
+      this.$emit('change-files', newFiles)
     },
   },
 })

@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { navigatePush } from '@/features/navigation'
 import SubjectHeader from '@/pages/dictionary/subjects/common/Header.vue'
 import {
   changeIfRedirect,
@@ -38,7 +39,7 @@ export default Vue.extend({
   },
   mounted() {
     !this.$route.params.id
-      ? this.$router.push({ name: 'subjects-list' })
+      ? navigatePush({ name: 'subjects-list' })
       : changeIdSubject(+this.$route.params.id)
   },
   beforeDestroy() {

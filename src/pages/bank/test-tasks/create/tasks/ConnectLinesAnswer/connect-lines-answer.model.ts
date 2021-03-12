@@ -1,4 +1,4 @@
-import { createEvent, forward, restore, attach, createEffect } from 'effector-root'
+import { createEvent, forward, restore, attach, createEffect, combine, sample } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dropdown/constants'
@@ -58,12 +58,45 @@ forward({
   ],
 })
 
-forward({
-  from: uploadAudioFilesFx.doneData,
-  to: [
-    setAudioFiles.prepend((files) => files.map((file) => ({ ...file, isLimited: true, limit: 0 }))),
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
-  ],
+sample({
+  source: $audioFiles,
+  clock: uploadAudioFilesFx.doneData,
+  fn: (existFiles: AudioFile[], newFiles: UploadMediaResponse[]) => {
+    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' }))
+    return [...existFiles, ...newFiles.map((file) => ({ ...file, isLimited: true, limit: 0 }))]
+  },
+  target: setAudioFiles,
 })
 
 export const $isAudioUploadLoading = uploadAudioFilesFx.pending
+
+export const $isFilled = combine(
+  $wording,
+  $containing,
+  $answerExample,
+  $matches,
+  (wording, containing, answerExample, matches) =>
+    wording &&
+    containing &&
+    answerExample &&
+    matches.reduce((acc, match) => acc && !!match.matchA && !!match.matchB, true)
+)
+
+export const $form = combine(
+  $wording,
+  $answerExample,
+  $containing,
+  $matches,
+  $audioFiles,
+  $language,
+  (wording, answerExample, containing, matches, audio, language) => ({
+    wording,
+    text: answerExample,
+    containing,
+    question_data: matches.map(({ matchA }) => matchA),
+    correct_answer: matches.map(({ matchA, matchB }) => ({ [matchA]: matchB })),
+    common_list_text_answer: matches.map(({ matchB }) => matchB),
+    media: audio,
+    interface_language: language.title,
+  })
+)
