@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, guard, restore, sample } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { debounce, every } from 'patronum'
 import {
   $selectedSubject,
@@ -24,6 +24,7 @@ import {
 import { DEFAULT_ID } from '@/pages/common/constants'
 import {
   $fileData,
+  fileDataChanged,
   uploadFileFx,
 } from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
 import { isLinkValid } from '@/lib/validators/url'
@@ -70,6 +71,7 @@ forward({
     typeDropdownModule.methods.resetSearchString,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),
+    fileDataChanged.prepend(() => null),
   ],
 })
 
@@ -83,7 +85,7 @@ export const $formToSend = combine({
   text: $resourceDescription,
   link: $link,
   theme: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
-  media_id: $fileData.map((data) => (data ? data.id : DEFAULT_ID)),
+  media_id: $fileData.map((data) => (data ? data.id : null)),
   resource_type: $selectedType.map((data) => (data ? data.name : '')),
 })
 
@@ -177,10 +179,10 @@ sample({
   target: createResource,
 })
 
-const $ifRedirect = guard({
+const $ifRedirect = sample({
   clock: createResource,
   source: $redirectAfterSave,
-  filter: (isRedirect: boolean) => isRedirect,
+  fn: (isRedirect: boolean) => isRedirect,
 })
 
 sample({
@@ -189,7 +191,7 @@ sample({
   fn: (ifRedirect: boolean, id: number) => {
     addToast({ type: 'success', message: 'Обучающий ресурс успешно создан!' })
     if (ifRedirect) navigatePush({ name: 'resources-list' })
-    else navigatePush({ name: 'resource-edit', params: { id: `${id}` } })
+    else navigatePush({ name: 'resources-edit', params: { id: `${id}` } })
   },
 })
 

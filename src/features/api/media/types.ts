@@ -19,22 +19,12 @@ export type UploadMediaResponse = {
   file_name: string
   duration_sec: number
 }
-
-// export type CreateResourceType = {
-//   id?: number
-//   link: string
-//   text: string
-//   resource_type: string
-//   theme: number
-//   media_id?: number
-// }
-
 export type CreateResourceType = {
   link: string
   text: string
   resource_type: string
   theme: number
-  media_id?: number
+  media_id?: number | null
 }
 export type ResourceType = {
   file?: string

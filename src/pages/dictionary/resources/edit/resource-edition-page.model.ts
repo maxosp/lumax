@@ -82,7 +82,7 @@ export const $formToSend = combine({
   text: $resourceDescription,
   link: $link,
   theme: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
-  media_id: $fileData.map((data) => (data ? data.id : DEFAULT_ID)),
+  media_id: $fileData.map((data) => (data ? data.id : null)),
   resource_type: $selectedType.map((data) => (data ? data.name : '')),
 })
 sample({
