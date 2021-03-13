@@ -176,10 +176,12 @@ sample({
 sample({
   source: $generalForm,
   clock: uploadAudioFilesFx.doneData,
-  fn: (form: any, audio: AssignmentAudioFile[]) => {
+  fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
+    // eslint-disable-next-line
+    const { audio, ...pureForm } = form
     return {
-      ...form,
-      audio_ids: audio.map(({ media }) => media),
+      ...pureForm,
+      audio_ids: audioFiles.map(({ media }) => media),
     }
   },
   target: createAssignment,
