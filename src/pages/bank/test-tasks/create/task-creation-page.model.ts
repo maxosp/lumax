@@ -133,8 +133,6 @@ const $baseForm = combine(
   (theme_id, themes, difficulty, taskType, user, needDuplicate, count, labels) => ({
     status: 'new',
     is_test_assignment: true,
-    creation_datetime: new Date(),
-    created_by: user,
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,

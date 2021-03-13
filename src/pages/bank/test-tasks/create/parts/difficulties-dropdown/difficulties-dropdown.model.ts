@@ -1,10 +1,28 @@
-import { createStore } from 'effector-root'
+import { createEvent, createStore, forward, attach, restore } from 'effector-root'
+import { getListDifficultyFx } from '@/features/api/assignment/get-list-difficulty'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import DIFFICULTIES_DATA from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/constants'
 
 export const difficultiesDropdownModule = createFilter()
 
-export const $difficulties = createStore<DropdownItem[]>(
-  DIFFICULTIES_DATA.map((diff: string) => ({ name: diff, title: diff }))
-)
+export const setSelectedDifficulty = createEvent<DropdownItem | null>()
+export const $selectedDifficulty = restore(setSelectedDifficulty, null)
+
+const getDifficulties = attach({
+  effect: getListDifficultyFx,
+})
+
+export const loadDifficulties = createEvent<void>()
+export const $difficulties = createStore<DropdownItem[]>([])
+
+forward({
+  from: loadDifficulties,
+  to: getDifficulties.prepend(() => ({})),
+})
+
+forward({
+  from: getDifficulties.doneData.map((res) =>
+    res.body.map((diff) => ({ name: `${diff.code}`, title: diff.name }))
+  ),
+  to: $difficulties,
+})

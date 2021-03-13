@@ -16,6 +16,7 @@ import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   difficultiesDropdownModule,
   $difficulties,
+  loadDifficulties,
 } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -32,6 +33,9 @@ export default Vue.extend({
     onSelectItem(item: DropdownItem | null) {
       this.$emit('setItem', item ? item.name : null)
     },
+  },
+  mounted() {
+    loadDifficulties()
   },
 })
 </script>
