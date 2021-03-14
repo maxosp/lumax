@@ -83,6 +83,7 @@
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
     />
+    <ThemeDeletionModal />
   </div>
 </template>
 
@@ -102,12 +103,11 @@ import ContextMenu from '@/pages/dictionary/themes/list/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/dictionary/themes/list/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
+import ThemeDeletionModal from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/ThemeDeletionModal.vue'
 import {
   $treeView,
   loadTree,
   $themesTreeTotal,
-  deleteTheme,
-  deleteThemes,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -118,6 +118,7 @@ import { addToast } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { navigatePush } from '@/features/navigation'
+import { loadModalToDelete } from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/theme-deletion.model'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -142,6 +143,7 @@ export default Vue.extend({
     Actions,
     ContextMenu,
     ThemesTree,
+    ThemeDeletionModal,
   },
   effector: {
     $token,
@@ -171,6 +173,7 @@ export default Vue.extend({
     },
   },
   methods: {
+    loadModalToDelete,
     toggleVisibility,
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -225,14 +228,17 @@ export default Vue.extend({
       // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
-    async removeSelected(ids: number[]) {
-      if (ids.length === 1) await deleteTheme(ids[0])
-      else await deleteThemes(ids)
-      // @ts-ignore
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      // @ts-ignore
-      this.selectedRows = []
+    removeSelected(ids: number) {
+      loadModalToDelete(ids)
     },
+    // async removeSelected(ids: number[]) {
+    //   if (ids.length === 1) await deleteTheme(ids[0])
+    //   else await deleteThemes(ids)
+    //   // @ts-ignore
+    //   await Vue.nextTick(() => this.$refs.vuetable.refresh())
+    //   // @ts-ignore
+    //   this.selectedRows = []
+    // },
     handleEditTheme(id: number) {
       navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
     },
