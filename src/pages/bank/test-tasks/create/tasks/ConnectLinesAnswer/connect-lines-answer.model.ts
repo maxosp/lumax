@@ -96,7 +96,10 @@ export const $form = combine(
     question_data: matches.map(({ matchA }) => matchA),
     correct_answer: matches.map(({ matchA, matchB }) => ({ [matchA]: matchB })),
     common_list_text_answer: matches.map(({ matchB }) => matchB),
-    media: audio,
+    audio: audio.map(({ id, isLimited, limit }) => ({
+      id,
+      ...(isLimited ? { audio_limit_count: limit } : {}),
+    })),
     interface_language: language.title,
   })
 )
