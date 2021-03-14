@@ -1,4 +1,4 @@
-import { attach, combine, createEffect, createEvent, restore, sample } from 'effector-root'
+import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
 import { $session } from '@/features/session'
 import { createAssignmentFx } from '@/features/api/assignment/create-assignment'
 import { uploadAudioFx } from '@/features/api/assignment/upload-audio'
@@ -55,6 +55,7 @@ import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dro
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
+import { addToast } from '@/features/toasts/toasts.model'
 
 const createAssignment = attach({
   effect: createAssignmentFx,
@@ -185,4 +186,12 @@ sample({
     }
   },
   target: createAssignment,
+})
+
+forward({
+  from: createAssignment.doneData,
+  to: addToast.prepend(() => ({
+    type: 'success',
+    message: 'Задание успешно создано!',
+  })),
 })
