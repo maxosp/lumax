@@ -17,7 +17,7 @@ import {
   moderatorDropdownModule,
   loadModerators,
   setSelectedModerator,
-} from '@/pages/common/modals/tasks-bank/moderator-select/parts/moderator/moderator-dropdown.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/parts/moderator/moderator-dropdown.model'
 
 export default Vue.extend({
   components: {

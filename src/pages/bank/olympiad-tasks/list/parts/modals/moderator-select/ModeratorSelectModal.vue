@@ -40,14 +40,14 @@
 import Vue from 'vue'
 import Modal from '@/ui/modal/Modal.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import ModeratorDropdown from '@/pages/common/modals/tasks-bank/moderator-select/parts/moderator/ModeratorDropdown.vue'
+import ModeratorDropdown from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/parts/moderator/ModeratorDropdown.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   $modalVisibility,
   modalVisibilityChanged,
   checkIfTaskCanBeSend,
   $moderatorErrorModule,
-} from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
 
 export default Vue.extend({
   components: {

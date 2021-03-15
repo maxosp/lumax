@@ -1,12 +1,12 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { getListStatusesFx } from '@/features/api/assignment/get-list-statuses'
 import { DropdownItem } from '@/pages/common/types'
+import { getOlympiadStatusListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-status-list'
 
 export const statusDropdownModule = createFilter()
 
 const getStatuses = attach({
-  effect: getListStatusesFx,
+  effect: getOlympiadStatusListFx,
 })
 
 export const loadStatus = createEvent<void>()

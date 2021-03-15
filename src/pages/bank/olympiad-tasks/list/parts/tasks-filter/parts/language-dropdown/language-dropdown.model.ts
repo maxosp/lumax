@@ -1,13 +1,12 @@
 import { createStore, forward, attach, createEvent } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-// TODO: correctly define WHICH type of assignment
-import { getTestLanguageListFx } from '@/features/api/assignment/test-assignment/get-test-language-list'
 import { DropdownItem } from '@/pages/common/types'
+import { getOlympiadLanguageListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-language-list'
 
 export const languagesDropdownModule = createFilter()
 
 const getLanguages = attach({
-  effect: getTestLanguageListFx,
+  effect: getOlympiadLanguageListFx,
 })
 
 export const loadLanguages = createEvent<void>()

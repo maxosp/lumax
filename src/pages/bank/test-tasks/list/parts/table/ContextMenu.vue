@@ -59,6 +59,8 @@ export default Vue.extend({
     type: { type: String as PropType<ContextMenuType>, required: true },
     light: { type: Boolean, default: false },
     isTheme: { type: Boolean },
+    subject: { type: [Number, null] as PropType<number | null> },
+    studyYear: { type: [Number, null] as PropType<number | null> },
   },
   computed: {
     items(): DropdownItem[] {
@@ -116,13 +118,16 @@ export default Vue.extend({
         case 'preview':
           this.$emit('onPreview', this.$props.id)
           break
+        case 'edit-theme':
+          navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
+          break
         case 'create-theme':
           navigatePush({
             name: 'themes-create',
             params: {
               subject: `${this.$props.subject}`,
               studyYear: `${this.$props.studyYear}`,
-              theme: `${this.$props.theme}`,
+              theme: `${this.$props.id}`,
             },
           })
           break

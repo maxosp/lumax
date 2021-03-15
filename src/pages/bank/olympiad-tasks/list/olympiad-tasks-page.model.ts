@@ -1,5 +1,4 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
-import { duplicateAssignmentFx } from '@/features/api/assignment/duplicate'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
 import { DuplicateAssignmentType } from '@/features/api/assignment/types'
 import { addToast } from '@/features/toasts/toasts.model'
@@ -8,6 +7,7 @@ import {
   deleteOlympiadAssignmentsFx,
 } from '@/features/api/assignment/olympiad-assignment/delete-olympiad-assignment'
 import { modalTaskDeleteVisibilityChanged } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
+import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
@@ -22,7 +22,7 @@ export const deleteAssignments = attach({
 })
 
 export const duplicateAssignment = attach({
-  effect: duplicateAssignmentFx,
+  effect: updateOlympiadAssignmentBulkFx,
   mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
 })
 

@@ -1,19 +1,21 @@
 import { addToast } from '@/features/toasts/toasts.model'
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
-import { SendToModerationParams } from '@/features/api/assignment/types'
 import { condition } from 'patronum'
-import { sendToModerationAssignmentFx } from '@/features/api/assignment/send-to-moderation-assignment'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import {
   $selectedModerator,
   moderatorDropdownModule,
-} from '@/pages/common/modals/tasks-bank/moderator-select/parts/moderator/moderator-dropdown.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/parts/moderator/moderator-dropdown.model'
 import { createError } from '@/lib/effector/error-generator'
-import { loadList } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
+import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
 
 export const sendForModaration = attach({
-  effect: sendToModerationAssignmentFx,
-  mapParams: (params: SendToModerationParams) => params,
+  effect: updateOlympiadAssignmentBulkFx,
+  mapParams: (params: UpdateAssignmentsBulkParams) => ({
+    ...params,
+    status: 'revision',
+  }),
 })
 
 export const loadModalToSendForCheck = createEvent<number[]>()
@@ -76,18 +78,18 @@ forward({
   ],
 })
 
-forward({
-  from: sendForModaration.doneData,
-  to: [
-    loadList.prepend(() => ({})),
-    modalVisibilityChanged.prepend(() => false),
-    addToast.prepend(() => ({
-      type: 'success',
-      message: 'Задание было успешно отправлено на проверку',
-    })),
-    canRefreshAfterSendingForModerationChanged.prepend(() => true),
-  ],
-})
+// forward({
+//   from: sendForModaration.doneData,
+//   to: [
+//     loadList.prepend(() => ({})),
+//     modalVisibilityChanged.prepend(() => false),
+//     addToast.prepend(() => ({
+//       type: 'success',
+//       message: 'Задание было успешно отправлено на проверку',
+//     })),
+//     canRefreshAfterSendingForModerationChanged.prepend(() => true),
+//   ],
+// })
 
 forward({
   from: moderatorDropdownModule.methods.itemChanged,

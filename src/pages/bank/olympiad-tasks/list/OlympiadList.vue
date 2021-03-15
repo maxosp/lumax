@@ -142,7 +142,7 @@ import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
-} from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
 import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
 import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
@@ -193,7 +193,7 @@ export default Vue.extend({
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-olympiad/list/`
+      return `${config.BACKEND_URL}/api/assignment/olympiad-assignment/list/`
     },
   },
   watch: {

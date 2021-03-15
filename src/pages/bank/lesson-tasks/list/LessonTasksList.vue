@@ -181,7 +181,7 @@ export default Vue.extend({
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-lesson/list/`
+      return `${config.BACKEND_URL}/api/assignment/lesson-assignment/list/`
     },
   },
   methods: {
