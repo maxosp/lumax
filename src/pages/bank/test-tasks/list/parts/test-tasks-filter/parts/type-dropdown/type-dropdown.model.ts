@@ -1,12 +1,12 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
-import { getListTypesFx } from '@/features/api/assignment/ge-list-types'
+import { getTestTypesListFx } from '@/features/api/assignment/test-assignment/get-test-types-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 
 export const typeDropdownModule = createFilter()
 
 const getTypes = attach({
-  effect: getListTypesFx,
+  effect: getTestTypesListFx,
 })
 
 export const loadTypes = createEvent<void>()

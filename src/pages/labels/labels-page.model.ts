@@ -1,5 +1,5 @@
-import { deleteLabelFx } from '@/features/api/assignment/delete-label'
-import { getLabelsTreeFx } from '@/features/api/assignment/get-labels-tree'
+import { deleteLabelFx } from '@/features/api/assignment/labels/delete-label'
+import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tree'
 import { GetLabelsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 import { addToast } from '@/features/toasts/toasts.model'

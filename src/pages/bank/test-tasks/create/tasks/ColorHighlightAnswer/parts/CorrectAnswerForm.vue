@@ -159,9 +159,10 @@ export default Vue.extend({
       if (this.selectedElement.style.color) {
         // @ts-ignore
         this.selectedElement.setAttribute('own-color', this.selectedElement.style.color)
-        // @ts-ignore
-        this.selectedElement.style.color = color
       }
+      // @ts-ignore
+      this.selectedElement.style.color = color
+      
       toggleContextMenu(false)
     },
     removeTextColor() {

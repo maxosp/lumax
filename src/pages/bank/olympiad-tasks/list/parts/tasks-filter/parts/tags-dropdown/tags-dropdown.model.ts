@@ -1,8 +1,8 @@
 import { createEvent, createStore, forward, attach, restore, sample } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
 import { GetListQueryParams } from '@/features/api/types'
 import { DropdownItem } from '@/pages/common/types'
-import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
 
 export const tagsDropdownModule = createFilter()
 

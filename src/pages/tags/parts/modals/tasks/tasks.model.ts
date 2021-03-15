@@ -1,6 +1,6 @@
-import { getTagFx } from '@/features/api/assignment/get-tag'
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { spread } from 'patronum'
+import { getTagFx } from '@/features/api/assignment/olympiad-tags/get-tag'
 
 export const getTag = attach({
   effect: getTagFx,

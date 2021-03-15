@@ -1,4 +1,4 @@
-import { getLabelFx } from '@/features/api/assignment/get-label'
+import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { spread } from 'patronum'
 

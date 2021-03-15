@@ -1,7 +1,6 @@
 import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
-import { $session } from '@/features/session'
-import { createAssignmentFx } from '@/features/api/assignment/create-assignment'
-import { uploadAudioFx } from '@/features/api/assignment/upload-audio'
+import { createTestAssignmentFx } from '@/features/api/assignment/test-assignment/create-test-assignment'
+import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
 import { $themesData } from '@/pages/bank/test-tasks/create/parts/themes-dropdown/themes-dropdown.model'
 import {
   $isFilled as $isFilledBroadFile,
@@ -57,8 +56,8 @@ import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
 import { addToast } from '@/features/toasts/toasts.model'
 
-const createAssignment = attach({
-  effect: createAssignmentFx,
+const createTestAssignment = attach({
+  effect: createTestAssignmentFx,
 })
 
 export const setTheme = createEvent<number | null>()
@@ -127,13 +126,11 @@ const $baseForm = combine(
   $themesData,
   $difficulty,
   $taskType,
-  $session,
   $needDuplicate,
   $count,
   $selectedLabels,
-  (theme_id, themes, difficulty, taskType, user, needDuplicate, count, labels) => ({
+  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels) => ({
     status: 'new',
-    is_test_assignment: true,
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,
@@ -182,14 +179,14 @@ sample({
     const { audio, ...pureForm } = form
     return {
       ...pureForm,
-      audio_ids: audioFiles.map(({ media }) => media),
+      audios_ids: audioFiles.map(({ media }) => media),
     }
   },
-  target: createAssignment,
+  target: createTestAssignment,
 })
 
 forward({
-  from: createAssignment.doneData,
+  from: createTestAssignment.doneData,
   to: addToast.prepend(() => ({
     type: 'success',
     message: 'Задание успешно создано!',

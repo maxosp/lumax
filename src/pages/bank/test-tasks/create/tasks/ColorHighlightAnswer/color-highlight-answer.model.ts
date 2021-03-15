@@ -90,12 +90,14 @@ export const $form = combine(
   $containing,
   $audioFiles,
   $language,
-  (wording, example_answer, containing, audio, language) => ({
+  $textTemplate,
+  $colorsPalette,
+  (wording, example_answer, containing, audio, language, text, colors) => ({
     wording,
     example_answer,
     text: containing,
-    question_data: null,
-    correct_answer: null,
+    question_data: { text, colors },
+    correct_answer: text,
     common_list_text_answer: null,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,

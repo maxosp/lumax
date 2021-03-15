@@ -1,12 +1,12 @@
 import { createStore, attach, createEvent, forward } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { getOlympiadsListDifficultyFx } from '@/features/api/assignment/get-olympiads-list-difficulty'
+import { getOlympiadDifficultyListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-difficulty-list'
 
 export const difficultyDropdownModule = createFilter()
 
 const getDifficultys = attach({
-  effect: getOlympiadsListDifficultyFx,
+  effect: getOlympiadDifficultyListFx,
 })
 
 export const loadDifficultys = createEvent<void>()

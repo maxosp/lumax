@@ -1,8 +1,9 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
+// TODO: correctly define WHICH type of assignment
 import {
-  deleteAssignmentFx,
-  deleteAssignmentsFx,
-} from '@/features/api/assignment/delete-assignment'
+  deleteTestAssignmentFx,
+  deleteTestAssignmentsFx,
+} from '@/features/api/assignment/test-assignment/delete-test-assignment'
 import { publishAssignmentFx } from '@/features/api/assignment/publish-assignment'
 import { sendToModerationAssignmentFx } from '@/features/api/assignment/send-to-moderation-assignment'
 import {
@@ -29,10 +30,10 @@ const getTasksTreeLight = attach({
 })
 
 export const deleteAssignment = attach({
-  effect: deleteAssignmentFx,
+  effect: deleteTestAssignmentFx,
 })
 export const deleteManyAssignments = attach({
-  effect: deleteAssignmentsFx,
+  effect: deleteTestAssignmentsFx,
 })
 export const sendAssignmentsPublish = attach({
   effect: publishAssignmentFx,

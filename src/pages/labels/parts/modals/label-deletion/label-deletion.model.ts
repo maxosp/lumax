@@ -1,4 +1,4 @@
-import { deleteLabelFx } from '@/features/api/assignment/delete-label'
+import { deleteLabelFx } from '@/features/api/assignment/labels/delete-label'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { createEvent, forward, restore } from 'effector-root'
 

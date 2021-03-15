@@ -1,9 +1,9 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
 import { ListType } from '@/features/api/assignment/types'
 
-export const getListTypesFx = createApiEffect<void, ListType[]>({
+export const getOlympiadTypesListFx = createApiEffect<void, ListType[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: `/api/assignment/assignments-filter/types/`,
+    url: `/api/assignment/olympiad-assignment/filter/types/`,
   }),
 })

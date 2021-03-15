@@ -17,7 +17,7 @@ import {
   themesDropdownModule,
 } from '@/pages/labels/parts/modals/label-edition/parts/theme/theme-dropdown.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
-import { getLabelFx } from '@/features/api/assignment/get-label'
+import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { CreateLabelType, Label } from '@/features/api/assignment/types'
 import { updateLabelFx } from '@/features/api/assignment/update-label'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'

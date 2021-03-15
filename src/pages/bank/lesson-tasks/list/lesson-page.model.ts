@@ -1,8 +1,8 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
 import {
-  deleteAssignmentFx,
-  deleteAssignmentsFx,
-} from '@/features/api/assignment/delete-assignment'
+  deleteLessonAssignmentFx,
+  deleteLessonAssignmentsFx,
+} from '@/features/api/assignment/lesson-assignment/delete-lesson-assignment'
 import {
   getAssignmentTreeFx,
   getAssignmentTreeLightFx,
@@ -27,10 +27,10 @@ const getLessonsTreeLight = attach({
 })
 
 export const deleteAssignment = attach({
-  effect: deleteAssignmentFx,
+  effect: deleteLessonAssignmentFx,
 })
 export const deleteManyAssignments = attach({
-  effect: deleteAssignmentsFx,
+  effect: deleteLessonAssignmentsFx,
 })
 
 export const toggleTreeView = createEvent<boolean>()

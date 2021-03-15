@@ -17,7 +17,7 @@ import {
 } from '@/pages/labels/parts/modals/label-creation/parts/theme/theme-dropdown.model'
 import { condition, debounce, every } from 'patronum'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { createLabelFx } from '@/features/api/assignment/create-label'
+import { createLabelFx } from '@/features/api/assignment/labels/create-label'
 import { CreateLabelType } from '@/features/api/assignment/types'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
 import { DEFAULT_ID } from '@/pages/common/constants'

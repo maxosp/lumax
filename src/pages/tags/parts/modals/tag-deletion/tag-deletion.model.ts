@@ -1,7 +1,6 @@
-import { deleteTagFx } from '@/features/api/assignment/delete-tag'
-import { deleteTagsFx } from '@/features/api/assignment/delete-tags'
-import { DEFAULT_ID } from '@/pages/common/constants'
 import { createEvent, forward, restore } from 'effector-root'
+import { DEFAULT_ID } from '@/pages/common/constants'
+import { deleteTagFx, deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag'
 
 export const loadModalToDelete = createEvent<number[]>()
 

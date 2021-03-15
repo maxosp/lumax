@@ -1,5 +1,5 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
-import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
+import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
 import { DropdownItem } from '@/pages/common/types'
 
 const getTags = attach({

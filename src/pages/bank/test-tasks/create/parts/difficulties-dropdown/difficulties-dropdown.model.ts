@@ -1,5 +1,5 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
-import { getListDifficultyFx } from '@/features/api/assignment/get-list-difficulty'
+import { getTestDifficultyListFx } from '@/features/api/assignment/test-assignment/get-test-difficulty-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -9,7 +9,7 @@ export const setSelectedDifficulty = createEvent<DropdownItem | null>()
 export const $selectedDifficulty = restore(setSelectedDifficulty, null)
 
 const getDifficulties = attach({
-  effect: getListDifficultyFx,
+  effect: getTestDifficultyListFx,
 })
 
 export const loadDifficulties = createEvent<void>()
