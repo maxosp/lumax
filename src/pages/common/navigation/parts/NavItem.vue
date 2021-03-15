@@ -62,7 +62,6 @@ export default Vue.extend({
   methods: {
     changeCollapsState() {
       if (!this.$props.opened) return
-      // @ts-ignore
       if (this.$openedItem === this.$props.item.id) {
         changeOpenedItem(null)
       } else {

@@ -277,6 +277,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
+    // loadTree({})
     loadTree({})
   },
   created() {

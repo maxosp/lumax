@@ -72,12 +72,10 @@ export default Vue.extend({
   },
   computed: {
     formatName() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('/') + 1)
+      return this.$fileData && this.$fileData.name.slice(this.$fileData.name.lastIndexOf('/') + 1)
     },
     fileExtenstion() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('.') + 1)
+      return this.$fileData && this.$fileData.name.slice(this.$fileData.name.lastIndexOf('.') + 1)
     },
   },
   methods: {

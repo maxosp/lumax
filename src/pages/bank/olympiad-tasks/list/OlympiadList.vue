@@ -199,7 +199,7 @@ export default Vue.extend({
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        // @ts-ignoree
+        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
       },
     },

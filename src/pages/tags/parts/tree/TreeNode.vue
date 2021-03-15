@@ -115,7 +115,6 @@ export default Vue.extend({
       }
     },
     dataToCreateTag() {
-      // @ts-ignore
       const { study_year } = this.$props.node
       if (study_year)
         return {
@@ -125,7 +124,6 @@ export default Vue.extend({
       return null
     },
     showActions() {
-      // @ts-ignore
       const { element_type } = this.$props.node
       return element_type === 'olympiad_tag' || element_type === 'study_year'
     },
@@ -141,6 +139,10 @@ export default Vue.extend({
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
         this.opened = !this.opened
+        // @ts-ignore
+        this.node.leaves = this.node.leaves.sort(
+          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
+        )
       }
     },
     handleRightClick(event: any) {

@@ -53,15 +53,11 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     const container = document.querySelector(`#cell-${this.$props.rowId}`)
-    // @ts-ignore
     container && container.addEventListener('contextmenu', this.handleRightClick)
   },
   beforeDestroy() {
-    // @ts-ignore
     const container = document.querySelector(`#cell-${this.$props.rowId}`)
-    // @ts-ignore
     container && container.removeEventListener('contextmenu', this.handleRightClick)
   },
 })
