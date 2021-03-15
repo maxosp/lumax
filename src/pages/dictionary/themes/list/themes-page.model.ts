@@ -18,6 +18,12 @@ export const deleteThemes = attach({
   effect: deleteThemesFx,
 })
 
+export const canRefreshTableAfterDeletionChanged = createEvent<boolean>()
+export const $canRefreshTableAfterDeletion = restore<boolean>(
+  canRefreshTableAfterDeletionChanged,
+  false
+)
+
 export const toggleTreeView = createEvent<boolean>()
 export const $treeView = restore(toggleTreeView, false)
 
@@ -45,5 +51,15 @@ forward({
   to: [
     loadTree.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Тема была успешно удалена!' })),
+    canRefreshTableAfterDeletionChanged.prepend(() => true),
+  ],
+})
+
+forward({
+  from: deleteThemes.doneData,
+  to: [
+    loadTree.prepend(() => ({})),
+    addToast.prepend(() => ({ type: 'success', message: 'Темы были успешно удалены!' })),
+    canRefreshTableAfterDeletionChanged.prepend(() => true),
   ],
 })

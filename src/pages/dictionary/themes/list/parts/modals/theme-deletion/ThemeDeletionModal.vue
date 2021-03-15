@@ -4,13 +4,13 @@
     :value="$modalVisibility"
     @change="modalVisibilityChanged"
   >
-    <p class="title">Тема будет удалена.<br>Продолжить?</p>
+    <p class="title">{{ correctForm }}.<br>Продолжить?</p>
     <div class="btns-wrapper">
       <BaseButton
         class="btn"
         big
         border-without-bg
-        @click="deleteTheme"
+        @click="submit"
       > Продолжить
       </BaseButton>
       <BaseButton
@@ -32,7 +32,7 @@ import {
   $modalVisibility,
   $themeToDelete,
 } from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/theme-deletion.model.ts'
-import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model.ts'
+import { deleteTheme, deleteThemes } from '@/pages/dictionary/themes/list/themes-page.model.ts'
 
 export default Vue.extend({
   name: 'ThemeDeletion',
@@ -44,7 +44,19 @@ export default Vue.extend({
     $modalVisibility,
     $themeToDelete,
   },
-  methods: { modalVisibilityChanged, deleteTheme },
+  computed: {
+    correctForm() {
+      return this.$themeToDelete.length === 1 ? 'Тема будет удалена' : 'Темы будут удалены'
+    },
+  },
+  methods: {
+    modalVisibilityChanged,
+    deleteTheme,
+    submit() {
+      if (this.$themeToDelete.length === 1) deleteTheme(this.$themeToDelete[0])
+      else deleteThemes(this.$themeToDelete)
+    },
+  },
 })
 </script>
 
