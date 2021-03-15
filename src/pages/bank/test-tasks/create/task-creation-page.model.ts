@@ -1,4 +1,4 @@
-import { attach, combine, createEffect, createEvent, restore, sample } from 'effector-root'
+import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
 import { $session } from '@/features/session'
 import { createAssignmentFx } from '@/features/api/assignment/create-assignment'
 import { uploadAudioFx } from '@/features/api/assignment/upload-audio'
@@ -55,6 +55,7 @@ import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dro
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
+import { addToast } from '@/features/toasts/toasts.model'
 
 const createAssignment = attach({
   effect: createAssignmentFx,
@@ -133,8 +134,6 @@ const $baseForm = combine(
   (theme_id, themes, difficulty, taskType, user, needDuplicate, count, labels) => ({
     status: 'new',
     is_test_assignment: true,
-    creation_datetime: new Date(),
-    created_by: user,
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,
@@ -178,11 +177,21 @@ sample({
 sample({
   source: $generalForm,
   clock: uploadAudioFilesFx.doneData,
-  fn: (form: any, audio: AssignmentAudioFile[]) => {
+  fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
+    // eslint-disable-next-line
+    const { audio, ...pureForm } = form
     return {
-      ...form,
-      audio_ids: audio.map(({ media }) => media),
+      ...pureForm,
+      audio_ids: audioFiles.map(({ media }) => media),
     }
   },
   target: createAssignment,
+})
+
+forward({
+  from: createAssignment.doneData,
+  to: addToast.prepend(() => ({
+    type: 'success',
+    message: 'Задание успешно создано!',
+  })),
 })

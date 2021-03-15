@@ -85,4 +85,7 @@ export default Vue.extend({
   fill: #fff;
   stroke: #fff;
 }
+.buttons {
+  display: flex;
+}
 </style>
