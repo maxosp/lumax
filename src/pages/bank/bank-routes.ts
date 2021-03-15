@@ -2,6 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TestTasksLists from '@/pages/bank/test-tasks/list/TestTasksList.vue'
 import TestTaskCreationPage from '@/pages/bank/test-tasks/create/TaskCreationPage.vue'
+import TaskEditionPage from '@/pages/bank/test-tasks/edit/TaskEditionPage.vue'
 // olympiad-tasks
 import OlympiadTasksList from '@/pages/bank/olympiad-tasks/list/OlympiadList.vue'
 import OlympiadTaskCreationPage from '@/pages/bank/olympiad-tasks/create/TaskCreationPage.vue'
@@ -41,7 +42,7 @@ export default [
           {
             name: 'test-tasks-edit',
             path: 'edit/:id',
-            component: TestTaskCreationPage,
+            component: TaskEditionPage,
             meta: {
               title: 'Редактирование тестового задания - Школа Летово',
             },
