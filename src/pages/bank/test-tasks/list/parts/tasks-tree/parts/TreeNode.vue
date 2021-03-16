@@ -61,6 +61,8 @@
         :is-theme="node.element_type === 'theme'"
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
+        :subject="node.theme && node.theme.subject_id"
+        :study-year="node.theme && node.theme.study_year_id"
         class="action"
         @onRemoveTask="(val) => $emit('onRemoveTask', val)"
         @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"

@@ -1,4 +1,4 @@
-import { Theme } from '@/features/api/subject/types'
+import { StudyYear, Subject } from '@/features/api/subject/types'
 import { DropdownItem } from '@/pages/common/types'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { TableField } from '@/pages/dictionary/themes/list/types'
@@ -19,12 +19,13 @@ export const olympiadTasksDataFields: TableField[] = [
     width: '110px',
   },
   {
-    name: 'theme',
+    name: 'subject',
     sortField: 'subject',
     title: 'Предмет',
     width: '140px',
-    formatter(theme: Theme) {
-      return theme && theme.subject ? theme.subject.name : '-'
+    formatter(subject: Subject) {
+      console.log(subject)
+      return subject && subject.name ? subject.name : '-'
     },
   },
   {
@@ -43,8 +44,8 @@ export const olympiadTasksDataFields: TableField[] = [
     dataClass: 'center aligned',
     title: 'Класс',
     width: '100px',
-    formatter(theme: Theme) {
-      return theme && theme.study_year ? theme.study_year.name : '-'
+    formatter(study_year: StudyYear) {
+      return study_year && study_year.name ? study_year.name : '-'
     },
   },
   {
