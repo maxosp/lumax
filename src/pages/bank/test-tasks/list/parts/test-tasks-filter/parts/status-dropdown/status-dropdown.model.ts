@@ -1,12 +1,12 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { getListStatusesFx } from '@/features/api/assignment/get-list-statuses'
 import { DropdownItem } from '@/pages/common/types'
+import { getTestStatusListFx } from '@/features/api/assignment/test-assignment/get-test-status-list'
 
 export const statusDropdownModule = createFilter()
 
 const getStatuses = attach({
-  effect: getListStatusesFx,
+  effect: getTestStatusListFx,
 })
 
 export const loadStatus = createEvent<void>()

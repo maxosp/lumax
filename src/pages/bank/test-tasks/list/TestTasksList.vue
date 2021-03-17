@@ -61,6 +61,8 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
+            :subject="subject"
+            :study-year="studyYear"
             @onRemove="removeSelected"
             @onCheck="sendToModerationAssignments"
             @onPublish="publishAssignments"
@@ -100,6 +102,8 @@
       :type="contextMenuType"
       :light="$treeView"
       :is-theme="isTheme"
+      :subject="subject"
+      :study-year="studyYear"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
@@ -199,11 +203,14 @@ export default Vue.extend({
       filterParams: {},
       selectedRows: [] as number[] | null,
       isTheme: false,
+      subject: null,
+      studyYear: null,
+      theme: null,
     }
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-test/list/`
+      return `${config.BACKEND_URL}/api/assignment/test-assignment/list/`
     },
   },
   methods: {
@@ -260,7 +267,7 @@ export default Vue.extend({
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     removeSelectedTask(ids: number[]) {
-      this.$session!.permissions!.assignments_assignment.delete
+      this.$session?.permissions?.assignments_assignment?.delete
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },
@@ -277,7 +284,7 @@ export default Vue.extend({
       if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
     },
     async publishAssignments(ids: number | number[]) {
-      await sendAssignmentsPublish(typeof ids === 'number' ? [ids] : ids)
+      await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })
       // @ts-ignore
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
@@ -296,6 +303,8 @@ export default Vue.extend({
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowId = data.id
       this.isTheme = data.isTheme
+      this.subject = data.subject
+      this.studyYear = data.studyYear
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }

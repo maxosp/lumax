@@ -31,12 +31,6 @@
         v-if="node.element_type === 'assignment'"
         class="assignment-features"
       >
-        <div
-          class="difficulty"
-          :class="taskDifficultyLevel.class"
-        >
-          {{ taskDifficultyLevel.title }}
-        </div>
         <div class="id-wrapper">
           ({{ node.assignment.id }})
         </div>
@@ -61,8 +55,6 @@
         :is-theme="node.element_type === 'theme'"
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
-        :subject="node.theme && node.theme.subject_id"
-        :study-year="node.theme && node.theme.study_year_id"
         class="action"
         @onRemoveTask="(val) => $emit('onRemoveTask', val)"
         @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
@@ -152,19 +144,6 @@ export default Vue.extend({
       // @ts-ignore
       return mapTaskStatus[this.node.assignment.status]
     },
-    taskDifficultyLevel() {
-      // @ts-ignore
-      switch (this.node.assignment.difficulty) {
-        case 0:
-          return { title: 'Базовый уровень', class: '--green' }
-        case 1:
-          return { title: 'Продвинутый уровень', class: '--yellow' }
-        case 2:
-          return { title: 'Экзамен', class: '--red' }
-        default:
-          return { title: '', class: 'invisible' }
-      }
-    },
     showActions() {
       // @ts-ignore
       const { element_type } = this.$props.node
@@ -178,15 +157,12 @@ export default Vue.extend({
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
         this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
       }
     },
     handleRightClick(event: any) {
       event.preventDefault()
       let type = this.$props.node.element_type
+
       if (this.$props.node[type].is_prerequisite) {
         if (this.$props.prerequisiteFolder) {
           type = 'prerequisite_own'
@@ -194,13 +170,12 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
-      console.log(this.$props)
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
           isTheme: this.$props.node.element_type === 'theme',
-          subject: this.$props.node.theme && this.$props.node.theme.subject_id,
-          studyYear: this.$props.node.theme && this.$props.node.theme.study_year_id,
+          // subject: this.$props.node.subject.id,
+          // studyYear: this.$props.node.study_year.id,
         },
         event,
         type,
@@ -270,10 +245,12 @@ export default Vue.extend({
     margin-left: 5px;
   }
 }
+
 .primary {
   background-color: var(--c-yellow-1);
   margin-left: 15px;
 }
+
 .chip-icon {
   fill: #fff;
 }
@@ -293,7 +270,6 @@ export default Vue.extend({
     stroke: var(--c-dark-0);
   }
 }
-.difficulty,
 .status-wrapper {
   height: 20px;
   @mixin flex-center;

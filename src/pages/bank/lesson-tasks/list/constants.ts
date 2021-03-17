@@ -89,8 +89,10 @@ export const lessonsTableFields: TableField[] = [
     sortField: 'created_by',
     title: 'Создатель',
     width: '200px',
-    formatter(data: string) {
-      return data || '–'
+    formatter: (data) => {
+      return data && data.id && data.first_name && data.last_name
+        ? `${data.id} ${data.first_name} ${data.last_name}`
+        : '–'
     },
   },
   {
