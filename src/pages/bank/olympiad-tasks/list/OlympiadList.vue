@@ -265,7 +265,7 @@ export default Vue.extend({
       console.log('EDIT ', id)
     },
     removeSelected(ids: number[]) {
-      this.$session!.permissions!.assignments_assignment.delete
+      this.$session?.permissions?.assignments_assignment?.delete
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },

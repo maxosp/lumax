@@ -245,7 +245,7 @@ export default Vue.extend({
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
     removeSelected(ids: number[]) {
-      this.$session!.permissions!.assignments_assignment.delete
+      this.$session?.permissions?.subjects_theme?.delete
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },

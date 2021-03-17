@@ -267,7 +267,7 @@ export default Vue.extend({
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     removeSelectedTask(ids: number[]) {
-      this.$session!.permissions!.assignments_assignment.delete
+      this.$session?.permissions?.assignments_assignment?.delete
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },
