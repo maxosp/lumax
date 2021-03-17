@@ -156,12 +156,12 @@ export default Vue.extend({
       this.selectedElement.setAttribute('it-fill', color)
 
       // @ts-ignore
-      if (this.selectedElement.style.color) {
+      if (this.selectedElement.style.backgroundColor) {
         // @ts-ignore
-        this.selectedElement.setAttribute('own-color', this.selectedElement.style.color)
+        this.selectedElement.setAttribute('own-color', this.selectedElement.style.backgroundColor)
       }
       // @ts-ignore
-      this.selectedElement.style.color = color
+      this.selectedElement.style.backgroundColor = color
       
       toggleContextMenu(false)
     },
@@ -173,7 +173,7 @@ export default Vue.extend({
       // @ts-ignore
       if (this.selectedElement.hasAttribute('own-color')) {
         // @ts-ignore
-        this.selectedElement.style.color = this.selectedElement.getAttribute('own-color')
+        this.selectedElement.style.backgroundColor = this.selectedElement.getAttribute('own-color')
       }
       toggleContextMenu(false)
     },
