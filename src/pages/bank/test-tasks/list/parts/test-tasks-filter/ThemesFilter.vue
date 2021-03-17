@@ -26,31 +26,33 @@
     </div>
     <div class="row">
       <TagsDropdown class="half-second" @setItem="val => changeFilter('labels', val)" />
-      <BaseSwitch
-        class="switch"
-        :checked="$togglers.is_prerequisite"
-        @change="setToggler('is_prerequisite', $event)"
-      >
-        <p>Пререквизит</p>
-      </BaseSwitch>
-      <div class="buttons">
-        <div class="btn">
-          <BaseButton
-            small
-            @click="applyFilters"
-          >
-            Применить
-          </BaseButton>
-        </div>
-        <div class="btn">
-          <BaseButton
-            class="borderless"
-            small
-            border-without-bg
-            @click="resetFilters"
-          >
-            Сбросить фильтры
-          </BaseButton>
+      <div class="tags-input-relative-align">
+        <BaseSwitch
+          class="switch"
+          :checked="$togglers.is_prerequisite"
+          @change="setToggler('is_prerequisite', $event)"
+        >
+          <p>Пререквизит</p>
+        </BaseSwitch>
+        <div class="buttons">
+          <div class="btn">
+            <BaseButton
+              small
+              @click="applyFilters"
+            >
+              Применить
+            </BaseButton>
+          </div>
+          <div class="btn">
+            <BaseButton
+              class="borderless"
+              small
+              border-without-bg
+              @click="resetFilters"
+            >
+              Сбросить фильтры
+            </BaseButton>
+          </div>
         </div>
       </div>
     </div>
@@ -228,12 +230,26 @@ export default Vue.extend({
   width: calc(100% / 3 - 20px);
   flex-shrink: 0;
 }
-.buttons {
+
+.tags-input-relative-align {
+  width: 100%;
   display: flex;
-  align-items: flex-end;
-  width: calc(100% / 3 - 20px);
-  margin-left: 30px;
-  flex-shrink: 0;
+  align-self: flex-end;
+  height: 46px;
+
+  .switch {
+    display: flex;
+    align-items: center;
+  }
+  .buttons {
+    display: flex;
+    align-items: center;
+    margin-left: 51px;
+
+    .btn:first-child {
+      margin-right: 38px;
+    }
+  }
 }
 
 .btn {
