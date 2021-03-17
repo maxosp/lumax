@@ -8,6 +8,7 @@ import bankRoutes from '@/pages/bank/bank-routes'
 import dictionaryRoutes from '@/pages/dictionary/dictionary-routes'
 import tagsRoutes from '@/pages/tags/tags-routes'
 import labelsRoutes from '@/pages/labels/labels-routes'
+import applicationsRoutes from '@/pages/applications/applications-routes'
 
 export const routes: RouteConfig[] = [
   {
@@ -44,6 +45,7 @@ export const routes: RouteConfig[] = [
       ...labelsRoutes,
       ...bankRoutes,
       ...dictionaryRoutes,
+      ...applicationsRoutes,
       { name: 'default-route', path: '*', redirect: { name: 'home' } },
     ],
   },

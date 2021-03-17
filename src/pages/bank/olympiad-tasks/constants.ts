@@ -24,7 +24,6 @@ export const olympiadTasksDataFields: TableField[] = [
     title: 'Предмет',
     width: '140px',
     formatter(subject: Subject) {
-      console.log(subject)
       return subject && subject.name ? subject.name : '-'
     },
   },

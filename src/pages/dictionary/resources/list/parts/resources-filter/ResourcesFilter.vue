@@ -234,13 +234,6 @@ export default Vue.extend({
 }
 
 .arrow-up {
-  position: absolute;
-  width: 0;
-  height: 0;
-  right: 19px;
-  top: -10px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
+  @mixin arrow-up;
 }
 </style>

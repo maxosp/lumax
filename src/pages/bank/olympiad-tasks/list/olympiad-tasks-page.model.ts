@@ -8,6 +8,7 @@ import {
 } from '@/features/api/assignment/olympiad-assignment/delete-olympiad-assignment'
 import { modalTaskDeleteVisibilityChanged } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
 import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
+import { GetListQueryParams } from '@/features/api/types'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
@@ -35,7 +36,7 @@ export const $canRefreshTableAfterDeletion = restore<boolean>(
   false
 )
 
-export const loadList = createEvent<any>()
+export const loadList = createEvent<GetListQueryParams>()
 
 forward({
   from: loadList,
@@ -62,7 +63,7 @@ forward({
 forward({
   from: deleteAssignment.doneData,
   to: [
-    loadList,
+    loadList.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Задание было успешно удалено!' })),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),
@@ -72,7 +73,7 @@ forward({
 forward({
   from: deleteAssignments.doneData,
   to: [
-    loadList,
+    loadList.prepend(() => ({})),
     addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),

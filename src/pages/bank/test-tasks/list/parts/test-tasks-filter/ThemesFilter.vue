@@ -267,13 +267,7 @@ export default Vue.extend({
 }
 
 .arrow-up {
-  position: relative;
-  width: 0;
-  height: 0;
-  top: -40px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
+  @mixin arrow-up;
 }
 .block {
   display: flex;

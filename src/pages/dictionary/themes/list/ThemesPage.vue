@@ -30,7 +30,6 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="filterParams"
-        no-data-template=""
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"

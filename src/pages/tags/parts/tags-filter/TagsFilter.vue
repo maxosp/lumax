@@ -147,14 +147,7 @@ export default Vue.extend({
   fill: var(--c-grey-3);
 }
 .arrow-up {
-  position: absolute;
-  width: 0;
-  height: 0;
-  top: -10px;
-  right: 18px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
+  @mixin arrow-up;
 }
 .section {
   @mixin flex-row-central;

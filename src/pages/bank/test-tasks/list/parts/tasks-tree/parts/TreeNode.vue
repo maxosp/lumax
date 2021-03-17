@@ -194,7 +194,6 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
-      console.log(this.$props)
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
