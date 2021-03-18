@@ -1,20 +1,19 @@
 <template>
-  <MenuWrap
-    v-model="isOpen"
-    class="actions"
-    menu-width="100%"
+  <v-popover
+    :open="isOpen"
+    :placement="popoverPlacement"
+    :popoverClass="popoverClass"
+    popoverInnerClass=""
+    @apply-hide="closeMenu"
   >
-    <template #activator>
-      <Icon
-        class="actions-activator"
-        type="kebab-menu"
-        size="24"
-        @click="onActivatorClick"
-      />
-    </template>
-
-    <template #menu>
-      <SelectMenu>
+    <Icon
+      class="actions-activator"
+      type="kebab-menu"
+      size="24"
+      @click="onActivatorClick"
+    />
+    <template v-slot:popover>
+      <SelectMenu v-if="isOpen">
         <slot
           v-for="item in items"
           v-bind="{item, handleAction, closeMenu}"
@@ -34,13 +33,12 @@
         </slot>
       </SelectMenu>
     </template>
-  </MenuWrap>
+  </v-popover>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { navigatePush } from '@/features/navigation'
@@ -51,7 +49,6 @@ export default Vue.extend({
   name: 'Actions',
   components: {
     Icon,
-    MenuWrap,
     SelectMenu,
     SelectItem,
   },
@@ -61,6 +58,8 @@ export default Vue.extend({
   },
   data: () => ({
     isOpen: false,
+    popoverPlacement: 'left-start',
+    popoverClass: 'actions__popover_start',
   }),
   computed: {
     items(): DropdownItem[] {
@@ -75,7 +74,22 @@ export default Vue.extend({
   },
   methods: {
     onActivatorClick() {
+      this.setPopoverPlacement()
       this.isOpen = !this.isOpen
+    },
+    setPopoverPlacement() {
+      const vuetableBottomPosition = this.$parent.$el.getBoundingClientRect().bottom
+      const actionsBottomPosition = this.$el.getBoundingClientRect().bottom
+      const selectItemHeight = 51
+      const selectMenuMaxHeight = 255
+      const selectItemsSumHeight = this.items.length * selectItemHeight
+      const selectMenuHeight =
+        selectItemsSumHeight > selectMenuMaxHeight ? selectMenuMaxHeight : selectItemsSumHeight
+
+      if (vuetableBottomPosition - actionsBottomPosition < selectMenuHeight) {
+        this.popoverPlacement = 'left-end'
+        this.popoverClass = 'actions__popover_end'
+      }
     },
     handleAction(item: SelectItemI) {
       switch (item.name) {
@@ -110,6 +124,22 @@ export default Vue.extend({
 .action-item {
   &:hover {
     background-color: var(--c-yellow-0);
+  }
+}
+</style>
+
+<style>
+.actions__popover {
+  &_start,
+  &_end {
+    min-width: 220px;
+    margin-right: -6px !important;
+  }
+  &_start {
+    margin-top: 8px;
+  }
+  &_end {
+    margin-bottom: 8px;
   }
 }
 </style>
