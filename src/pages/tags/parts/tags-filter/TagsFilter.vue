@@ -160,5 +160,9 @@ export default Vue.extend({
 .btns {
   @mixin flex-row-central;
   justify-content: center;
+
+  .btn:first-child {
+    margin-right: 20px;
+  }
 }
 </style>
