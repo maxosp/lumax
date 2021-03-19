@@ -12,38 +12,32 @@
         class="divider"
       />
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedRows.length"
         class="text --basic"
-        @click="$emit('onEdit', selectedRows)"
+        @click="$emit('onAccept', selectedRows)"
       >
-        Редактировать
+        Принять
       </span>
       <span
         v-if="selectedRows.length"
-        class="text --red"
-        @click="handleRemove"
+        class="text --basic"
+        @click="$emit('onReject', selectedRows)"
       >
-        Удалить
+        Отклонить
       </span>
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('duplicate', selectedRows[0])"
+        @click="$emit('onOpen', selectedRows)"
       >
-        Дублировать
+        Открыть
       </span>
       <span
         v-if="showAdditionalActions"
         class="text --basic"
+        @click="$emit('onSeeComment', selectedRows[0])"
       >
-        Дублировать n раз
-      </span>
-      <span
-        v-if="showAdditionalActions"
-        class="text --basic"
-        @click="$emit('showPreview', selectedRows[0])"
-      >
-        Предпросмотр
+        Посмотреть комментарий
       </span>
     </div>
     <div class="right">
@@ -118,10 +112,6 @@ export default Vue.extend({
   }
   .text.--basic:last-of-type {
     margin-right: 0;
-  }
-  .text.--red {
-    color: var(--c-red-1);
-    margin-right: 25px;
   }
   .left {
     @mixin flex-row-central;

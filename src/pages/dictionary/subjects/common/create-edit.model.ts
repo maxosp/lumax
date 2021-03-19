@@ -3,7 +3,7 @@ import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { getMediaFx } from '@/features/api/media/get-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { $session } from '@/features/session/index'
-import { addToast } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { colorDropdownModule } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
 import { CreateSubjectType } from '@/features/api/subject/types'
 
@@ -156,7 +156,7 @@ forward({
   from: uploadIconSubjectFx.doneData,
   to: [
     iconSubjectIdChanged.prepend((files) => files[0].id),
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
+    successToastEvent('Загрузка завершена'),
   ],
 })
 forward({
@@ -170,7 +170,7 @@ forward({
   from: uploadImageSubjectFx.doneData,
   to: [
     imageSubjectIdChanged.prepend((files) => files[0].id),
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' })),
+    successToastEvent('Загрузка завершена'),
   ],
 })
 // агрегация данных медиа

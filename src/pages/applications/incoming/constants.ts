@@ -13,10 +13,13 @@ export const incomingApplicationsDataFields: TableField[] = [
     width: '50px',
   },
   {
-    name: 'id',
+    name: 'test_assignment',
     sortField: 'id',
-    title: 'ID тега',
+    title: 'ID задания',
     width: '110px',
+    formatter(obj: TestAssignment) {
+      return obj.id || '-'
+    },
   },
   {
     name: 'test_assignment',

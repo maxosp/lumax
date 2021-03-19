@@ -1,6 +1,7 @@
 import { StudyYear, Subject } from '@/features/api/subject/types'
 import { TreeData } from '@/features/api/types'
 import { User } from '@/features/api/user/types'
+import { Vuetable, VuetablePagination } from 'vuetable-2'
 
 export type DropdownItem = {
   name: string
@@ -26,4 +27,12 @@ export type DropdownItem = {
 
 export type SelectedObjectType = {
   id: number
+}
+
+export type RefsType = {
+  vuetable?: typeof Vuetable
+  pagination?: typeof VuetablePagination
+  fileInput?: {
+    files: FileList
+  }
 }

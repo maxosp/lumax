@@ -1,7 +1,7 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { gethThemesTreeLightFx, getThemesTreeFx } from '@/features/api/subject/get-themes-tree'
 import { deleteThemeFx } from '@/features/api/subject/delete-theme'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { deleteThemesFx } from '@/features/api/subject/delete-themes'
@@ -67,7 +67,7 @@ forward({
   from: deleteTheme.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Тема была успешно удалена!' })),
+    successToastEvent('Тема была успешно удалена!'),
     canRefreshTableAfterDeletionChanged.prepend(() => true),
   ],
 })
@@ -76,7 +76,7 @@ forward({
   from: deleteThemes.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Темы были успешно удалены!' })),
+    successToastEvent('Темы были успешно удалены!'),
     canRefreshTableAfterDeletionChanged.prepend(() => true),
   ],
 })

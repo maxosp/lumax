@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import VueEvents from 'vue-events'
 import PageHeader from '@/pages/dictionary/resources/list/parts/PageHeader.vue'
 import ContextMenu from '@/pages/dictionary/resources/list/parts/ContextMenu.vue'
@@ -52,6 +52,7 @@ import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 
@@ -61,7 +62,11 @@ type RightClickParams = {
   type?: ContextMenuType
 }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   name: 'ResourcesPage',
   components: {
     PageHeader,
@@ -89,9 +94,7 @@ export default Vue.extend({
   },
   computed: {
     selectedRows(): number[] {
-      // @ts-ignore
       if (!this.$refs.vuetable) return []
-      // @ts-ignore
       return this.$refs.vuetable.selectedTo
     },
   },

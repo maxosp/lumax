@@ -17,6 +17,16 @@
           Создание темы
         </BaseButton>
       </RouterLink>
+      <BaseButton
+        class="btn --square"
+        @click="loadModalForMultiChanges(selectedRows)"
+      >
+        <Icon
+          type="edit"
+          size="20"
+          class="icon"
+        />
+      </BaseButton>
       <BaseButton class="btn">
         <div class="btn-content">
           <span>
@@ -31,11 +41,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import GridPageHead from '@/pages/common/grid-parts/GridPageHead.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
+import { loadModalForMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 export default Vue.extend({
   name: 'PageHeader',
@@ -45,6 +56,10 @@ export default Vue.extend({
     Icon,
     GridPageHead,
   },
+  props: {
+    selectedRows: { type: Array as PropType<number[]> },
+  },
+  methods: { loadModalForMultiChanges },
 })
 </script>
 
@@ -77,7 +92,17 @@ export default Vue.extend({
   font-size: 14px;
   line-height: 17px;
 }
-
+.btn.--square {
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  @mixin flex-center;
+  margin-right: 20px;
+  .icon {
+    fill: #fff;
+    stroke: transparent;
+  }
+}
 .btn-content {
   display: flex;
   align-items: center;

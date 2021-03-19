@@ -53,7 +53,7 @@ import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderPopup from '@/pages/bank/olympiad-tasks/list/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
-import { loadModalForMultiChanges } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
+import { loadModalForMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 export default Vue.extend({
   components: {

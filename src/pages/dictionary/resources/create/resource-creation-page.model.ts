@@ -29,7 +29,7 @@ import {
 } from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
 import { isLinkValid } from '@/lib/validators/url'
 import { createResourceFx } from '@/features/api/media/create-resource'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 import { createError } from '@/lib/effector/error-generator'
 
@@ -168,8 +168,7 @@ sample({
       errors += 1
     }
     if (errors === 0) saveResource()
-    else if (errors > 0)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+    else if (errors > 0) errorToastEvent('Необходимо заполнить все обязательные поля')
   },
 })
 
@@ -189,7 +188,7 @@ sample({
   source: $ifRedirect,
   clock: createResourceFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Обучающий ресурс успешно создан!' })
+    successToastEvent('Обучающий ресурс успешно создан!')
     if (ifRedirect) navigatePush({ name: 'resources-list' })
     else navigatePush({ name: 'resources-edit', params: { id: `${id}` } })
   },

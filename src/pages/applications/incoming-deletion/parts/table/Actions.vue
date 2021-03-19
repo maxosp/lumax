@@ -75,18 +75,17 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.isStudyYear) return [{ name: 'create', title: 'Создать тег' }]
-      if (this.isTheme) return [{ name: 'create', title: 'Создать метку' }]
-      if (this.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
+      if (this.$props.selected.length > 1) {
+        return [
+          { name: 'accept', title: 'Принять' },
+          { name: 'reject', title: 'Отклонить' },
+        ]
       }
       return [
-        { name: 'delete', title: 'Удалить задание' },
-        { name: 'duplicate', title: 'Дублировать задание' },
-        { name: 'duplicate-n-times', title: 'Дублировать задание n раз' },
-        { name: 'send-for-check', title: 'Отправить на проверку' },
-        { name: 'preview', title: 'Предпросмотр' },
-        { name: 'edit', title: 'Редактировать' },
+        { name: 'accept', title: 'Принять' },
+        { name: 'reject', title: 'Отклонить' },
+        { name: 'open', title: 'Открыть' },
+        { name: 'see-comment', title: 'Посмотреть комментарии' },
       ]
     },
   },
@@ -110,27 +109,19 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.id)
+        case 'accept':
+          this.$emit('onAccept', ids)
           break
-        case 'duplicate':
-          this.$emit('duplicate', this.id)
+        case 'reject':
+          this.$emit('onReject', ids)
           break
-        case 'duplicate-n-times':
-          // TO DO add copy method
+        case 'open':
+          this.$emit('onOpen', ids)
           break
-        case 'send-for-check':
-          this.$emit('sendForCheck', this.id)
-          break
-        case 'delete-all':
-          this.$emit('onRemove', this.selected)
-          break
-        case 'delete':
-          this.$emit('onRemove', [this.id])
-          break
-        case 'preview':
-          this.$emit('showPreview', this.id)
+        case 'see-comment':
+          this.$emit('onSeeComment', ids[0])
           break
         default:
           break

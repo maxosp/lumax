@@ -1,7 +1,7 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { getTagsTreeFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree'
 import { deleteTagFx, deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { DeleteTagsType, GetTagsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 
@@ -49,7 +49,7 @@ forward({
   from: deleteTag.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно удален!' })),
+    successToastEvent('Тег был успешно удален!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
   ],
 })
@@ -58,7 +58,7 @@ forward({
   from: deleteTags.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
+    successToastEvent('Теги были успешно удалены!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
   ],
 })

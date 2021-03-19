@@ -1,4 +1,4 @@
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent } from '@/features/toasts/toasts.model'
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { condition } from 'patronum'
 import { DEFAULT_ID } from '@/pages/common/constants'
@@ -58,7 +58,7 @@ sample({
     if (obj.moderator_id !== DEFAULT_ID && obj.assignments) sendForModaration(obj)
     else {
       if (obj.moderator_id === DEFAULT_ID) $moderatorErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -83,10 +83,7 @@ forward({
 //   to: [
 //     loadList.prepend(() => ({})),
 //     modalVisibilityChanged.prepend(() => false),
-//     addToast.prepend(() => ({
-//       type: 'success',
-//       message: 'Задание было успешно отправлено на проверку',
-//     })),
+//     successToastEvent('Задание было успешно отправлено на проверку'),
 //     canRefreshAfterSendingForModerationChanged.prepend(() => true),
 //   ],
 // })

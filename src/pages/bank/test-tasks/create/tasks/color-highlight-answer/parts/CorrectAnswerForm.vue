@@ -85,7 +85,7 @@ import {
   $colorsPalette,
   setColorsPalette,
 } from '@/pages/bank/test-tasks/create/tasks/color-highlight-answer/color-highlight-answer.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent } from '@/features/toasts/toasts.model'
 // import { getRandomId } from '@/pages/bank/test-tasks/create/tasks/utils'
 
 const CONTEXT_MENU_X_OFFSET = 30
@@ -107,8 +107,8 @@ export default Vue.extend({
   },
   data () {
     return {
-      selectedElement: null,
-      selectedColor: null,
+      selectedElement: {} as HTMLElement,
+      selectedColor: '' as string | null,
       contextMenuStyle: {},
       colors: {
         hex: '#ffffff',
@@ -125,7 +125,7 @@ export default Vue.extend({
     },
     addColor() {
       if (this.$colorsPalette.find(color => color === this.colors.hex)) {
-        addToast({ type: 'error', message: 'Такой цвет уже существует!' })
+        errorToastEvent('Такой цвет уже существует!')
         return
       }
       setColorsPalette([...this.$colorsPalette, this.colors.hex])
@@ -136,44 +136,32 @@ export default Vue.extend({
       setColorsPalette(palette)
     },
     setupContextMenu(element: HTMLElement) {
-      // @ts-ignore
       this.selectedElement = element
-      // @ts-ignore
       this.contextMenuStyle = {
         top: `${CONTEXT_MENU_Y_OFFSET + element.getBoundingClientRect().y}px`,
         left: `${CONTEXT_MENU_X_OFFSET + element.getBoundingClientRect().x}px`,
       }
       if (element.hasAttribute('it-fill')) {
-        // @ts-ignore
         this.selectedColor = element.getAttribute('it-fill');
       }
       toggleContextMenu(true)
     },
     setTextColor(color: string) {
-      // @ts-ignore
       this.selectedColor = color
-      // @ts-ignore
       this.selectedElement.setAttribute('it-fill', color)
 
-      // @ts-ignore
       if (this.selectedElement.style.backgroundColor) {
-        // @ts-ignore
         this.selectedElement.setAttribute('own-color', this.selectedElement.style.backgroundColor)
       }
-      // @ts-ignore
       this.selectedElement.style.backgroundColor = color
-      
+
       toggleContextMenu(false)
     },
     removeTextColor() {
-      // @ts-ignore
       this.selectedColor = null
-      // @ts-ignore
       this.selectedElement.removeAttribute('it-fill')
-      // @ts-ignore
       if (this.selectedElement.hasAttribute('own-color')) {
-        // @ts-ignore
-        this.selectedElement.style.backgroundColor = this.selectedElement.getAttribute('own-color')
+        this.selectedElement.style.backgroundColor = this.selectedElement.getAttribute('own-color') || ''
       }
       toggleContextMenu(false)
     },

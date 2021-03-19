@@ -56,42 +56,28 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
+      if (this.selected.length > 1) {
+        return [{ name: 'cancel', title: 'Отменить заявки' }]
       }
       return [
-        { name: 'delete', title: 'Удалить' },
-        { name: 'duplicate', title: 'Дублировать' },
-        { name: 'duplicate-n-times', title: 'Дублировать n раз' },
-        { name: 'send-for-check', title: 'Отправить на проверку' },
-        { name: 'preview', title: 'Предпросмотр' },
-        { name: 'edit', title: 'Редактировать' },
+        { name: 'open', title: 'Открыть' },
+        { name: 'see-comment', title: 'Посмотреть комментарий' },
+        { name: 'cancel', title: 'Отменить заявку' },
       ]
     },
   },
   methods: {
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : this.id
       switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.id)
+        case 'cancel':
+          this.$emit('onCancel', ids)
           break
-        case 'duplicate':
-          this.$emit('duplicate', this.id)
+        case 'open':
+          this.$emit('onOpen', ids)
           break
-        case 'duplicate-n-times':
-          // TO DO add copy method
-          break
-        case 'send-for-check':
-          this.$emit('sendForCheck', this.id)
-          break
-        case 'delete-all':
-          this.$emit('onRemove', this.selected)
-          break
-        case 'delete':
-          this.$emit('onRemove', [this.id])
-          break
-        case 'preview':
-          this.$emit('showPreview', this.id)
+        case 'see-comment':
+          this.$emit('onSeeComment', ids)
           break
         default:
           break

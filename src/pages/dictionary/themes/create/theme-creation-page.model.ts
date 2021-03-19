@@ -5,7 +5,7 @@ import {
   setSelectedSubject,
   subjectDropdownModule,
 } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import {
   $selectedThemes,
   resetSelectedThemes,
@@ -212,7 +212,7 @@ sample({
       if (!obj.name.trim().length) $themeTitleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -238,7 +238,7 @@ sample({
   source: $ifRedirect,
   clock: saveThemeFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Тема успешно создана!' })
+    successToastEvent('Тема успешно создана!')
     if (ifRedirect) navigatePush({ name: 'themes-list' })
     else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
   },
@@ -247,7 +247,7 @@ sample({
   source: $ifRedirect,
   clock: savePrerequisiteFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Пререквизит успешно создан!' })
+    successToastEvent('Пререквизит успешно создан!')
     if (ifRedirect) navigatePush({ name: 'themes-list' })
     else navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
   },
@@ -261,7 +261,7 @@ sample({
     else {
       if (obj.name.length === 0) $prerequisiteTitleErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })

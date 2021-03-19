@@ -1,49 +1,50 @@
 <template>
   <div
     class="header"
-    :class="{invisible: !total, '--expand': selectedRows.length}"
+    :class="{invisible: !total, '--expand': selectedApplications.length}"
   >
     <div class="left">
       <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
-        v-if="selectedRows.length"
+        v-if="selectedApplications.length"
         vertical
         height="25px"
         class="divider"
       />
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedApplications.length"
         class="text --basic"
-        @click="$emit('onEdit', selectedRows)"
+        @click="$emit('showPreview', selectedApplications)"
+      >
+        Предпросмотр
+      </span>
+      <span
+        v-if="selectedApplications.length"
+        class="text --basic"
+        @click="$emit('onEdit', selectedApplications)"
       >
         Редактировать
       </span>
       <span
-        v-if="selectedRows.length"
-        class="text --red"
-        @click="handleRemove"
+        v-if="selectedApplications.length"
+        class="text --basic"
+        @click="$emit('onAccept', selectedApplications)"
       >
-        Удалить
+        Принять
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedApplications.length"
         class="text --basic"
-        @click="$emit('duplicate', selectedRows[0])"
+        @click="$emit('onSendForModeration', selectedApplications)"
       >
-        Дублировать
+        На доработку
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedApplications.length"
         class="text --basic"
+        @click="$emit('onAssignToModerator', selectedApplications)"
       >
-        Дублировать n раз
-      </span>
-      <span
-        v-if="showAdditionalActions"
-        class="text --basic"
-        @click="$emit('showPreview', selectedRows[0])"
-      >
-        Предпросмотр
+        Назначить
       </span>
     </div>
     <div class="right">
@@ -71,19 +72,9 @@ export default Vue.extend({
   },
   props: {
     total: { type: Number, required: true },
-    selectedRows: { type: Array as PropType<number[]> },
+    selectedApplications: { type: Array as PropType<number[]> },
   },
-  computed: {
-    showAdditionalActions() {
-      return this.selectedRows.length === 1
-    },
-  },
-  methods: {
-    modalTasksTypesVisibilityChanged,
-    handleRemove() {
-      this.$emit('onRemove', this.selectedRows)
-    },
-  },
+  methods: { modalTasksTypesVisibilityChanged },
 })
 </script>
 
@@ -118,10 +109,6 @@ export default Vue.extend({
   }
   .text.--basic:last-of-type {
     margin-right: 0;
-  }
-  .text.--red {
-    color: var(--c-red-1);
-    margin-right: 25px;
   }
   .left {
     @mixin flex-row-central;

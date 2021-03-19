@@ -15,7 +15,7 @@ import {
   setSelectedSubject,
   subjectDropdownModule,
 } from '@/pages/tags/parts/modals/tag-edition/parts/subject/subject-dropdown.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
 import { CreateTagType, Tag } from '@/features/api/assignment/types'
 
@@ -61,7 +61,7 @@ sample({
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -110,7 +110,7 @@ sample({
 forward({
   from: updateTagFx.doneData,
   to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно обновлен!' })),
+    successToastEvent('Тег был успешно обновлен!'),
     getTagsTree.prepend(() => ({})),
     getTagsListFx.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),

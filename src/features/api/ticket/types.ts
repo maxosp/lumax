@@ -39,3 +39,11 @@ export type GetTypesResponse = {
   code: string
   name: string
 }
+
+export type UpdateTicketType = {
+  tickets: number[]
+  accept?: boolean | null
+  send_to_revision?: boolean | null
+  set_moderator?: boolean | null
+  cancel_outcome?: boolean | null
+}

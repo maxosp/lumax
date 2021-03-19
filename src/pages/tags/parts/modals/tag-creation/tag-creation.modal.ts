@@ -4,7 +4,7 @@ import { createError } from '@/lib/effector/error-generator'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { createTagFx } from '@/features/api/assignment/olympiad-tags/create-tag'
 import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import {
   $selectedClass,
   classDropdownModule,
@@ -61,7 +61,7 @@ sample({
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -121,7 +121,7 @@ forward({
     getTagsListFx.prepend(() => ({})),
     getTagsTree.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
-    addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно создан!' })),
+    successToastEvent('Тег был успешно создан!'),
     canRefreshAfterCreationChange.prepend(() => true),
   ],
 })

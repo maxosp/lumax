@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import VueEvents from 'vue-events'
 import { Vuetable, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
@@ -93,9 +93,10 @@ import {
   changeIsMondatory,
   $triggerToRefreshTable,
 } from '@/pages/dictionary/subjects/list/subjects-page.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -107,7 +108,11 @@ type RightClickParams = {
   type?: ContextMenuType
 }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   name: 'SubjectsGridPage',
   components: {
     Vuetable,
@@ -139,15 +144,12 @@ export default Vue.extend({
       return `${config.BACKEND_URL}/api/subject/subjects/list/`
     },
     selectedRows(): number[] {
-      // @ts-ignore
       if (!this.$refs.vuetable) return []
-      // @ts-ignore
       return this.$refs.vuetable.selectedTo
     },
   },
   watch: {
     $triggerToRefreshTable() {
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
   },
@@ -168,19 +170,16 @@ export default Vue.extend({
       const container = document.querySelector('#subjects-page')
       container && container.dispatchEvent(resetEvent)
 
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
       this.filterParams = {}
       reset() // search string and field
 
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     // TODO like removeSelected
@@ -192,18 +191,13 @@ export default Vue.extend({
     },
     // TODO delete all
     async removeSelected(ids: number | number[]) {
-      const currentMethod = typeof ids === 'number' ? deleteSubject : deleteManySubjects
-      // @ts-ignore
-      await currentMethod(ids)
-      // @ts-ignore
+      if (typeof ids === 'number') await deleteSubject(ids)
+      else await deleteManySubjects(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      // @ts-ignore
       if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
     },
     handleLoadError(res: any) {
-      if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
-      }
+      if (!res.response) noInternetToastEvent()
     },
     handleRightClick({ data, event, type = 'table_subjects' }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }

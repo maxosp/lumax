@@ -1,5 +1,5 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
@@ -52,8 +52,5 @@ forward({
 })
 forward({
   from: deleteResource.doneData,
-  to: [
-    loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Обучающий ресурс был успешно удален!' })),
-  ],
+  to: [loadTree.prepend(() => ({})), successToastEvent('Обучающий ресурс был успешно удален!')],
 })

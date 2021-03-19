@@ -56,42 +56,33 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
-      }
-      return [
-        { name: 'delete', title: 'Удалить' },
-        { name: 'duplicate', title: 'Дублировать' },
-        { name: 'duplicate-n-times', title: 'Дублировать n раз' },
-        { name: 'send-for-check', title: 'Отправить на проверку' },
+      const res = [
         { name: 'preview', title: 'Предпросмотр' },
         { name: 'edit', title: 'Редактировать' },
       ]
+      if (this.$props.selected.length === 1 || this.$props.id) {
+        res.push({ name: 'see-comment', title: 'Посмотреть комментарии' })
+        res.push({ name: 'cancel', title: 'Отменить заявку' })
+      }
+      if (this.$props.selected.length > 1) res.push({ name: 'cancel', title: 'Отменить заявки' })
+      return res
     },
   },
   methods: {
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.id)
-          break
-        case 'duplicate':
-          this.$emit('duplicate', this.id)
-          break
-        case 'duplicate-n-times':
-          // TO DO add copy method
-          break
-        case 'send-for-check':
-          this.$emit('sendForCheck', this.id)
-          break
-        case 'delete-all':
-          this.$emit('onRemove', this.selected)
-          break
-        case 'delete':
-          this.$emit('onRemove', [this.id])
-          break
         case 'preview':
-          this.$emit('showPreview', this.id)
+          this.$emit('showPreview', ids)
+          break
+        case 'edit':
+          this.$emit('onEdit', ids)
+          break
+        case 'cancel':
+          this.$emit('onCancel', ids)
+          break
+        case 'see-comment':
+          this.$emit('onSeeComments', ids)
           break
         default:
           break

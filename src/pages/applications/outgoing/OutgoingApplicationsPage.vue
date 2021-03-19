@@ -17,10 +17,12 @@
     </GeneralFilter>
     <TableHeader
       :total="total"
+      :selected-applications="selectedApplications"
       :selected-rows="selectedRows"
-      @onEdit="editTask"
-      @onRemove="removeSelected"
       @showPreview="showPreview"
+      @onEdit="editApplications"
+      @onCancel="cancelApplications"
+      @onSeeComments="showComments"
     />
 
     <div :class="{ 'table-container': true, hideHeader: !total }">
@@ -64,9 +66,10 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
-            @onEdit="editTask"
             @showPreview="showPreview"
+            @onEdit="editApplications"
+            @onCancel="cancelApplications"
+            @onSeeComments="showComments"
           />
         </template>
       </Vuetable>
@@ -91,15 +94,18 @@
       :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
-      @onEdit="editTask"
       @showPreview="showPreview"
+      @onEdit="editApplications"
+      @onCancel="cancelApplications"
+      @onSeeComments="showComments"
     />
+    <CancelModal />
+    <OutgoingModal />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
@@ -118,17 +124,26 @@ import TableHeader from '@/pages/applications/outgoing/parts/table/TableHeader.v
 import TooltipCell from '@/pages/applications/outgoing/parts/table/TooltipCell.vue'
 import Actions from '@/pages/applications/outgoing/parts/table/Actions.vue'
 import ContextMenu from '@/pages/applications/outgoing/parts/ContextMenu.vue'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { loadList } from '@/pages/applications/outgoing/outgoing-applications-page.model'
 import {
   toggleVisibility,
   $visibility,
 } from '@/pages/applications/outgoing/parts/filter/filter.model'
 import { $session } from '@/features/session'
+import CancelModal from '@/pages/applications/modals/cancel/CancelModal.vue'
+import { loadModal } from '@/pages/applications/modals/cancel/cancel.model'
+import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
+import { RefsType } from '@/pages/common/types'
+// import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   components: {
     PageHeader,
     GeneralFilter,
@@ -139,6 +154,8 @@ export default Vue.extend({
     ContextMenu,
     Vuetable,
     VuetablePagination,
+    CancelModal,
+    OutgoingModal,
   },
   effector: {
     $visibility,
@@ -158,6 +175,7 @@ export default Vue.extend({
       selectedRows: [] as number[] | null,
       subject_id: null,
       class_id: null,
+      selectedApplications: [] as number[],
     }
   },
   computed: {
@@ -169,14 +187,23 @@ export default Vue.extend({
     toggleVisibility,
     loadList,
     reset,
-    showPreview(id: number) {
-      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+    showPreview(ids: number[]) {
+      ids.forEach((id) =>
+        window.open(
+          `${config.PREVIEW_URL}/question?questionId=${id}&type=test-assignment&token=${this.$token}`,
+          '_blank'
+        )
+      )
     },
-    editTask(id: number) {
-      console.log('EDIT ', id)
+    editApplications(ids: number[]) {
+      console.log('EDIT ', ids)
     },
-    removeSelected(ids: number[]) {
-      console.log('delete', ids)
+    cancelApplications(ids: number[]) {
+      loadModal(ids)
+    },
+    showComments(ids: number[]) {
+      console.log(ids)
+      // loadCommentModal(this.selectedApplications[0])
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -186,7 +213,6 @@ export default Vue.extend({
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadList({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -194,26 +220,23 @@ export default Vue.extend({
       reset() // search string and field
       // reload data
       loadList({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+        noInternetToastEvent()
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.id
+      this.clickedRowId = data.test_assignment.id
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
@@ -221,14 +244,20 @@ export default Vue.extend({
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
+      if (this.selectedApplications.length === 0)
+        this.selectedApplications.push(res.data.test_assignment.id)
+      else if (this.selectedApplications.find((el: number) => el === res.data.test_assignment.id)) {
+        this.selectedApplications.splice(
+          this.selectedApplications.indexOf(res.data.test_assignment.id),
+          1
+        )
+      } else this.selectedApplications.push(res.data.test_assignment.id)
     },
     hideContextMenu() {
       this.showContextMenu = false

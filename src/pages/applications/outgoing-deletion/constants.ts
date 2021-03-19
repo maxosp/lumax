@@ -14,7 +14,7 @@ export const outgoingDeletionApplicationsDataFields: TableField[] = [
   {
     name: 'id',
     sortField: 'id',
-    title: 'ID тега',
+    title: 'ID элемента',
     width: '110px',
   },
   {

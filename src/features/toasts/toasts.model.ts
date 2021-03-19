@@ -49,3 +49,9 @@ export const loadingToastEvent = (message: string) =>
     type: 'loading',
     message,
   }))
+
+export const noInternetToastEvent = () =>
+  addToast.prepend(() => ({
+    type: 'no-internet',
+    message: 'Отсутствует подключение',
+  }))

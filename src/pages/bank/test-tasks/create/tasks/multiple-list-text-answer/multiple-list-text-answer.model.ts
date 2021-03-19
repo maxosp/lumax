@@ -1,6 +1,6 @@
 import { createEvent, forward, restore, attach, createEffect, combine, sample } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
-import { addToast } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dropdown/constants'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
@@ -64,7 +64,7 @@ sample({
   source: $audioFiles,
   clock: uploadAudioFilesFx.doneData,
   fn: (existFiles: AudioFile[], newFiles: UploadMediaResponse[]) => {
-    addToast.prepend(() => ({ type: 'success', message: 'Загрузка завершена' }))
+    successToastEvent('Загрузка завершена')
     return [...existFiles, ...newFiles.map((file) => ({ ...file, isLimited: true, limit: 0 }))]
   },
   target: setAudioFiles,

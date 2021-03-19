@@ -58,7 +58,7 @@ import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dro
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
@@ -193,8 +193,5 @@ sample({
 
 forward({
   from: createTestAssignment.doneData,
-  to: addToast.prepend(() => ({
-    type: 'success',
-    message: 'Задание успешно создано!',
-  })),
+  to: successToastEvent('Задание успешно создано!'),
 })

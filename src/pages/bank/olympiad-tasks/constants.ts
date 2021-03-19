@@ -15,7 +15,7 @@ export const olympiadTasksDataFields: TableField[] = [
   {
     name: 'id',
     sortField: 'id',
-    title: 'ID тега',
+    title: 'ID задания',
     width: '110px',
   },
   {

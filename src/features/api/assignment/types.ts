@@ -211,4 +211,5 @@ export type UpdateAssignmentsBulkParams = {
   status?: string
   difficulty?: number
   moderator_id?: number
+  score?: number
 }

@@ -56,41 +56,34 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
-      }
       return [
         { name: 'preview', title: 'Предпросмотр' },
         { name: 'edit', title: 'Редактировать' },
         { name: 'accept', title: 'Принять' },
-        { name: 'send-for-check', title: 'Отправить на проверку' },
+        { name: 'send-for-moderation', title: 'Отправить на доработку' },
         { name: 'assign-to-moderator', title: 'Назначить заявку модератору' },
       ]
     },
   },
   methods: {
     handleAction(item: SelectItemI) {
+      console.log(this.selected)
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.id)
-          break
-        case 'duplicate':
-          this.$emit('duplicate', this.id)
-          break
-        case 'duplicate-n-times':
-          // TO DO add copy method
-          break
-        case 'send-for-check':
-          this.$emit('sendForCheck', this.id)
-          break
-        case 'delete-all':
-          this.$emit('onRemove', this.selected)
-          break
-        case 'delete':
-          this.$emit('onRemove', [this.id])
-          break
         case 'preview':
-          this.$emit('showPreview', this.id)
+          this.$emit('showPreview', ids)
+          break
+        case 'edit':
+          this.$emit('onEdit', ids)
+          break
+        case 'accept':
+          this.$emit('onAccept', ids)
+          break
+        case 'send-for-moderation':
+          this.$emit('onSendForModeration', ids)
+          break
+        case 'assign-to-moderator':
+          this.$emit('onAssignToModerator', ids)
           break
         default:
           break

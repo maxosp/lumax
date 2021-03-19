@@ -1,7 +1,7 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
 import { DuplicateAssignmentType } from '@/features/api/assignment/types'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
   deleteOlympiadAssignmentFx,
   deleteOlympiadAssignmentsFx,
@@ -51,10 +51,7 @@ forward({
 forward({
   from: duplicateAssignment.doneData,
   to: [
-    addToast.prepend(() => ({
-      type: 'success',
-      message: 'Задание было успешно дублировано!',
-    })),
+    successToastEvent('Задание было успешно дублировано!'),
     loadList.prepend(() => ({})),
     canRefreshAfterDuplicateChanged.prepend(() => true),
   ],
@@ -64,7 +61,7 @@ forward({
   from: deleteAssignment.doneData,
   to: [
     loadList.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Задание было успешно удалено!' })),
+    successToastEvent('Задание было успешно удалено!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),
   ],
@@ -74,7 +71,7 @@ forward({
   from: deleteAssignments.doneData,
   to: [
     loadList.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
+    successToastEvent('Задания были успешно удалены!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),
   ],

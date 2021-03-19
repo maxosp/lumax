@@ -3,7 +3,7 @@ import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { File } from '@/features/api/subject/types'
-import { addToast } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -56,8 +56,5 @@ forward({
 
 forward({
   from: deleteMedia.doneData,
-  to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Файл был успешно удален!' })),
-    fileDataChanged.prepend(() => null),
-  ],
+  to: [successToastEvent('Файл был успешно удален!'), fileDataChanged.prepend(() => null)],
 })

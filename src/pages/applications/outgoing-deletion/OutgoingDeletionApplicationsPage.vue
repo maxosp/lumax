@@ -18,9 +18,9 @@
     <TableHeader
       :total="total"
       :selected-rows="selectedRows"
-      @onEdit="editTask"
-      @onRemove="removeSelected"
-      @showPreview="showPreview"
+      @onOpen="openApplications"
+      @onSeeComment="showComment"
+      @onCancel="cancelApplications"
     />
 
     <div :class="{ 'table-container': true, hideHeader: !total }">
@@ -57,9 +57,9 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
-            @onEdit="editTask"
-            @showPreview="showPreview"
+            @onOpen="openApplications"
+            @onSeeComment="showComment"
+            @onCancel="cancelApplications"
           />
         </template>
       </Vuetable>
@@ -84,15 +84,17 @@
       :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
-      @onEdit="editTask"
-      @showPreview="showPreview"
+      @onOpen="openApplications"
+      @onSeeComment="showComment"
+      @onCancel="cancelApplications"
     />
+    <CancelModal />
+    <CommentModal />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
@@ -111,17 +113,26 @@ import TableHeader from '@/pages/applications/outgoing-deletion/parts/table/Tabl
 import TooltipCell from '@/pages/applications/outgoing-deletion/parts/table/TooltipCell.vue'
 import Actions from '@/pages/applications/outgoing-deletion/parts/table/Actions.vue'
 import ContextMenu from '@/pages/applications/outgoing-deletion/parts/ContextMenu.vue'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { loadList } from '@/pages/applications/outgoing-deletion/outgoing-deletion-applications-page.model'
 import {
   toggleVisibility,
   $visibility,
 } from '@/pages/applications/outgoing-deletion/parts/filter/filter.model'
 import { $session } from '@/features/session'
+import CancelModal from '@/pages/applications/modals/cancel/CancelModal.vue'
+import { loadModal } from '@/pages/applications/modals/cancel/cancel.model'
+import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
+import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
+import { RefsType } from '@/pages/common/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   components: {
     PageHeader,
     GeneralFilter,
@@ -132,6 +143,8 @@ export default Vue.extend({
     ContextMenu,
     Vuetable,
     VuetablePagination,
+    CancelModal,
+    CommentModal,
   },
   effector: {
     $visibility,
@@ -162,14 +175,14 @@ export default Vue.extend({
     toggleVisibility,
     loadList,
     reset,
-    showPreview(id: number) {
-      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+    openApplications(ids: number[]) {
+      console.log('open', ids)
     },
-    editTask(id: number) {
-      console.log('EDIT ', id)
+    cancelApplications(ids: number[]) {
+      loadModal(ids)
     },
-    removeSelected(ids: number[]) {
-      console.log('detelet', ids)
+    showComment(id: number) {
+      loadCommentModal(id)
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -179,7 +192,6 @@ export default Vue.extend({
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadList({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -187,21 +199,18 @@ export default Vue.extend({
       reset() // search string and field
       // reload data
       loadList({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+        noInternetToastEvent()
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
@@ -214,13 +223,11 @@ export default Vue.extend({
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
     hideContextMenu() {

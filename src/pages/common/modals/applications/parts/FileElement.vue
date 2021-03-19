@@ -6,7 +6,7 @@
       type="close"
       class="close-icon"
       size="12"
-      @click="$emit('delete')"
+      @click="$emit('delete', id)"
     />
   </div>
 </template>
@@ -21,6 +21,7 @@ export default Vue.extend({
   props: {
     name: { type: String as PropType<string>, default: '' },
     image: { type: String as PropType<string>, default: '' },
+    id: { type: Number as PropType<number> },
   },
 })
 </script>
