@@ -46,8 +46,8 @@ export default Vue.extend({
     disabled: { type: Boolean as PropType<boolean> },
     value: { type: [String, Number] as PropType<string | number>, required: true },
     errorMessage: { type: String as PropType<string>, default: '' },
-    placeholder: { type: String as PropType<string>, required: true },
-    label: { type: String as PropType<string>, required: true },
+    placeholder: { type: String as PropType<string>, default: '' },
+    label: { type: String as PropType<string>, default: '' },
     readOnlyDropdown: { type: Boolean as PropType<boolean> },
   },
 })

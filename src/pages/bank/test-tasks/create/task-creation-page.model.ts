@@ -50,6 +50,10 @@ import {
   $isFilled as $isFilledShortClosed,
   $form as $formShortClosed,
 } from '@/pages/bank/test-tasks/create/tasks/short-closed-answer/short-closed-answer.model'
+import {
+  $isFilled as $isFilledMovingOnImage,
+  $form as $formMovingOnImage,
+} from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
@@ -93,6 +97,7 @@ const $isFilled = combine({
   MultipleListTextAnswer: $isFilledMultipleListText,
   MultipleShortClosedAnswer: $isFilledMultipleShortClosed,
   ShortClosedAnswer: $isFilledShortClosed,
+  MovingImagesOnImageInputAnswer: $isFilledMovingOnImage,
 })
 
 export const $canSave = combine(
@@ -119,6 +124,7 @@ const $taskform = combine({
   MultipleListTextAnswer: $formMultipleListText,
   MultipleShortClosedAnswer: $formMultipleShortClosed,
   ShortClosedAnswer: $formShortClosed,
+  MovingImagesOnImageInputAnswer: $formMovingOnImage,
 })
 
 const $baseForm = combine(
