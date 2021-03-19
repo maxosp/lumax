@@ -9,10 +9,12 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import Cookies from 'js-cookie'
 import VTooltip from 'v-tooltip'
 
-import { formatTagTitle } from '@/pages/tags/utils'
-import { formatThemeTitle } from '@/pages/dictionary/themes/utils'
-import { formatTotalAmount } from '@/pages/dictionary/themes/list/utils'
-import { formatTasksTitle } from '@/pages/bank/olympiad-tasks/utils'
+import {
+  formatTasksTitle,
+  formatThemesTitle,
+  formatTotalAmount,
+  formatTagsTitle,
+} from '@/features/lib/index'
 
 import App from './App.vue'
 import { routes } from './routes'
@@ -26,8 +28,8 @@ Vue.use(VTooltip, {
   defaultBoundariesElement: document.body,
 })
 
-Vue.filter('formatTagTitle', formatTagTitle)
-Vue.filter('formatThemeTitle', formatThemeTitle)
+Vue.filter('formatTagsTitle', formatTagsTitle)
+Vue.filter('formatThemesTitle', formatThemesTitle)
 Vue.filter('formatTotalAmount', formatTotalAmount)
 Vue.filter('formatTasksTitle', formatTasksTitle)
 
