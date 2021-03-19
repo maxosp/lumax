@@ -2,8 +2,8 @@
   <v-popover
     :open="isOpen"
     :placement="popoverPlacement"
-    :popoverClass="popoverClass"
-    popoverInnerClass=""
+    :popover-class="popoverClass"
+    popover-inner-class=""
     @apply-hide="closeMenu"
   >
     <Icon
@@ -44,6 +44,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { navigatePush } from '@/features/navigation'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
+import { selectItemHeight, actionsSelectMenuMaxHeight } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'Actions',
@@ -80,11 +81,11 @@ export default Vue.extend({
     setPopoverPlacement() {
       const vuetableBottomPosition = this.$parent.$el.getBoundingClientRect().bottom
       const actionsBottomPosition = this.$el.getBoundingClientRect().bottom
-      const selectItemHeight = 51
-      const selectMenuMaxHeight = 255
       const selectItemsSumHeight = this.items.length * selectItemHeight
       const selectMenuHeight =
-        selectItemsSumHeight > selectMenuMaxHeight ? selectMenuMaxHeight : selectItemsSumHeight
+        selectItemsSumHeight > actionsSelectMenuMaxHeight
+          ? actionsSelectMenuMaxHeight
+          : selectItemsSumHeight
 
       if (vuetableBottomPosition - actionsBottomPosition < selectMenuHeight) {
         this.popoverPlacement = 'left-end'
@@ -130,16 +131,6 @@ export default Vue.extend({
 
 <style>
 .actions__popover {
-  &_start,
-  &_end {
-    min-width: 220px;
-    margin-right: -6px !important;
-  }
-  &_start {
-    margin-top: 8px;
-  }
-  &_end {
-    margin-bottom: 8px;
-  }
+  @mixin actions-popover;
 }
 </style>

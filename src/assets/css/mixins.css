@@ -108,3 +108,17 @@
   border-right: 10px solid transparent;
   border-bottom: 10px solid #fff;
 }
+
+@define-mixin actions-popover {
+  &_start,
+  &_end {
+    min-width: 220px;
+    margin-right: -6px !important;
+  }
+  &_start {
+    margin-top: 8px;
+  }
+  &_end {
+     margin-bottom: 8px;
+   }
+}
