@@ -48,7 +48,13 @@ export const createAddEventForArrayStore = <T>(
   $store: Store<T[]>,
   factory: CreateAddInArrayEventFactory<T>
 ) => {
-  const event = createEvent<T>()
-  $store.on(event, (items) => [...items, factory()])
+  const event = createEvent<Partial<T> | null>()
+  $store.on(event, (items, item) => [
+    ...items,
+    {
+      ...factory(),
+      ...item,
+    },
+  ])
   return event
 }

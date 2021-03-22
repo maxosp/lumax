@@ -5,8 +5,8 @@
       <FormLabel>Фоновое изображение</FormLabel>
       <div class="actions">
         <template v-if="!$hideDragAndDropControls">
-          <BaseButton class="add-image button" @click="addDroppableImage">+ изображение</BaseButton>
-          <BaseButton class="button" @click="addInput">+ текст</BaseButton>
+          <BaseButton class="add-image button" @click="setNextResizerToImage">+ изображение</BaseButton>
+          <BaseButton class="button" @click="setNextResizerToText">+ текст</BaseButton>
         </template>
       </div>
     </div>
@@ -22,6 +22,12 @@
         </div>
       </FilePicker>
       <div v-if="!$hideDragAndDropControls" class="background-image-wrapper">
+        <ResizableCreator
+          :disabled="!$canCreateResizableBlock"
+          :scale="$scale"
+          @created="createResizableBlock"
+          @unfocused="resetNextResizableBlock"
+        />
         <DraggableInputs />
         <DraggableImages />
         <img
@@ -48,11 +54,17 @@ import {
   $scale,
   addInput,
   addDroppableImage,
+  createResizableBlock,
+  $canCreateResizableBlock,
+  setNextResizerToText,
+  setNextResizerToImage,
+  setNextResizableBlockType,
 } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
 import FilePicker from '@/ui/file-picker/FilePicker.vue'
 import Spinner from '@/ui/spinner/Spinner.vue'
 import DraggableInputs from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableInputs.vue'
 import DraggableImages from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableImages.vue'
+import ResizableCreator from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/resizable/ResizableCreator.vue'
 import ImageContextMenu from './ImageContextMenu.vue'
 
 export default Vue.extend({
@@ -63,8 +75,10 @@ export default Vue.extend({
     $hideDragAndDropControls,
     $mainImageSize,
     $scale,
+    $canCreateResizableBlock,
   },
   components: {
+    ResizableCreator,
     DraggableImages,
     DraggableInputs,
     Spinner,
@@ -85,6 +99,12 @@ export default Vue.extend({
     },
   },
   methods: {
+    setNextResizerToImage,
+    setNextResizerToText,
+    createResizableBlock,
+    resetNextResizableBlock() {
+      setNextResizableBlockType(null)
+    },
     uploadMainImage,
     saveContainerWidth() {
       const el = this.$el

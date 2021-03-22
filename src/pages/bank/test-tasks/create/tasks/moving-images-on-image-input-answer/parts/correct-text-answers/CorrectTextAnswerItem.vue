@@ -6,22 +6,30 @@
     />
     <div class="answers">
 
-      <div class="answer">
+      <div
+        v-for="(textAnswer, i) in answer.value"
+        :key="textAnswer.systemIndex"
+        class="answer"
+      >
         <FormInput
-          :value="answer.value"
+          :value="textAnswer.value"
           class="answer-input"
           placeholder="Введите ответ"
-          @input="$emit('change', {
-            ...answer,
-            value: $event,
-          })"
+          @input="editAnswer(i, $event)"
         />
         <div class="actions">
+          <BaseButton
+            v-if="i === answer.value.length - 1"
+            class="add-value"
+            @click="addAnswer"
+          >
+            +
+          </BaseButton>
           <Icon
             class="remove-icon"
             size="12px"
             type="close"
-            @click="$emit('remove', value)"
+            @click="removeAnswer(i)"
           />
         </div>
       </div>
@@ -35,10 +43,13 @@ import Vue, { PropType } from 'vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { DroppableInput } from '@/pages/bank/test-tasks/create/tasks/types'
+import { textInputsCounter } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+import BaseButton from '@/ui/button/BaseButton.vue'
 
 export default Vue.extend({
   name: `CorrectTextAnswerItem`,
   components: {
+    BaseButton,
     Icon,
     FormInput,
   },
@@ -48,10 +59,59 @@ export default Vue.extend({
       required: true,
     },
   },
+  methods: {
+    addAnswer() {
+      this.$emit('change', {
+        ...this.answer,
+        value: [
+          ...this.answer.value,
+          {
+            value: '',
+            systemIndex: textInputsCounter.next(),
+          },
+        ],
+      })
+    },
+    removeAnswer(i: number) {
+      if (this.answer.value.length === 1) {
+        this.$emit('remove', this.answer)
+        return
+      }
+
+      const value = [...this.answer.value]
+      value.splice(i, 1)
+
+      this.$emit('change', {
+        ...this.answer,
+        value,
+      })
+    },
+    editAnswer(i: number, newValue: string) {
+      const value = [...this.answer.value]
+      const { systemIndex } = value[i]
+      value.splice(i, 1, {
+        value: newValue,
+        systemIndex,
+      })
+
+      this.$emit('change', {
+        ...this.answer,
+        value,
+      })
+    },
+  },
 })
 </script>
 
 <style scoped>
+.add-value {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  @mixin flex-center;
+  margin-right: 20px;
+  font-size: 20px;
+}
 .answers {
   flex: 1;
 }

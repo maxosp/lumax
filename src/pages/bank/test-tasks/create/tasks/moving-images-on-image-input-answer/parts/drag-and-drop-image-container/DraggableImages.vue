@@ -39,15 +39,11 @@ import {
   removeDroppableImage,
   $scale,
 } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
-import {
-  DroppableImage,
-  DroppableInput,
-  DraggableImage,
-} from '@/pages/bank/test-tasks/create/tasks/types'
+import { DroppableImage, DraggableImage } from '@/pages/bank/test-tasks/create/tasks/types'
 import { ResizableElementSizes } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/types'
 import ImageContextMenu from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/ImageContextMenu.vue'
 
-import ResizableElement from './ResizableElement.vue'
+import ResizableElement from './resizable/ResizableElement.vue'
 
 export default Vue.extend({
   name: `DraggableImages`,
@@ -95,7 +91,7 @@ export default Vue.extend({
       this.contextCoords.y = e.y
       this.contextKey = key
     },
-    sizesToResizer(image: DroppableInput) {
+    sizesToResizer(image: DroppableImage) {
       return {
         ...image.size,
         ...{
@@ -104,7 +100,7 @@ export default Vue.extend({
         },
       }
     },
-    updateSizes(image: DroppableInput, sizes: ResizableElementSizes) {
+    updateSizes(image: DroppableImage, sizes: ResizableElementSizes) {
       replaceDroppableImage({
         ...image,
         position: {

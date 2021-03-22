@@ -79,12 +79,18 @@ export type Position = {
 }
 
 /* drag&drop on image */
-export type DroppableInput = SystemIndex & {
+type CommonInputType = SystemIndex & {
   size: Size
-  value: string
   color: string
   position: Position
 }
+
+export type DroppableInput = {
+  value: {
+    value: string
+    systemIndex: string
+  }[]
+} & CommonInputType
 
 export type DraggableText = SystemIndex & {
   text: string
@@ -96,9 +102,10 @@ export type DraggableImage = SystemIndex & {
   value: string
 }
 
-export type DroppableImage = SystemIndex & {
+export type DroppableImage = {
   pin: Position
-} & DroppableInput
+  value: string
+} & CommonInputType
 
 export type MovingImagesOnImageAnswer = {
   size: Size

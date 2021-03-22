@@ -1,5 +1,5 @@
 <template>
-  <div class="resizable" :style="{...sizesWithPx, zIndex}">
+  <ResizableBlock class="resizable" :style="{...sizesWithPx, zIndex}">
     <div ref="drag" :class="{drag: true, dragging: isDragging}">
       <div v-if="angleKey" :class="{key: true, left: leftKey, top: topKey}">
         {{angleKey}}
@@ -23,14 +23,19 @@
       <div class='resizer ' data-vector="bottom" />
       <div class='resizer ' data-vector="right" />
     </div>
-  </div>
+  </ResizableBlock>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { createCounter } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/utils'
 import Icon from '@/ui/icon/Icon.vue'
-import { ResizableElementSizes } from './types'
+import {
+  disableDocumentSelection,
+  enableDocumentSelection,
+} from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/resizable/document-selection'
+import { ResizableElementSizes } from '../types'
+import ResizableBlock from './ResizableBlock.vue'
 
 type Data = {
   scaledSizes: ResizableElementSizes
@@ -45,6 +50,7 @@ export default Vue.extend({
   name: `ResizableElement`,
   components: {
     Icon,
+    ResizableBlock,
   },
   props: {
     scale: {
@@ -218,7 +224,9 @@ export default Vue.extend({
         }
 
         const stop = () => {
+          enableDocumentSelection()
           window.removeEventListener('mousemove', resize)
+          window.removeEventListener('mouseup', stop)
         }
 
         const start = (e: MouseEvent) => {
@@ -226,8 +234,10 @@ export default Vue.extend({
           if (e.button === 3) {
             return
           }
+          disableDocumentSelection()
           this.nextZIndex()
           e.stopPropagation()
+          e.preventDefault()
           originalWidth = parseFloat(
             getComputedStyle(element, null).getPropertyValue('width').replace('px', '')
           )
@@ -283,6 +293,7 @@ export default Vue.extend({
 
       element.addEventListener('contextmenu', (e: MouseEvent) => {
         e.preventDefault()
+        e.stopPropagation()
         stop()
         this.$emit('contextmenu', e)
       })
@@ -298,11 +309,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.resizable {
-  position: absolute;
-  background: #888;
-}
-
 .close {
   position: absolute;
   right: 5px;
@@ -347,9 +353,6 @@ export default Vue.extend({
 .drag {
   width: 100%;
   height: 100%;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  border-style: dashed;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;

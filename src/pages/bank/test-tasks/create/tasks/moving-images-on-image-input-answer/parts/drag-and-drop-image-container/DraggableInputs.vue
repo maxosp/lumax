@@ -10,7 +10,7 @@
       @contextmenu.stop="openContext($event, input.systemIndex)"
       @remove="removeInput(input)"
     >
-      {{input.value}}
+      {{input.value[0].value}}
     </ResizableElement>
 
     <ImageContextMenu
@@ -37,7 +37,7 @@ import {
 import { DroppableInput } from '@/pages/bank/test-tasks/create/tasks/types'
 import { ResizableElementSizes } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/types'
 import ImageContextMenu from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/ImageContextMenu.vue'
-import ResizableElement from './ResizableElement.vue'
+import ResizableElement from './resizable/ResizableElement.vue'
 
 export default Vue.extend({
   name: `DraggableInputs`,
