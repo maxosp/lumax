@@ -234,7 +234,6 @@ export default Vue.extend({
         detail: `<input id="${id}" type="" value="S${this.$answersList.length}" />`,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
-
       editor && editor.dispatchEvent(event)
     },
   },

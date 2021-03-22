@@ -6,6 +6,7 @@
       :config="editorConfig"
       :editor-url="editorUrl"
       class="editor"
+      @ready="onEditorReady"
       @input="$emit('input', $event)"
     />
   </div>
@@ -14,7 +15,8 @@
 <script>
 import Vue from 'vue'
 import Ckeditor from 'ckeditor4-vue'
-import { config, url, enableRules } from '@/ui/wysiwyg/constants'
+import { wysiwygConfig, url, enableRules } from '@/ui/wysiwyg/constants'
+import { $token } from '@/features/api/common/request'
 
 export default Vue.extend({
   name: 'Wysiwyg',
@@ -29,13 +31,54 @@ export default Vue.extend({
     editorIndex: { type: Number, required: false, default: 1 },
     placeholder: { type: String, default: '' },
   },
+  effector: {
+    $token,
+  },
   data() {
     return {
       editorUrl: url,
-      editorConfig: { ...config, editorplaceholder: this.placeholder },
+      editorConfig: { ...wysiwygConfig, editorplaceholder: this.placeholder },
     }
   },
   methods: {
+    onEditorReady() {
+      if (window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]) {
+        window.CKEDITOR.instances[`editor${this.$props.editorIndex}`].on(
+          'fileUploadRequest',
+          (event) => {
+            const { xhr } = event.data.fileLoader
+            const formData = new FormData()
+
+            xhr.open('POST', event.data.fileLoader.uploadUrl, true)
+
+            xhr.setRequestHeader('authorization', `Bearer ${this.$token}`)
+
+            formData.append('file', event.data.fileLoader.file, event.data.fileLoader.fileName)
+            formData.append('file_type', 'image')
+
+            event.data.fileLoader.xhr.send(formData)
+
+            event.stop()
+          }
+        )
+        window.CKEDITOR.instances[`editor${this.$props.editorIndex}`].on(
+          'fileUploadResponse',
+          (event) => {
+            event.stop()
+            const { data } = event
+            const jsonResponse = data.fileLoader.xhr.responseText
+            const parsedResponse = JSON.parse(jsonResponse)
+
+            if (!parsedResponse.file) {
+              data.message = 'An error occurred during upload.'
+              event.cancel()
+            } else {
+              data.url = parsedResponse.file
+            }
+          }
+        )
+      }
+    },
     handleInsert(event) {
       const editor = window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]
 
@@ -66,7 +109,6 @@ export default Vue.extend({
         })
       })
     }
-
     if (this.$props.listenInsertion) {
       editor && editor.addEventListener('insert', this.handleInsert)
     }
