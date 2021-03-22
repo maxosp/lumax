@@ -1,5 +1,5 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
-import { getLabelsListFx } from '@/features/api/assignment/get-labels-list'
+import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
 import { DropdownItem } from '@/pages/common/types'
 
 const getLabels = attach({

@@ -21,7 +21,7 @@ import { navigatePush } from '@/features/navigation'
 import TaskHeader from '@/pages/bank/test-tasks/common/Header.vue'
 import TaskContent from '@/pages/bank/test-tasks/edit/parts/Content.vue'
 import TaskFooter from '@/pages/bank/test-tasks/common/Footer.vue'
-import { save, $canSave } from '@/pages/bank/test-tasks/edit/task-edition-page.model'
+import { save, $canSave, loadTask } from '@/pages/bank/test-tasks/edit/task-edition-page.model'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -40,6 +40,9 @@ export default Vue.extend({
         navigatePush({ name: 'test-tasks-list' })
       }
     },
+  },
+  mounted() {
+    loadTask(+this.$route.params.id)
   },
 })
 </script>

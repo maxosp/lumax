@@ -43,7 +43,7 @@ import {
   $taskType,
   setTaskType,
 } from '@/pages/bank/test-tasks/edit/task-edition-page.model'
-import * as tasks from '@/pages/bank/test-tasks/edit/tasks'
+import * as tasks from '@/pages/bank/test-tasks/tasks'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/edit/parts/task-types-dropdown/constants'
 
 export default Vue.extend({

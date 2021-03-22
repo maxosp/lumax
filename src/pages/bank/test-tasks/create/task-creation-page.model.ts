@@ -5,59 +5,59 @@ import { $themesData } from '@/pages/bank/test-tasks/create/parts/themes-dropdow
 import {
   $isFilled as $isFilledBroadFile,
   $form as $formBroadFile,
-} from '@/pages/bank/test-tasks/create/tasks/broad-file-answer/broad-file-answer.model'
+} from '@/pages/bank/test-tasks/tasks/broad-file-answer/broad-file-answer.model'
 import {
   $isFilled as $isFilledBroadOpen,
   $form as $formBroadOpen,
-} from '@/pages/bank/test-tasks/create/tasks/broad-open-answer/broad-open-answer.model'
+} from '@/pages/bank/test-tasks/tasks/broad-open-answer/broad-open-answer.model'
 import {
   $isFilled as $isFilledColorHighlight,
   $form as $formColorHighlight,
-} from '@/pages/bank/test-tasks/create/tasks/color-highlight-answer/color-highlight-answer.model'
+} from '@/pages/bank/test-tasks/tasks/color-highlight-answer/color-highlight-answer.model'
 import {
   $isFilled as $isFilledCommonListString,
   $form as $formCommonListString,
-} from '@/pages/bank/test-tasks/create/tasks/common-list-string-answer/common-list-string-answer.model'
+} from '@/pages/bank/test-tasks/tasks/common-list-string-answer/common-list-string-answer.model'
 import {
   $isFilled as $isFilledCommonListText,
   $form as $formCommonListText,
-} from '@/pages/bank/test-tasks/create/tasks/common-list-text-answer/common-list-text-answer.model'
+} from '@/pages/bank/test-tasks/tasks/common-list-text-answer/common-list-text-answer.model'
 import {
   $isFilled as $isFilledConnectLines,
   $form as $formConnectLines,
-} from '@/pages/bank/test-tasks/create/tasks/connect-lines-answer/connect-lines-answer.model'
+} from '@/pages/bank/test-tasks/tasks/connect-lines-answer/connect-lines-answer.model'
 import {
   $isFilled as $isFilledCorrectSequence,
   $form as $formCorrectSequence,
-} from '@/pages/bank/test-tasks/create/tasks/correct-sequence-answer/correct-sequence-answer.model'
+} from '@/pages/bank/test-tasks/tasks/correct-sequence-answer/correct-sequence-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOne,
   $form as $formMultipleChoiceOne,
-} from '@/pages/bank/test-tasks/create/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
+} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOneOrMany,
   $form as $formMultipleChoiceOneOrMany,
-} from '@/pages/bank/test-tasks/create/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
+} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
 import {
   $isFilled as $isFilledMultipleListText,
   $form as $formMultipleListText,
-} from '@/pages/bank/test-tasks/create/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
+} from '@/pages/bank/test-tasks/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
 import {
   $isFilled as $isFilledMultipleShortClosed,
   $form as $formMultipleShortClosed,
-} from '@/pages/bank/test-tasks/create/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
+} from '@/pages/bank/test-tasks/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
 import {
   $isFilled as $isFilledShortClosed,
   $form as $formShortClosed,
-} from '@/pages/bank/test-tasks/create/tasks/short-closed-answer/short-closed-answer.model'
+} from '@/pages/bank/test-tasks/tasks/short-closed-answer/short-closed-answer.model'
 import {
   $isFilled as $isFilledMovingOnImage,
   $form as $formMovingOnImage,
-} from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/bank/test-tasks/create/tasks/types'
+import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
 const createTestAssignment = attach({
