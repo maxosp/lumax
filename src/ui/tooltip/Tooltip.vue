@@ -41,10 +41,8 @@ export default Vue.extend({
 
   computed: {
     getArrowCornerPosition(): { [key in Position]?: string } {
-      // @ts-ignore
-      if (!this.arrow || this.arrow.ref) return {}
-      // @ts-ignore
-      const { position, corner = 'center' } = this.arrow
+      if (!this.$props.arrow || this.$props.arrow.ref) return {}
+      const { position, corner = 'center' } = this.$props.arrow
       let cssProperty
       if (position === 'top' || position === 'bottom') {
         cssProperty = corner === 'end' ? 'right' : 'left'
@@ -56,8 +54,7 @@ export default Vue.extend({
     },
     getArrowYTranslationValue(): string {
       if (!this.arrow) return '0'
-      // @ts-ignore
-      const { position, corner } = this.arrow
+      const { position, corner } = this.$props.arrow
 
       switch (position) {
         case 'left':
@@ -111,8 +108,7 @@ export default Vue.extend({
 
   methods: {
     calculateRefStyles() {
-      // @ts-ignore
-      const { position, ref } = this.arrow
+      const { position, ref } = this.$props.arrow
       if (!this.arrow || !ref) return
 
       // @ts-ignore

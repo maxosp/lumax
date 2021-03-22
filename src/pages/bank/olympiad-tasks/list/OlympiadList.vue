@@ -33,7 +33,6 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="filterParams"
-        no-data-template=""
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -110,7 +109,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
@@ -127,7 +126,7 @@ import TooltipCell from '@/pages/bank/olympiad-tasks/list/parts/table/TooltipCel
 import Actions from '@/pages/bank/olympiad-tasks/list/parts/table/Actions.vue'
 import * as modals from '@/pages/bank/olympiad-tasks/index'
 import ContextMenu from '@/pages/bank/olympiad-tasks/list/parts/ContextMenu.vue'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import {
   loadList,
   $canRefreshTableAfterDeletion,
@@ -142,15 +141,20 @@ import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
-} from '@/pages/common/modals/tasks-bank/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
 import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
 import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
-import { $canRefreshAfterMultiChanges } from '@/pages/common/modals/tasks-bank/tasks-update/tasks-update-modal.model'
+import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
+import { RefsType } from '@/pages/common/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   components: {
     PageHeader,
     GeneralFilter,
@@ -193,45 +197,37 @@ export default Vue.extend({
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-olympiad/list/`
+      return `${config.BACKEND_URL}/api/assignment/olympiad-assignment/list/`
     },
   },
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        // @ts-ignoree
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
     $canRefreshAfterSendingForModeration: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
     $canRefreshAfterDuplicate: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
-        // @ts-ignore
         this.$refs.vuetable.selectedTo = []
         this.selectedRows = []
       },
     },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
-        // @ts-ignore
         this.$refs.vuetable.selectedTo = []
         this.selectedRows = []
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
-        // @ts-ignore
         this.$refs.vuetable.selectedTo = []
         this.selectedRows = []
       },
@@ -259,13 +255,16 @@ export default Vue.extend({
       loadModalToSendForCheck([id])
     },
     showPreview(id: number) {
-      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+      window.open(
+        `${config.PREVIEW_URL}/question?questionId=${id}&type=olympiad-assignment&token=${this.$token}`,
+        '_blank'
+      )
     },
     editTask(id: number) {
       console.log('EDIT ', id)
     },
     removeSelected(ids: number[]) {
-      this.$session!.permissions!.assignments_assignment.delete
+      this.$session?.permissions?.assignments_assignment?.delete
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },
@@ -277,7 +276,6 @@ export default Vue.extend({
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadList({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -285,21 +283,18 @@ export default Vue.extend({
       reset() // search string and field
       // reload data
       loadList({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+        noInternetToastEvent()
       }
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
@@ -312,13 +307,11 @@ export default Vue.extend({
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
     hideContextMenu() {

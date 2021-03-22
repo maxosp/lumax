@@ -49,8 +49,8 @@ export default Vue.extend({
   },
   props: {
     value: { type: [String, Number] as PropType<string | number>, default: '' },
-    label: { type: String as PropType<string>, required: true },
-    placeholder: { type: String as PropType<string>, required: true },
+    label: { type: String as PropType<string>, default: '' },
+    placeholder: { type: String as PropType<string>, default: '' },
     type: { type: String as PropType<string>, default: 'text' },
     maxLength: { type: Number },
     errorMessage: { type: String as PropType<string>, default: '' },

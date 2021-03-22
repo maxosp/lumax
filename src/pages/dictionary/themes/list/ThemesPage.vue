@@ -30,7 +30,6 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="filterParams"
-        no-data-template=""
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
@@ -83,11 +82,13 @@
       @onOutsideClick="hideContextMenu"
       @onRemove="removeSelected"
     />
+    <ThemeDeletionModal />
+    <DeletionRequestModal />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import VueEvents from 'vue-events'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
@@ -102,22 +103,27 @@ import ContextMenu from '@/pages/dictionary/themes/list/parts/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/dictionary/themes/list/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
+import ThemeDeletionModal from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/ThemeDeletionModal.vue'
 import {
   $treeView,
   loadTree,
   $themesTreeTotal,
-  deleteTheme,
-  deleteThemes,
+  $canRefreshTableAfterDeletion,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
   $visibility,
 } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { navigatePush } from '@/features/navigation'
+import { loadModalToDelete } from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/theme-deletion.model'
+import { $session } from '@/features/session'
+import { loadModalToRequestDeletion } from '@/pages/dictionary/themes/list/parts/modals/deletion-request/deletion-request-modal.model'
+import DeletionRequestModal from '@/pages/dictionary/themes/list/parts/modals/deletion-request/DeletionRequestModal.vue'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -129,7 +135,11 @@ type RightClickParams = {
   type?: ContextMenuType
 }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   name: 'ThemesPage',
   components: {
     Vuetable,
@@ -142,12 +152,16 @@ export default Vue.extend({
     Actions,
     ContextMenu,
     ThemesTree,
+    ThemeDeletionModal,
+    DeletionRequestModal,
   },
   effector: {
     $token,
     $visibility,
     $treeView,
     $themesTreeTotal,
+    $canRefreshTableAfterDeletion,
+    $session,
   },
   data() {
     return {
@@ -170,7 +184,15 @@ export default Vue.extend({
       return `${config.BACKEND_URL}/api/subject/themes/list/`
     },
   },
+  watch: {
+    $canRefreshTableAfterDeletion: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.refresh()
+      },
+    },
+  },
   methods: {
+    loadModalToDelete,
     toggleVisibility,
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -179,11 +201,9 @@ export default Vue.extend({
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     resetAllFilters() {
@@ -196,13 +216,11 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadTree({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -211,35 +229,27 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
-    async removeSelected(ids: number[]) {
-      if (ids.length === 1) await deleteTheme(ids[0])
-      else await deleteThemes(ids)
-      // @ts-ignore
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      // @ts-ignore
-      this.selectedRows = []
+    removeSelected(ids: number[]) {
+      this.$session?.permissions?.subjects_theme?.delete
+        ? loadModalToDelete(ids)
+        : loadModalToRequestDeletion(ids)
     },
     handleEditTheme(id: number) {
       navigatePush({ name: 'themes-edit', params: { id: `${id}` } })
     },
     handleLoadError(res: any) {
-      if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
-      }
+      if (!res.response) noInternetToastEvent()
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       if (this.$treeView) {
@@ -261,6 +271,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
+    // loadTree({})
     loadTree({})
   },
   created() {

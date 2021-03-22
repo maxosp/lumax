@@ -4,7 +4,7 @@
     :class="{invisible: !total, '--expand': selectedRows.length}"
   >
     <div class="left">
-      <span>{{ total | formatTasksTitle }}</span>
+      <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
         v-if="selectedRows.length"
         vertical
@@ -13,34 +13,34 @@
       />
       <span
         v-if="showAdditionalActions"
-        class="--basic"
+        class="text --basic"
         @click="$emit('onEdit', selectedRows)"
       >
         Редактировать
       </span>
       <span
         v-if="selectedRows.length"
-        class="--red"
+        class="text --red"
         @click="handleRemove"
       >
         Удалить
       </span>
       <span
         v-if="showAdditionalActions"
-        class="--basic"
+        class="text --basic"
         @click="$emit('duplicate', selectedRows[0])"
       >
         Дублировать
       </span>
       <span
         v-if="showAdditionalActions"
-        class="--basic"
+        class="text --basic"
       >
         Дублировать n раз
       </span>
       <span
         v-if="showAdditionalActions"
-        class="--basic"
+        class="text --basic"
         @click="$emit('showPreview', selectedRows[0])"
       >
         Предпросмотр
@@ -110,16 +110,16 @@ export default Vue.extend({
     background-color: var(--c-grey-15);
     margin: 0 25px;
   }
-  span {
+  .text {
     cursor: pointer;
   }
-  span.--basic {
+  .text.--basic {
     margin-right: 25px;
   }
-  span.--basic:last-of-type {
+  .text.--basic:last-of-type {
     margin-right: 0;
   }
-  span.--red {
+  .text.--red {
     color: var(--c-red-1);
     margin-right: 25px;
   }
@@ -132,8 +132,6 @@ export default Vue.extend({
   }
 }
 @media screen and (max-width: 1150px) {
-  .header {
-  }
   .header.--expand {
     height: fit-content;
     min-height: 44px;

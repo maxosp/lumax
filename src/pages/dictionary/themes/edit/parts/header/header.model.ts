@@ -1,4 +1,4 @@
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent } from '@/features/toasts/toasts.model'
 import { createEvent, restore, sample } from 'effector-root'
 import { condition } from 'patronum'
 import { $selectedThemes } from '@/pages/dictionary/themes/create/parts/themes/themes.model'
@@ -18,10 +18,7 @@ const $canToggleIsPrerequisite = sample({
 condition({
   source: $canToggleIsPrerequisite,
   if: (payload: { listLength: number; value: boolean }) => payload.listLength > 0 && !payload.value,
-  then: addToast.prepend(() => ({
-    type: 'error',
-    message: 'Удалите темы, к которым привязан пререквизит и повторите попытку',
-  })),
+  then: errorToastEvent('Удалите темы, к которым привязан пререквизит и повторите попытку'),
   else: isPrerequisiteChanged.prepend(
     (payload: { listLength: number; value: boolean }) => payload.value
   ),

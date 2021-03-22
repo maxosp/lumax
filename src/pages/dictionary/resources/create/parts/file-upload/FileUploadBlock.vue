@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
   uploadFile,
@@ -62,8 +62,13 @@ import {
   deleteMedia,
 } from '@/pages/dictionary/resources/create/parts/file-upload/file-upload.model'
 import { deleteMediaFx } from '@/features/api/media/delete-media'
+import { RefsType } from '@/pages/common/types'
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   components: {
     BaseButton,
   },
@@ -72,12 +77,10 @@ export default Vue.extend({
   },
   computed: {
     formatName() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('/') + 1)
+      return this.$fileData && this.$fileData.name.slice(this.$fileData.name.lastIndexOf('/') + 1)
     },
     fileExtenstion() {
-      // @ts-ignore
-      return this.$fileData.name.slice(this.$fileData.name.lastIndexOf('.') + 1)
+      return this.$fileData && this.$fileData.name.slice(this.$fileData.name.lastIndexOf('.') + 1)
     },
   },
   methods: {
@@ -88,8 +91,7 @@ export default Vue.extend({
     },
     handleFileUpload() {
       const { fileInput } = this.$refs
-      // @ts-ignore
-      uploadFile(fileInput.files)
+      uploadFile(fileInput!.files)
     },
     replaceFile(id: number) {
       deleteMediaFx(id)

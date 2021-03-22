@@ -1,6 +1,6 @@
 <template>
   <div class="select-menu">
-    <ScrollContainer :max-height="255">
+    <ScrollContainer :max-height="actionsSelectMenuMaxHeight">
       <slot />
     </ScrollContainer>
   </div>
@@ -9,12 +9,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import ScrollContainer from '@/ui/scroll-container/ScrollContainer.vue'
+import { actionsSelectMenuMaxHeight } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'SelectMenu',
   components: {
     ScrollContainer,
   },
+  data: () => ({
+    actionsSelectMenuMaxHeight,
+  }),
 })
 </script>
 

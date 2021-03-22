@@ -1,36 +1,26 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
-import {
-  deleteAssignmentFx,
-  deleteAssignmentsFx,
-} from '@/features/api/assignment/delete-assignment'
-import {
-  getAssignmentTreeFx,
-  getAssignmentTreeLightFx,
-} from '@/features/api/assignment/tree-assignment'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData, TreeDataLight } from '@/features/api/types'
 import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
+import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
+import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
+import {
+  deleteLessonAssignmentFx,
+  deleteLessonAssignmentsFx,
+} from '@/features/api/assignment/lesson-assignment/delete-lesson-assignment'
 
 const getLessonsTree = attach({
-  effect: getAssignmentTreeFx,
-  mapParams: (params: GetAssignmentTreeQueryParams) => ({
-    ...params,
-    is_lesson_assignment: true,
-  }),
+  effect: getLessonAssignmentTreeFx,
 })
 const getLessonsTreeLight = attach({
-  effect: getAssignmentTreeLightFx,
-  mapParams: (params: GetAssignmentTreeQueryParams) => ({
-    ...params,
-    is_lesson_assignment: true,
-  }),
+  effect: getLessonAssignmentTreeLightFx,
 })
 
 export const deleteAssignment = attach({
-  effect: deleteAssignmentFx,
+  effect: deleteLessonAssignmentFx,
 })
 export const deleteManyAssignments = attach({
-  effect: deleteAssignmentsFx,
+  effect: deleteLessonAssignmentsFx,
 })
 
 export const toggleTreeView = createEvent<boolean>()
@@ -69,8 +59,5 @@ forward({
 
 forward({
   from: deleteAssignment.doneData,
-  to: [
-    loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Задание была успешно удалено!' })),
-  ],
+  to: [loadTree.prepend(() => ({})), successToastEvent('Задание было успешно удалено!')],
 })

@@ -6,9 +6,10 @@ export const data: NavItem[] = [
     title: 'Заявки',
     icon: 'success',
     children: [
-      { title: 'Мои заявки', link: '/' },
-      { title: 'Заявки на проверку задания', link: '/' },
-      { title: 'Заявки на удаление', link: '/' },
+      { title: 'Входящие заявки', link: 'incoming-list' },
+      { title: 'Исходящие заявки', link: 'outgoing-list' },
+      { title: 'Входящие заявки на удаление', link: 'incoming-deletion-list' },
+      { title: 'Исходящие заявки на удаление', link: 'outgoing-deletion-list' },
     ],
   },
   {

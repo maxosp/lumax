@@ -1,8 +1,8 @@
-import { deleteLabelFx } from '@/features/api/assignment/delete-label'
-import { getLabelsTreeFx } from '@/features/api/assignment/get-labels-tree'
+import { deleteLabelFx } from '@/features/api/assignment/labels/delete-label'
+import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tree'
 import { GetLabelsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { attach, createEvent, forward, restore } from 'effector-root'
 
 export const getLabelsTree = attach({
@@ -35,8 +35,5 @@ forward({
 
 forward({
   from: deleteLabelFx.doneData,
-  to: [
-    loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Метка была успешно удалена!' })),
-  ],
+  to: [loadTree.prepend(() => ({})), successToastEvent('Метка была успешно удалена!')],
 })

@@ -1,5 +1,5 @@
 export { default as TasksTypesModal } from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
-export { default as TasksUpdateModal } from '@/pages/common/modals/tasks-bank/tasks-update/TasksUpdateModal.vue'
-export { default as ModeratorSelectModal } from '@/pages/common/modals/tasks-bank/moderator-select/ModeratorSelectModal.vue'
+export { default as TasksUpdateModal } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
+export { default as ModeratorSelectModal } from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
 export { default as TaskDeletionModal } from '@/pages/common/modals/tasks-bank/task-delete/TaskDeleteModal.vue'
 export { default as DeletionRequestModal } from '@/pages/common/modals/tasks-bank/deletion-request/DeletionRequestModal.vue'

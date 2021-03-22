@@ -4,15 +4,14 @@ declare module '*.svg' {
 }
 
 declare namespace NodeJS {
-  interface Process extends EventEmitter {
-    env: ProcessEnv
-  }
-
   interface ProcessEnv {
     [key: string]: string | undefined
     RAZZLE_ASSETS_MANIFEST: string
     RAZZLE_PUBLIC_DIR: string
     BUILD_TARGET: 'client' | 'server'
+  }
+  interface Process extends EventEmitter {
+    env: ProcessEnv
   }
 }
 

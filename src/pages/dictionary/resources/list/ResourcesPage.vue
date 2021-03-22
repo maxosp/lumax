@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import VueEvents from 'vue-events'
 import PageHeader from '@/pages/dictionary/resources/list/parts/PageHeader.vue'
 import ContextMenu from '@/pages/dictionary/resources/list/parts/ContextMenu.vue'
@@ -52,6 +52,7 @@ import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 
@@ -61,7 +62,11 @@ type RightClickParams = {
   type?: ContextMenuType
 }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   name: 'ResourcesPage',
   components: {
     PageHeader,
@@ -89,9 +94,7 @@ export default Vue.extend({
   },
   computed: {
     selectedRows(): number[] {
-      // @ts-ignore
       if (!this.$refs.vuetable) return []
-      // @ts-ignore
       return this.$refs.vuetable.selectedTo
     },
   },
@@ -221,74 +224,7 @@ export default Vue.extend({
   }
 }
 .vuetable-pagination {
-  display: flex;
-  justify-content: center;
-  background-color: transparent !important;
-  margin: 30px 0 !important;
-  position: sticky;
-  left: 0;
-  & ::v-deep .pagination {
-    min-height: unset;
-    border: unset;
-    box-shadow: unset;
-    background-color: transparent;
-    .item {
-      width: 30px;
-      min-width: unset;
-      height: 30px;
-      padding: 0;
-      border-radius: 7px !important;
-      border: 2px solid var(--base-text-primary);
-      background-color: transparent;
-      line-height: 18px;
-      font-weight: 600;
-      color: var(--base-text-primary);
-      @mixin flex-center;
-      &.active {
-        padding: 0;
-        border-top: 2px solid var(--base-text-primary);
-        color: #fff;
-        background-color: var(--base-text-primary);
-      }
-      &.disabled {
-        opacity: 0.5;
-      }
-      &::before {
-        display: none;
-      }
-      &.btn-nav {
-        @mixin flex-center;
-        .icon {
-          height: fit-content;
-          width: 10px;
-          opacity: 1;
-          margin: 0;
-        }
-        .icon.chevron {
-          content: url('~assets/icons/icons/chevron-single.svg');
-          position: relative;
-          left: 1px;
-        }
-        .icon.right.chevron {
-          transform: rotate(180deg);
-          left: -1px;
-        }
-        .icon.double {
-          content: url('~assets/icons/icons/chevron-double.svg');
-        }
-        .icon.double.right {
-          transform: rotate(180deg);
-        }
-        .icon::before,
-        .icon::after {
-          content: '';
-        }
-      }
-    }
-    .item:not(:last-child) {
-      margin-right: 10px;
-    }
-  }
+  @mixin vuetable-pagination;
 }
 .reset-filters {
   color: var(--base-text-primary);

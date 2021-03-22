@@ -1,5 +1,5 @@
 import { createEvent, createStore, forward, attach } from 'effector-root'
-import { getLabelsListFx } from '@/features/api/assignment/get-labels-list'
+import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 

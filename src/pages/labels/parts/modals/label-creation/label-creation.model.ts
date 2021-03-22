@@ -1,4 +1,4 @@
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   $selectedClass,
@@ -17,7 +17,7 @@ import {
 } from '@/pages/labels/parts/modals/label-creation/parts/theme/theme-dropdown.model'
 import { condition, debounce, every } from 'patronum'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { createLabelFx } from '@/features/api/assignment/create-label'
+import { createLabelFx } from '@/features/api/assignment/labels/create-label'
 import { CreateLabelType } from '@/features/api/assignment/types'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
@@ -103,7 +103,7 @@ sample({
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
       if (obj.theme_id === DEFAULT_ID) $themeErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -170,7 +170,7 @@ forward({
 forward({
   from: createLabelFx.doneData,
   to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Метка была успешно создана!' })),
+    successToastEvent('Метка была успешно создана!'),
     getLabelsTree.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
   ],

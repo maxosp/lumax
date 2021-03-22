@@ -30,7 +30,6 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="filterParams"
-        no-data-template=""
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -93,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
@@ -121,7 +120,7 @@ import TagCreationModal from '@/pages/tags/parts/modals/tag-creation/TagCreation
 import TagEditionModal from '@/pages/tags/parts/modals/tag-edition/TagEditionModal.vue'
 import TagDeletionModal from '@/pages/tags/parts/modals/tag-deletion/TagDeletionModal.vue'
 import TasksModal from '@/pages/tags/parts/modals/tasks/TasksModal.vue'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
 import {
   loadModalToEdit,
@@ -132,10 +131,15 @@ import {
   $canRefreshTableAfterCreation,
   createTagFromTree,
 } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
+import { RefsType } from '../common/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   components: {
     PageHeader,
     GeneralFilter,
@@ -184,19 +188,16 @@ export default Vue.extend({
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        // @ts-ignoree
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
     $canRefreshTableAfterCreation: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
-        // @ts-ignore
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
@@ -221,7 +222,6 @@ export default Vue.extend({
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadTree({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -230,22 +230,17 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     handleLoadError(res: any) {
-      if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
-      }
+      if (!res.response) noInternetToastEvent()
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       if (this.$treeView) {
@@ -261,13 +256,11 @@ export default Vue.extend({
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
     removeSelected(ids: number[]) {

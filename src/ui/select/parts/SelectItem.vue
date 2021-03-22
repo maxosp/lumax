@@ -1,6 +1,7 @@
 <template>
   <div
     class="select-item"
+    :style="`height: ${selectItemHeight}px`"
     v-on="$listeners"
   >
     <slot />
@@ -16,6 +17,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
+import { selectItemHeight } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'SelectItem',
@@ -27,6 +29,9 @@ export default Vue.extend({
     withIcon: { type: Boolean as PropType<boolean> },
     subTitle: { type: Boolean as PropType<boolean> },
   },
+  data: () => ({
+    selectItemHeight,
+  }),
 })
 </script>
 

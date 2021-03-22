@@ -31,3 +31,27 @@ forward({
   from: toastTimeoutRemoveFx.doneData,
   to: removeToast,
 })
+
+export const errorToastEvent = (message: string) =>
+  addToast.prepend(() => ({
+    type: 'error',
+    message,
+  }))
+
+export const successToastEvent = (message: string) =>
+  addToast.prepend(() => ({
+    type: 'success',
+    message,
+  }))
+
+export const loadingToastEvent = (message: string) =>
+  addToast.prepend(() => ({
+    type: 'loading',
+    message,
+  }))
+
+export const noInternetToastEvent = () =>
+  addToast.prepend(() => ({
+    type: 'no-internet',
+    message: 'Отсутствует подключение',
+  }))

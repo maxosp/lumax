@@ -1,28 +1,29 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
-import { duplicateAssignmentFx } from '@/features/api/assignment/duplicate'
-import { getOlympiadTasksListFx } from '@/features/api/assignment/get-olympiad-tasks-list'
+import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
 import { DuplicateAssignmentType } from '@/features/api/assignment/types'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
-  deleteAssignmentFx,
-  deleteAssignmentsFx,
-} from '@/features/api/assignment/delete-assignment'
+  deleteOlympiadAssignmentFx,
+  deleteOlympiadAssignmentsFx,
+} from '@/features/api/assignment/olympiad-assignment/delete-olympiad-assignment'
 import { modalTaskDeleteVisibilityChanged } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
+import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
+import { GetListQueryParams } from '@/features/api/types'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
 })
 
 export const deleteAssignment = attach({
-  effect: deleteAssignmentFx,
+  effect: deleteOlympiadAssignmentFx,
 })
 
 export const deleteAssignments = attach({
-  effect: deleteAssignmentsFx,
+  effect: deleteOlympiadAssignmentsFx,
 })
 
 export const duplicateAssignment = attach({
-  effect: duplicateAssignmentFx,
+  effect: updateOlympiadAssignmentBulkFx,
   mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
 })
 
@@ -35,7 +36,7 @@ export const $canRefreshTableAfterDeletion = restore<boolean>(
   false
 )
 
-export const loadList = createEvent<any>()
+export const loadList = createEvent<GetListQueryParams>()
 
 forward({
   from: loadList,
@@ -50,10 +51,7 @@ forward({
 forward({
   from: duplicateAssignment.doneData,
   to: [
-    addToast.prepend(() => ({
-      type: 'success',
-      message: 'Задание было успешно дублировано!',
-    })),
+    successToastEvent('Задание было успешно дублировано!'),
     loadList.prepend(() => ({})),
     canRefreshAfterDuplicateChanged.prepend(() => true),
   ],
@@ -62,8 +60,8 @@ forward({
 forward({
   from: deleteAssignment.doneData,
   to: [
-    loadList,
-    addToast.prepend(() => ({ type: 'success', message: 'Задание было успешно удалено!' })),
+    loadList.prepend(() => ({})),
+    successToastEvent('Задание было успешно удалено!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),
   ],
@@ -72,8 +70,8 @@ forward({
 forward({
   from: deleteAssignments.doneData,
   to: [
-    loadList,
-    addToast.prepend(() => ({ type: 'success', message: 'Теги были успешно удалены!' })),
+    loadList.prepend(() => ({})),
+    successToastEvent('Задания были успешно удалены!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
     modalTaskDeleteVisibilityChanged.prepend(() => false),
   ],

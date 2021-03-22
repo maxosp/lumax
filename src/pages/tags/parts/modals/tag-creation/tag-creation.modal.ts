@@ -1,5 +1,10 @@
-import { addToast } from '@/features/toasts/toasts.model'
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { condition } from 'patronum'
+import { createError } from '@/lib/effector/error-generator'
+import { DEFAULT_ID } from '@/pages/common/constants'
+import { createTagFx } from '@/features/api/assignment/olympiad-tags/create-tag'
+import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import {
   $selectedClass,
   classDropdownModule,
@@ -10,14 +15,9 @@ import {
   setSelectedSubject,
   subjectDropdownModule,
 } from '@/pages/tags/parts/modals/tag-creation/parts/subject/subject-dropdown.model'
-import { createTagFx } from '@/features/api/assignment/create-tag'
-import { CreateTagType } from '@/features/api/assignment/types'
-import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
-import { condition } from 'patronum'
 import { canRefreshTableChanged } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
-import { createError } from '@/lib/effector/error-generator'
-import { DEFAULT_ID } from '@/pages/common/constants'
+import { CreateTagType } from '@/features/api/assignment/types'
 
 export const createTag = attach({
   effect: createTagFx,
@@ -61,7 +61,7 @@ sample({
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -121,7 +121,7 @@ forward({
     getTagsListFx.prepend(() => ({})),
     getTagsTree.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
-    addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно создан!' })),
+    successToastEvent('Тег был успешно создан!'),
     canRefreshAfterCreationChange.prepend(() => true),
   ],
 })

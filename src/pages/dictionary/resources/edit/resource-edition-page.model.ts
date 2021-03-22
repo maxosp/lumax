@@ -28,7 +28,7 @@ import {
   typeDropdownModule,
 } from '@/pages/dictionary/resources/edit/parts/type/type-dropdown.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { isLinkValid } from '@/lib/validators/url'
 import { updateResourceFx } from '@/features/api/media/update-resource'
 import { navigatePush } from '@/features/navigation'
@@ -177,8 +177,7 @@ sample({
       errors += 1
     }
     if (errors === 0) updateResource()
-    else if (errors > 0)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+    else if (errors > 0) errorToastEvent('Необходимо заполнить все обязательные поля')
   },
 })
 
@@ -198,7 +197,7 @@ sample({
   source: $ifRedirect,
   clock: updateResourceDataFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean, id: number) => {
-    addToast({ type: 'success', message: 'Ресурс успешно обновлен!' })
+    successToastEvent('Ресурс успешно обновлен!')
     if (ifRedirect) navigatePush({ name: 'resources-list' })
     else getResourceToUpdate(id)
   },

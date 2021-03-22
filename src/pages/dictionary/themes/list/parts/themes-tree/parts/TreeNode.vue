@@ -102,6 +102,10 @@ export default Vue.extend({
       if (this.node.leaves && this.node.leaves.length) {
         // @ts-ignore
         this.opened = !this.opened
+        // @ts-ignore
+        this.node.leaves = this.node.leaves.sort(
+          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
+        )
       }
     },
     handleRightClick(event: any) {

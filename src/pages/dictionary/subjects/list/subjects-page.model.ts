@@ -1,5 +1,5 @@
 import { attach, combine, createEvent, createStore, forward, restore, sample } from 'effector-root'
-import { addToast } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { deleteSubjectFx, deleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
@@ -51,9 +51,9 @@ sample({
 })
 forward({
   from: deleteSubject.doneData,
-  to: addToast.prepend(() => ({ type: 'success', message: 'Предмет был успешно удалён!' })),
+  to: successToastEvent('Предмет был успешно удалён!'),
 })
 forward({
   from: updateSubjectDataFx.doneData,
-  to: addToast.prepend(() => ({ type: 'success', message: 'Предмет был успешно изменен!' })),
+  to: successToastEvent('Предмет был успешно изменен!'),
 })

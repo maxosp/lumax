@@ -108,59 +108,58 @@ export type AssignmentAudioFile = {
   audio_limit_count?: number
 }
 
-export type CreateAssignmentFxParams = {
+export type DifficultyType = 0 | 1 | 2
+
+type BaseCreateAssignmentParams = {
   wording?: string
   type?: AssignmentType
   status?: AssignmentStatus
-  is_test_assignment?: boolean
-  is_lesson_assignment?: boolean
-  is_olympiad_assignment?: boolean
-  is_archived?: boolean
-  is_reserved?: boolean
-  theme?: Partial<Theme>
-  theme_id: number
   score?: number
   media?: number[]
-  difficulty: string
-  olympiad_clue?: any
-  olympiad_tags?: number[]
+  difficulty: DifficultyType
   is_add_score_for_each_answer?: boolean
-  labels?: number[]
   created_by?: Partial<User>
   updated_by?: Partial<User>
   verified_by?: Partial<User>
   verification_datetime?: string
   text?: string
-  example_answer?: string
   interface_language: string
-  course_theme?: string
+  course?: string
   question_data?: any
   correct_answer?: any
   common_list_answer_choices?: any
-  labels_ids?: number[]
-  olympiad_tags_ids?: number[]
   duplicate_count?: number
-  audio_ids?: number[]
+  audios_ids?: number[]
+  example_answer?: string
 }
 
-export type Assignment = {
+export type CreateTestAssignmentFxParams = {
+  theme?: Partial<Theme>
+  theme_id: number
+  labels?: number[]
+  labels_ids?: number[]
+} & BaseCreateAssignmentParams
+
+export type CreateOlympiadAssignmentFxParams = {
+  subject: Partial<Subject>
+  subject_id: number
+  study_year: StudyYear
+  study_year_id: number
+  tags: number[]
+  tags_ids: number
+} & BaseCreateAssignmentParams
+
+export type CreateLessonAssignmentFxParams = BaseCreateAssignmentParams
+
+type BaseAssignment = {
   id: number
   wording: string
   type: AssignmentType
   status: AssignmentStatus
-  is_test_assignment: boolean
-  is_lesson_assignment: boolean
-  is_olympiad_assignment: boolean
-  is_archived: boolean
-  is_reserved: boolean
-  theme: Partial<Theme>
-  theme_id: number
   score: number
   media: number[]
-  audio?: AssignmentAudioFile[]
-  difficulty: string
-  olympiad_clue: any
-  olympiad_tags: number[]
+  difficulty: DifficultyType
+  is_add_score_for_each_answer?: boolean
   labels: number[]
   creation_datetime: string
   update_datetime: string
@@ -169,16 +168,33 @@ export type Assignment = {
   updated_by: Partial<User>
   verified_by: Partial<User>
   text: string
-  example_answer: string
   interface_language: string
-  course_theme: string
+  course: string
   question_data: any
   correct_answer: any
   common_list_answer_choices: any
-  labels_ids: number[]
-  olympiad_tags_ids: number[]
+  audios: AssignmentAudioFile[]
   duplicate_count: number
+  audios_ids: number[]
+  example_answer: string
 }
+
+export type TestAssignment = {
+  theme: Partial<Theme>
+  theme_id: number
+  labels_ids: number[]
+} & BaseAssignment
+
+export type OlympiadAssignment = {
+  subject: Partial<Subject>
+  subject_id: number
+  study_year: StudyYear
+  study_year_id: number
+  tags: number[]
+  tags_ids: number
+} & BaseAssignment
+
+export type LessonAssignment = BaseAssignment
 
 export type DuplicateAssignmentType = {
   assignments: number[]
@@ -195,4 +211,5 @@ export type UpdateAssignmentsBulkParams = {
   status?: string
   difficulty?: number
   moderator_id?: number
+  score?: number
 }

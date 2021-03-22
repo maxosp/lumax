@@ -41,6 +41,7 @@ export type TreeData = {
   text_resource_count: string
   link_resource_count: string
   media_resource_count: string
+  ordering_number: number
 }
 
 export type GetThemeTreeFilterListResponse = {

@@ -3,7 +3,7 @@
     class="header"
     :class="{invisible: !total}"
   >
-    <span>{{ total | formatTagTitle }}</span>
+    <span>{{ total | formatTagsTitle }}</span>
     <Divider
       v-if="selectedRows.length"
       vertical

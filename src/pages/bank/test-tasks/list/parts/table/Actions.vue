@@ -1,20 +1,19 @@
 <template>
-  <MenuWrap
-    v-model="isOpen"
-    class="actions"
-    menu-width="100%"
+  <v-popover
+    :open="isOpen"
+    :placement="popoverPlacement"
+    :popover-class="popoverClass"
+    popover-inner-class=""
+    @apply-hide="closeMenu"
   >
-    <template #activator>
-      <Icon
-        class="actions-activator"
-        type="kebab-menu"
-        size="24"
-        @click="onActivatorClick"
-      />
-    </template>
-
-    <template #menu>
-      <SelectMenu>
+    <Icon
+      class="actions-activator"
+      type="kebab-menu"
+      size="24"
+      @click="onActivatorClick"
+    />
+    <template v-slot:popover>
+      <SelectMenu v-if="isOpen">
         <slot
           v-for="item in items"
           v-bind="{item, handleAction, closeMenu}"
@@ -34,13 +33,12 @@
         </slot>
       </SelectMenu>
     </template>
-  </MenuWrap>
+  </v-popover>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import MenuWrap from '@/ui/menu/MenuWrap.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { navigatePush } from '@/features/navigation'
@@ -50,12 +48,12 @@ import {
   contextMethodsOneTask,
   contextMethodsManyTasks,
 } from '@/pages/bank/test-tasks/list/constants'
+import { actionsSelectMenuMaxHeight, selectItemHeight } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'Actions',
   components: {
     Icon,
-    MenuWrap,
     SelectMenu,
     SelectItem,
   },
@@ -64,9 +62,13 @@ export default Vue.extend({
     selected: { type: Array as PropType<number[]>, required: true },
     light: { type: Boolean, default: false },
     isTheme: { type: Boolean },
+    subject: { type: [Number, null] as PropType<number | null> },
+    studyYear: { type: [Number, null] as PropType<number | null> },
   },
   data: () => ({
     isOpen: false,
+    popoverPlacement: 'left-start',
+    popoverClass: 'actions__popover_start',
   }),
   computed: {
     items(): DropdownItem[] {
@@ -88,7 +90,22 @@ export default Vue.extend({
   },
   methods: {
     onActivatorClick() {
+      this.setPopoverPlacement()
       this.isOpen = !this.isOpen
+    },
+    setPopoverPlacement() {
+      const vuetableBottomPosition = this.$parent.$el.getBoundingClientRect().bottom
+      const actionsBottomPosition = this.$el.getBoundingClientRect().bottom
+      const selectItemsSumHeight = this.items.length * selectItemHeight
+      const selectMenuHeight =
+        selectItemsSumHeight > actionsSelectMenuMaxHeight
+          ? actionsSelectMenuMaxHeight
+          : selectItemsSumHeight
+
+      if (vuetableBottomPosition - actionsBottomPosition < selectMenuHeight) {
+        this.popoverPlacement = 'left-end'
+        this.popoverClass = 'actions__popover_end'
+      }
     },
     handleAction(item: SelectItemI) {
       switch (item.name) {
@@ -122,13 +139,16 @@ export default Vue.extend({
         case 'preview':
           this.$emit('onPreview', this.$props.id)
           break
+        case 'edit-theme':
+          navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
+          break
         case 'create-theme':
           navigatePush({
             name: 'themes-create',
             params: {
               subject: `${this.$props.subject}`,
               studyYear: `${this.$props.studyYear}`,
-              theme: `${this.$props.theme}`,
+              theme: `${this.$props.id}`,
             },
           })
           break
@@ -155,5 +175,11 @@ export default Vue.extend({
   &:hover {
     background-color: var(--c-yellow-0);
   }
+}
+</style>
+
+<style>
+.actions__popover {
+  @mixin actions-popover;
 }
 </style>

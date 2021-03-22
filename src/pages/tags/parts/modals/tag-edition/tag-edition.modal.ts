@@ -1,5 +1,10 @@
-import { addToast } from '@/features/toasts/toasts.model'
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { condition } from 'patronum'
+import { createError } from '@/lib/effector/error-generator'
+import { DEFAULT_ID } from '@/pages/common/constants'
+import { getTagFx } from '@/features/api/assignment/olympiad-tags/get-tag'
+import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
+import { updateTagFx } from '@/features/api/assignment/update-tag'
 import {
   $selectedClass,
   classDropdownModule,
@@ -10,14 +15,9 @@ import {
   setSelectedSubject,
   subjectDropdownModule,
 } from '@/pages/tags/parts/modals/tag-edition/parts/subject/subject-dropdown.model'
-import { getTagFx } from '@/features/api/assignment/get-tag'
-import { CreateTagType, Tag } from '@/features/api/assignment/types'
-import { updateTagFx } from '@/features/api/assignment/update-tag'
-import { getTagsListFx } from '@/features/api/assignment/get-tags-list'
-import { condition } from 'patronum'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
-import { createError } from '@/lib/effector/error-generator'
-import { DEFAULT_ID } from '@/pages/common/constants'
+import { CreateTagType, Tag } from '@/features/api/assignment/types'
 
 export const updateTag = attach({
   effect: updateTagFx,
@@ -61,7 +61,7 @@ sample({
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -110,7 +110,7 @@ sample({
 forward({
   from: updateTagFx.doneData,
   to: [
-    addToast.prepend(() => ({ type: 'success', message: 'Тег был успешно обновлен!' })),
+    successToastEvent('Тег был успешно обновлен!'),
     getTagsTree.prepend(() => ({})),
     getTagsListFx.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),

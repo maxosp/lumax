@@ -15,7 +15,7 @@ import {
   imageSubjectIdChanged,
 } from '@/pages/dictionary/subjects/common/create-edit.model'
 import { colorDropdownModule } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 
 const updateSubjectDataFx = attach({
@@ -53,10 +53,10 @@ sample({
       updateSubject()
     } else if (obj.name && obj.name.trim().length > 30) {
       subjectTitleErrorChanged(true)
-      addToast({ type: 'error', message: 'Название предмета содержит более 30 символов' })
+      errorToastEvent('Название предмета содержит более 30 символов')
     } else {
       if (!obj.name.trim().length) subjectTitleErrorChanged(true)
-      addToast({ type: 'error', message: 'Необходимо заполнить все обязательные поля' })
+      errorToastEvent('Необходимо заполнить все обязательные поля')
     }
   },
 })
@@ -69,7 +69,7 @@ sample({
   source: $ifRedirect,
   clock: updateSubjectDataFx.doneData.map((data) => data.body.id),
   fn: (ifRedirect: boolean) => {
-    addToast({ type: 'success', message: 'Предмет успешно обновлен!' })
+    successToastEvent('Предмет успешно обновлен!')
     if (ifRedirect) navigatePush({ name: 'subjects-list' })
   },
 })

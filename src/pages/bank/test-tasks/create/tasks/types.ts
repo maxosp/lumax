@@ -60,3 +60,53 @@ export type MultipleListTextAnswer = {
   id: number
   answers: MultipleListTextAnswerOption[]
 }
+
+/* drag&drop */
+
+// todo: remove this sh*t
+export type SystemIndex = {
+  systemIndex?: string
+}
+
+export type Size = {
+  width: number
+  height: number
+}
+
+export type Position = {
+  x: number
+  y: number
+}
+
+/* drag&drop on image */
+export type DroppableInput = SystemIndex & {
+  size: Size
+  value: string
+  color: string
+  position: Position
+}
+
+export type DraggableText = SystemIndex & {
+  text: string
+}
+
+export type DraggableImage = SystemIndex & {
+  size: Size
+  image: string
+  value: string
+}
+
+export type DroppableImage = SystemIndex & {
+  pin: Position
+} & DroppableInput
+
+export type MovingImagesOnImageAnswer = {
+  size: Size
+  mainImage: string
+
+  'draggable-text': DraggableText[]
+  inputs: DroppableInput[]
+
+  draggable: DraggableImage[]
+  droppable: DroppableInput[]
+}

@@ -3,7 +3,7 @@ import { loginFx } from '@/features/api/user/login'
 import { LoginFxParams, LoginFxResponse } from '@/features/api/user/types'
 import { navigateReplace } from '@/features/navigation'
 import { loadSessionFx } from '@/features/session'
-import { addToast } from '@/features/toasts/toasts.model'
+import { errorToastEvent } from '@/features/toasts/toasts.model'
 import { createEffectorField } from '@/lib/effector/field-generator'
 import { Response } from '@/lib/request'
 import { isEmailValid } from '@/lib/validators/email'
@@ -89,8 +89,5 @@ forward({
 
 forward({
   from: userNotFound,
-  to: addToast.prepend(() => ({
-    type: 'error',
-    message: 'Не удается войти. Неправильно указан е-mail или пароль.',
-  })),
+  to: errorToastEvent('Не удается войти. Неправильно указан е-mail или пароль.'),
 })

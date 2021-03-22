@@ -1,6 +1,6 @@
 <template>
   <div id="lessons-page">
-    <PageHeader />
+    <PageHeader :selected-rows="selectedRows" />
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"
@@ -30,7 +30,6 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="filterParams"
-        no-data-template=""
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -98,11 +97,12 @@
       @onPreview="showPreview"
     />
     <TasksTypesModal />
+    <TaskUpdateModal />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import VueEvents from 'vue-events'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
@@ -129,11 +129,12 @@ import {
   $visibility,
 } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/lesson-tasks-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
-import { addToast } from '@/features/toasts/toasts.model'
+import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
 import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
-import * as modals from '@/pages/bank/olympiad-tasks/index'
+import * as modals from '@/pages/bank/lesson-tasks/index'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -145,7 +146,11 @@ type RightClickParams = {
   type?: ContextMenuType
 }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: RefsType
+  }
+>).extend({
   name: 'LessonsTasksList',
   components: {
     Vuetable,
@@ -159,6 +164,7 @@ export default Vue.extend({
     ContextMenu,
     LessonsTree,
     TasksTypesModal: modals.TasksTypesModal,
+    TaskUpdateModal: modals.TasksUpdateModal,
   },
   effector: {
     $token,
@@ -181,13 +187,16 @@ export default Vue.extend({
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/assignment-lesson/list/`
+      return `${config.BACKEND_URL}/api/assignment/lesson-assignment/list/`
     },
   },
   methods: {
     toggleVisibility,
     showPreview(id: number) {
-      window.open(`${config.PREVIEW_URL}/question?questionId=${id}&token=${this.$token}`, '_blank')
+      window.open(
+        `${config.PREVIEW_URL}/question?questionId=${id}&type=lesson-assignment&token=${this.$token}`,
+        '_blank'
+      )
     },
     clearWording(str: string) {
       return removeHtmlTags(str)
@@ -202,11 +211,9 @@ export default Vue.extend({
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
-      // @ts-ignore
       this.$refs.pagination.setPaginationData(paginationData)
     },
     onChangePage(page: any) {
-      // @ts-ignore
       this.$refs.vuetable.changePage(page)
     },
     resetAllFilters() {
@@ -219,13 +226,11 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
       loadTree({ ...this.filterParams })
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
@@ -234,7 +239,6 @@ export default Vue.extend({
 
       // reload data
       loadTree({})
-      // @ts-ignore
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     editTask(id: number) {
@@ -242,21 +246,18 @@ export default Vue.extend({
       console.log('EDIT ', id)
     },
     async removeSelected(ids: number | number[]) {
-      const currentMethod =
-        typeof ids === 'number' || ids.length === 1 ? deleteAssignment : deleteManyAssignments
-      // @ts-ignore
-      await currentMethod(typeof ids !== 'number' && ids.length === 1 ? ids[0] : ids)
-      // @ts-ignore
+      if (typeof ids === 'number') await deleteAssignment(ids)
+      else if (ids.length === 1) await deleteAssignment(ids[0])
+      else await deleteManyAssignments(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
       if (typeof ids !== 'number') {
-        // @ts-ignore
         this.$refs.vuetable.selectedTo = []
         this.selectedRows = []
       }
     },
     handleLoadError(res: any) {
       if (!res.response) {
-        addToast({ type: 'no-internet', message: 'Отсутствует подключение' })
+        noInternetToastEvent()
       }
     },
     handleRightClick({ data, event, type = 'table_lessons' }: RightClickParams) {
@@ -269,13 +270,11 @@ export default Vue.extend({
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
-      // @ts-ignore
       const { selectedTo } = this.$refs.vuetable
       if (selectedTo.length === 0) selectedTo.push(res.data.id)
       else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
-      // @ts-ignore
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
     hideContextMenu() {
@@ -386,74 +385,7 @@ export default Vue.extend({
   }
 }
 .vuetable-pagination {
-  display: flex;
-  justify-content: center;
-  background-color: transparent !important;
-  margin: 30px 0 !important;
-  position: sticky;
-  left: 0;
-  & ::v-deep .pagination {
-    min-height: unset;
-    border: unset;
-    box-shadow: unset;
-    background-color: transparent;
-    .item {
-      width: 30px;
-      min-width: unset;
-      height: 30px;
-      padding: 0;
-      border-radius: 7px !important;
-      border: 2px solid var(--base-text-primary);
-      background-color: transparent;
-      line-height: 18px;
-      font-weight: 600;
-      color: var(--base-text-primary);
-      @mixin flex-center;
-      &.active {
-        padding: 0;
-        border-top: 2px solid var(--base-text-primary);
-        color: #fff;
-        background-color: var(--base-text-primary);
-      }
-      &.disabled {
-        opacity: 0.5;
-      }
-      &::before {
-        display: none;
-      }
-      &.btn-nav {
-        @mixin flex-center;
-        .icon {
-          height: fit-content;
-          width: 10px;
-          opacity: 1;
-          margin: 0;
-        }
-        .icon.chevron {
-          content: url('~assets/icons/icons/chevron-single.svg');
-          position: relative;
-          left: 1px;
-        }
-        .icon.right.chevron {
-          transform: rotate(180deg);
-          left: -1px;
-        }
-        .icon.double {
-          content: url('~assets/icons/icons/chevron-double.svg');
-        }
-        .icon.double.right {
-          transform: rotate(180deg);
-        }
-        .icon::before,
-        .icon::after {
-          content: '';
-        }
-      }
-    }
-    .item:not(:last-child) {
-      margin-right: 10px;
-    }
-  }
+  @mixin vuetable-pagination;
 }
 .reset-filters {
   color: var(--base-text-primary);

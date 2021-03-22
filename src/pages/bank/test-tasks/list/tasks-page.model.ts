@@ -1,44 +1,39 @@
 import { attach, createEvent, forward, restore } from 'effector-root'
+// TODO: correctly define WHICH type of assignment
 import {
-  deleteAssignmentFx,
-  deleteAssignmentsFx,
-} from '@/features/api/assignment/delete-assignment'
-import { publishAssignmentFx } from '@/features/api/assignment/publish-assignment'
-import { sendToModerationAssignmentFx } from '@/features/api/assignment/send-to-moderation-assignment'
-import {
-  getAssignmentTreeFx,
-  getAssignmentTreeLightFx,
-} from '@/features/api/assignment/tree-assignment'
-import { addToast } from '@/features/toasts/toasts.model'
+  deleteTestAssignmentFx,
+  deleteTestAssignmentsFx,
+} from '@/features/api/assignment/test-assignment/delete-test-assignment'
+import { getTestAssignmentTreeLightFx } from '@/features/api/assignment/test-assignment/get-test-tree-light'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData, TreeDataLight } from '@/features/api/types'
-import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
+import {
+  GetAssignmentTreeQueryParams,
+  UpdateAssignmentsBulkParams,
+} from '@/features/api/assignment/types'
+import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
+import { getTestAssignmentTreeFx } from '@/features/api/assignment/test-assignment/get-test-tree'
 
 const getTasksTree = attach({
-  effect: getAssignmentTreeFx,
-  mapParams: (params: GetAssignmentTreeQueryParams) => ({
-    ...params,
-    is_test_assignment: true,
-  }),
+  effect: getTestAssignmentTreeFx,
 })
 const getTasksTreeLight = attach({
-  effect: getAssignmentTreeLightFx,
-  mapParams: (params: GetAssignmentTreeQueryParams) => ({
-    ...params,
-    is_test_assignment: true,
-  }),
+  effect: getTestAssignmentTreeLightFx,
 })
 
 export const deleteAssignment = attach({
-  effect: deleteAssignmentFx,
+  effect: deleteTestAssignmentFx,
 })
 export const deleteManyAssignments = attach({
-  effect: deleteAssignmentsFx,
+  effect: deleteTestAssignmentsFx,
 })
 export const sendAssignmentsPublish = attach({
-  effect: publishAssignmentFx,
+  effect: updateTestAssignmentBulkFx,
+  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'published' }),
 })
 export const sendAssignmentsToModeration = attach({
-  effect: sendToModerationAssignmentFx,
+  effect: updateTestAssignmentBulkFx,
+  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'revision' }),
 })
 
 export const toggleTreeView = createEvent<boolean>()
@@ -77,8 +72,5 @@ forward({
 
 forward({
   from: deleteAssignment.doneData,
-  to: [
-    loadTree.prepend(() => ({})),
-    addToast.prepend(() => ({ type: 'success', message: 'Задание была успешно удалено!' })),
-  ],
+  to: [loadTree.prepend(() => ({})), successToastEvent('Задание было успешно удалено!')],
 })

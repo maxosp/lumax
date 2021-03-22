@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="left">
-      <span>{{ total | formatThemeTitle }}</span>
+      <span>{{ total | formatTasksTitle }}</span>
       <Divider
         v-if="selectedRows.length"
         vertical

@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="left">
-      <span> {{ total | formatTotalAmount }} {{ totalText }}</span>
+      <span> {{ total | formatThemesTitle }}</span>
       <Divider
         v-if="selectedRows.length"
         vertical
@@ -49,18 +49,6 @@ export default Vue.extend({
   props: {
     total: { type: Number, required: true },
     selectedRows: { type: Array as PropType<number[]> },
-  },
-  computed: {
-    totalText() {
-      let title = 'тем'
-      const lastDigit = `${this.$props.total}`.slice(-1)
-      if (lastDigit === '1') {
-        title = 'тема'
-      } else if (['2', '3', '4'].includes(lastDigit)) {
-        title = 'темы'
-      }
-      return `${title}`
-    },
   },
   methods: {
     toggleTreeView,
