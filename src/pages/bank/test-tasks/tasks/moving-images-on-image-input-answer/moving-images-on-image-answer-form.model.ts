@@ -7,17 +7,19 @@ import {
   merge,
   restore,
   sample,
+  split,
 } from 'effector-root'
 import {
   DraggableImage,
   DraggableText,
   DroppableImage,
   DroppableInput,
+  Position,
   Size,
 } from '@/pages/bank/test-tasks/tasks/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { FilePickerEvent } from '@/ui/file-picker/types'
-import { errorToastEvent } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import {
   createAddEventForArrayStore,
   createRemoveEventForArrayStore,
@@ -35,9 +37,12 @@ const getRealMainImageSizesFx = createEffect<string, Size>({
     new Promise<Size>((res, rej) => {
       const mainImage = new Image()
       mainImage.onload = () => {
+        const maxImageWidth = 900
+        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
+
         res({
-          width: mainImage.width,
-          height: mainImage.height,
+          width: mainImage.width * scale,
+          height: mainImage.height * scale,
         })
       }
       mainImage.onerror = rej
@@ -65,6 +70,7 @@ export const $containerWidth = restore(setContainerWidth, 0)
 
 // form-data
 const inputsCounter = createCounter('B')
+export const textInputsCounter = createCounter()
 export const setInputs = createEvent<DroppableInput[]>()
 export const $inputs = restore(setInputs, [])
 export const addInput = createAddEventForArrayStore($inputs, () => ({
@@ -73,7 +79,12 @@ export const addInput = createAddEventForArrayStore($inputs, () => ({
     height: 0,
   },
   color: '#000',
-  value: '',
+  value: [
+    {
+      value: '',
+      systemIndex: textInputsCounter.next(),
+    },
+  ],
   systemIndex: inputsCounter.next(),
   position: {
     x: 0,
@@ -176,6 +187,49 @@ export const addDraggableText = createAddEventForArrayStore($draggableText, () =
 export const uploadMainImage = createEvent<FilePickerEvent>()
 
 // form-states
+
+export type NextResizer = 'image' | 'text'
+
+export const setNextResizableBlockType = createEvent<NextResizer | null>()
+export const $nextResizableBlockType = restore(setNextResizableBlockType, null)
+
+export const $canCreateResizableBlock = $nextResizableBlockType.map((type) => type !== null)
+
+type Sizes = { position: Position; size: Size }
+
+export const createResizableBlock = createEvent<Sizes>()
+
+// noinspection JSVoidFunctionReturnValueUsed
+export const createResizableBlockSplit = split({
+  source: createResizableBlock,
+  match: {
+    image: $nextResizableBlockType.map((type) => type === 'image'),
+    text: $nextResizableBlockType.map((type) => type === 'text'),
+  },
+  cases: {
+    image: addDroppableImage.prepend<Sizes>((payload) => payload),
+    text: addInput.prepend<Sizes>((payload) => payload),
+  },
+})
+
+export const setNextResizerToImage = createEvent()
+export const setNextResizerToText = createEvent()
+
+forward({
+  from: setNextResizerToImage,
+  to: [
+    setNextResizableBlockType.prepend(() => 'image'),
+    successToastEvent('Выделяйте области на картинке для создания изображений'),
+  ],
+})
+
+forward({
+  from: setNextResizerToText,
+  to: [
+    setNextResizableBlockType.prepend(() => 'text'),
+    successToastEvent('Выделяйте области на картинке для создания текстовых блоков'),
+  ],
+})
 
 export const $mainImageUploading = somePending([uploadMainImageFx, getRealMainImageSizesFx])
 
