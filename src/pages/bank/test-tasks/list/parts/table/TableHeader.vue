@@ -30,12 +30,20 @@
         Предпросмотр
       </span>
     </div>
-    <BaseSwitch
-      :checked="$treeView"
-      @change="toggleTreeView"
-    >
-      <p>Дерево</p>
-    </BaseSwitch>
+    <div class="right">
+      <BaseSwitch
+        :checked="$treeView"
+        @change="toggleTreeView"
+      >
+        <p>Дерево</p>
+      </BaseSwitch>
+      <Icon
+        type="information"
+        size="20"
+        class="icon"
+        @click="modalTasksTypesVisibilityChanged(true)"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,12 +52,15 @@ import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import { toggleTreeView, $treeView } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import Divider from '@/ui/divider/Divider.vue'
+import Icon from '@/ui/icon/Icon.vue'
+import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
 
 export default Vue.extend({
   name: 'TableHeader',
   components: {
     BaseSwitch,
     Divider,
+    Icon,
   },
   effector: {
     $treeView,
@@ -65,6 +76,7 @@ export default Vue.extend({
   },
   methods: {
     toggleTreeView,
+    modalTasksTypesVisibilityChanged,
     handleRemove() {
       const data = this.selectedRows?.length > 1 ? this.selectedRows : this.selectedRows[0]
       this.$emit('onRemove', data)
@@ -90,6 +102,14 @@ export default Vue.extend({
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+  .right {
+    display: flex;
+  }
+  .right .icon {
+    fill: var(--c-grey-3);
+    cursor: pointer;
+    margin-left: 30px;
   }
   .divider {
     background-color: var(--c-grey-15);

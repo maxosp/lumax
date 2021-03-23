@@ -112,6 +112,7 @@
       @onRemoveTheme="removeSelectedTheme"
       @onPreview="showPreview"
     />
+    <TasksTypesModal />
     <TaskDeleteModal />
     <TasksUpdateModal />
     <DeletionRequsetModal />
@@ -186,6 +187,7 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     TasksTree,
+    TasksTypesModal: modals.TasksTypesModal,
     TaskDeleteModal: modals.TaskDeletionModal,
     TasksUpdateModal: modals.TasksUpdateModal,
     DeletionRequsetModal: modals.DeletionRequestModal,
