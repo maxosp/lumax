@@ -42,13 +42,9 @@
 import Vue, { PropType } from 'vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import Icon from '@/ui/icon/Icon.vue'
-<<<<<<< HEAD:src/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/correct-text-answers/CorrectTextAnswerItem.vue
 import { DroppableInput } from '@/pages/bank/test-tasks/tasks/types'
-=======
-import { DroppableInput } from '@/pages/bank/test-tasks/create/tasks/types'
-import { textInputsCounter } from '@/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+import { textInputsCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
 import BaseButton from '@/ui/button/BaseButton.vue'
->>>>>>> development:src/pages/bank/test-tasks/create/tasks/moving-images-on-image-input-answer/parts/correct-text-answers/CorrectTextAnswerItem.vue
 
 export default Vue.extend({
   name: `CorrectTextAnswerItem`,
