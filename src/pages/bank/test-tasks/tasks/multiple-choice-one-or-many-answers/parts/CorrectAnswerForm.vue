@@ -90,9 +90,9 @@ export default Vue.extend({
       )
       setQuestionsAnswers(questionsAnswers)
     },
-    handleIsCorrectChange({ questionId }) {
+    handleIsCorrectChange({ id }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === questionId ? { ...qa, isCorrect: !qa.isCorrect } : qa
+        qa.id === id ? { ...qa, isCorrect: !qa.isCorrect } : qa
       )
       setQuestionsAnswers(questionsAnswers)
     },

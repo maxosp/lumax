@@ -62,7 +62,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import BaseInput from '@/ui/input/BaseInput.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import AudioFileInput from '@/ui/audio-file-input/AudioFileInput.vue'
-import { getReadableDuration } from '@/pages/bank/test-tasks/create/parts/audio-files/utils'
+import { getReadableDuration } from '@/pages/bank/test-tasks/edit/parts/audio-files/utils'
 
 export default Vue.extend({
   name: 'AudioFiles',

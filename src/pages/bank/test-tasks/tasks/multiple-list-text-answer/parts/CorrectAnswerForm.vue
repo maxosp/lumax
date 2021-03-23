@@ -204,7 +204,7 @@ export default Vue.extend({
               id: getRandomId(),
               name: '',
               title: '',
-              isCorrect: false,
+              isCorrect: true,
             },
           ],
         },

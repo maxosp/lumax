@@ -6,6 +6,7 @@ import { getRandomId } from '@/pages/bank/test-tasks/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, MultipleShortClosedQuestion } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -121,3 +122,29 @@ export const $form = combine(
     is_add_score_for_each_answer: marks,
   })
 )
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
+    setQuestionsAnswers.prepend((data) =>
+      data.correct_answer.map((ca: any, idx: number) => ({
+        id: idx + 1,
+        question: ca.question,
+        answers: ca.answers.map((value: any, index: number) => ({
+          id: index + 1,
+          value: value.answer,
+        })),
+      }))
+    ),
+  ],
+})

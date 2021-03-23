@@ -6,6 +6,7 @@ import { getRandomId } from '@/pages/bank/test-tasks/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, AnswerOption } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -97,15 +98,25 @@ export const $form = combine(
   $containing,
   $correctAnswers,
   $answersOptions,
+  $textTemplate,
   $audioFiles,
   $language,
-  (wording, example_answer, containing, correctAnswers, answersOptions, audio, language) => ({
+  (
+    wording,
+    example_answer,
+    containing,
+    correctAnswers,
+    answersOptions,
+    text_template,
+    audio,
+    language
+  ) => ({
     wording,
     example_answer,
     text: containing,
     question_data: answersOptions.map(({ title }) => title),
     correct_answer: correctAnswers,
-    common_list_text_answer: null,
+    common_list_answer_choices: text_template,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       ...(isLimited ? { audio_limit_count: limit } : {}),
@@ -113,3 +124,27 @@ export const $form = combine(
     interface_language: language.title,
   })
 )
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    setAnswersOptions.prepend((data) =>
+      data.question_data.map((value: string, idx: number) => ({
+        id: idx + 1,
+        name: value,
+        title: value,
+      }))
+    ),
+    setCorrectAnswers.prepend((data) => data.correct_answer),
+    setTextTemplate.prepend((data) => data.common_list_answer_choices),
+  ],
+})

@@ -5,6 +5,7 @@ import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dr
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, MultipleListTextAnswer } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -96,9 +97,10 @@ export const $form = combine(
   $answerExample,
   $containing,
   $answersList,
+  $textTemplate,
   $audioFiles,
   $language,
-  (wording, example_answer, containing, answersList, audio, language) => ({
+  (wording, example_answer, containing, answersList, text_template, audio, language) => ({
     wording,
     example_answer,
     text: containing,
@@ -111,7 +113,7 @@ export const $form = combine(
     correct_answer: answersList.map(
       (list) => list.answers.findIndex(({ isCorrect }) => isCorrect) + 1
     ),
-    common_list_text_answer: null,
+    common_list_answer_choices: text_template,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       ...(isLimited ? { audio_limit_count: limit } : {}),
@@ -119,3 +121,35 @@ export const $form = combine(
     interface_language: language.title,
   })
 )
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    setTextTemplate.prepend((data) => data.common_list_answer_choices),
+    setAnswersList.prepend((data) =>
+      data.question_data.variant.map((variant: any, idx: number) => ({
+        id: idx + 1,
+        answers: variant.options.map((value: string, index: number) => {
+          let isCorrect = false
+          if (data.correct_answer[index] === index + 1) {
+            isCorrect = true
+          }
+          return {
+            id: index + 1,
+            value,
+            isCorrect,
+          }
+        }),
+      }))
+    ),
+  ],
+})

@@ -72,6 +72,7 @@ export default Vue.extend({
       const currentItem = this.isRecursive
         ? findItem(this.$props.store.$item, arr)
         : arr.find((el: DropdownItem) => el.name === this.$props.store.$item)
+
       return currentItem ? currentItem.title : this.$props.store.$searchString
     },
     items() {

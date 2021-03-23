@@ -5,6 +5,7 @@ import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dr
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, ShortClosedAnswer } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -101,3 +102,24 @@ export const $form = combine(
     }
   }
 )
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    setCorrectAnswerInputs.prepend((data) =>
+      data.correct_answer.map((value: string, idx: number) => ({
+        id: idx + 1,
+        value,
+      }))
+    ),
+  ],
+})

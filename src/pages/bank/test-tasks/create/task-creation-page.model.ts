@@ -55,10 +55,11 @@ import {
   $form as $formMovingOnImage,
 } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { navigatePush } from '@/features/navigation'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
@@ -193,5 +194,9 @@ sample({
 
 forward({
   from: createTestAssignment.doneData,
-  to: successToastEvent('Задание успешно создано!'),
+  to: [
+    successToastEvent('Задание успешно создано!'),
+    // @ts-ignore
+    navigatePush.prepend((res) => ({ name: 'test-tasks-edit', params: { id: res.body.id } })),
+  ],
 })

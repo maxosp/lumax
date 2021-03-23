@@ -147,13 +147,29 @@ export default Vue.extend({
       toggleContextMenu(true)
     },
     setTextColor(color: string) {
+      console.log(this.selectedElement)
+      console.log('tagname', this.selectedElement.tagName)
+      console.log('parent', this.selectedElement.parentNode)
       this.selectedColor = color
-      this.selectedElement.setAttribute('it-fill', color)
+      let element = this.selectedElement
 
-      if (this.selectedElement.style.backgroundColor) {
-        this.selectedElement.setAttribute('own-color', this.selectedElement.style.backgroundColor)
+      // replace tag "p" with "span" for background color
+      if (element.tagName === 'P') {
+        const span = document.createElement('span');
+        span.innerHTML = element.innerHTML;
+
+        
+        // @ts-ignore
+        element.parentNode.replaceChild(span, element);
+        element = span
       }
-      this.selectedElement.style.backgroundColor = color
+
+      element.setAttribute('it-fill', color)
+
+      if (element.style.backgroundColor) {
+        element.setAttribute('own-color', element.style.backgroundColor)
+      }
+      element.style.backgroundColor = color
 
       toggleContextMenu(false)
     },

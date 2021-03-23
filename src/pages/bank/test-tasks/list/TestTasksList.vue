@@ -412,6 +412,10 @@ export default (Vue as VueConstructor<
   }
 }
 
+.table /deep/ .vuetable-empty-result {
+  display: none;
+}
+
 .no-data-content {
   width: 100%;
   min-height: 550px;

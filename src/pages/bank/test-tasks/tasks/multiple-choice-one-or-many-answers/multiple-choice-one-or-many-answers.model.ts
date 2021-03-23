@@ -6,6 +6,7 @@ import { getRandomId } from '@/pages/bank/test-tasks/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, MultipleChoiceOneOrManyQuestion } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -119,3 +120,44 @@ export const $form = combine(
     is_add_score_for_each_answer: marks,
   })
 )
+
+// edition mode data init
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
+    setQuestionsAnswers.prepend((data) =>
+      data.question_data.variants.map((question: any) => {
+        let mark = ''
+        let isCorrect = false
+
+        const existingCorrectAnswer = data.correct_answer.find(
+          ({ index }: { index: string }) => index === `${question.number}`
+        )
+        if (existingCorrectAnswer) {
+          isCorrect = true
+          if (data.is_add_score_for_each_answer) {
+            mark = existingCorrectAnswer.score
+          }
+        }
+
+        return {
+          id: question.number,
+          question: question.title,
+          isCorrect,
+          mark,
+        }
+      })
+    ),
+  ],
+})

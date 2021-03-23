@@ -7,7 +7,7 @@ export const updateTestAssignmentFx = createApiEffect<
 >({
   requestMapper: ({ id, body }) => ({
     method: 'PUT',
-    url: `/api/assignment/test-assignment/${id}`,
+    url: `/api/assignment/test-assignment/${id}/`,
     body,
   }),
 })

@@ -52,7 +52,7 @@ import {
   $labels,
   $selectedLabels,
   setSelectedLabels,
-} from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
+} from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

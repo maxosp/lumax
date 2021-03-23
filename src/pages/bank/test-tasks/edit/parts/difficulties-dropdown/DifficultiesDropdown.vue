@@ -17,7 +17,7 @@ import {
   difficultiesDropdownModule,
   $difficulties,
   loadDifficulties,
-} from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
+} from '@/pages/bank/test-tasks/edit/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

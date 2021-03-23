@@ -6,6 +6,7 @@ import { getRandomId } from '@/pages/bank/test-tasks/tasks/utils'
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile, ConnectLinesMatch } from '@/pages/bank/test-tasks/tasks/types'
+import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -89,10 +90,10 @@ export const $form = combine(
   $matches,
   $audioFiles,
   $language,
-  (wording, answerExample, containing, matches, audio, language) => ({
+  (wording, example_answer, containing, matches, audio, language) => ({
     wording,
-    text: answerExample,
-    containing,
+    text: containing,
+    example_answer,
     question_data: matches.map(({ matchA }) => matchA),
     correct_answer: matches.map(({ matchA, matchB }) => ({ [matchA]: matchB })),
     common_list_text_answer: matches.map(({ matchB }) => matchB),
@@ -103,3 +104,25 @@ export const $form = combine(
     interface_language: language.title,
   })
 )
+
+export const initAssignment = createEvent<TestAssignment>()
+
+forward({
+  from: initAssignment,
+  to: [
+    setWording.prepend((data) => data.wording || ''),
+    setContaining.prepend((data) => data.text || ''),
+    setAnswerExample.prepend((data) => data.example_answer || ''),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
+    setMatches.prepend((data) =>
+      data.correct_answer.map((ca: any, idx: number) => ({
+        id: idx + 1,
+        matchA: Object.keys(ca)[0],
+        matchB: Object.values(ca)[0],
+      }))
+    ),
+  ],
+})

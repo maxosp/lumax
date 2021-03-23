@@ -159,7 +159,7 @@ type BaseAssignment = {
   score: number
   media: number[]
   difficulty: DifficultyType
-  is_add_score_for_each_answer?: boolean
+  is_add_score_for_each_answer: boolean
   labels: number[]
   creation_datetime: string
   update_datetime: string

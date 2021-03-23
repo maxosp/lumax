@@ -41,7 +41,7 @@ export default Vue.extend({
       }
     },
   },
-  mounted() {
+  created() {
     loadTask(+this.$route.params.id)
   },
 })

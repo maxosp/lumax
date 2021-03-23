@@ -4,7 +4,7 @@
     <BaseCheckbox
       option="reorder"
       class="reorder-checkbox"
-      :value="$reorderEnabled"
+      :value="!$reorderEnabled"
       @change="toggleReorderEnabling"
     >
       Отключить перемешивание
@@ -12,6 +12,11 @@
     <div class="annotation">
       Введите элементы в правильной последовательности
     </div>
+    <!--
+      For the correct draggable usage need to add plugin to ckeditor4
+      https://ckeditor.com/cke4/addon/divarea
+      ISSUE: https://github.com/SortableJS/Vue.Draggable/issues/222
+    -->
     <Draggable
       v-model="$questions"
       group="questions"
@@ -25,7 +30,11 @@
         class="question"
       >
         <div class="order">{{ idx + 1 }}.</div>
-        <Wysiwyg :value="question.question" @input="question => handleQuestionChange({ id: question.id, question })" />
+        <Wysiwyg
+          :key="question.id"
+          :value="question.question"
+          @input="value => handleQuestionChange({ id: question.id, question: value })"
+        />
         <div class="handle">
           <Icon
             type="burger"
@@ -83,7 +92,9 @@ export default Vue.extend({
   methods: {
     toggleReorderEnabling,
     handleQuestionChange({ id, question }) {
+      console.log('id', id, 'q input', question)
       const questions = this.$questions.map((qst) => (qst.id === id ? { ...qst, question } : qst))
+      console.log('qsts', questions)
       setQuestions(questions)
     },
     addQuestion() {

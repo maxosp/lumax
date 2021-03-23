@@ -3,7 +3,7 @@ import { createApiEffect } from '@/features/api/common/create-api-effect'
 export const deleteOlympiadAssignmentFx = createApiEffect<number, void>({
   requestMapper: (id) => ({
     method: 'DELETE',
-    url: `/api/assignment/olympiad-assignment/${id}`,
+    url: `/api/assignment/olympiad-assignment/${id}/`,
   }),
 })
 

@@ -17,7 +17,7 @@ import {
   themesDropdownModule,
   loadThemes,
   $themes,
-} from '@/pages/bank/test-tasks/create/parts/themes-dropdown/themes-dropdown.model'
+} from '@/pages/bank/test-tasks/edit/parts/themes-dropdown/themes-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
