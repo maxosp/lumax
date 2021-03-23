@@ -67,7 +67,6 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
-      console.log(this.selected)
       const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'preview':

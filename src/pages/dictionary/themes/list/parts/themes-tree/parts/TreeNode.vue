@@ -19,6 +19,7 @@
       />
       <span>{{ title }}</span>
       <Chip
+        v-if="node.element_type === 'theme'"
         primary
         :item="resources.tasks"
         icon="copy"
@@ -75,7 +76,7 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          count: '8',
+          count: this.node.leaves.filter((el) => el.element_type === 'theme').length,
           description: 'Количество заданий',
         },
         videos: {

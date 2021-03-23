@@ -107,11 +107,7 @@ export default Vue.extend({
           filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
         }
       })
-      // call table filter
-      this.$emit('setFilter', {
-        ...this.$props.filterParams,
-        ...filter,
-      })
+      this.$emit('setFilter', filter)
       toggleVisibility(false)
     },
     resetFilters() {

@@ -29,12 +29,12 @@
         </template>
       </BaseDropdown>
       <div
+        v-if="isShowFilter"
         id="filter-icon"
         class="filter-wrapper"
         @click="$emit('handleFilterVisibility')"
       >
         <Icon
-          v-if="isShowFilter"
           class="filter-settings"
           type="filter-settings"
         />
@@ -157,6 +157,7 @@ export default Vue.extend({
     color: #fff;
     font-weight: 600;
     height: 30px;
+    padding-right: 0px;
   }
   & /deep/ .icon-wrap {
     bottom: 0;

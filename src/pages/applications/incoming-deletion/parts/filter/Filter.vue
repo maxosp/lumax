@@ -110,10 +110,7 @@ export default Vue.extend({
         }
       })
       // call table filter
-      this.$emit('setFilter', {
-        ...this.$props.filterParams,
-        ...filter,
-      })
+      this.$emit('setFilter', filter)
       toggleVisibility(false)
     },
     resetFilters() {

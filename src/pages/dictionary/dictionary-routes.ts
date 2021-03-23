@@ -68,7 +68,7 @@ export default [
             path: 'list',
             component: ThemesPage,
             meta: {
-              title: 'Предметы - Школа Летово',
+              title: 'Темы - Школа Летово',
             },
           },
           {
