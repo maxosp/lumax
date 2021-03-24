@@ -16,6 +16,7 @@
       class="contents"
     >
       <Icon
+        v-tooltip.top-end="iconTooltip"
         :type="iconType"
         size="20"
         class="icon"
@@ -38,8 +39,14 @@ export default Vue.extend({
     title: { type: String },
     rowId: { type: Number, required: true },
     iconType: { type: String },
+    description: { type: String },
   },
   computed: {
+    iconTooltip() {
+      return {
+        content: this.description,
+      }
+    },
     options() {
       return {
         content: this.title.length > 250 ? `${this.title.slice(0, 250)}...` : this.title,

@@ -54,6 +54,7 @@
         <template #type="props">
           <TooltipCell
             :icon-type="getCorrectIconType(props.rowData.type)"
+            :description="getCorrectDescriptionType(props.rowData.type)"
             :row-id="props.rowData.id"
             @onRightClick="handleRightClick"
           />
@@ -132,7 +133,7 @@ import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
 import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
-import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
+import { mapTaskTypeTo } from '@/pages/common/constants'
 import * as modals from '@/pages/bank/lesson-tasks/index'
 import { RefsType } from '@/pages/common/types'
 
@@ -201,7 +202,10 @@ export default (Vue as VueConstructor<
       return removeHtmlTags(str)
     },
     getCorrectIconType(type: string) {
-      return mapTypeToIcon[type]
+      return mapTaskTypeTo[type].icon
+    },
+    getCorrectDescriptionType(type: string) {
+      return mapTaskTypeTo[type].description
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {

@@ -57,6 +57,7 @@
         <template #type="props">
           <TooltipCell
             :icon-type="getCorrectIconType(props.rowData.type)"
+            :description="getCorrectDescriptionType(props.rowData.type)"
             :row-id="props.rowData.id"
             @onRightClick="handleRightClick"
           />
@@ -137,7 +138,7 @@ import {
   toggleVisibility,
   $visibility,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
-import { mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
+import { mapTaskTypeTo } from '@/pages/common/constants'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
@@ -249,7 +250,10 @@ export default (Vue as VueConstructor<
       return removeHtmlTags(str)
     },
     getCorrectIconType(type: string) {
-      return mapTypeToIcon[type]
+      return mapTaskTypeTo[type].icon
+    },
+    getCorrectDescriptionType(type: string) {
+      return mapTaskTypeTo[type].description
     },
     sendForCheck(id: number) {
       loadModalToSendForCheck([id])

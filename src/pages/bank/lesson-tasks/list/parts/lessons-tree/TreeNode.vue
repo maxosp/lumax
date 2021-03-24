@@ -84,7 +84,8 @@ import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vu
 import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
-import { mapTaskStatus, mapTypeToIcon } from '@/pages/dictionary/themes/list/constants'
+import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
+import { mapTaskTypeTo } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -138,7 +139,7 @@ export default Vue.extend({
     },
     taskIcon() {
       // @ts-ignore
-      return mapTypeToIcon[this.node.assignment.type]
+      return mapTaskTypeTo[this.node.assignment.type].icon
     },
     correctStatus() {
       // @ts-ignore
