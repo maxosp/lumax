@@ -11,7 +11,7 @@
       <span
         v-if="selectedRows && selectedRows.length === 1"
         class="--basic"
-        @click="$emit('onEdit', selectedRows)"
+        @click="$emit('onEdit', selectedRows[0])"
       >
         Редактировать
       </span>

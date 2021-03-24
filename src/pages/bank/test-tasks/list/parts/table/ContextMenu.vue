@@ -121,6 +121,9 @@ export default Vue.extend({
         case 'edit-theme':
           navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
           break
+        case 'edit-task':
+          navigatePush({ name: 'test-tasks-edit', params: { id: `${this.$props.id}` } })
+          break
         case 'create-theme':
           navigatePush({
             name: 'themes-create',

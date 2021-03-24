@@ -18,6 +18,7 @@
     <TableHeader
       :total="$treeView ? $tasksTreeTotal : total"
       :selected-rows="selectedRows"
+      @onEdit="handleEditTask"
       @showPreview="showPreview"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
@@ -111,6 +112,7 @@
       @onRemoveTask="removeSelectedTask"
       @onRemoveTheme="removeSelectedTheme"
       @onPreview="showPreview"
+      @onEdit="handleEditTask"
     />
     <TasksTypesModal />
     <TaskDeleteModal />
@@ -159,6 +161,7 @@ import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/del
 import { $session } from '@/features/session'
 import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model'
 import { RefsType } from '@/pages/common/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.use(VueEvents)
 // eslint-disable-next-line
@@ -285,6 +288,9 @@ export default (Vue as VueConstructor<
       else await deleteManyAssignments(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
       if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
+    },
+    handleEditTask(id: number) {
+      navigatePush({ name: 'test-tasks-edit', params: { id: `${id}` } })
     },
     async publishAssignments(ids: number | number[]) {
       await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })

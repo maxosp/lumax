@@ -110,7 +110,7 @@ export default Vue.extend({
     handleAction(item: SelectItemI) {
       switch (item.name) {
         case 'edit':
-          navigatePush({ name: 'themes-edit', params: { id: this.$props.id } })
+          navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } })
           break
         case 'delete-theme':
           this.$emit('onRemoveTheme', [this.$props.id])
@@ -141,6 +141,9 @@ export default Vue.extend({
           break
         case 'edit-theme':
           navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
+          break
+        case 'edit-task':
+          navigatePush({ name: 'test-tasks-edit', params: { id: `${this.$props.id}` } })
           break
         case 'create-theme':
           navigatePush({
