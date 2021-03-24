@@ -32,7 +32,6 @@ export const wysiwygConfig = {
   editorplaceholder: '',
 }
 
-// eslint-disable-next-line
 export const enableRules = (e: any): void => {
   const { writer } = e.editor.dataProcessor
   const rules = {

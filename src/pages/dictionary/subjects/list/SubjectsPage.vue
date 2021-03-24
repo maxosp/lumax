@@ -99,8 +99,7 @@ import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
 import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
-// eslint-disable-next-line
-Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
+Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
 type RightClickParams = {
   data: any

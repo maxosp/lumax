@@ -127,8 +127,7 @@ import DeletionRequestModal from '@/pages/dictionary/themes/list/parts/modals/de
 import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
-// eslint-disable-next-line
-Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
+Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
 type RightClickParams = {
   data: any

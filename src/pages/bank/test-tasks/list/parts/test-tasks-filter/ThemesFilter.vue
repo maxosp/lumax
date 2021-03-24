@@ -17,7 +17,11 @@
       <DifficultyDropdown class="half-third" @setItem="val => changeFilter('difficulty', val)" />
     </div>
     <div class="row">
-      <ThemeDropdown class="half-second" @setItem="val => changeFilter('theme', val)" />
+      <ThemeDropdown
+        class="half-second"
+        :is-disabled="!$canSetThemePosition"
+        @setItem="val => changeFilter('theme', val)"
+      />
       <StatusDropdown class="half-third" @setItem="val => changeFilter('status', val)" />
     </div>
     <div class="row">
@@ -77,6 +81,7 @@ import {
   toggleVisibility,
   $togglers,
   setTogglers,
+  $canSetThemePosition,
 } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
 
@@ -99,6 +104,7 @@ export default Vue.extend({
   },
   effector: {
     $togglers,
+    $canSetThemePosition,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
@@ -184,6 +190,9 @@ export default Vue.extend({
   beforeDestroy() {
     const container = document.querySelector('#themes-page')
     container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
+    // TO DO: update resetting of class & subject dd when resetfilters is updated
+    this.classesModuleMethods.resetItem()
+    this.subjectsModuleMethods.resetItem()
   },
 })
 </script>

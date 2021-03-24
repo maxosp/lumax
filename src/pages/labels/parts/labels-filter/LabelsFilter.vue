@@ -18,7 +18,7 @@
       <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
     </div>
     <div class="section">
-      <ThemeDropdown @setItem="val => changeFilter('theme', val)" />
+      <ThemeDropdown is-preload @setItem="val => changeFilter('theme', val)" />
       <div class="btns">
         <div class="btn">
           <BaseButton
@@ -50,11 +50,11 @@ import Icon from '@/ui/icon/Icon.vue'
 import { toggleVisibility, reset } from '@/pages/labels/parts/labels-filter/labels-filter.model'
 import SubjectDropdown from '@/pages/labels/parts/labels-filter/parts/subject/SubjectDropdown.vue'
 import ClassDropdown from '@/pages/labels/parts/labels-filter/parts/class/ClassDropdown.vue'
-import ThemeDropdown from '@/pages/labels/parts/labels-filter/parts/theme/ThemeDropdown.vue'
+import ThemeDropdown from '@/pages/common/dropdowns/themes-tree/ThemeDropdown.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import { classDropdownModule } from '@/pages/labels/parts/labels-filter/parts/class/class-dropdown.model'
 import { subjectDropdownModule } from '@/pages/labels/parts/labels-filter/parts/subject/subject-dropdown.model'
-import { themesDropdownModule } from '@/pages/labels/parts/labels-filter/parts/theme/theme-dropdown.model'
+import { themesDropdownModule } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 Vue.directive('click-outside', ClickOutside)
 

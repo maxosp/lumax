@@ -4,7 +4,6 @@ import { languagesDropdownModule } from '@/pages/common/dropdowns/olympiad-tasks
 import { statusDropdownModule } from '@/pages/common/dropdowns/olympiad-tasks/status-dropdown/status-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
 import { tagsDropdownModule } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
-import { themesDropdownModule } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/theme-dropdown/theme-dropdown.model'
 import { typeDropdownModule } from '@/pages/common/dropdowns/olympiad-tasks/type-dropdown/type-dropdown.model'
 
 export const modules = {
@@ -14,6 +13,5 @@ export const modules = {
   statusDropdownModule,
   subjectsDropdownModule,
   tagsDropdownModule,
-  themesDropdownModule,
   typeDropdownModule,
 }

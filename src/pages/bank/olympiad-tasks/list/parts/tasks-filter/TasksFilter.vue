@@ -171,6 +171,9 @@ export default Vue.extend({
   beforeDestroy() {
     const container = document.querySelector('#themes-page')
     container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
+    // TO DO: update resetting of class & subject dd when resetfilters is updated
+    this.classesModuleMethods.resetItem()
+    this.subjectsModuleMethods.resetItem()
   },
 })
 </script>

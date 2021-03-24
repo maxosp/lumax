@@ -43,11 +43,11 @@ import Vue from 'vue'
 import ClickOutside from '@/features/directives/click-outside.ts'
 import Icon from '@/ui/icon/Icon.vue'
 import { toggleVisibility, reset } from '@/pages/tags/parts/tags-filter/tags-filter.model'
-import SubjectDropdown from '@/pages/tags/parts/tags-filter/parts/subject/SubjectDropdown.vue'
-import ClassDropdown from '@/pages/tags/parts/tags-filter/parts/class/ClassDropdown.vue'
+import SubjectDropdown from '@/pages/common/dropdowns/subject/subjects-dropdown/SubjectsDropdown.vue'
+import ClassDropdown from '@/pages/common/dropdowns/class/classes-dropdown/ClassesDropdown.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import { classDropdownModule } from '@/pages/tags/parts/tags-filter/parts/class/class-dropdown.model'
-import { subjectDropdownModule } from '@/pages/tags/parts/tags-filter/parts/subject/subject-dropdown.model'
+import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
+import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -66,8 +66,8 @@ export default Vue.extend({
   data() {
     return {
       dropdownsFilter: { subject: null, study_year: null, created_by: null } as any,
-      classModuleMethods: classDropdownModule.methods,
-      subjectModuleMethods: subjectDropdownModule.methods,
+      classModuleMethods: classesDropdownModule.methods,
+      subjectModuleMethods: subjectsDropdownModule.methods,
     }
   },
   methods: {
@@ -104,7 +104,6 @@ export default Vue.extend({
     },
     resetFilters() {
       this.dropdownsFilter = {}
-
       this.classModuleMethods.resetItem()
       this.subjectModuleMethods.resetItem()
       this.$emit('resetFilter') // general filter
@@ -118,6 +117,9 @@ export default Vue.extend({
   beforeDestroy() {
     const container = document.querySelector('#tags-page')
     container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
+    // TO DO: update resetting of class & subject dd when resetfilters is updated
+    this.classModuleMethods.resetItem()
+    this.subjectModuleMethods.resetItem()
   },
 })
 </script>

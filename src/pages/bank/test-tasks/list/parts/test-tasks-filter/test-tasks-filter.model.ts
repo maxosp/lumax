@@ -5,7 +5,7 @@ import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown/
 import {
   getThemes,
   $selectedTheme,
-} from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/theme-dropdown/theme-dropdown.model'
+} from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { modules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/index'
 import { TogglerSettings } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/types'
 import { DEFAULT_TOGGLERS } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/constants'
@@ -33,7 +33,7 @@ forward({
     modules.classesDropdownModule.methods.itemChanged,
     modules.subjectsDropdownModule.methods.itemChanged,
   ],
-  to: modules.themesDropdownModule.methods.resetItem.prepend(() => ({})),
+  to: modules.themesDropdownModule.methods.resetItem,
 })
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
@@ -48,5 +48,5 @@ const debounced = debounce({
 
 forward({
   from: debounced,
-  to: getThemes.prepend(() => ({})),
+  to: getThemes,
 })

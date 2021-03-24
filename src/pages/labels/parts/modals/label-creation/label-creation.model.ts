@@ -14,7 +14,7 @@ import {
   $selectedTheme,
   setSelectedTheme,
   themesDropdownModule,
-} from '@/pages/labels/parts/modals/label-creation/parts/theme/theme-dropdown.model'
+} from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { condition, debounce, every } from 'patronum'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { createLabelFx } from '@/features/api/assignment/labels/create-label'

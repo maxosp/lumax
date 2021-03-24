@@ -16,8 +16,8 @@ export type GetListQueryParams = {
   sort?: string
   page?: number
   per_page?: number
-  subject?: number
-  study_year?: number
+  subject?: number | null
+  study_year?: number | null
   is_prerequisite?: boolean
 }
 

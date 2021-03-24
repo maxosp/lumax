@@ -6,7 +6,6 @@
       :data="$tags"
       :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
       :store="{ $item, $itemsDropdown, $searchString }"
-      :disabled="!$canSetTags"
       @item-changed="onSelectItem"
     />
     <div class="selected-tags">
@@ -42,7 +41,6 @@ import {
   $selectedTags,
   deleteTag,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
-import { $canSetTags } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
@@ -52,7 +50,6 @@ export default Vue.extend({
   },
   effector: {
     $tags,
-    $canSetTags,
     $selectedTags,
     ...tagsDropdownModule.store,
   },

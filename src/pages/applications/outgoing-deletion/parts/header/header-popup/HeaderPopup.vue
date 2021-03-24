@@ -87,7 +87,6 @@ export default Vue.extend({
     selectAllChanged,
     download,
     clickOutside(evt: any) {
-      // eslint-disable-next-line no-useless-return
       if (evt.target.closest('#btn-download')) return
       this.$emit('close')
     },

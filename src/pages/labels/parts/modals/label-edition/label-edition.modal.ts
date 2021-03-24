@@ -15,7 +15,7 @@ import {
   $selectedTheme,
   setSelectedTheme,
   themesDropdownModule,
-} from '@/pages/labels/parts/modals/label-edition/parts/theme/theme-dropdown.model'
+} from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { CreateLabelType, Label } from '@/features/api/assignment/types'
@@ -53,7 +53,7 @@ const $form = combine({
   name: $labelTitle,
   study_year_id: $selectedClass.map((data) => (data ? +data.name : DEFAULT_ID)),
   subject_id: $selectedSubject.map((data) => (data ? +data.name : DEFAULT_ID)),
-  theme_id: $selectedTheme.map((data) => (data ? +data.name : DEFAULT_ID)),
+  theme_id: $selectedTheme.map((data) => (data ? +data.id! : DEFAULT_ID)),
 })
 
 export const $canSetThemePosition = every({

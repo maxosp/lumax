@@ -1,7 +1,7 @@
 import { combine, createEvent, forward, restore } from 'effector-root'
 import { debounce } from 'patronum'
-import { $selectedClass } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/class/class-dropdown.model'
-import { $selectedSubject } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/subject/subject-dropdown.model'
+import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
+import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 
 export const reset = createEvent<void>()

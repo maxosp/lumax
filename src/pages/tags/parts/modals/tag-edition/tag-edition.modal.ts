@@ -7,14 +7,14 @@ import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-
 import { updateTagFx } from '@/features/api/assignment/update-tag'
 import {
   $selectedClass,
-  classDropdownModule,
+  classesDropdownModule,
   setSelectedClass,
-} from '@/pages/tags/parts/modals/tag-edition/parts/class/class-dropdown.model'
+} from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
 import {
   $selectedSubject,
   setSelectedSubject,
-  subjectDropdownModule,
-} from '@/pages/tags/parts/modals/tag-edition/parts/subject/subject-dropdown.model'
+  subjectsDropdownModule,
+} from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
 import { CreateTagType, Tag } from '@/features/api/assignment/types'
@@ -72,12 +72,12 @@ forward({
 })
 
 forward({
-  from: subjectDropdownModule.methods.itemChanged,
+  from: subjectsDropdownModule.methods.itemChanged,
   to: $subjectErrorModule.methods.resetError,
 })
 
 forward({
-  from: classDropdownModule.methods.itemChanged,
+  from: classesDropdownModule.methods.itemChanged,
   to: $classErrorModule.methods.resetError,
 })
 
@@ -95,10 +95,10 @@ sample({
   fn: (tag: Tag) => {
     $form.map((data) => (data.id = tag.id))
     tagTitleChanged(tag.name)
-    tag.subject && subjectDropdownModule.methods.itemChanged(`${tag.subject.id}`)
+    tag.subject && subjectsDropdownModule.methods.itemChanged(`${tag.subject.id}`)
     tag.subject &&
       setSelectedSubject({ id: tag.subject.id, name: `${tag.subject.id}`, title: tag.subject.name })
-    tag.study_year && classDropdownModule.methods.itemChanged(`${tag.study_year.id}`)
+    tag.study_year && classesDropdownModule.methods.itemChanged(`${tag.study_year.id}`)
     tag.study_year &&
       setSelectedClass({
         id: tag.study_year.id,
@@ -128,10 +128,10 @@ forward({
   from: clearFields,
   to: [
     tagTitleReset,
-    subjectDropdownModule.methods.resetItem,
-    subjectDropdownModule.methods.resetSearchString,
-    classDropdownModule.methods.resetItem,
-    classDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetItem,
+    subjectsDropdownModule.methods.resetSearchString,
+    classesDropdownModule.methods.resetItem,
+    classesDropdownModule.methods.resetSearchString,
     $titleErrorModule.methods.resetError,
     $subjectErrorModule.methods.resetError,
     $classErrorModule.methods.resetError,

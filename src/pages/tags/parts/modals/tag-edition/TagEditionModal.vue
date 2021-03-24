@@ -50,8 +50,8 @@
 import Vue from 'vue'
 import Modal from '@/ui/modal/Modal.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import SubjectDropdown from '@/pages/tags/parts/modals/tag-edition/parts/subject/SubjectDropdown.vue'
-import ClassDropdown from '@/pages/tags/parts/modals/tag-edition/parts/class/ClassDropdown.vue'
+import SubjectDropdown from '@/pages/common/dropdowns/subject/subjects-dropdown/SubjectsDropdown.vue'
+import ClassDropdown from '@/pages/common/dropdowns/class/classes-dropdown/ClassesDropdown.vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {

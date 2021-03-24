@@ -137,8 +137,7 @@ import * as modals from '@/pages/bank/lesson-tasks/index'
 import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
-// eslint-disable-next-line
-Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
+Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
 type RightClickParams = {
   data: any

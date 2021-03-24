@@ -5,9 +5,8 @@
     :methods="themesDropdownMethods"
     :data="$themes"
     :store="{ $item, $itemsDropdown, $searchString }"
-    is-recursive
-    :disabled="!$canSetThemePosition"
-    @item-changed="setSelectedTheme"
+    :disabled="isDisabled"
+    @item-changed="onSelectItem"
   />
 </template>
 
@@ -19,16 +18,20 @@ import {
   $themes,
   themesDropdownModule,
   setSelectedTheme,
-} from '@/pages/labels/parts/modals/label-creation/parts/theme/theme-dropdown.model'
-import { $canSetThemePosition } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
+  loadThemes,
+} from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
+import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   components: {
     FilterDropdown,
   },
+  props: {
+    isDisabled: { type: Boolean, default: false },
+    isPreload: { type: Boolean, default: false },
+  },
   effector: {
     $themes,
-    $canSetThemePosition,
     ...themesDropdownModule.store,
   },
   data() {
@@ -36,7 +39,16 @@ export default Vue.extend({
       themesDropdownMethods: themesDropdownModule.methods,
     }
   },
-  methods: { setSelectedTheme },
+  methods: {
+    ...themesDropdownModule.methods,
+    onSelectItem(item: DropdownItem | null) {
+      setSelectedTheme(item)
+      this.$emit('setItem', item ? item.name : null)
+    },
+  },
+  mounted() {
+    if (this.isPreload) loadThemes()
+  },
 })
 </script>
 

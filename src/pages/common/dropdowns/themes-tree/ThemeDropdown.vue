@@ -1,42 +1,55 @@
 <template>
   <FilterDropdown
-    v-if="$themes.length"
     label="Тема"
     placeholder="Выберите тему"
+    :methods="themesDropdownMethods"
     :data="$themes"
-    :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
     :store="{ $item, $itemsDropdown, $searchString }"
+    :disabled="isDisabled"
+    is-recursive
     @item-changed="onSelectItem"
   />
 </template>
+
 
 <script lang="ts">
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  themesDropdownModule,
-  loadThemes,
   $themes,
-} from '@/pages/bank/test-tasks/create/parts/themes-dropdown/themes-dropdown.model'
+  themesDropdownModule,
+  setSelectedTheme,
+  loadThemes,
+} from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
   components: {
     FilterDropdown,
   },
+  props: {
+    isDisabled: { type: Boolean, default: false },
+    isPreload: { type: Boolean, default: false },
+  },
   effector: {
     $themes,
     ...themesDropdownModule.store,
   },
+  data() {
+    return {
+      themesDropdownMethods: themesDropdownModule.methods,
+    }
+  },
   methods: {
     ...themesDropdownModule.methods,
-    loadThemes,
     onSelectItem(item: DropdownItem | null) {
+      setSelectedTheme(item)
       this.$emit('setItem', item ? item.name : null)
     },
   },
   mounted() {
-    loadThemes()
+    if (this.isPreload) loadThemes()
   },
 })
 </script>
+

@@ -164,8 +164,7 @@ import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 
 Vue.use(VueEvents)
-// eslint-disable-next-line
-Vue.component('vuetable-field-checkbox', VuetableFieldCheckbox)
+Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
 type RightClickParams = {
   data: any

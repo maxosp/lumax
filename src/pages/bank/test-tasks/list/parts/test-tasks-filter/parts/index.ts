@@ -4,7 +4,7 @@ import { languagesDropdownModule } from '@/pages/common/dropdowns/test-tasks/lan
 import { statusDropdownModule } from '@/pages/common/dropdowns/test-tasks/status-dropdown/status-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
 import { tagsDropdownModule } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/tags-dropdown/tags-dropdown.model'
-import { themesDropdownModule } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/theme-dropdown/theme-dropdown.model'
+import { themesDropdownModule } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { typeDropdownModule } from '@/pages/common/dropdowns/test-tasks/type-dropdown/type-dropdown.model'
 
 export const modules = {
