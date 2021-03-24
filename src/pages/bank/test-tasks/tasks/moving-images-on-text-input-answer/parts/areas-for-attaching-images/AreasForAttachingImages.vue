@@ -3,8 +3,7 @@
     <FormLabel class="title">Области для прикрепления изображений</FormLabel>
 
     <div class="table">
-
-      <div class="row">
+      <div v-if="$droppableImages.length" class="row">
         <div class="cell header-cell">
           Номер области
         </div>
@@ -17,10 +16,17 @@
           Цвет
         </div>
       </div>
+      <div v-else class="instruction">
+        Добавьте область для изображения в поле "Текст"
+      </div>
 
-      <AttachingImagesItem />
-      <AttachingImagesItem />
-      <AttachingImagesItem />
+      <AttachingImagesItem
+        v-for="image in $droppableImages"
+        :key="image.systemIndex"
+        :answer="image"
+        @change="replaceDroppableImage"
+        @remove="removeDroppableImage"
+      />
 
     </div>
   </div>
@@ -29,6 +35,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import FormLabel from '@/ui/label/FormLabel.vue'
+import {
+  $droppableImages,
+  replaceDroppableImage,
+  removeDroppableImage,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 import AttachingImagesItem from './AttachingImagesItem.vue'
 
 export default Vue.extend({
@@ -36,6 +47,13 @@ export default Vue.extend({
   components: {
     FormLabel,
     AttachingImagesItem,
+  },
+  effector: {
+    $droppableImages,
+  },
+  methods: {
+    replaceDroppableImage,
+    removeDroppableImage,
   },
 })
 </script>
@@ -56,6 +74,14 @@ export default Vue.extend({
 }
 .cell {
   display: table-cell;
+}
+.instruction {
+  @mixin flex-center;
+  background: var(--c-grey-5);
+  border: 1px solid var(--c-grey-2);
+  color: var(--c-grey-3);
+  border-radius: 3px;
+  padding: 20px;
 }
 .header-cell {
   font-weight: 600;

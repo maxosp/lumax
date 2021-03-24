@@ -27,7 +27,7 @@ import {
   $inputs,
   replaceInput,
   removeInput,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import CorrectTextAnswerItem from './CorrectTextAnswerItem.vue'
 
 export default Vue.extend({

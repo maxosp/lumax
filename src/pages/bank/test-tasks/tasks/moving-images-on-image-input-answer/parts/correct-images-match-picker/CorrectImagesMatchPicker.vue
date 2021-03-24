@@ -7,6 +7,7 @@
       v-for="image in $draggableImages"
       :key="image.systemIndex"
       :image="image"
+      :droppable-images="$droppableImages"
       @remove="removeDraggableImage"
       @change="replaceDraggableImage"
     />
@@ -26,13 +27,15 @@ import {
   $draggableImages,
   removeDraggableImage,
   replaceDraggableImage,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+  $droppableImages,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import ImageMatchItem from './ImageMatchItem.vue'
 
 export default Vue.extend({
   name: `CorrectImagesMatchPicker`,
   effector: {
     $draggableImages,
+    $droppableImages,
   },
   components: {
     BaseButton,

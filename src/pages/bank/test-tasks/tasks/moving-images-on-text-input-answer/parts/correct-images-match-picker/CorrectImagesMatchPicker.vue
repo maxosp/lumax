@@ -1,11 +1,16 @@
 <template>
   <div class="correct-images-match-picker">
-    <div class="correct-match">
+    <div v-if="$draggableImages.length" class="correct-match">
       Правильное соответствие
     </div>
-    <ImageMatchItem />
-    <ImageMatchItem />
-    <ImageMatchItem />
+    <ImageMatchItem
+      v-for="image in $draggableImages"
+      :key="image.systemIndex"
+      :image="image"
+      :droppable-images="$droppableImages"
+      @remove="removeDraggableImage"
+      @change="replaceDraggableImage"
+    />
 
     <div class="actions">
       <BaseButton>
@@ -18,13 +23,27 @@
 <script lang="ts">
 import Vue from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import ImageMatchItem from './ImageMatchItem.vue'
+import {
+  $draggableImages,
+  removeDraggableImage,
+  replaceDraggableImage,
+  $droppableImages,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
+import ImageMatchItem from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/correct-images-match-picker/ImageMatchItem.vue'
 
 export default Vue.extend({
   name: `CorrectImagesMatchPicker`,
   components: {
     BaseButton,
     ImageMatchItem,
+  },
+  effector: {
+    $draggableImages,
+    $droppableImages,
+  },
+  methods: {
+    replaceDraggableImage,
+    removeDraggableImage,
   },
 })
 </script>

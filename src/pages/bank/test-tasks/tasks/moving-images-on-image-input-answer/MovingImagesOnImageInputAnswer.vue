@@ -39,7 +39,7 @@ import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import AudioFiles from '@/pages/bank/test-tasks/create/parts/audio-files/AudioFiles.vue'
 import LanguagesDropdown from '@/pages/bank/test-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
-import MovingImagesOnImageInputAnswerForm from './MovingImagesOnImageInputAnswerForm.vue'
+import MovingImagesOnImageInputAnswerForm from './form/MovingImagesOnImageInputAnswerForm.vue'
 
 import {
   $wording,

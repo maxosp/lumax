@@ -16,12 +16,12 @@ import Vue from 'vue'
 import {
   $hideDragAndDropControls,
   $inputs,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
-import DragAndDropImageContainer from './parts/drag-and-drop-image-container/DragAndDropImageContainer.vue'
-import ImagesUploader from './parts/ImagesUploader.vue'
-import CorrectImagesMatchPicker from './parts/correct-images-match-picker/CorrectImagesMatchPicker.vue'
-import CorrectTextMatchPicker from './parts/correct-text-match-picker/CorrectTextMatchPicker.vue'
-import CorrectTextAnswers from './parts/correct-text-answers/CorrectTextAnswers.vue'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import DragAndDropImageContainer from '../parts/drag-and-drop-image-container/DragAndDropImageContainer.vue'
+import ImagesUploader from '../parts/ImagesUploader.vue'
+import CorrectImagesMatchPicker from '../parts/correct-images-match-picker/CorrectImagesMatchPicker.vue'
+import CorrectTextMatchPicker from '../parts/correct-text-match-picker/CorrectTextMatchPicker.vue'
+import CorrectTextAnswers from '../parts/correct-text-answers/CorrectTextAnswers.vue'
 
 export default Vue.extend({
   name: 'MovingImagesOnImageInputAnswerForm',

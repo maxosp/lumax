@@ -117,3 +117,25 @@ export type MovingImagesOnImageAnswer = {
   draggable: DraggableImage[]
   droppable: DroppableInput[]
 }
+
+export type MovingOnTextDroppableInput = {
+  size: Size
+  color: string
+  value: {
+    value: string
+    systemIndex: string
+  }[]
+} & SystemIndex
+
+export type MovingOnTextDroppableImage = {
+  pin: {
+    x: number
+    y: number
+  }
+  size: {
+    width: number
+    height: number
+  }
+  color: string
+  value: string
+} & SystemIndex

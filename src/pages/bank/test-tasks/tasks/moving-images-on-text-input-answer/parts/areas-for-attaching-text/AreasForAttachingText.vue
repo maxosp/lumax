@@ -1,10 +1,10 @@
 <template>
   <div class="areas-for-attaching-images">
-    <FormLabel class="title">Области для прикрепления изображений</FormLabel>
+    <FormLabel class="title">Область для ввода текста</FormLabel>
 
     <div class="table">
 
-      <div class="row">
+      <div v-if="$inputs.length" class="row">
         <div class="cell header-cell">
           Номер области
         </div>
@@ -21,10 +21,17 @@
           Цвет
         </div>
       </div>
+      <div v-else class="instruction">
+        Добавьте область для ввода текста в поле "Текст"
+      </div>
 
-      <AttachingImagesItem />
-      <AttachingImagesItem />
-      <AttachingImagesItem />
+      <AttachingTextItem
+        v-for="input in $inputs"
+        :key="input.systemIndex"
+        :answer="input"
+        @change="replaceInput"
+        @remove="removeInput"
+      />
 
     </div>
   </div>
@@ -33,13 +40,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import FormLabel from '@/ui/label/FormLabel.vue'
-import AttachingImagesItem from './AttachingTextItem.vue'
+import {
+  $inputs,
+  replaceInput,
+  removeInput,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
+import AttachingTextItem from './AttachingTextItem.vue'
 
 export default Vue.extend({
   name: `AreasForAttachingText`,
   components: {
     FormLabel,
-    AttachingImagesItem,
+    AttachingTextItem,
+  },
+  effector: {
+    $inputs,
+  },
+  methods: {
+    replaceInput,
+    removeInput,
   },
 })
 </script>
@@ -60,6 +79,14 @@ export default Vue.extend({
 }
 .cell {
   display: table-cell;
+}
+.instruction {
+  @mixin flex-center;
+  background: var(--c-grey-5);
+  border: 1px solid var(--c-grey-2);
+  color: var(--c-grey-3);
+  border-radius: 3px;
+  padding: 20px;
 }
 .header-cell {
   font-weight: 600;

@@ -2,57 +2,44 @@
   <div class="text-match-item">
     <div class="variant-column">
       <FormInput
-        v-model="value"
+        :value="value.text"
         class="variant-input"
         placeholder="Введите значение"
+        @input="$emit('change', {
+          text: $event,
+          systemIndex: value.systemIndex,
+        })"
       />
     </div>
     <div class="actions">
-      <BaseDropdown
-        class="dropdown"
-        placeholder="Выберите язык"
-        :value="'A1'"
-        read-only-dropdown
-      >
-        <template>
-          <SelectItem
-            v-for="item in items"
-            :key="item"
-            :placeholder="item"
-            class="select-item"
-          >
-            {{ item }}
-          </SelectItem>
-        </template>
-      </BaseDropdown>
       <Icon
         class="remove-icon"
         size="12px"
         type="close"
+        @click="$emit('remove', value)"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import FormInput from '@/ui/input/FormInput.vue'
+import { DraggableText } from '@/pages/bank/test-tasks/tasks/types'
 
 export default Vue.extend({
   name: `TextMatchItem`,
   components: {
     FormInput,
-    BaseDropdown,
-    SelectItem,
     Icon,
   },
-  data: () => ({
-    value: 'value',
-    items: ['A1', 'A2', 'нет соответствия '],
-  }),
+  props: {
+    value: {
+      type: Object as PropType<DraggableText>,
+      required: true,
+    },
+  },
 })
 </script>
 
@@ -64,10 +51,9 @@ export default Vue.extend({
 
   width: 100%;
 }
-.variant-column,
-.actions {
-  width: 50%;
-  flex-basis: 50%;
+.variant-column {
+  width: 100%;
+  flex-basis: 100%;
   display: flex;
   align-items: center;
 }

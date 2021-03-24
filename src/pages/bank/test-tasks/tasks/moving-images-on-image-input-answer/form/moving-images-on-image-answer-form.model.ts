@@ -132,13 +132,14 @@ sample({
 
 export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'systemIndex')
 
-const droppableImagesCounter = createCounter('A')
 export const uploadDraggableImage = createEvent<FileList>()
 
 forward({
   from: uploadDraggableImage,
   to: uploadDraggableImageFx,
 })
+
+const droppableImagesCounter = createCounter('A')
 
 export const setDroppableImages = createEvent<DroppableImage[]>()
 export const $droppableImages = restore(setDroppableImages, [])

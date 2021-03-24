@@ -54,6 +54,10 @@ import {
   $isFilled as $isFilledMovingOnImage,
   $form as $formMovingOnImage,
 } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+import {
+  $isFilled as $isFilledMovingOnText,
+  $form as $formMovingOnText,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
@@ -99,6 +103,7 @@ const $isFilled = combine({
   MultipleShortClosedAnswer: $isFilledMultipleShortClosed,
   ShortClosedAnswer: $isFilledShortClosed,
   MovingImagesOnImageInputAnswer: $isFilledMovingOnImage,
+  MovingImagesOnTextInputAnswer: $isFilledMovingOnText,
 })
 
 export const $canSave = combine(
@@ -126,6 +131,7 @@ const $taskform = combine({
   MultipleShortClosedAnswer: $formMultipleShortClosed,
   ShortClosedAnswer: $formShortClosed,
   MovingImagesOnImageInputAnswer: $formMovingOnImage,
+  MovingImagesOnTextInputAnswer: $formMovingOnText,
 })
 
 const $baseForm = combine(

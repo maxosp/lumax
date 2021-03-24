@@ -38,7 +38,7 @@ import {
   replaceDroppableImage,
   removeDroppableImage,
   $scale,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import { DroppableImage, DraggableImage } from '@/pages/bank/test-tasks/tasks/types'
 import { ResizableElementSizes } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/types'
 import ImageContextMenu from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/ImageContextMenu.vue'

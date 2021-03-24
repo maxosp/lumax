@@ -69,6 +69,7 @@ export default Vue.extend({
           data.url = parsedResponse.file
         }
       })
+      this.$emit('instance-ready', editor)
       if (editor.dataProcessor.dataFilter) {
         editor.dataProcessor.dataFilter.addRules({
           elements: {

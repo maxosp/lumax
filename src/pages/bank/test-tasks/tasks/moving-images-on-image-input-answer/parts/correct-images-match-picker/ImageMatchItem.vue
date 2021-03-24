@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="actions">
-      <div v-if="!$droppableImages.length">
+      <div v-if="!droppableImages.length">
         Добавьте изображения выше
       </div>
       <BaseDropdown
@@ -19,7 +19,7 @@
       >
         <template #default="{closeMenu}">
           <SelectItem
-            v-for="droppable in $droppableImages"
+            v-for="droppable in droppableImages"
             :key="droppable.value"
             :placeholder="droppable.value"
             class="select-item"
@@ -44,8 +44,11 @@ import Vue, { PropType } from 'vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import { DraggableImage, DroppableImage } from '@/pages/bank/test-tasks/tasks/types'
-import { $droppableImages } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+import {
+  DraggableImage,
+  DroppableImage,
+  MovingOnTextDroppableImage,
+} from '@/pages/bank/test-tasks/tasks/types'
 
 export default Vue.extend({
   name: `ImageMatchItem`,
@@ -54,10 +57,11 @@ export default Vue.extend({
     SelectItem,
     Icon,
   },
-  effector: {
-    $droppableImages,
-  },
   props: {
+    droppableImages: {
+      type: Object as PropType<DroppableImage | MovingOnTextDroppableImage>,
+      required: true,
+    },
     image: {
       type: Object as PropType<DraggableImage>,
       required: true,

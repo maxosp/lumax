@@ -1,62 +1,117 @@
 <template>
   <div class="moving-images-text-input-answer">
-    <TextAnswerWysiwyg class="text-answer-wysiwyg" />
-    <ImagesUploader class="uploader" />
-    <CorrectImagesMatchPicker class="images-match-picker" />
-    <CorrectTextMatchPicker class="text-match-picker" />
-    <AreasForAttachingImages class="areas-for-images" />
-    <AreasForAttachingText class="areas-for-text" />
-    <div class="left-border" />
+    <div class='field'>
+      <div class='wording-head'>
+        <span class='label'>Формулировка</span>
+      </div>
+      <BaseTextarea
+        placeholder="Введите формулировку задания"
+        :value="$wording"
+        @input="setWording"
+      />
+    </div>
+    <div class='field'>
+      <span class='label'>Текстовые и иллюстративные составляющие задания</span>
+      <Wysiwyg :value="$containing" @input="setContaining" />
+    </div>
+    <div class="field">
+      <span class="label">Аудиофайлы</span>
+      <AudioFiles
+        :audio-files="$audioFiles"
+        @change-files="setAudioFiles"
+        @upload-files="uploadAudioFiles"
+      />
+    </div>
+    <MovingImagesOnTextInputAnswerForm class="form"  />
+    <div class='field'>
+      <span class='label'>Образец ответа</span>
+      <Wysiwyg :value="$answerExample" @input="setAnswerExample" />
+    </div>
+    <div class='field'>
+      <LanguagesDropdown :value="$language" @click="setLanguage" />
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import ImagesUploader from './parts/ImagesUploader.vue'
-import CorrectImagesMatchPicker from './parts/correct-images-match-picker/CorrectImagesMatchPicker.vue'
-import CorrectTextMatchPicker from './parts/correct-text-match-picker/CorrectTextMatchPicker.vue'
-import TextAnswerWysiwyg from './parts/text-answer-wysiwyg/TextAnswerWysiwyg.vue'
-import AreasForAttachingImages from './parts/areas-for-attaching-images/AreasForAttachingImages.vue'
-import AreasForAttachingText from './parts/areas-for-attaching-text/AreasForAttachingText.vue'
+import BaseTextarea from '@/ui/input/BaseTextarea.vue'
+import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
+import AudioFiles from '@/pages/bank/test-tasks/create/parts/audio-files/AudioFiles.vue'
+import LanguagesDropdown from '@/pages/bank/test-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
+import MovingImagesOnTextInputAnswerForm from './form/MovingImagesOnTextInputAnswerForm.vue'
+
+import {
+  $wording,
+  setWording,
+  $containing,
+  setContaining,
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+  $answerExample,
+  setAnswerExample,
+  $language,
+  setLanguage,
+} from './moving-images-on-text-input-answer.model'
 
 export default Vue.extend({
   name: 'MovingImagesOnTextInputAnswer',
   components: {
-    AreasForAttachingText,
-    AreasForAttachingImages,
-    TextAnswerWysiwyg,
-    CorrectTextMatchPicker,
-    CorrectImagesMatchPicker,
-    ImagesUploader,
+    MovingImagesOnTextInputAnswerForm,
+    BaseTextarea,
+    Wysiwyg,
+    AudioFiles,
+    LanguagesDropdown,
+  },
+  effector: {
+    $wording,
+    $containing,
+    $isAudioUploadLoading,
+    $audioFiles,
+    $answerExample,
+    $language,
+  },
+  methods: {
+    setWording,
+    setContaining,
+    setAudioFiles,
+    uploadAudioFiles,
+    setAnswerExample,
+    setLanguage,
   },
 })
 </script>
 
 <style scoped>
 .moving-images-text-input-answer {
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
-.areas-for-images {
-  margin-bottom: 10px;
-}
-.text-match-picker {
+.form {
   margin-bottom: 20px;
 }
-.text-answer-wysiwyg {
+.field {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
 }
-.uploader {
-  margin-bottom: 16px;
+.label {
+  color: #000;
+  font-weight: 600;
+  line-height: 17px;
+  margin-bottom: 5px;
 }
-.images-match-picker {
-  margin-bottom: 20px;
+.wording-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.left-border {
-  position: absolute;
-  top: 0;
-  left: -30px;
-  width: 4px;
-  height: 100%;
-  background-color: var(--c-yellow-3);
+.template {
+  cursor: pointer;
+  color: var(--base-text-primary);
+  line-height: 17px;
+  @mixin underline-text;
 }
 </style>

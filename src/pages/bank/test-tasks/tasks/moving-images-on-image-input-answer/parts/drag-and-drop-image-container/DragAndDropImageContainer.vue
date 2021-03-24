@@ -59,7 +59,7 @@ import {
   setNextResizerToText,
   setNextResizerToImage,
   setNextResizableBlockType,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import FilePicker from '@/ui/file-picker/FilePicker.vue'
 import Spinner from '@/ui/spinner/Spinner.vue'
 import DraggableInputs from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableInputs.vue'

@@ -4,6 +4,7 @@
     <FileInput
       accept="image/*"
       placeholder="Перетащите изображение в поле или выберите из файлов"
+      @change="uploadDraggableImage"
     />
   </div>
 </template>
@@ -12,12 +13,16 @@
 import Vue from 'vue'
 import FileInput from '@/ui/audio-file-input/AudioFileInput.vue'
 import FormLabel from '@/ui/label/FormLabel.vue'
+import { uploadDraggableImage } from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 
 export default Vue.extend({
   name: `ImagesUploader`,
   components: {
     FileInput,
     FormLabel,
+  },
+  methods: {
+    uploadDraggableImage,
   },
 })
 </script>

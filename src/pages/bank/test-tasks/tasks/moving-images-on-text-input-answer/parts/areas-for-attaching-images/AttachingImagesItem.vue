@@ -2,22 +2,34 @@
   <div class="attaching-images-item">
     <div class="cell">
       <FormInput
-        value="A1"
-        placeholder=""
-        label=""
+        :value="answer.systemIndex"
         class="scope-key"
       />
     </div>
     <div class="cell">
-      <SizeSettings />
+      <SizeInput
+        :size="answer.size"
+        @change="$emit('change', {
+          ...answer,
+          size: $event,
+        })"
+      />
     </div>
     <div class="cell">
       <div class="actions">
-        <ColorPicker class="color-picker" />
+        <ColorPicker
+          :color="answer.color"
+          class="color-picker"
+          @change="$emit('change', {
+            ...answer,
+            color: $event,
+          })"
+        />
         <Icon
           class="remove-icon"
           size="12px"
           type="close"
+          @click="$emit('remove', answer)"
         />
       </div>
     </div>
@@ -25,10 +37,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import SizeSettings from './SizeSettings.vue'
+import SizeInput from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/SizeInput.vue'
+import { MovingOnTextDroppableImage } from '@/pages/bank/test-tasks/tasks/types'
 import ColorPicker from './ColorPicker.vue'
 
 export default Vue.extend({
@@ -36,8 +49,14 @@ export default Vue.extend({
   components: {
     Icon,
     FormInput,
-    SizeSettings,
+    SizeInput,
     ColorPicker,
+  },
+  props: {
+    answer: {
+      type: Object as PropType<MovingOnTextDroppableImage>,
+      required: true,
+    },
   },
 })
 </script>

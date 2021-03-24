@@ -3,18 +3,19 @@
     <FormLabel class="title">
       Перемещаемый текст
     </FormLabel>
-    <div class="columns">
+    <div v-if="$draggableText.left" class="columns">
       <div class="variant">Вариант ответа</div>
-      <div class="correct-match">
-        Правильное соответствие
-      </div>
     </div>
-    <TextMatchItem />
-    <TextMatchItem />
-    <TextMatchItem />
+    <TextMatchItem
+      v-for="item in $draggableText"
+      :key="item.systemIndex"
+      :value="item"
+      @change="replace"
+      @remove="remove"
+    />
 
     <div class="actions">
-      <BaseButton>
+      <BaseButton @click="add">
         Добавить текст
       </BaseButton>
     </div>
@@ -25,14 +26,28 @@
 import Vue from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import FormLabel from '@/ui/label/FormLabel.vue'
+import {
+  $draggableText,
+  replaceDraggableText,
+  addDraggableText,
+  removeDraggableText,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 import TextMatchItem from './TextMatchItem.vue'
 
 export default Vue.extend({
   name: `CorrectTextMatchPicker`,
+  effector: {
+    $draggableText,
+  },
   components: {
     FormLabel,
     BaseButton,
     TextMatchItem,
+  },
+  methods: {
+    add: addDraggableText,
+    replace: replaceDraggableText,
+    remove: removeDraggableText,
   },
 })
 </script>

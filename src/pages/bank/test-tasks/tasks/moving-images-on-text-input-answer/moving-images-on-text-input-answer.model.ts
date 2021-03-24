@@ -5,7 +5,7 @@ import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dr
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
-import { $questionData } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import { $questionData } from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({

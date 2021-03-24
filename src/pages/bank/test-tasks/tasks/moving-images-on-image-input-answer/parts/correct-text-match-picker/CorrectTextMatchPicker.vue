@@ -31,7 +31,7 @@ import {
   replaceDraggableText,
   addDraggableText,
   removeDraggableText,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer-form.model'
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import TextMatchItem from './TextMatchItem.vue'
 
 export default Vue.extend({
