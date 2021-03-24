@@ -1,8 +1,8 @@
 <template>
   <div class='wysiwyg'>
     <Ckeditor
-      :id="$props.editorId"
-      :value="$props.value"
+      :id="editorId"
+      :value="value"
       :config="editorConfig"
       :editor-url="editorUrl"
       class="editor"
@@ -41,42 +41,42 @@ export default Vue.extend({
     }
   },
   methods: {
-    onEditorReady() {
-      if (window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]) {
-        window.CKEDITOR.instances[`editor${this.$props.editorIndex}`].on(
-          'fileUploadRequest',
-          (event) => {
-            const { xhr } = event.data.fileLoader
-            const formData = new FormData()
+    onEditorReady(editor) {
+      editor.on('fileUploadRequest', (event) => {
+        const { xhr } = event.data.fileLoader
+        const formData = new FormData()
 
-            xhr.open('POST', event.data.fileLoader.uploadUrl, true)
+        xhr.open('POST', event.data.fileLoader.uploadUrl, true)
 
-            xhr.setRequestHeader('authorization', `Bearer ${this.$token}`)
+        xhr.setRequestHeader('authorization', `Bearer ${this.$token}`)
 
-            formData.append('file', event.data.fileLoader.file, event.data.fileLoader.fileName)
-            formData.append('file_type', 'image')
+        formData.append('file', event.data.fileLoader.file, event.data.fileLoader.fileName)
+        formData.append('file_type', 'image')
 
-            event.data.fileLoader.xhr.send(formData)
+        event.data.fileLoader.xhr.send(formData)
+        event.stop()
+      })
+      editor.on('fileUploadResponse', (event) => {
+        event.stop()
+        const { data } = event
+        const jsonResponse = data.fileLoader.xhr.responseText
+        const parsedResponse = JSON.parse(jsonResponse)
 
-            event.stop()
-          }
-        )
-        window.CKEDITOR.instances[`editor${this.$props.editorIndex}`].on(
-          'fileUploadResponse',
-          (event) => {
-            event.stop()
-            const { data } = event
-            const jsonResponse = data.fileLoader.xhr.responseText
-            const parsedResponse = JSON.parse(jsonResponse)
-
-            if (!parsedResponse.file) {
-              data.message = 'An error occurred during upload.'
-              event.cancel()
-            } else {
-              data.url = parsedResponse.file
-            }
-          }
-        )
+        if (!parsedResponse.file) {
+          data.message = 'Во время загрузки изображения произошла ошибка'
+          event.cancel()
+        } else {
+          data.url = parsedResponse.file
+        }
+      })
+      if (editor.dataProcessor.dataFilter) {
+        editor.dataProcessor.dataFilter.addRules({
+          elements: {
+            img: (element) => {
+              element.attributes.style = 'width: 200px; height: 200px'
+            },
+          },
+        })
       }
     },
     handleInsert(event) {
@@ -200,9 +200,6 @@ export default Vue.extend({
           margin-left: 0;
         }
       }
-    }
-    .cke_contents {
-      height: 98px !important;
     }
     .cke_bottom {
       display: none;
