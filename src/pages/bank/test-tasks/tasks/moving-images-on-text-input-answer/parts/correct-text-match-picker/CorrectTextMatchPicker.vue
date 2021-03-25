@@ -8,7 +8,7 @@
     </div>
     <TextMatchItem
       v-for="item in $draggableText"
-      :key="item.systemIndex"
+      :key="item.id"
       :value="item"
       @change="replace"
       @remove="remove"

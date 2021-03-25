@@ -56,11 +56,9 @@ export default Vue.extend({
           editor.insertHtml(`
             <input
               class="redactor-input field droppable"
-              data-add-num="1"
               style="width: 100px; height: 20px;"
               type="text"
-              data-index="1"
-              placeholder="${inputsCounter.next()}"
+              placeholder="B${inputsCounter.next()}"
             >
           `),
       })
@@ -69,11 +67,9 @@ export default Vue.extend({
           editor.insertHtml(`
             <input
               class="redactor-drop droppable"
-              data-add-num="1"
               style="width: 30px; height: 30px;"
               type="text"
-              data-index="1"
-              placeholder="${droppableImagesCounter.next()}"
+              placeholder="A${droppableImagesCounter.next()}"
             >
           `),
       })

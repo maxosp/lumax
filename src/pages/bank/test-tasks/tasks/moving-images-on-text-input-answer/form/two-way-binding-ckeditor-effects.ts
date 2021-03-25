@@ -11,7 +11,7 @@ import {
 } from '@/pages/bank/test-tasks/tasks/types'
 import {
   inputsCounter,
-  textInputsCounter,
+  inputValuesCounter,
   droppableImagesCounter,
 } from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 
@@ -21,6 +21,8 @@ export type InputTemplateFxType = {
   droppableImages: MovingOnTextDroppableImage[]
   inputs: MovingOnTextDroppableInput[]
 }
+
+const getNumber = (str: any) => +str.replace(/^\D+/g, '') || 0
 
 let checking = false
 
@@ -36,21 +38,21 @@ export const setMainTemplateFx = createEffect((data: InputTemplateFxType) => {
   const htmlInputs = container.querySelectorAll<HTMLInputElement>('.redactor-input')
   const newInputs: MovingOnTextDroppableInput[] = []
   htmlInputs.forEach((input) => {
-    const placeholder = input.getAttribute('placeholder')
+    const placeholder = getNumber(input.getAttribute('placeholder'))
     // уже есть в новом массиве
-    const newInputsIndex = newInputs.findIndex((item) => item.systemIndex === placeholder)
+    const newInputsIndex = newInputs.findIndex((item) => item.id === placeholder)
     if (newInputsIndex !== -1) {
       const copy = JSON.parse(JSON.stringify(newInputs[newInputsIndex]))
-      const systemIndex = inputsCounter.next()
+      const id = inputsCounter.next()
       newInputs.push({
         ...copy,
-        systemIndex,
+        id,
       })
-      input.setAttribute('placeholder', systemIndex)
+      input.setAttribute('placeholder', `B${id}`)
       return
     }
     // есть в прошлом массиве
-    const oldInputsIndex = data.inputs.findIndex((item) => item.systemIndex === placeholder)
+    const oldInputsIndex = data.inputs.findIndex((item) => item.id === placeholder)
     if (oldInputsIndex !== -1) {
       newInputs.push(data.inputs[oldInputsIndex])
       return
@@ -63,10 +65,10 @@ export const setMainTemplateFx = createEffect((data: InputTemplateFxType) => {
       value: [
         {
           value: '',
-          systemIndex: textInputsCounter.next(),
+          id: inputValuesCounter.next(),
         },
       ],
-      systemIndex: placeholder || '',
+      id: placeholder,
       color: '#000',
     })
   })
@@ -74,24 +76,22 @@ export const setMainTemplateFx = createEffect((data: InputTemplateFxType) => {
   const htmlImages = container.querySelectorAll<HTMLInputElement>('.redactor-drop')
   const newImages: MovingOnTextDroppableImage[] = []
   htmlImages.forEach((image) => {
-    const placeholder = image.getAttribute('placeholder')
+    const placeholder = getNumber(image.getAttribute('placeholder'))
     // уже есть в новом массиве
-    const newImagesIndex = newImages.findIndex((item) => item.systemIndex === placeholder)
+    const newImagesIndex = newImages.findIndex((item) => item.id === placeholder)
     if (newImagesIndex !== -1) {
       const copy = JSON.parse(JSON.stringify(newImages[newImagesIndex]))
-      const systemIndex = droppableImagesCounter.next()
+      const id = droppableImagesCounter.next()
       newImages.push({
         ...copy,
-        value: systemIndex,
-        systemIndex,
+        value: id,
+        id,
       })
-      image.setAttribute('placeholder', systemIndex)
+      image.setAttribute('placeholder', `A${id}`)
       return
     }
     // есть в прошлом массиве
-    const oldImagesIndex = data.droppableImages.findIndex(
-      (item) => item.systemIndex === placeholder
-    )
+    const oldImagesIndex = data.droppableImages.findIndex((item) => item.id === placeholder)
     if (oldImagesIndex !== -1) {
       newImages.push(data.droppableImages[oldImagesIndex])
       return
@@ -105,8 +105,8 @@ export const setMainTemplateFx = createEffect((data: InputTemplateFxType) => {
         x: 0,
         y: 0,
       },
-      value: placeholder || '',
-      systemIndex: placeholder || '',
+      value: placeholder,
+      id: placeholder,
       color: '#000',
     })
   })
@@ -133,8 +133,8 @@ export const generateNewTemplateFx = createEffect((data: InputTemplateFxType) =>
   const htmlInputs = container.querySelectorAll<HTMLInputElement>('.redactor-input')
 
   htmlInputs.forEach((htmlInput) => {
-    const placeholder = htmlInput.getAttribute('placeholder')
-    const input = data.inputs.find((item) => item.systemIndex === placeholder)
+    const placeholder = getNumber(htmlInput.getAttribute('placeholder'))
+    const input = data.inputs.find((item) => item.id === placeholder)
     if (input) {
       setStyles(htmlInput, {
         width: `${input.size.width}px`,
@@ -148,8 +148,8 @@ export const generateNewTemplateFx = createEffect((data: InputTemplateFxType) =>
 
   const htmlImages = container.querySelectorAll<HTMLInputElement>('.redactor-drop')
   htmlImages.forEach((htmlImage) => {
-    const placeholder = htmlImage.getAttribute('placeholder')
-    const image = data.droppableImages.find((item) => item.systemIndex === placeholder)
+    const placeholder = getNumber(htmlImage.getAttribute('placeholder'))
+    const image = data.droppableImages.find((item) => item.id === placeholder)
     if (image) {
       setStyles(htmlImage, {
         width: `${image.size.width}px`,

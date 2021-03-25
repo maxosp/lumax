@@ -63,6 +63,16 @@ import {
   $form as $formShortClosed,
   initAssignment as initShortClosedTask,
 } from '@/pages/bank/test-tasks/tasks/short-closed-answer/short-closed-answer.model'
+import {
+  $isFilled as $isFilledMovingOnImage,
+  $form as $formMovingOnImage,
+  initAssignment as initMovingOnImageTask,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+import {
+  $isFilled as $isFilledMovingOnText,
+  $form as $formMovingOnText,
+  initAssignment as initMovingOnTextTask,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { taskTypesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/task-types-dropdown/task-types-dropdown.model'
@@ -138,8 +148,8 @@ const mapTaskTypeToInitFn = {
   MULTIPLE_LIST_TEXT_ANSWER: initMultipleListTask,
   MULTIPLE_SHORT_CLOSED_ANSWER: initMultipleShortClosedTask,
   SHORT_CLOSED_ANSWER: initShortClosedTask,
-  //  MOVING_IMAGES_IMAGE_INPUT_ANSWER: initMovingImagesImageInputTask,
-  //  MOVING_IMAGES_TEXT_INPUT_ANSWER: initMovingImagesTextInputTask,
+  MOVING_IMAGES_IMAGE_INPUT_ANSWER: initMovingOnImageTask,
+  MOVING_IMAGES_TEXT_INPUT_ANSWER: initMovingOnTextTask,
 }
 
 sample({
@@ -164,6 +174,8 @@ const $isFilled = combine({
   MultipleListTextAnswer: $isFilledMultipleListText,
   MultipleShortClosedAnswer: $isFilledMultipleShortClosed,
   ShortClosedAnswer: $isFilledShortClosed,
+  MovingImagesOnImageInputAnswer: $isFilledMovingOnImage,
+  MovingImagesOnTextInputAnswer: $isFilledMovingOnText,
 })
 
 export const $canSave = combine(
@@ -190,6 +202,8 @@ const $taskform = combine({
   MultipleListTextAnswer: $formMultipleListText,
   MultipleShortClosedAnswer: $formMultipleShortClosed,
   ShortClosedAnswer: $formShortClosed,
+  MovingImagesOnImageInputAnswer: $formMovingOnImage,
+  MovingImagesOnTextInputAnswer: $formMovingOnText,
 })
 
 const $baseForm = combine(

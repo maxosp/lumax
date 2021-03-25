@@ -2,14 +2,14 @@
   <div class="attaching-images-item">
     <div class="cell">
       <FormInput
-        :value="answer.systemIndex"
+        :value="`B${answer.id}`"
         class="scope-key"
       />
     </div>
     <div class="cell">
       <div
         v-for="(textAnswer, i) in answer.value"
-        :key="textAnswer.systemIndex"
+        :key="textAnswer.id"
         class="answer"
       >
         <FormInput
@@ -52,7 +52,7 @@
         <div class="remove-icons">
           <Icon
             v-for="(textAnswer, i) in answer.value"
-            :key="textAnswer.systemIndex"
+            :key="textAnswer.id"
             class="remove-icon"
             size="12px"
             type="close"
@@ -71,7 +71,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import SizeInput from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/SizeInput.vue'
 import { MovingOnTextDroppableInput } from '@/pages/bank/test-tasks/tasks/types'
-import { textInputsCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import { inputsValuesCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import ColorPicker from '../areas-for-attaching-images/ColorPicker.vue'
 
 export default Vue.extend({
@@ -97,7 +97,7 @@ export default Vue.extend({
           ...this.answer.value,
           {
             value: '',
-            systemIndex: textInputsCounter.next(),
+            id: inputsValuesCounter.next(),
           },
         ],
       })
@@ -118,10 +118,10 @@ export default Vue.extend({
     },
     editAnswer(i: number, newValue: string) {
       const value = [...this.answer.value]
-      const { systemIndex } = value[i]
+      const { id } = value[i]
       value.splice(i, 1, {
         value: newValue,
-        systemIndex,
+        id,
       })
 
       this.$emit('change', {

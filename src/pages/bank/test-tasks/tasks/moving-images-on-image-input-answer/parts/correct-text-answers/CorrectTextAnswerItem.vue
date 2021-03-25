@@ -1,14 +1,14 @@
 <template>
   <div class="correct-text-answer-item">
     <FormInput
-      :value="answer.systemIndex"
+      :value="`B${answer.id}`"
       class="scope"
     />
     <div class="answers">
 
       <div
         v-for="(textAnswer, i) in answer.value"
-        :key="textAnswer.systemIndex"
+        :key="textAnswer.id"
         class="answer"
       >
         <FormInput
@@ -43,7 +43,7 @@ import Vue, { PropType } from 'vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { DroppableInput } from '@/pages/bank/test-tasks/tasks/types'
-import { textInputsCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import { inputsValuesCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import BaseButton from '@/ui/button/BaseButton.vue'
 
 export default Vue.extend({
@@ -67,7 +67,7 @@ export default Vue.extend({
           ...this.answer.value,
           {
             value: '',
-            systemIndex: textInputsCounter.next(),
+            id: inputsValuesCounter.next(),
           },
         ],
       })
@@ -88,10 +88,10 @@ export default Vue.extend({
     },
     editAnswer(i: number, newValue: string) {
       const value = [...this.answer.value]
-      const { systemIndex } = value[i]
+      const { id } = value[i]
       value.splice(i, 1, {
         value: newValue,
-        systemIndex,
+        id,
       })
 
       this.$emit('change', {

@@ -5,7 +5,10 @@ import { LANGUAGE_DATA } from '@/pages/bank/test-tasks/create/parts/languages-dr
 import { DropdownItem } from '@/pages/common/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
-import { $questionData } from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
+import {
+  $questionData,
+  setupMovingOnTextAnswerDataFx,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
@@ -108,5 +111,6 @@ forward({
       name: data.interface_language,
       title: data.interface_language,
     })),
+    setupMovingOnTextAnswerDataFx.prepend((data) => data.question_data),
   ],
 })

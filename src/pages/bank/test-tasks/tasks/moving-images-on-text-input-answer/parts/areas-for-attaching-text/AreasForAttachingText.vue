@@ -27,7 +27,7 @@
 
       <AttachingTextItem
         v-for="input in $inputs"
-        :key="input.systemIndex"
+        :key="input.id"
         :answer="input"
         @change="replaceInput"
         @remove="removeInput"

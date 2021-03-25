@@ -26,7 +26,34 @@ import {
   createReplaceEventForArrayStore,
   somePending,
 } from '@/lib/effector/utils'
-import { createCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/utils'
+import {
+  createCounter,
+  getMaxByProp,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/utils'
+import {
+  MovingOnImageInput,
+  MovingOnImageQuestionData,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/form/types'
+
+const draggableImagesCounter = createCounter()
+const inputsCounter = createCounter()
+export const inputsValuesCounter = createCounter()
+const droppableImagesCounter = createCounter()
+const draggableTextCounter = createCounter()
+
+export const setupMovingOnImageAnswerDataFx = createEffect((data: MovingOnImageQuestionData) => {
+  draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
+  inputsCounter.set(getMaxByProp(data.inputs, 'id'))
+  droppableImagesCounter.set(getMaxByProp(data.droppable, 'id'))
+  draggableTextCounter.set(getMaxByProp(data['draggable-text'], 'id'))
+
+  const inputsValues = data.inputs.reduce<MovingOnImageInput['value']>((acc, input) => {
+    return [...acc, ...input.value]
+  }, [])
+  inputsValuesCounter.set(getMaxByProp(inputsValues, 'id'))
+
+  return data
+})
 
 const uploadMainImageFx = attach({
   effect: uploadMediaFx,
@@ -69,10 +96,11 @@ export const setContainerWidth = createEvent<number>()
 export const $containerWidth = restore(setContainerWidth, 0)
 
 // form-data
-const inputsCounter = createCounter('B')
-export const textInputsCounter = createCounter()
 export const setInputs = createEvent<DroppableInput[]>()
-export const $inputs = restore(setInputs, [])
+export const $inputs = restore(setInputs, []).on(
+  setupMovingOnImageAnswerDataFx.doneData,
+  (_, question) => question.inputs
+)
 export const addInput = createAddEventForArrayStore($inputs, () => ({
   size: {
     width: 0,
@@ -82,39 +110,34 @@ export const addInput = createAddEventForArrayStore($inputs, () => ({
   value: [
     {
       value: '',
-      systemIndex: textInputsCounter.next(),
+      id: inputsValuesCounter.next(),
     },
   ],
-  systemIndex: inputsCounter.next(),
+  id: inputsCounter.next(),
   position: {
     x: 0,
     y: 0,
   },
 }))
-export const removeInput = createRemoveEventForArrayStore($inputs, 'systemIndex')
-export const replaceInput = createReplaceEventForArrayStore($inputs, 'systemIndex')
+export const removeInput = createRemoveEventForArrayStore($inputs, 'id')
+export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
 
-const draggableImagesCounter = createCounter()
 export const setDraggableImages = createEvent<DraggableImage[]>()
-export const $draggableImages = restore(setDraggableImages, []).on(
-  uploadMediaImageFx.doneData,
-  (items, res) => [
+export const $draggableImages = restore(setDraggableImages, [])
+  .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => question.draggable)
+  .on(uploadMediaImageFx.doneData, (items, res) => [
     ...items,
     {
       size: {
         width: 0,
         height: 0,
       },
-      value: '',
+      value: 0,
       image: res.body.file,
-      systemIndex: draggableImagesCounter.next(),
+      id: draggableImagesCounter.next(),
     },
-  ]
-)
-export const replaceDraggableImage = createReplaceEventForArrayStore(
-  $draggableImages,
-  'systemIndex'
-)
+  ])
+export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 
 sample({
   source: $draggableImages,
@@ -123,14 +146,13 @@ sample({
     images.map((image) => {
       return {
         ...image,
-        value:
-          image.systemIndex !== item.systemIndex && item.value === image.value ? '' : image.value,
+        value: image.id !== item.id && item.value === image.value ? 0 : image.value,
       }
     }),
   target: setDraggableImages,
 })
 
-export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'systemIndex')
+export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'id')
 
 export const uploadDraggableImage = createEvent<FileList>()
 
@@ -139,17 +161,15 @@ forward({
   to: uploadDraggableImageFx,
 })
 
-const droppableImagesCounter = createCounter('A')
-
 export const setDroppableImages = createEvent<DroppableImage[]>()
-export const $droppableImages = restore(setDroppableImages, [])
-export const replaceDroppableImage = createReplaceEventForArrayStore(
-  $droppableImages,
-  'systemIndex'
+export const $droppableImages = restore(setDroppableImages, []).on(
+  setupMovingOnImageAnswerDataFx.doneData,
+  (_, question) => question.droppable
 )
-export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'systemIndex')
+export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
+export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
 export const addDroppableImage = createAddEventForArrayStore($droppableImages, () => {
-  const systemIndex = droppableImagesCounter.next()
+  const id = droppableImagesCounter.next()
   return {
     pin: {
       x: 0,
@@ -160,8 +180,8 @@ export const addDroppableImage = createAddEventForArrayStore($droppableImages, (
       height: 0,
     },
     color: '#000',
-    value: systemIndex,
-    systemIndex,
+    value: id,
+    id,
     position: {
       x: 0,
       y: 0,
@@ -170,19 +190,27 @@ export const addDroppableImage = createAddEventForArrayStore($droppableImages, (
 })
 
 export const setMainImage = createEvent<string | null>()
-export const $mainImage = restore(setMainImage, '')
+export const $mainImage = restore(setMainImage, '').on(
+  setupMovingOnImageAnswerDataFx.doneData,
+  (_, payload) => payload.mainImage
+)
 
 export const setMainImageSize = createEvent<Size | null>()
-export const $mainImageSize = restore(setMainImageSize, null)
+export const $mainImageSize = restore(setMainImageSize, null).on(
+  setupMovingOnImageAnswerDataFx.doneData,
+  (_, payload) => payload.size
+)
 
-const draggableTextCounter = createCounter()
 export const setDraggableText = createEvent<DraggableText[]>()
-export const $draggableText = restore(setDraggableText, [])
-export const replaceDraggableText = createReplaceEventForArrayStore($draggableText, 'systemIndex')
-export const removeDraggableText = createRemoveEventForArrayStore($draggableText, 'systemIndex')
+export const $draggableText = restore(setDraggableText, []).on(
+  setupMovingOnImageAnswerDataFx.doneData,
+  (_, question) => question['draggable-text']
+)
+export const replaceDraggableText = createReplaceEventForArrayStore($draggableText, 'id')
+export const removeDraggableText = createRemoveEventForArrayStore($draggableText, 'id')
 export const addDraggableText = createAddEventForArrayStore($draggableText, () => ({
   text: '',
-  systemIndex: draggableTextCounter.next(),
+  id: draggableTextCounter.next(),
 }))
 
 export const uploadMainImage = createEvent<FilePickerEvent>()

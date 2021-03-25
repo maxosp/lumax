@@ -2,12 +2,12 @@
   <div class="images">
     <ResizableElement
       v-for="image in $droppableImages"
-      :key="image.systemIndex"
+      :key="image.id"
       :scale="$scale"
       :sizes="sizesToResizer(image)"
-      :angle-key="image.value"
+      :angle-key="`A${image.value}`"
       @change="updateSizes(image, $event)"
-      @contextmenu.stop="openContext($event, image.systemIndex)"
+      @contextmenu.stop="openContext($event, image.id)"
       @remove="removeDroppableImage(image)"
     >
       <img
@@ -57,7 +57,7 @@ export default Vue.extend({
     $scale,
   },
   data: () => ({
-    contextKey: '',
+    contextKey: 0,
     contextCoords: {
       x: 0,
       y: 0,
@@ -65,7 +65,7 @@ export default Vue.extend({
   }),
   computed: {
     currentContextImage(): DroppableImage | undefined {
-      return this.$droppableImages.find((input) => input.systemIndex === this.contextKey)
+      return this.$droppableImages.find((input) => input.id === this.contextKey)
     },
   },
   methods: {
@@ -84,9 +84,9 @@ export default Vue.extend({
       }
     },
     closeContext() {
-      this.contextKey = ''
+      this.contextKey = 0
     },
-    openContext(e: MouseEvent, key: string) {
+    openContext(e: MouseEvent, key: number) {
       this.contextCoords.x = e.x
       this.contextCoords.y = e.y
       this.contextKey = key

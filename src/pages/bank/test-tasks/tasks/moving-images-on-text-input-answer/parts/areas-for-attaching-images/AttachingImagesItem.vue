@@ -2,7 +2,7 @@
   <div class="attaching-images-item">
     <div class="cell">
       <FormInput
-        :value="answer.systemIndex"
+        :value="`A${answer.id}`"
         class="scope-key"
       />
     </div>

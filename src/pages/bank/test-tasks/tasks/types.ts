@@ -65,7 +65,7 @@ export type MultipleListTextAnswer = {
 
 // todo: remove this sh*t
 export type SystemIndex = {
-  systemIndex?: string
+  id?: number
 }
 
 export type Size = {
@@ -88,7 +88,7 @@ type CommonInputType = SystemIndex & {
 export type DroppableInput = {
   value: {
     value: string
-    systemIndex: string
+    id: number
   }[]
 } & CommonInputType
 
@@ -99,12 +99,12 @@ export type DraggableText = SystemIndex & {
 export type DraggableImage = SystemIndex & {
   size: Size
   image: string
-  value: string
+  value: number
 }
 
 export type DroppableImage = {
   pin: Position
-  value: string
+  value: string | number
 } & CommonInputType
 
 export type MovingImagesOnImageAnswer = {
@@ -123,7 +123,7 @@ export type MovingOnTextDroppableInput = {
   color: string
   value: {
     value: string
-    systemIndex: string
+    id: number
   }[]
 } & SystemIndex
 
@@ -137,5 +137,5 @@ export type MovingOnTextDroppableImage = {
     height: number
   }
   color: string
-  value: string
+  value: number
 } & SystemIndex

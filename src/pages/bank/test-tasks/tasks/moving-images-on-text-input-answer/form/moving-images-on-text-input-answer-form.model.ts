@@ -8,7 +8,10 @@ import {
   restore,
   sample,
 } from 'effector-root'
-import { createCounter } from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/utils'
+import {
+  createCounter,
+  getMaxByProp,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/utils'
 import {
   DraggableImage,
   DraggableText,
@@ -26,35 +29,65 @@ import {
 } from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/two-way-binding-ckeditor-effects'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 
+import {
+  MovingOnTextQuestionData,
+  MovingOnTextInput,
+} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/form/types'
+
+const draggableImagesCounter = createCounter()
+export const inputsCounter = createCounter()
+export const inputValuesCounter = createCounter()
+export const droppableImagesCounter = createCounter()
+const draggableTextCounter = createCounter()
+
+export const setupMovingOnTextAnswerDataFx = createEffect((data: MovingOnTextQuestionData) => {
+  draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
+  inputsCounter.set(getMaxByProp(data.inputs, 'id'))
+  droppableImagesCounter.set(getMaxByProp(data.droppable, 'id'))
+  draggableTextCounter.set(getMaxByProp(data['draggable-text'], 'id'))
+
+  const inputsValues = data.inputs.reduce<MovingOnTextInput['value']>((acc, input) => {
+    return [...acc, ...input.value]
+  }, [])
+  inputValuesCounter.set(getMaxByProp(inputsValues, 'id'))
+
+  return data
+})
+
 const templateChanged = createEvent<string>()
-export const $mainTemplate = restore(templateChanged, '')
+export const $mainTemplate = restore(templateChanged, '').on(
+  setupMovingOnTextAnswerDataFx.doneData,
+  (_, payload) => payload.mainText
+)
 
 export const changeMainTemplate = createEvent<string>()
 
-export const inputsCounter = createCounter('B')
-export const textInputsCounter = createCounter()
 export const setInputs = createEvent<MovingOnTextDroppableInput[]>()
-export const $inputs = restore(setInputs, [])
-export const replaceInput = createReplaceEventForArrayStore($inputs, 'systemIndex')
-export const removeInput = createRemoveEventForArrayStore($inputs, 'systemIndex')
-
-export const droppableImagesCounter = createCounter('A')
-export const setDroppableImages = createEvent<MovingOnTextDroppableImage[]>()
-export const $droppableImages = restore(setDroppableImages, [])
-export const replaceDroppableImage = createReplaceEventForArrayStore(
-  $droppableImages,
-  'systemIndex'
+export const $inputs = restore(setInputs, []).on(
+  setupMovingOnTextAnswerDataFx.doneData,
+  (_, payload) => payload.inputs
 )
-export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'systemIndex')
+export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
+export const removeInput = createRemoveEventForArrayStore($inputs, 'id')
 
-const draggableTextCounter = createCounter()
+export const setDroppableImages = createEvent<MovingOnTextDroppableImage[]>()
+export const $droppableImages = restore(setDroppableImages, []).on(
+  setupMovingOnTextAnswerDataFx.doneData,
+  (_, payload) => payload.droppable
+)
+export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
+export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
+
 export const setDraggableText = createEvent<DraggableText[]>()
-export const $draggableText = restore(setDraggableText, [])
-export const replaceDraggableText = createReplaceEventForArrayStore($draggableText, 'systemIndex')
-export const removeDraggableText = createRemoveEventForArrayStore($draggableText, 'systemIndex')
+export const $draggableText = restore(setDraggableText, []).on(
+  setupMovingOnTextAnswerDataFx.doneData,
+  (_, payload) => payload['draggable-text']
+)
+export const replaceDraggableText = createReplaceEventForArrayStore($draggableText, 'id')
+export const removeDraggableText = createRemoveEventForArrayStore($draggableText, 'id')
 export const addDraggableText = createAddEventForArrayStore($draggableText, () => ({
   text: '',
-  systemIndex: draggableTextCounter.next(),
+  id: draggableTextCounter.next(),
 }))
 
 $inputs.on(setMainTemplateFx.doneData, (_, payload) => payload.inputs)
@@ -76,27 +109,22 @@ const uploadDraggableImageFx = createEffect<FileList, void>({
   },
 })
 
-const draggableImagesCounter = createCounter()
 export const setDraggableImages = createEvent<DraggableImage[]>()
-export const $draggableImages = restore(setDraggableImages, []).on(
-  uploadMediaImageFx.doneData,
-  (items, res) => [
+export const $draggableImages = restore(setDraggableImages, [])
+  .on(uploadMediaImageFx.doneData, (items, res) => [
     ...items,
     {
       size: {
         width: 0,
         height: 0,
       },
-      value: '',
+      value: 0,
       image: res.body.file,
-      systemIndex: draggableImagesCounter.next(),
+      id: draggableImagesCounter.next(),
     },
-  ]
-)
-export const replaceDraggableImage = createReplaceEventForArrayStore(
-  $draggableImages,
-  'systemIndex'
-)
+  ])
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.draggable)
+export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 
 export const uploadDraggableImage = createEvent<FileList>()
 
@@ -112,8 +140,7 @@ sample({
     images.map((image) => {
       return {
         ...image,
-        value:
-          image.systemIndex !== item.systemIndex && item.value === image.value ? '' : image.value,
+        value: image.id !== item.id && item.value === image.value ? 0 : image.value,
       }
     }),
   target: setDraggableImages,
@@ -129,14 +156,14 @@ sample({
       )
       return {
         ...draggableItem,
-        value: inDroppable ? inDroppable.value : '',
+        value: inDroppable ? inDroppable.value : 0,
       }
     })
   },
   target: setDraggableImages,
 })
 
-export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'systemIndex')
+export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'id')
 
 sample({
   source: combine({

@@ -5,7 +5,7 @@
     </div>
     <ImageMatchItem
       v-for="image in $draggableImages"
-      :key="image.systemIndex"
+      :key="image.id"
       :image="image"
       :droppable-images="$droppableImages"
       @remove="removeDraggableImage"

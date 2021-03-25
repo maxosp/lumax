@@ -14,7 +14,7 @@
         v-else
         class="dropdown"
         placeholder="Нет соответсвий"
-        :value="image.value"
+        :value="image.value ? `A${image.value}` : null"
         read-only-dropdown
       >
         <template #default="{closeMenu}">
@@ -25,7 +25,7 @@
             class="select-item"
             @click="pickValue(droppable, image); closeMenu(null)"
           >
-            {{ droppable.value }}
+            A{{ droppable.value }}
           </SelectItem>
         </template>
       </BaseDropdown>
@@ -59,7 +59,7 @@ export default Vue.extend({
   },
   props: {
     droppableImages: {
-      type: Object as PropType<DroppableImage | MovingOnTextDroppableImage>,
+      type: Array as PropType<(DroppableImage | MovingOnTextDroppableImage)[]>,
       required: true,
     },
     image: {

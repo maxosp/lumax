@@ -22,7 +22,7 @@
 
       <AttachingImagesItem
         v-for="image in $droppableImages"
-        :key="image.systemIndex"
+        :key="image.id"
         :answer="image"
         @change="replaceDroppableImage"
         @remove="removeDroppableImage"

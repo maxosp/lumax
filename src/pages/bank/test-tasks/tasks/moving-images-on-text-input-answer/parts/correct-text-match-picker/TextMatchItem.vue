@@ -7,7 +7,7 @@
         placeholder="Введите значение"
         @input="$emit('change', {
           text: $event,
-          systemIndex: value.systemIndex,
+          id: value.id,
         })"
       />
     </div>

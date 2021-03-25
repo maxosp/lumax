@@ -2,12 +2,12 @@
   <div class="inputs">
     <ResizableElement
       v-for="input in $inputs"
-      :key="input.systemIndex"
+      :key="input.id"
       :scale="$scale"
       :sizes="sizesToResizer(input)"
-      :angle-key="input.systemIndex"
+      :angle-key="`B${input.id}`"
       @change="updateSizes(input, $event)"
-      @contextmenu.stop="openContext($event, input.systemIndex)"
+      @contextmenu.stop="openContext($event, input.id)"
       @remove="removeInput(input)"
     >
       {{input.value[0].value}}
@@ -50,7 +50,7 @@ export default Vue.extend({
     $scale,
   },
   data: () => ({
-    contextKey: '',
+    contextKey: 0,
     contextCoords: {
       x: 0,
       y: 0,
@@ -58,7 +58,7 @@ export default Vue.extend({
   }),
   computed: {
     currentContextInput(): DroppableInput | undefined {
-      return this.$inputs.find((input) => input.systemIndex === this.contextKey)
+      return this.$inputs.find((input) => input.id === this.contextKey)
     },
   },
   methods: {
@@ -73,9 +73,9 @@ export default Vue.extend({
       }
     },
     closeContext() {
-      this.contextKey = ''
+      this.contextKey = 0
     },
-    openContext(e: MouseEvent, key: string) {
+    openContext(e: MouseEvent, key: number) {
       this.contextCoords.x = e.x
       this.contextCoords.y = e.y
       this.contextKey = key
