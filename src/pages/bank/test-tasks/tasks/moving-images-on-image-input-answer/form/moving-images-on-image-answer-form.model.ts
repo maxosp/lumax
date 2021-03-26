@@ -139,6 +139,10 @@ export const $draggableImages = restore(setDraggableImages, [])
   ])
 export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 
+export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'id')
+
+export const uploadDraggableImage = createEvent<FileList>()
+
 sample({
   source: $draggableImages,
   clock: replaceDraggableImage,
@@ -151,10 +155,6 @@ sample({
     }),
   target: setDraggableImages,
 })
-
-export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'id')
-
-export const uploadDraggableImage = createEvent<FileList>()
 
 forward({
   from: uploadDraggableImage,
@@ -187,6 +187,13 @@ export const addDroppableImage = createAddEventForArrayStore($droppableImages, (
       y: 0,
     },
   }
+})
+
+$draggableImages.on(removeDroppableImage, (draggableImage, droppable) => {
+  return draggableImage.map((draggable) => ({
+    ...draggable,
+    value: droppable.value === draggable.value ? 0 : draggable.value,
+  }))
 })
 
 export const setMainImage = createEvent<string | null>()
@@ -311,13 +318,7 @@ export const $questionData = combine(
   $inputs,
   (draggableImages, droppableImages, mainImage, mainImageSize, draggableText, inputs) => {
     return {
-      draggable: draggableImages.map((image) => {
-        const droppableImage = droppableImages.find((dropable) => dropable.value === image.value)
-        return {
-          ...image,
-          size: droppableImage ? droppableImage.size : image.size,
-        }
-      }),
+      draggable: draggableImages,
       droppable: droppableImages.map((image) => ({
         ...image,
         pin: {

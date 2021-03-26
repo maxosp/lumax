@@ -203,13 +203,7 @@ export const $questionData = combine(
   $droppableImages,
   $draggableImages,
   (mainTemplate, inputs, draggableText, droppableImages, draggableImages) => ({
-    draggable: draggableImages.map((image) => {
-      const droppableImage = droppableImages.find((dropable) => dropable.value === image.value)
-      return {
-        ...image,
-        size: droppableImage ? droppableImage.size : image.size,
-      }
-    }),
+    draggable: draggableImages,
     mainText: mainTemplate,
     droppable: droppableImages.map((image) => ({
       ...image,

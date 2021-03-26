@@ -29,6 +29,14 @@
           </SelectItem>
         </template>
       </BaseDropdown>
+      <SizeInput
+        class="change-size"
+        :size="image.size"
+        @change="$emit('change', {
+          ...image,
+          size: $event,
+        })"
+      />
       <Icon
         class="remove-icon"
         size="12px"
@@ -49,10 +57,12 @@ import {
   DroppableImage,
   MovingOnTextDroppableImage,
 } from '@/pages/bank/test-tasks/tasks/types'
+import SizeInput from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/SizeInput.vue'
 
 export default Vue.extend({
   name: `ImageMatchItem`,
   components: {
+    SizeInput,
     BaseDropdown,
     SelectItem,
     Icon,
@@ -88,11 +98,15 @@ export default Vue.extend({
 }
 .image-column,
 .actions {
-  width: 50%;
-  flex-basis: 50%;
+  width: 40%;
+  flex-basis: 40%;
   display: flex;
   align-items: center;
   position: relative;
+}
+.actions {
+  width: 60%;
+  flex-basis: 60%;
 }
 .image {
   background: #fff;
@@ -116,6 +130,9 @@ export default Vue.extend({
 }
 .actions {
   justify-content: space-between;
+}
+.change-size {
+  margin-top: 5px;
 }
 .dropdown {
   width: 170px;

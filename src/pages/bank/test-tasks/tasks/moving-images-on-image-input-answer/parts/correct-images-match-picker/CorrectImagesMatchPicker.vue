@@ -57,7 +57,7 @@ export default Vue.extend({
   position: relative;
 }
 .correct-match {
-  width: 50%;
+  width: 60%;
 
   font-weight: bold;
   font-size: 14px;

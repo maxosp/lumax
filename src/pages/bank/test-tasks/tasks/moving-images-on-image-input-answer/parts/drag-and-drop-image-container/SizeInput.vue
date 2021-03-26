@@ -50,7 +50,8 @@ export default Vue.extend({
     },
   },
   methods: {
-    changeWidth(width: number) {
+    changeWidth(size: number) {
+      const width = +size
       if (this.relative) {
         this.$emit('change', {
           width,
@@ -63,7 +64,8 @@ export default Vue.extend({
         width,
       })
     },
-    changeHeight(height: number) {
+    changeHeight(size: number) {
+      const height = +size
       if (this.relative) {
         this.$emit('change', {
           height,

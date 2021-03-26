@@ -104,7 +104,7 @@ export type DraggableImage = SystemIndex & {
 
 export type DroppableImage = {
   pin: Position
-  value: string | number
+  value: number
 } & CommonInputType
 
 export type MovingImagesOnImageAnswer = {
