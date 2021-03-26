@@ -136,6 +136,7 @@ import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import * as modals from '@/pages/bank/lesson-tasks/index'
 import { RefsType } from '@/pages/common/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -245,8 +246,7 @@ export default (Vue as VueConstructor<
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     editTask(id: number) {
-      // loadModalToEdit(id)
-      console.log('EDIT ', id)
+      navigatePush({ name: 'lesson-tasks-edit', params: { id: `${id}` } })
     },
     async removeSelected(ids: number | number[]) {
       if (typeof ids === 'number') await deleteAssignment(ids)

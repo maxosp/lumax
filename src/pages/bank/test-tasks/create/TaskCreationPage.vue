@@ -7,7 +7,7 @@
       @saveAndBackToList="saveTask(true)"
     />
     <TaskContent />
-    <TaskFooter 
+    <TaskFooter
       :disabled="!$canSave"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
@@ -18,9 +18,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { navigatePush } from '@/features/navigation'
-import TaskHeader from '@/pages/bank/test-tasks/common/Header.vue'
+import TaskHeader from '@/pages/bank/common/parts/Header.vue'
 import TaskContent from '@/pages/bank/test-tasks/create/parts/Content.vue'
-import TaskFooter from '@/pages/bank/test-tasks/common/Footer.vue'
+import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
 import { save, $canSave } from '@/pages/bank/test-tasks/create/task-creation-page.model'
 
 export default Vue.extend({

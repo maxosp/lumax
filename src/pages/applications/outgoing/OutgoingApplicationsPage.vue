@@ -202,7 +202,7 @@ export default (Vue as VueConstructor<
       loadModal(ids)
     },
     showComments(ids: number[]) {
-      console.log(ids)
+      console.log('show comments', ids)
       // loadCommentModal(this.selectedApplications[0])
     },
     myFetch(apiUrl: string, httpOptions: any) {

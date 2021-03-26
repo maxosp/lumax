@@ -9,12 +9,12 @@ import {
   $selectedClass,
   classesDropdownModule,
   setSelectedClass,
-} from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
+} from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import {
   $selectedSubject,
   setSelectedSubject,
   subjectsDropdownModule,
-} from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
+} from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTree } from '@/pages/tags/tags-page.model'
 import { CreateTagType, Tag } from '@/features/api/assignment/types'

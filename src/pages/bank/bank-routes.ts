@@ -6,9 +6,11 @@ import TaskEditionPage from '@/pages/bank/test-tasks/edit/TaskEditionPage.vue'
 // olympiad-tasks
 import OlympiadTasksList from '@/pages/bank/olympiad-tasks/list/OlympiadList.vue'
 import OlympiadTaskCreationPage from '@/pages/bank/olympiad-tasks/create/TaskCreationPage.vue'
+import OlympiadTaskEditionPage from '@/pages/bank/olympiad-tasks/edit/TaskEditionPage.vue'
 // lesson-tasks
 import LessonsTasksLists from '@/pages/bank/lesson-tasks/list/LessonTasksList.vue'
 import LessonTaskCreationPage from '@/pages/bank/lesson-tasks/create/TaskCreationPage.vue'
+import LessonTaskEditionPage from '@/pages/bank/lesson-tasks/edit/TaskEditionPage.vue'
 
 export default [
   {
@@ -66,7 +68,7 @@ export default [
           {
             name: 'olympiad-tasks-edit',
             path: 'edit/:id',
-            component: OlympiadTaskCreationPage,
+            component: OlympiadTaskEditionPage,
             meta: {
               title: 'Редактирование олимпиадного задания - Школа Летово',
             },
@@ -106,7 +108,7 @@ export default [
           {
             name: 'lesson-tasks-edit',
             path: 'edit/:id',
-            component: LessonTaskCreationPage,
+            component: LessonTaskEditionPage,
             meta: {
               title: 'Редактирование задания для уроков - Школа Летово',
             },

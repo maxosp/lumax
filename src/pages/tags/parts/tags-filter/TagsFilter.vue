@@ -43,11 +43,11 @@ import Vue from 'vue'
 import ClickOutside from '@/features/directives/click-outside.ts'
 import Icon from '@/ui/icon/Icon.vue'
 import { toggleVisibility, reset } from '@/pages/tags/parts/tags-filter/tags-filter.model'
-import SubjectDropdown from '@/pages/common/dropdowns/subject/subjects-dropdown/SubjectsDropdown.vue'
-import ClassDropdown from '@/pages/common/dropdowns/class/classes-dropdown/ClassesDropdown.vue'
+import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
+import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
+import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 
 Vue.directive('click-outside', ClickOutside)
 

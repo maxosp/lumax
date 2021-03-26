@@ -54,6 +54,16 @@ export type GetThemeTreeFilterListResponse = {
   }
   virtual_folder: VirtualFolder | null
 }
+export type GetFolderTreeListResponse = {
+  element_type: TreeElementType
+  ordering_number: number
+  leaves: TreeData[]
+  folder: {
+    id: number
+    name: string
+  }
+}
+
 type OlympiadTag = {
   id: number
   text: string

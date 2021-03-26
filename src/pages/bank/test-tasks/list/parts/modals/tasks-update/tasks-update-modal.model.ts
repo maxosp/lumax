@@ -8,7 +8,7 @@ import {
   moderatorDropdownModule,
   setSelectedModerator,
 } from '@/pages/common/dropdowns/users/moderator-dropdown/moderator-dropdown.model'
-import { $selectedDifficulty } from '@/pages/common/dropdowns/test-tasks/difficulty-dropdown/difficulty-dropdown.model'
+import { $selectedDifficulty } from '@/pages/common/dropdowns/bank/test-tasks/difficulty-dropdown/difficulty-dropdown.model'
 import { condition } from 'patronum'
 import { SwitchersOptionsType } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/switchers/types'
 import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'

@@ -10,6 +10,11 @@
           v-if="$taskType"
           :is="taskComponent"
         />
+        <LanguagesDropdown
+          class="field"
+          :value="$language"
+          @click="setLanguage"
+        />
       </div>
       <div class='right'>
         <BaseSwitch
@@ -31,11 +36,14 @@ import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import NumericInput from '@/ui/input/NumericInput.vue'
 import DifficultiesDropdown from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/DifficultiesDropdown.vue'
 import LabelsDropdown from '@/pages/bank/test-tasks/create/parts/labels-dropdown/LabelsDropdown.vue'
-import TaskTypesDropdown from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/TaskTypesDropdown.vue'
+import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown/TaskTypesDropdown.vue'
 import ThemesDropdown from '@/pages/bank/test-tasks/create/parts/themes-dropdown/ThemesDropdown.vue'
+import LanguagesDropdown from '@/pages/bank/olympiad-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
 import {
   setTheme,
   setDifficulty,
+  $language,
+  setLanguage,
   $needDuplicate,
   toggleNeedDuplicate,
   $count,
@@ -43,8 +51,8 @@ import {
   $taskType,
   setTaskType,
 } from '@/pages/bank/test-tasks/create/task-creation-page.model'
-import * as tasks from '@/pages/bank/test-tasks/tasks'
-import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
+import * as tasks from '@/pages/common/parts/tasks'
+import { mapTaskTypeTo } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: 'TaskContent',
@@ -55,16 +63,17 @@ export default Vue.extend({
     TaskTypesDropdown,
     ThemesDropdown,
     NumericInput,
+    LanguagesDropdown,
   },
   effector: {
     $needDuplicate,
     $count,
     $taskType,
+    $language,
   },
   computed: {
     taskComponent() {
-      const componentName = mapTaskTypeToComponent[this.$taskType]
-      return componentName ? tasks[componentName] : null
+      return tasks[mapTaskTypeTo[this.$taskType].componentName] || null
     },
   },
   methods: {
@@ -73,6 +82,7 @@ export default Vue.extend({
     toggleNeedDuplicate,
     setCount,
     setTaskType,
+    setLanguage,
   },
 })
 </script>

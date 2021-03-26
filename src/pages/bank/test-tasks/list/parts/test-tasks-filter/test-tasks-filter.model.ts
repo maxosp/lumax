@@ -1,7 +1,7 @@
 import { createEvent, restore, forward, combine } from 'effector-root'
 import { debounce, every } from 'patronum'
-import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown/subjects-dropdown.model'
-import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown/classes-dropdown.model'
+import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import {
   getThemes,
   $selectedTheme,

@@ -185,6 +185,10 @@ export type TestAssignment = {
   labels_ids: number[]
 } & BaseAssignment
 
+export type ClueType = {
+  name: string
+  price: number
+}
 export type OlympiadAssignment = {
   subject: Partial<Subject>
   subject_id: number
@@ -192,9 +196,16 @@ export type OlympiadAssignment = {
   study_year_id: number
   tags: number[]
   tags_ids: number
+  clue: ClueType[]
+  answer_text: string
 } & BaseAssignment
 
-export type LessonAssignment = BaseAssignment
+export type LessonAssignment = {
+  folder: {
+    id: number
+    name: string
+  }
+} & BaseAssignment
 
 export type DuplicateAssignmentType = {
   assignments: number[]

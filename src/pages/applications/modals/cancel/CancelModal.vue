@@ -53,7 +53,7 @@ export default Vue.extend({
   methods: {
     modalVisibilityChanged,
     handleCancel() {
-      console.log(this.$selectedIds)
+      console.log('cancel', this.$selectedIds)
     },
   },
 })

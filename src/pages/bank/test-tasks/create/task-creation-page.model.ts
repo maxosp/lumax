@@ -5,65 +5,67 @@ import { $themesData } from '@/pages/bank/test-tasks/create/parts/themes-dropdow
 import {
   $isFilled as $isFilledBroadFile,
   $form as $formBroadFile,
-} from '@/pages/bank/test-tasks/tasks/broad-file-answer/broad-file-answer.model'
+} from '@/pages/common/parts/tasks/broad-file-answer/broad-file-answer.model'
 import {
   $isFilled as $isFilledBroadOpen,
   $form as $formBroadOpen,
-} from '@/pages/bank/test-tasks/tasks/broad-open-answer/broad-open-answer.model'
+} from '@/pages/common/parts/tasks/broad-open-answer/broad-open-answer.model'
 import {
   $isFilled as $isFilledColorHighlight,
   $form as $formColorHighlight,
-} from '@/pages/bank/test-tasks/tasks/color-highlight-answer/color-highlight-answer.model'
+} from '@/pages/common/parts/tasks/color-highlight-answer/color-highlight-answer.model'
 import {
   $isFilled as $isFilledCommonListString,
   $form as $formCommonListString,
-} from '@/pages/bank/test-tasks/tasks/common-list-string-answer/common-list-string-answer.model'
+} from '@/pages/common/parts/tasks/common-list-string-answer/common-list-string-answer.model'
 import {
   $isFilled as $isFilledCommonListText,
   $form as $formCommonListText,
-} from '@/pages/bank/test-tasks/tasks/common-list-text-answer/common-list-text-answer.model'
+} from '@/pages/common/parts/tasks/common-list-text-answer/common-list-text-answer.model'
 import {
   $isFilled as $isFilledConnectLines,
   $form as $formConnectLines,
-} from '@/pages/bank/test-tasks/tasks/connect-lines-answer/connect-lines-answer.model'
+} from '@/pages/common/parts/tasks/connect-lines-answer/connect-lines-answer.model'
 import {
   $isFilled as $isFilledCorrectSequence,
   $form as $formCorrectSequence,
-} from '@/pages/bank/test-tasks/tasks/correct-sequence-answer/correct-sequence-answer.model'
+} from '@/pages/common/parts/tasks/correct-sequence-answer/correct-sequence-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOne,
   $form as $formMultipleChoiceOne,
-} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
+} from '@/pages/common/parts/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOneOrMany,
   $form as $formMultipleChoiceOneOrMany,
-} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
+} from '@/pages/common/parts/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
 import {
   $isFilled as $isFilledMultipleListText,
   $form as $formMultipleListText,
-} from '@/pages/bank/test-tasks/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
+} from '@/pages/common/parts/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
 import {
   $isFilled as $isFilledMultipleShortClosed,
   $form as $formMultipleShortClosed,
-} from '@/pages/bank/test-tasks/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
+} from '@/pages/common/parts/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
 import {
   $isFilled as $isFilledShortClosed,
   $form as $formShortClosed,
-} from '@/pages/bank/test-tasks/tasks/short-closed-answer/short-closed-answer.model'
+} from '@/pages/common/parts/tasks/short-closed-answer/short-closed-answer.model'
 import {
   $isFilled as $isFilledMovingOnImage,
   $form as $formMovingOnImage,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+} from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
 import {
   $isFilled as $isFilledMovingOnText,
   $form as $formMovingOnText,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
+} from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/create/parts/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
+import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { navigatePush } from '@/features/navigation'
+import { mapTaskTypeTo } from '@/pages/common/constants'
+import { DropdownItem } from '@/pages/common/types'
+import { LANGUAGE_DATA } from '../../common/constants'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
@@ -83,6 +85,9 @@ export const $needDuplicate = restore(toggleNeedDuplicate, false)
 
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
+
+export const setLanguage = createEvent<DropdownItem>()
+export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
@@ -112,7 +117,7 @@ export const $canSave = combine(
   $taskType,
   $isFilled,
   (theme, difficulty, taskType, isFilled) => {
-    const $isFilledTask = taskType && isFilled[mapTaskTypeToComponent[taskType]]
+    const $isFilledTask = taskType && isFilled[mapTaskTypeTo[taskType].componentName]
     return $isFilledTask && theme && difficulty
   }
 )
@@ -142,7 +147,8 @@ const $baseForm = combine(
   $needDuplicate,
   $count,
   $selectedLabels,
-  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels) => ({
+  $language,
+  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels, language) => ({
     status: 'new',
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
@@ -150,6 +156,7 @@ const $baseForm = combine(
     difficulty,
     labels: labels.map(({ name }) => name),
     ...(needDuplicate ? { duplicate_count: count } : {}),
+    interface_language: language.title,
   })
 )
 
@@ -170,7 +177,7 @@ const uploadAudioFilesFx = createEffect({
 })
 
 const $generalForm = combine($baseForm, $taskType, $taskform, (baseForm, taskType, taskform) => {
-  const form = taskType ? taskform[mapTaskTypeToComponent[taskType]] : {}
+  const form = taskType ? taskform[mapTaskTypeTo[taskType].componentName] : {}
   return {
     ...baseForm,
     ...form,

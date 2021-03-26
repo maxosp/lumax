@@ -9,7 +9,7 @@ export const updateOlympiadAssignmentFx = createApiEffect<
   OlympiadAssignment
 >({
   requestMapper: ({ id, body }) => ({
-    method: 'PUT',
+    method: 'PATCH',
     url: `/api/assignment/olympiad-assignment/${id}/`,
     body,
   }),

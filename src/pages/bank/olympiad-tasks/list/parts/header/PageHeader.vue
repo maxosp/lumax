@@ -2,12 +2,14 @@
   <div class="header">
     <div class="title"> Олимпиадные задания </div>
     <div class="buttons">
-      <BaseButton
-        class="btn"
-        yellow
-      >
-        Создать задание
-      </BaseButton>
+      <RouterLink :to="{ name: 'olympiad-tasks-create' }">
+        <BaseButton
+          class="btn"
+          yellow
+        >
+          Создать задание
+        </BaseButton>
+      </RouterLink>
       <BaseButton
         class="btn --square"
         @click="loadModalForMultiChanges(selectedRows)"

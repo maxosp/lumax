@@ -1,0 +1,112 @@
+<template>
+  <div class="moving-images-text-input-answer">
+    <div class='field'>
+      <div class='wording-head'>
+        <span class='label'>Формулировка</span>
+      </div>
+      <BaseTextarea
+        placeholder="Введите формулировку задания"
+        :value="$wording"
+        @input="setWording"
+      />
+    </div>
+    <div class='field'>
+      <span class='label'>Текстовые и иллюстративные составляющие задания</span>
+      <Wysiwyg :value="$containing" @input="setContaining" />
+    </div>
+    <div class="field">
+      <span class="label">Аудиофайлы</span>
+      <AudioFiles
+        :audio-files="$audioFiles"
+        @change-files="setAudioFiles"
+        @upload-files="uploadAudioFiles"
+      />
+    </div>
+    <MovingImagesOnTextInputAnswerForm class="form"  />
+    <div class='field'>
+      <span class='label'>Образец ответа</span>
+      <Wysiwyg :value="$answerExample" @input="setAnswerExample" />
+    </div>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue'
+import BaseTextarea from '@/ui/input/BaseTextarea.vue'
+import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
+import AudioFiles from '@/pages/common/parts/audio-files/AudioFiles.vue'
+import MovingImagesOnTextInputAnswerForm from './form/MovingImagesOnTextInputAnswerForm.vue'
+
+import {
+  $wording,
+  setWording,
+  $containing,
+  setContaining,
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+  $answerExample,
+  setAnswerExample,
+  clearFields,
+} from './moving-images-on-text-input-answer.model'
+
+export default Vue.extend({
+  name: 'MovingImagesOnTextInputAnswer',
+  components: {
+    MovingImagesOnTextInputAnswerForm,
+    BaseTextarea,
+    Wysiwyg,
+    AudioFiles,
+  },
+  effector: {
+    $wording,
+    $containing,
+    $isAudioUploadLoading,
+    $audioFiles,
+    $answerExample,
+  },
+  methods: {
+    setWording,
+    setContaining,
+    setAudioFiles,
+    uploadAudioFiles,
+    setAnswerExample,
+  },
+  beforeDestroy() {
+    clearFields()
+  },
+})
+</script>
+
+<style scoped>
+.moving-images-text-input-answer {
+  display: flex;
+  flex-direction: column;
+}
+.form {
+  margin-bottom: 20px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.label {
+  color: #000;
+  font-weight: 600;
+  line-height: 17px;
+  margin-bottom: 5px;
+}
+.wording-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.template {
+  cursor: pointer;
+  color: var(--base-text-primary);
+  line-height: 17px;
+  @mixin underline-text;
+}
+</style>

@@ -7,75 +7,75 @@ import {
   $isFilled as $isFilledBroadFile,
   $form as $formBroadFile,
   initAssignment as initBroadFileTask,
-} from '@/pages/bank/test-tasks/tasks/broad-file-answer/broad-file-answer.model'
+} from '@/pages/common/parts/tasks/broad-file-answer/broad-file-answer.model'
 import {
   $isFilled as $isFilledBroadOpen,
   $form as $formBroadOpen,
   initAssignment as initBroadOpenTask,
-} from '@/pages/bank/test-tasks/tasks/broad-open-answer/broad-open-answer.model'
+} from '@/pages/common/parts/tasks/broad-open-answer/broad-open-answer.model'
 import {
   $isFilled as $isFilledColorHighlight,
   $form as $formColorHighlight,
   initAssignment as initColorHighlightTask,
-} from '@/pages/bank/test-tasks/tasks/color-highlight-answer/color-highlight-answer.model'
+} from '@/pages/common/parts/tasks/color-highlight-answer/color-highlight-answer.model'
 import {
   $isFilled as $isFilledCommonListString,
   $form as $formCommonListString,
   initAssignment as initCommonListStringTask,
-} from '@/pages/bank/test-tasks/tasks/common-list-string-answer/common-list-string-answer.model'
+} from '@/pages/common/parts/tasks/common-list-string-answer/common-list-string-answer.model'
 import {
   $isFilled as $isFilledCommonListText,
   $form as $formCommonListText,
   initAssignment as initCommonListTextTask,
-} from '@/pages/bank/test-tasks/tasks/common-list-text-answer/common-list-text-answer.model'
+} from '@/pages/common/parts/tasks/common-list-text-answer/common-list-text-answer.model'
 import {
   $isFilled as $isFilledConnectLines,
   $form as $formConnectLines,
   initAssignment as initConnectLinesTask,
-} from '@/pages/bank/test-tasks/tasks/connect-lines-answer/connect-lines-answer.model'
+} from '@/pages/common/parts/tasks/connect-lines-answer/connect-lines-answer.model'
 import {
   $isFilled as $isFilledCorrectSequence,
   $form as $formCorrectSequence,
   initAssignment as initCorrectSequenceTask,
-} from '@/pages/bank/test-tasks/tasks/correct-sequence-answer/correct-sequence-answer.model'
+} from '@/pages/common/parts/tasks/correct-sequence-answer/correct-sequence-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOne,
   $form as $formMultipleChoiceOne,
   initAssignment as initMultipleChoiceOneTask,
-} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
+} from '@/pages/common/parts/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
 import {
   $isFilled as $isFilledMultipleChoiceOneOrMany,
   $form as $formMultipleChoiceOneOrMany,
   initAssignment as initMultipleChoiceOneOrManyTask,
-} from '@/pages/bank/test-tasks/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
+} from '@/pages/common/parts/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
 import {
   $isFilled as $isFilledMultipleListText,
   $form as $formMultipleListText,
   initAssignment as initMultipleListTask,
-} from '@/pages/bank/test-tasks/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
+} from '@/pages/common/parts/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
 import {
   $isFilled as $isFilledMultipleShortClosed,
   $form as $formMultipleShortClosed,
   initAssignment as initMultipleShortClosedTask,
-} from '@/pages/bank/test-tasks/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
+} from '@/pages/common/parts/tasks/multiple-short-closed-answer/multiple-short-closed-answer.model'
 import {
   $isFilled as $isFilledShortClosed,
   $form as $formShortClosed,
   initAssignment as initShortClosedTask,
-} from '@/pages/bank/test-tasks/tasks/short-closed-answer/short-closed-answer.model'
+} from '@/pages/common/parts/tasks/short-closed-answer/short-closed-answer.model'
 import {
   $isFilled as $isFilledMovingOnImage,
   $form as $formMovingOnImage,
   initAssignment as initMovingOnImageTask,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+} from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
 import {
   $isFilled as $isFilledMovingOnText,
   $form as $formMovingOnText,
   initAssignment as initMovingOnTextTask,
-} from '@/pages/bank/test-tasks/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
+} from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/difficulties-dropdown/difficulties-dropdown.model'
-import { taskTypesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/task-types-dropdown/task-types-dropdown.model'
+import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import {
   $themesData,
   themesDropdownModule,
@@ -83,9 +83,11 @@ import {
 
 import { $selectedLabels } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { mapTaskTypeToComponent } from '@/pages/bank/test-tasks/edit/parts/task-types-dropdown/constants'
+import { mapTaskTypeToComponent } from '@/pages/common/dropdowns/bank/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/bank/test-tasks/tasks/types'
+import { AudioFile } from '@/pages/common/parts/tasks/types'
+import { DropdownItem } from '@/pages/common/types'
+import { LANGUAGE_DATA } from '../../common/constants'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -113,6 +115,9 @@ export const $needDuplicate = restore(toggleNeedDuplicate, false)
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
 
+export const setLanguage = createEvent<DropdownItem>()
+export const $language = restore(setLanguage, LANGUAGE_DATA[0])
+
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
@@ -132,6 +137,10 @@ forward({
     setDifficulty.prepend((data) => `${data.difficulty}`),
     taskTypesDropdownModule.methods.itemChanged.prepend((data) => data.type),
     setTaskType.prepend((data) => data.type),
+    setLanguage.prepend((data) => ({
+      name: data.interface_language,
+      title: data.interface_language,
+    })),
   ],
 })
 
@@ -155,7 +164,6 @@ const mapTaskTypeToInitFn = {
 sample({
   source: loadAssignment.doneData.map((res) => res.body),
   fn: (assignment) => {
-    console.log('TASK:', assignment)
     mapTaskTypeToInitFn[assignment.type](assignment)
     return assignment
   },
@@ -214,7 +222,8 @@ const $baseForm = combine(
   $needDuplicate,
   $count,
   $selectedLabels,
-  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels) => ({
+  $language,
+  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels, language) => ({
     status: 'new',
     is_test_assignment: true,
     type: taskType,
@@ -223,6 +232,7 @@ const $baseForm = combine(
     difficulty,
     labels: labels.map(({ name }) => name),
     ...(needDuplicate ? { duplicate_count: count } : {}),
+    interface_language: language.title,
   })
 )
 

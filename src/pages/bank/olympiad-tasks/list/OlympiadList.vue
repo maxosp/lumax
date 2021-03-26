@@ -148,6 +148,7 @@ import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/del
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
+import { navigatePush } from '@/features/navigation'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -244,7 +245,7 @@ export default (Vue as VueConstructor<
       duplicateAssignment({ assignments: [id] })
     },
     duplicateNTasks(ids: number[]) {
-      console.log(ids)
+      console.log('dupllicate', ids)
     },
     clearWording(str: string) {
       return removeHtmlTags(str)
@@ -265,7 +266,7 @@ export default (Vue as VueConstructor<
       )
     },
     editTask(id: number) {
-      console.log('EDIT ', id)
+      navigatePush({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })
     },
     removeSelected(ids: number[]) {
       this.$session?.permissions?.assignments_assignment?.delete

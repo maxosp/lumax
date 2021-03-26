@@ -60,12 +60,12 @@ export default Vue.extend({
         return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
       }
       return [
-        { name: 'delete', title: 'Удалить' },
+        { name: 'edit', title: 'Редактировать' },
         { name: 'duplicate', title: 'Дублировать' },
         { name: 'duplicate-n-times', title: 'Дублировать n раз' },
         { name: 'send-for-check', title: 'Отправить на проверку' },
         { name: 'preview', title: 'Предпросмотр' },
-        { name: 'edit', title: 'Редактировать' },
+        { name: 'delete', title: 'Удалить' },
       ]
     },
   },

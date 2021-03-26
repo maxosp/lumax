@@ -3,8 +3,10 @@
     <BaseInput
       :value="value"
       type="number"
+      min="0"
       :max-length="maxLength"
       :disabled="disabled"
+      :placeholder="placeholder"
       class="inner-input"
       :class="{'--disabled': disabled}"
       v-on="{
@@ -45,6 +47,7 @@ export default Vue.extend({
   props: {
     value: { type: Number as PropType<number>, default: 0 },
     type: { type: String as PropType<string>, default: 'text' },
+    placeholder: { type: String as PropType<string> },
     maxLength: { type: Number },
     errorMessage: { type: String as PropType<string>, default: '' },
     disabled: { type: Boolean as PropType<boolean> },
@@ -58,7 +61,7 @@ export default Vue.extend({
       this.$emit('input', this.$props.value + 1)
     },
     decrement() {
-      this.$emit('input', this.$props.value - 1)
+      if (this.$props.value > 0) this.$emit('input', this.$props.value - 1)
     },
   },
 })
@@ -67,6 +70,7 @@ export default Vue.extend({
 <style scoped>
 .numeric-input-wrap {
   display: flex;
+  justify-content: space-between;
   background-color: var(--c-grey-5);
   border: 1px solid var(--c-grey-6);
   border-radius: 5px;

@@ -6,6 +6,7 @@
       label="Теги"
       placeholder=""
       read-only-dropdown
+      :disabled="disabled"
       @clear="clear"
     >
       <template #default="{closeMenu}">
@@ -13,6 +14,7 @@
           <SelectItem
             v-for="item in $tags"
             :key="item.name"
+            :with-icon="showTick(item)"
             :placeholder="item.title"
             @click="onSelectItem(item, closeMenu)"
           >
@@ -48,7 +50,6 @@ import Icon from '@/ui/icon/Icon.vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import {
-  loadTags,
   $tags,
   $selectedTags,
   setSelectedTags,
@@ -61,12 +62,18 @@ export default Vue.extend({
     BaseDropdown,
     SelectItem,
   },
+  props: {
+    disabled: { type: Boolean },
+  },
   effector: {
     $tags,
     $selectedTags,
   },
   methods: {
-    loadTags,
+    showTick(item: any) {
+      if (this.$selectedTags.find((tag) => +tag.name === +item.name)) return true
+      return false
+    },
     onSelectItem(item: DropdownItem, cb: any) {
       const existedItem = this.$selectedTags.find((tag: DropdownItem) => tag.name === item.name)
       if (existedItem) {
@@ -84,9 +91,6 @@ export default Vue.extend({
     clear() {
       // clear handle
     },
-  },
-  mounted() {
-    loadTags()
   },
 })
 </script>
