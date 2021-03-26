@@ -10,6 +10,7 @@ export type TreeElementType =
 
 export type VirtualFolder = {
   name: string
+  code: string
 }
 
 export type GetListQueryParams = {

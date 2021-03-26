@@ -6,7 +6,7 @@
       :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
       :node="leaf"
       parent
-      :prerequisite-folder="leaf.element_type === 'virtual_folder'"
+      :prerequisite-folder="leaf.virtual_folder && leaf.virtual_folder.code === 'prerequisite'"
       @onRightClick="$emit('onRightClick', $event)"
     />
   </div>

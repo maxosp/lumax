@@ -6,14 +6,7 @@
       @click="toggle"
     >
       <Icon
-        v-if="opened"
-        type="tree-folder-opened"
-        class="folder-icon"
-        size="35"
-      />
-      <Icon
-        v-else
-        :type="node.is_prerequisite ? 'folder-prerequisite' : 'tree-folder'"
+        :type="iconType"
         :class="{ 'folder-icon': true, transapent: node.is_prerequisite }"
         size="35"
       />
@@ -34,7 +27,7 @@
         :key="leaf[leaf.element_type].id"
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
-        :prerequisite-folder="$props.prerequisiteFolder"
+        :prerequisite-folder="leaf.virtual_folder && leaf.virtual_folder.code === 'prerequisite'"
         @onRightClick="$emit('onRightClick', $event)"
       />
     </div>
@@ -59,12 +52,19 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
+    iconType(): string {
+      if (this.prerequisiteFolder) {
+        return 'folder-prerequisite'
+      }
+      if (this.opened) {
+        return 'tree-folder-opened'
+      }
+      return 'tree-folder'
+    },
     title() {
       const entity = this.node[this.node.element_type]
       let fullName = entity ? entity.name : ''
