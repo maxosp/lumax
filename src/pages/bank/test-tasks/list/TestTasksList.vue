@@ -227,10 +227,10 @@ export default (Vue as VueConstructor<
   methods: {
     toggleVisibility,
     showPreview(id: number) {
-      window.open(
-        `${config.PREVIEW_URL}/question?questionId=${id}&type=test-assignment&token=${this.$token}`,
-        '_blank'
-      )
+      this.$router.push({
+        name: 'preview-task',
+        query: { questionId: `${id}`, type: 'test-assignment', token: this.$token },
+      })
     },
     clearWording(str: string) {
       return removeHtmlTags(str)

@@ -9,6 +9,7 @@ import dictionaryRoutes from '@/pages/dictionary/dictionary-routes'
 import tagsRoutes from '@/pages/tags/tags-routes'
 import labelsRoutes from '@/pages/labels/labels-routes'
 import applicationsRoutes from '@/pages/applications/applications-routes'
+import PreviewTasksPage from '@/pages/preview-tasks/PreviewTasksPage.vue'
 
 export const routes: RouteConfig[] = [
   {
@@ -46,6 +47,14 @@ export const routes: RouteConfig[] = [
       ...bankRoutes,
       ...dictionaryRoutes,
       ...applicationsRoutes,
+      {
+        name: 'preview-task',
+        path: '/preview',
+        component: PreviewTasksPage,
+        meta: {
+          title: 'Предпросмотр задания - Школа Летово',
+        },
+      },
       { name: 'default-route', path: '*', redirect: { name: 'home' } },
     ],
   },

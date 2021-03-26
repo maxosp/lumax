@@ -260,10 +260,10 @@ export default (Vue as VueConstructor<
       loadModalToSendForCheck([id])
     },
     showPreview(id: number) {
-      window.open(
-        `${config.PREVIEW_URL}/question?questionId=${id}&type=olympiad-assignment&token=${this.$token}`,
-        '_blank'
-      )
+      this.$router.push({
+        name: 'preview-task',
+        query: { questionId: `${id}`, type: 'olympiad-assignment', token: this.$token },
+      })
     },
     editTask(id: number) {
       navigatePush({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })
