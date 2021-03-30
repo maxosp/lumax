@@ -135,7 +135,13 @@ export const themesTableFields: TableField[] = [
   },
 ]
 
-export const searchFieldsData: DropdownItem[] = [] // TODO add elements to array
+export const searchFieldsData: DropdownItem[] = [
+  { name: 'all', title: 'Искать везде' },
+  { name: 'id', title: 'id Задания' },
+  { name: 'created_by', title: 'Создатель' },
+  { name: 'theme', title: 'Тема' },
+  { name: 'wording', title: 'Формулировка' },
+]
 
 export const contextMethodsOneTask = [
   { name: 'edit', title: 'Редактирование' },
