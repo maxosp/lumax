@@ -89,10 +89,11 @@ import {
   $comment,
   commentChanged,
   $commentErrorModule,
-  uploadFile,
+  uploadFileFx,
   $imagesPreview,
   deleteMedia,
   checkIfFormCanBeSend,
+  $ticketForm,
 } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import { RefsType } from '@/pages/common/types'
 
@@ -113,6 +114,7 @@ export default (Vue as VueConstructor<
     $comment,
     $imagesPreview,
     commentError: $commentErrorModule.store.$error,
+    $ticketForm,
   },
   computed: {
     images() {
@@ -126,7 +128,7 @@ export default (Vue as VueConstructor<
     checkIfFormCanBeSend,
     handleFileUpload() {
       const { fileInput } = this.$refs
-      uploadFile(fileInput!.files)
+      uploadFileFx(fileInput!.files)
     },
   },
 })

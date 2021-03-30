@@ -44,6 +44,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { actionsSelectMenuMaxHeight, selectItemHeight } from '@/pages/common/constants'
+import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'Actions',
@@ -53,19 +54,9 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    id: { type: Number, required: true },
-    selected: { type: Array as PropType<number[]>, required: true },
-    isStudyYear: { type: Boolean },
-    isTheme: { type: Boolean },
-    dataToCreateTag: {
-      type: [Object, null] as PropType<{ class_id: number; subject_id: number } | null>,
-    },
-    dataToCreateLabel: {
-      type: [Object, null] as PropType<{
-        class_id: number
-        subject_id: number
-        theme: number
-      } | null>,
+    selectedApplications: {
+      type: Array as PropType<ApplicationType[]>,
+      required: true,
     },
   },
   data: () => ({
@@ -79,11 +70,12 @@ export default Vue.extend({
         { name: 'preview', title: 'Предпросмотр' },
         { name: 'edit', title: 'Редактировать' },
       ]
-      if (this.$props.selected.length === 1 || this.$props.id) {
+      if (this.$props.selectedApplications.length === 1) {
         res.push({ name: 'see-comment', title: 'Посмотреть комментарии' })
         res.push({ name: 'cancel', title: 'Отменить заявку' })
       }
-      if (this.$props.selected.length > 1) res.push({ name: 'cancel', title: 'Отменить заявки' })
+      if (this.$props.selectedApplications.length > 1)
+        res.push({ name: 'cancel', title: 'Отменить заявки' })
       return res
     },
   },
@@ -107,19 +99,20 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : [this.id]
+      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
+      const selectedTasksIds = this.selectedApplications.map((el) => el.task)
       switch (item.name) {
         case 'preview':
-          this.$emit('showPreview', ids)
+          this.$emit('showPreview', selectedTasksIds)
           break
         case 'edit':
-          this.$emit('onEdit', ids)
+          this.$emit('onEdit', selectedTasksIds)
           break
         case 'cancel':
-          this.$emit('onCancel', ids)
+          this.$emit('onCancel', selectedApplicationsIds)
           break
         case 'see-comment':
-          this.$emit('onSeeComments', ids)
+          this.$emit('onSeeComments', selectedApplicationsIds)
           break
         default:
           break

@@ -5,6 +5,7 @@
       :value="value"
       :config="editorConfig"
       :editor-url="editorUrl"
+      :placeholder="placeholder"
       class="editor"
       @ready="onEditorReady"
       @input="$emit('input', $event)"

@@ -81,7 +81,7 @@
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
-import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
+import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'

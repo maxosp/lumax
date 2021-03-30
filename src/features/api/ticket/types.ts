@@ -1,4 +1,5 @@
 import { User } from '@/features/api/user/types'
+import { UploadMediaResponse } from '@/features/api/media/types'
 
 export type getTicketsListQueryParams = {
   sort?: string
@@ -29,7 +30,11 @@ export type Ticket = {
   created_by: User
   moderate_by: User
   status: string
-  comment?: string
+  comment?: {
+    id: number
+    text: string
+    media: UploadMediaResponse
+  }
   created_at?: string
   updated_at?: string
   moderated_at?: string
@@ -40,10 +45,51 @@ export type GetTypesResponse = {
   name: string
 }
 
-export type UpdateTicketType = {
+export type UpdateTicketBulkType = {
   tickets: number[]
   accept?: boolean | null
   send_to_revision?: boolean | null
+  comment_id?: number | null
   set_moderator?: boolean | null
+  moderator_id?: number | null
   cancel_outcome?: boolean | null
+  decline?: boolean | null
+}
+
+export type UpdateTicketType = {
+  id: number
+  test_assignment: TestAssignmentType
+  created_by: User
+  moderate_by: User
+  status: string
+  comment: string
+  moderated_at: string
+  media_ids: number[]
+}
+
+export type CheckBeforeDeletionResponseType = {
+  id: number
+  object_type: string
+  theme: {
+    id: number
+    parent_theme: number
+    study_resources: number[]
+    test_assignment: number[]
+  }
+  subject: {
+    id: number
+    themes: number[]
+  }
+}
+
+export type TicketCommentRequestType = {
+  text: string
+  media_ids: number[]
+}
+
+export type TicketCommentResponseType = {
+  id: number
+  media: UploadMediaResponse
+  created_by: User
+  media_ids: number[]
 }

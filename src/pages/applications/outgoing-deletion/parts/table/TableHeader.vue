@@ -1,34 +1,34 @@
 <template>
   <div
     class="header"
-    :class="{invisible: !total, '--expand': selectedRows.length}"
+    :class="{invisible: !total, '--expand': showAdditionalActions}"
   >
     <div class="left">
       <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
-        v-if="selectedRows.length"
+        v-if="showAdditionalActions"
         vertical
         height="25px"
         class="divider"
       />
       <span
-        v-if="showAdditionalActions"
+        v-if="showAdditionalActions && selectedApplications.length === 1"
         class="text --basic"
-        @click="$emit('onOpen', selectedRows)"
+        @click="$emit('onOpen', selectedApplications[0])"
       >
         Открыть
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="showAdditionalActions && selectedApplications.length === 1"
         class="text --basic"
-        @click="$emit('onSeeComment', selectedRows[0])"
+        @click="$emit('onSeeComment', selectedApplicationsIds[0])"
       >
         Посмотреть комментарий
       </span>
       <span
-        v-if="selectedRows.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onCancel', selectedRows)"
+        @click="$emit('onCancel', selectedApplicationsIds)"
       >
         Отменить
       </span>
@@ -49,6 +49,7 @@ import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
+import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'TableHeader',
@@ -58,19 +59,18 @@ export default Vue.extend({
   },
   props: {
     total: { type: Number, required: true },
-    selectedRows: { type: Array as PropType<number[]> },
+    selectedApplications: { type: Array as PropType<ApplicationType[]> },
+    showActions: { type: Boolean as PropType<boolean> },
   },
   computed: {
     showAdditionalActions() {
-      return this.selectedRows.length === 1
+      return this.showActions && this.selectedApplications.length
+    },
+    selectedApplicationsIds() {
+      return this.selectedApplications.map((el) => el.application)
     },
   },
-  methods: {
-    modalTasksTypesVisibilityChanged,
-    handleRemove() {
-      this.$emit('onRemove', this.selectedRows)
-    },
-  },
+  methods: { modalTasksTypesVisibilityChanged },
 })
 </script>
 

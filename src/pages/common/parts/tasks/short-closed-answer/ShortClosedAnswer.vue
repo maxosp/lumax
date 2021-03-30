@@ -13,7 +13,11 @@
     </div>
     <div class='field'>
       <span class='label'>Текстовые и иллюстративные составляющие задания</span>
-      <Wysiwyg :value="$containing" @input="setContaining" />
+      <Wysiwyg
+        :value="$containing"
+        placeholder="Введите текст или добавьте иллюстративные составляющие задания"
+        @input="setContaining"
+      />
     </div>
     <div class="field">
       <span class="label">Аудиофайлы</span>
@@ -29,7 +33,11 @@
     </div>
     <div class='field'>
       <span class='label'>Образец ответа</span>
-      <Wysiwyg :value="$answerExample" @input="setAnswerExample" />
+      <Wysiwyg
+        :value="$answerExample"
+        placeholder="Образец ответа"
+        @input="setAnswerExample"
+      />
     </div>
   </div>
 </template>

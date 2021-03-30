@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import TreeNode from '@/pages/bank/test-tasks/list/parts/tasks-tree/parts/TreeNode.vue'
+import TreeNode from '@/pages/bank/lesson-tasks/list/parts/lessons-tree/TreeNode.vue'
 import { $lessonsTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 
 export default Vue.extend({

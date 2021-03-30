@@ -37,6 +37,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import ClickOutside from '@/features/directives/click-outside'
 import { DropdownItem } from '@/pages/common/types'
+import { ApplicationType } from '@/pages/applications/types'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -48,15 +49,11 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    id: { type: Number, required: true },
-    selected: { type: Array as PropType<number[]>, required: true },
-    type: { type: String as PropType<'study_year' | 'olympiad_tag'>, required: true },
-    subjectId: { type: [Number, null] as PropType<number | null> },
-    classId: { type: [Number, null] as PropType<number | null> },
+    selectedApplications: { type: Array as PropType<ApplicationType[]>, required: true },
   },
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length > 1) {
+      if (this.selectedApplications.length > 1) {
         return [
           { name: 'accept', title: 'Принять' },
           { name: 'reject', title: 'Отклонить' },
@@ -72,19 +69,19 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : [this.id]
+      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
       switch (item.name) {
         case 'accept':
-          this.$emit('onAccept', ids)
+          this.$emit('onAccept', selectedApplicationsIds)
           break
         case 'reject':
-          this.$emit('onReject', ids)
+          this.$emit('onReject', selectedApplicationsIds)
           break
         case 'open':
-          this.$emit('onOpen', ids)
+          this.$emit('onOpen', this.selectedApplications[0])
           break
         case 'see-comment':
-          this.$emit('onSeeComment', ids[0])
+          this.$emit('onSeeComment', selectedApplicationsIds[0])
           break
         default:
           break

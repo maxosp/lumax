@@ -37,6 +37,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import ClickOutside from '@/features/directives/click-outside'
 import { DropdownItem } from '@/pages/common/types'
+import { ApplicationType } from '../../types'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -48,11 +49,7 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    id: { type: Number, required: true },
-    selected: { type: Array as PropType<number[]>, required: true },
-    type: { type: String as PropType<'study_year' | 'olympiad_tag'>, required: true },
-    subjectId: { type: [Number, null] as PropType<number | null> },
-    classId: { type: [Number, null] as PropType<number | null> },
+    selectedApplications: { type: Array as PropType<ApplicationType[]>, required: true },
   },
   computed: {
     items(): DropdownItem[] {
@@ -67,22 +64,23 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : [this.id]
+      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
+      const selectedTasksIds = this.selectedApplications.map((el) => el.task)
       switch (item.name) {
         case 'preview':
-          this.$emit('showPreview', ids)
+          this.$emit('showPreview', selectedTasksIds)
           break
         case 'edit':
-          this.$emit('onEdit', ids)
+          this.$emit('onEdit', selectedTasksIds)
           break
         case 'accept':
-          this.$emit('onAccept', ids)
+          this.$emit('onAccept', selectedApplicationsIds)
           break
         case 'send-for-moderation':
-          this.$emit('onSendForModeration', ids)
+          this.$emit('onSendForModeration', selectedApplicationsIds)
           break
         case 'assign-to-moderator':
-          this.$emit('onAssignToModerator', ids)
+          this.$emit('onAssignToModerator', selectedApplicationsIds)
           break
         default:
           break

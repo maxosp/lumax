@@ -37,6 +37,8 @@ export default Vue.extend({
   props: {
     title: { type: String },
     rowId: { type: Number, required: true },
+    rowTaskId: { type: Number },
+    type: { type: String },
     iconType: { type: String },
   },
   computed: {
@@ -49,15 +51,18 @@ export default Vue.extend({
   methods: {
     handleRightClick(event: any) {
       event.preventDefault()
-      this.$emit('onRightClick', { data: { id: this.$props.rowId }, event })
+      this.$emit('onRightClick', {
+        data: { id: this.rowId, taskId: this.rowTaskId, object_type: this.type },
+        event,
+      })
     },
   },
   mounted() {
-    const container = document.querySelector(`#cell-${this.$props.rowId}`)
+    const container = document.querySelector(`#cell-${this.rowId}`)
     container && container.addEventListener('contextmenu', this.handleRightClick)
   },
   beforeDestroy() {
-    const container = document.querySelector(`#cell-${this.$props.rowId}`)
+    const container = document.querySelector(`#cell-${this.rowId}`)
     container && container.removeEventListener('contextmenu', this.handleRightClick)
   },
 })

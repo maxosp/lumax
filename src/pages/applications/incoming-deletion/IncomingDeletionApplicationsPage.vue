@@ -1,6 +1,6 @@
 <template>
   <div id="applications-page">
-    <PageHeader :table-columns-names="fields" :selected-rows="selectedRows" />
+    <PageHeader :table-columns-names="fields" :selected-rows="selectedApplications" />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
@@ -17,9 +17,10 @@
     </GeneralFilter>
     <TableHeader
       :total="total"
-      :selected-rows="selectedRows"
+      :selected-applications="selectedApplications"
+      :show-actions="showTableHeaderActions"
       @onAccept="acceptApplications"
-      @onReject="rejectApplications"
+      @onReject="loadRejectApplications"
       @onOpen="openApplications"
       @onSeeComment="showComment"
     />
@@ -44,6 +45,8 @@
           <TooltipCell
             :title="props.rowData.object_name || ''"
             :row-id="props.rowData.id"
+            :row-task-id="props.rowData[props.rowData.object_type].id"
+            :type="props.rowData.object_type"
             @onRightClick="handleRightClick"
           />
         </template>
@@ -51,15 +54,16 @@
           <TooltipCell
             :title="props.rowData.comment || '-'"
             :row-id="props.rowData.id"
+            :row-task-id="props.rowData[props.rowData.object_type].id"
+            :type="props.rowData.object_type"
             @onRightClick="handleRightClick"
           />
         </template>
         <template id="one" #actions="props">
           <Actions
-            :id="props.rowData.id"
-            :selected="selectedRows"
+            :selected-applications="[{ application: props.rowData.id, task: props.rowData[props.rowData.object_type].id, type: props.rowData.object_type }]"
             @onAccept="acceptApplications"
-            @onReject="rejectApplications"
+            @onReject="loadRejectApplications"
             @onOpen="openApplications"
             @onSeeComment="showComment"
           />
@@ -77,23 +81,25 @@
     </div>
     <ContextMenu
       v-if="showContextMenu"
-      :id="clickedRowId"
-      :key="clickedRowId"
-      :selected="selectedRows"
+      :key="selectedApplications[0].application"
+      :selected-applications="selectedApplications"
       :style="contextMenuStyles"
-      :type="contextMenuType"
-      :class-id="class_id"
-      :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onAccept="acceptApplications"
-      @onReject="rejectApplications"
+      @onReject="loadRejectApplications"
       @onOpen="openApplications"
       @onSeeComment="showComment"
     />
-    <RejectModal />
+    <RejectModal @reject="val => rejectApplications({ tickets: val })" />
     <RejectedModal />
     <CommentModal />
+    <DeleteModal @delete="val => checkIfElementCanBeDeleted(val)" />
+    <CannotDeleteModal
+      :value="currentFailed"
+      :show-modal="showDeleteModal"
+      @toggle-modal="val => toggleModal(val)"
+    />
   </div>
 </template>
 
@@ -118,7 +124,11 @@ import TooltipCell from '@/pages/applications/incoming-deletion/parts/table/Tool
 import Actions from '@/pages/applications/incoming-deletion/parts/table/Actions.vue'
 import ContextMenu from '@/pages/applications/incoming-deletion/parts/ContextMenu.vue'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
-import { loadList } from '@/pages/applications/incoming-deletion/incoming-deletion-applications-page.model'
+import {
+  loadList,
+  rejectApplications,
+  $canRefreshTable,
+} from '@/pages/applications/incoming-deletion/incoming-deletion-applications-page.model'
 import {
   toggleVisibility,
   $visibility,
@@ -130,6 +140,17 @@ import { loadModal } from '@/pages/applications/modals/reject/reject.model'
 import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
 import { RefsType } from '@/pages/common/types'
+import { ApplicationType } from '@/pages/applications/types'
+import {
+  setDataToDelete,
+  $cannotDeleteData,
+} from '@/pages/applications/modals/cannot-delete/cannot-delete.model'
+import CannotDeleteModal from '@/pages/applications/modals/cannot-delete/CannotDeleteModal.vue'
+import { mapApplicationTypeToRoute } from '@/pages/applications/constants'
+import { navigatePush } from '@/features/navigation'
+import DeleteModal from '@/pages/applications/modals/delete/DeleteModal.vue'
+import { loadModal as loadDeleteModal } from '@/pages/applications/modals/delete/delete.model'
+import { CheckBeforeDeletionResponseType } from '@/features/api/ticket/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -151,11 +172,15 @@ export default (Vue as VueConstructor<
     RejectModal,
     RejectedModal,
     CommentModal,
+    DeleteModal,
+    CannotDeleteModal,
   },
   effector: {
     $visibility,
     $token,
     $session,
+    canRefreshTableAfterReject: $canRefreshTable,
+    $cannotDeleteData,
   },
   data() {
     return {
@@ -163,35 +188,68 @@ export default (Vue as VueConstructor<
       filterParams: {},
       total: 1,
       fields: incomingDeletionApplicationsDataFields,
-      clickedRowId: 0,
       showContextMenu: false,
-      contextMenuType: 'table_theme',
       contextMenuStyles: { top: '0', left: '0' },
-      selectedRows: [] as number[] | null,
-      subject_id: null,
-      class_id: null,
+      selectedApplications: [] as ApplicationType[],
+      showTableHeaderActions: false,
+      currentFailed: null as CheckBeforeDeletionResponseType | null,
     }
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/ticket/deletion-ticket/list/`
+      return `${config.BACKEND_URL}/api/ticket/deletion-ticket/list/?is_active=true`
+    },
+    showDeleteModal(): boolean {
+      return !!this.currentFailed
+    },
+  },
+  watch: {
+    canRefreshTableAfterReject: {
+      handler(newVal) {
+        if (newVal) {
+          this.$refs.vuetable.refresh()
+          this.resetHeaderActions()
+        }
+      },
+    },
+    $cannotDeleteData: {
+      handler() {
+        this.showNextFailed()
+      },
     },
   },
   methods: {
     toggleVisibility,
     loadList,
     reset,
+    rejectApplications,
     acceptApplications(ids: number[]) {
-      console.log('accept', ids)
+      loadDeleteModal(ids)
     },
-    rejectApplications(ids: number[]) {
+    checkIfElementCanBeDeleted(ids: number[]) {
+      setDataToDelete(ids)
+    },
+    loadRejectApplications(ids: number[]) {
       loadModal(ids)
     },
-    openApplications(ids: number[]) {
-      console.log('open', ids)
+    openApplications(data: ApplicationType) {
+      navigatePush({
+        name: `${mapApplicationTypeToRoute[data.type!]}-edit`,
+        params: { id: `${data.task}` },
+      })
     },
     showComment(id: number) {
       loadCommentModal(id)
+    },
+    toggleModal(val: boolean) {
+      if (!val) {
+        this.currentFailed = null
+        this.showNextFailed()
+      }
+    },
+    showNextFailed() {
+      if (this.$cannotDeleteData.length === 0 || this.showDeleteModal) return
+      this.currentFailed = this.$cannotDeleteData.shift()!
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -222,25 +280,40 @@ export default (Vue as VueConstructor<
         noInternetToastEvent()
       }
     },
-    handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+    handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.id
+      const taskId = data.taskId || data[data.object_type].id
+      this.selectedApplications = [{ application: data.id, task: taskId, type: data.object_type }]
       this.showContextMenu = true
-      this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
       const { selectedTo } = this.$refs.vuetable
-      if (selectedTo.length === 0) selectedTo.push(res.data.id)
-      else if (selectedTo.find((el: number) => el === res.data.id)) {
+      if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
-      } else selectedTo.push(res.data.id)
-      this.selectedRows = this.$refs.vuetable.selectedTo
+        this.selectedApplications = this.selectedApplications.filter((el) =>
+          selectedTo.find((currentId: number) => currentId === el.application)
+        )
+      } else {
+        selectedTo.push(res.data.id)
+        this.selectedApplications.push({
+          application: res.data.id,
+          task: res.data[res.data.object_type].id,
+          type: res.data.object_type,
+        })
+      }
+      this.showTableHeaderActions = selectedTo.length > 0
     },
     hideContextMenu() {
+      this.selectedApplications = []
       this.showContextMenu = false
+    },
+    resetHeaderActions() {
+      this.$refs.vuetable.selectedTo = []
+      this.selectedApplications = []
+      this.showTableHeaderActions = false
     },
   },
   created() {

@@ -1,48 +1,48 @@
 <template>
   <div
     class="header"
-    :class="{invisible: !total, '--expand': selectedApplications.length}"
+    :class="{invisible: !total, '--expand': showAdditionalActions}"
   >
     <div class="left">
       <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         vertical
         height="25px"
         class="divider"
       />
       <span
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('showPreview', selectedApplications)"
+        @click="$emit('showPreview', selectedTasksIds)"
       >
         Предпросмотр
       </span>
       <span
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onEdit', selectedApplications)"
+        @click="$emit('onEdit', selectedTasksIds)"
       >
         Редактировать
       </span>
       <span
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onAccept', selectedApplications)"
+        @click="$emit('onAccept', selectedApplicationsIds)"
       >
         Принять
       </span>
       <span
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onSendForModeration', selectedApplications)"
+        @click="$emit('onSendForModeration', selectedApplicationsIds)"
       >
         На доработку
       </span>
       <span
-        v-if="selectedApplications.length"
+        v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onAssignToModerator', selectedApplications)"
+        @click="$emit('onAssignToModerator', selectedApplicationsIds)"
       >
         Назначить
       </span>
@@ -63,6 +63,7 @@ import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
+import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'TableHeader',
@@ -72,7 +73,19 @@ export default Vue.extend({
   },
   props: {
     total: { type: Number, required: true },
-    selectedApplications: { type: Array as PropType<number[]> },
+    selectedApplications: { type: Array as PropType<ApplicationType[]> },
+    showActions: { type: Boolean as PropType<boolean> },
+  },
+  computed: {
+    showAdditionalActions() {
+      return this.showActions && this.selectedApplications.length
+    },
+    selectedTasksIds() {
+      return this.selectedApplications.map((el) => el.task)
+    },
+    selectedApplicationsIds() {
+      return this.selectedApplications.map((el) => el.application)
+    },
   },
   methods: { modalTasksTypesVisibilityChanged },
 })

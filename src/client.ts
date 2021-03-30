@@ -8,7 +8,6 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Cookies from 'js-cookie'
 import VTooltip from 'v-tooltip'
-
 import {
   formatTasksTitle,
   formatThemesTitle,

@@ -1,13 +1,36 @@
+import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
+import { UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { getUsersListFx } from '@/features/api/user/get-users-list'
 import { GetUsersListQueryParams, User } from '@/features/api/user/types'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { DropdownItem } from '@/pages/common/types'
-import { attach, combine, createEvent, createStore, forward, restore, sample } from 'effector-root'
-import { debounce, spread } from 'patronum'
+import {
+  attach,
+  combine,
+  createEvent,
+  createStore,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
+import { debounce, every, spread } from 'patronum'
 
 const getModeratorsFx = attach({
   effect: getUsersListFx,
   mapParams: (params: GetUsersListQueryParams) => ({ ...params, is_moderator: true }),
+})
+
+const setToModerator = attach({
+  effect: updateTicketBulkFx,
+  mapParams: (params: UpdateTicketBulkType) => ({
+    ...params,
+    accept: null,
+    send_to_revision: null,
+    comment_id: null,
+    set_moderator: true,
+    cancel_outcome: null,
+  }),
 })
 
 export const submit = createEvent<number>()
@@ -70,15 +93,26 @@ const debounced = debounce({
   timeout: 450,
 })
 
+const $canSetToModerator = every({
+  stores: [$moderators],
+  predicate: (value) => value.length > 0,
+})
+
 sample({
   clock: [selectedPageChanged, debounced],
   source: $sortOptions,
   target: getModeratorsFx,
 })
 
-// TO DO add effect to set moderator
+sample({
+  clock: guard({ source: submit, filter: $canSetToModerator }),
+  source: $selectedIds,
+  fn: (tickets, moderator_id) => ({ tickets, moderator_id }),
+  target: setToModerator,
+})
+
 forward({
-  from: submit,
+  from: setToModerator.doneData,
   to: [
     successToastEvent('Заявка назначена'),
     modalVisibilityChanged.prepend(() => false),

@@ -44,6 +44,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { actionsSelectMenuMaxHeight, selectItemHeight } from '@/pages/common/constants'
+import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'Actions',
@@ -53,19 +54,9 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    id: { type: Number, required: true },
-    selected: { type: Array as PropType<number[]>, required: true },
-    isStudyYear: { type: Boolean },
-    isTheme: { type: Boolean },
-    dataToCreateTag: {
-      type: [Object, null] as PropType<{ class_id: number; subject_id: number } | null>,
-    },
-    dataToCreateLabel: {
-      type: [Object, null] as PropType<{
-        class_id: number
-        subject_id: number
-        theme: number
-      } | null>,
+    selectedApplications: {
+      type: Array as PropType<ApplicationType[]>,
+      required: true,
     },
   },
   data: () => ({
@@ -75,7 +66,7 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.$props.selected.length > 1) {
+      if (this.selectedApplications.length > 1) {
         return [
           { name: 'accept', title: 'Принять' },
           { name: 'reject', title: 'Отклонить' },
@@ -109,19 +100,19 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : [this.id]
+      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
       switch (item.name) {
         case 'accept':
-          this.$emit('onAccept', ids)
+          this.$emit('onAccept', selectedApplicationsIds)
           break
         case 'reject':
-          this.$emit('onReject', ids)
+          this.$emit('onReject', selectedApplicationsIds)
           break
         case 'open':
-          this.$emit('onOpen', ids)
+          this.$emit('onOpen', this.selectedApplications[0])
           break
         case 'see-comment':
-          this.$emit('onSeeComment', ids[0])
+          this.$emit('onSeeComment', selectedApplicationsIds[0])
           break
         default:
           break

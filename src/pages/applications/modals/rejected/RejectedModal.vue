@@ -29,7 +29,6 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import {
   $modalVisibility,
-  $selectedIds,
   modalVisibilityChanged,
 } from '@/pages/applications/modals/rejected/rejected.model'
 
@@ -42,11 +41,10 @@ export default Vue.extend({
   },
   effector: {
     $modalVisibility,
-    $selectedIds,
   },
   computed: {
     correctTitle() {
-      return this.$selectedIds.length === 1 ? 'Заявка отклонена.' : 'Заявки отклонены.'
+      return 'Заявка(и) отклонена(ы).'
     },
   },
   methods: { modalVisibilityChanged },

@@ -10,7 +10,7 @@
         class="btn"
         big
         border-without-bg
-        @click="handleCancel"
+        @click="$emit('reject', $selectedIds)"
       >
         Продолжить
       </BaseButton>
@@ -50,12 +50,7 @@ export default Vue.extend({
       return this.$selectedIds.length === 1 ? 'Заявка будет отклонена.' : 'Заявки будут отклонены.'
     },
   },
-  methods: {
-    modalVisibilityChanged,
-    handleCancel() {
-      console.log('reject', this.$selectedIds)
-    },
-  },
+  methods: { modalVisibilityChanged },
 })
 </script>
 

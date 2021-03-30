@@ -10,7 +10,7 @@
         class="btn"
         big
         border-without-bg
-        @click="$emit('cancel', $selectedIds)"
+        @click="handleClick"
       >
         Продолжить
       </BaseButton>
@@ -33,10 +33,10 @@ import {
   $modalVisibility,
   $selectedIds,
   modalVisibilityChanged,
-} from '@/pages/applications/modals/cancel/cancel.model'
+} from '@/pages/applications/modals/delete/delete.model'
 
 export default Vue.extend({
-  name: 'CancelModal',
+  name: 'RejectModal',
   components: {
     Modal,
     BaseButton,
@@ -47,10 +47,18 @@ export default Vue.extend({
   },
   computed: {
     correctTitle() {
-      return this.$selectedIds.length === 1 ? 'Заявка будет отменена.' : 'Заявки будут отменены.'
+      return this.$selectedIds.length === 1
+        ? `Элемент ${this.$selectedIds[0]} будет удален.`
+        : `Элементы ${this.$selectedIds.join(', ')} будут удалены.`
     },
   },
-  methods: { modalVisibilityChanged },
+  methods: {
+    modalVisibilityChanged,
+    handleClick() {
+      this.$emit('delete', this.$selectedIds)
+      modalVisibilityChanged(false)
+    },
+  },
 })
 </script>
 
@@ -59,7 +67,6 @@ export default Vue.extend({
   width: 420px;
 }
 .title {
-  max-width: 220px;
   font-size: 18px;
   line-height: 22px;
   color: #000;

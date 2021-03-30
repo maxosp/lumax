@@ -3,6 +3,9 @@ import { getMediaFx } from '@/features/api/media/get-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { File } from '@/features/api/subject/types'
+import { createCommentFx } from '@/features/api/ticket/comment/create-comment'
+import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
+import { UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { createError } from '@/lib/effector/error-generator'
 import {
@@ -13,6 +16,7 @@ import {
   createStore,
   forward,
   restore,
+  sample,
 } from 'effector-root'
 
 const uploadMedia = attach({
@@ -21,6 +25,21 @@ const uploadMedia = attach({
 
 export const deleteMedia = attach({
   effect: deleteMediaFx,
+})
+const sendComment = attach({
+  effect: createCommentFx,
+})
+
+const sendToRevision = attach({
+  effect: updateTicketBulkFx,
+  mapParams: (params: UpdateTicketBulkType) => ({
+    ...params,
+    accept: null,
+    send_to_revision: true,
+    set_moderator: null,
+    moderator_id: null,
+    cancel_outcome: null,
+  }),
 })
 
 const clearFields = createEvent<void>()
@@ -34,7 +53,6 @@ export const commentChanged = createEvent<string>()
 export const $comment = restore(commentChanged, '').reset(clearFields)
 export const $commentErrorModule = createError()
 
-export const uploadFile = createEvent<FileList>()
 export const checkIfFormCanBeSend = createEvent<void>()
 
 forward({
@@ -45,6 +63,8 @@ forward({
 export const fileDataChanged = createEvent<Partial<File> | null>()
 export const $fileData = restore(fileDataChanged, null).reset(clearFields)
 
+const setSelectedImagesIds = createEvent<number>()
+const $selectedImagesIds = createStore<number[]>([]).reset(clearFields)
 const getImagesPreview = createEvent<number>()
 const setImagesPreview = createEvent<UploadMediaResponse>()
 const removeImagePreview = createEvent<number>()
@@ -91,7 +111,17 @@ forward({
 
 forward({
   from: getMediaFx.doneData.map((res) => res.body),
-  to: setImagesPreview,
+  to: [setImagesPreview, setSelectedImagesIds.prepend((data) => data.id)],
+})
+
+sample({
+  clock: setSelectedImagesIds,
+  source: $selectedImagesIds,
+  fn: (arr, newVal) => {
+    arr.push(newVal)
+    return arr
+  },
+  target: $selectedImagesIds,
 })
 
 forward({
@@ -103,14 +133,12 @@ forward({
   to: [successToastEvent('Файл был успешно удален!'), fileDataChanged.prepend(() => null)],
 })
 
-const fakeSubmitForm = createEvent<void>()
-
-export const $form = combine({
-  tickets: $selectedApplications.map((data) => data),
-  comment: $comment.map((data) => data),
+export const $ticketForm = combine({
+  text: $comment.map((data) => data),
+  media_ids: $selectedImagesIds.map((data) => data),
 }).on(checkIfFormCanBeSend, (state) => {
-  if (!state.comment.trim().length) $commentErrorModule.methods.setError(true)
-  else fakeSubmitForm()
+  if (!state.text.trim().length) $commentErrorModule.methods.setError(true)
+  else sendComment(state)
 })
 
 forward({
@@ -118,8 +146,15 @@ forward({
   to: $commentErrorModule.methods.resetError,
 })
 
+sample({
+  clock: sendComment.doneData.map((res) => res.body.id),
+  source: $selectedApplications,
+  fn: (tickets, comment_id) => ({ tickets, comment_id }),
+  target: sendToRevision,
+})
+
 forward({
-  from: fakeSubmitForm,
+  from: sendToRevision.doneData,
   to: [successToastEvent('Задание(я) были успешно отправлены на доработку!'), clearFields],
 })
 

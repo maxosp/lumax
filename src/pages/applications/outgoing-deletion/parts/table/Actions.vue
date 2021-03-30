@@ -44,6 +44,7 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { actionsSelectMenuMaxHeight, selectItemHeight } from '@/pages/common/constants'
+import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'Actions',
@@ -53,20 +54,7 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    id: { type: Number, required: true },
-    selected: { type: Array as PropType<number[]>, required: true },
-    isStudyYear: { type: Boolean },
-    isTheme: { type: Boolean },
-    dataToCreateTag: {
-      type: [Object, null] as PropType<{ class_id: number; subject_id: number } | null>,
-    },
-    dataToCreateLabel: {
-      type: [Object, null] as PropType<{
-        class_id: number
-        subject_id: number
-        theme: number
-      } | null>,
-    },
+    selectedApplications: { type: Array as PropType<ApplicationType[]> },
   },
   data: () => ({
     isOpen: false,
@@ -75,7 +63,7 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.selected.length > 1) {
+      if (this.selectedApplications.length > 1) {
         return [{ name: 'cancel', title: 'Отменить заявки' }]
       }
       return [
@@ -105,16 +93,16 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : this.id
+      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
       switch (item.name) {
         case 'cancel':
-          this.$emit('onCancel', ids)
+          this.$emit('onCancel', selectedApplicationsIds)
           break
         case 'open':
-          this.$emit('onOpen', ids)
+          this.$emit('onOpen', this.selectedApplications[0])
           break
         case 'see-comment':
-          this.$emit('onSeeComment', ids)
+          this.$emit('onSeeComment', selectedApplicationsIds)
           break
         default:
           break

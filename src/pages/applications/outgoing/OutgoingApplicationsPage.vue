@@ -1,6 +1,6 @@
 <template>
   <div id="applications-page">
-    <PageHeader :table-columns-names="fields" :selected-rows="selectedRows" />
+    <PageHeader :table-columns-names="fields" :selected-rows="selectedApplications" />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
@@ -18,7 +18,7 @@
     <TableHeader
       :total="total"
       :selected-applications="selectedApplications"
-      :selected-rows="selectedRows"
+      :show-actions="showTableHeaderActions"
       @showPreview="showPreview"
       @onEdit="editApplications"
       @onCancel="cancelApplications"
@@ -41,31 +41,9 @@
         @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
       >
-        <template #assignments_ids="props">
-          <TooltipCell
-            :title="props.rowData.assignments_ids && props.rowData.assignments_ids.join(', ') || ''"
-            :row-id="props.rowData.id"
-            @onRightClick="handleRightClick"
-          />
-        </template>
-        <template #wording="props">
-          <TooltipCell
-            :title="clearWording(props.rowData.wording) || ''"
-            :row-id="props.rowData.id"
-            @onRightClick="handleRightClick"
-          />
-        </template>
-        <template #type="props">
-          <TooltipCell
-            :icon-type="getCorrectIconType(props.rowData.type)"
-            :row-id="props.rowData.id"
-            @onRightClick="handleRightClick"
-          />
-        </template>
         <template id="one" #actions="props">
           <Actions
-            :id="props.rowData.id"
-            :selected="selectedRows"
+            :selected-applications="[{ application: props.rowData.id, task: props.rowData.test_assignment.id }]"
             @showPreview="showPreview"
             @onEdit="editApplications"
             @onCancel="cancelApplications"
@@ -85,13 +63,9 @@
     </div>
     <ContextMenu
       v-if="showContextMenu"
-      :id="clickedRowId"
-      :key="clickedRowId"
-      :selected="selectedRows"
+      :key="selectedApplications[0].application"
+      :selected-applications="selectedApplications"
       :style="contextMenuStyles"
-      :type="contextMenuType"
-      :class-id="class_id"
-      :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @showPreview="showPreview"
@@ -99,7 +73,7 @@
       @onCancel="cancelApplications"
       @onSeeComments="showComments"
     />
-    <CancelModal />
+    <CancelModal @cancel="submitCancelApplications" />
     <OutgoingModal />
   </div>
 </template>
@@ -121,11 +95,14 @@ import PageHeader from '@/pages/applications/outgoing/parts/header/PageHeader.vu
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ApplicationsFilter from '@/pages/applications/outgoing/parts/filter/Filter.vue'
 import TableHeader from '@/pages/applications/outgoing/parts/table/TableHeader.vue'
-import TooltipCell from '@/pages/applications/outgoing/parts/table/TooltipCell.vue'
 import Actions from '@/pages/applications/outgoing/parts/table/Actions.vue'
 import ContextMenu from '@/pages/applications/outgoing/parts/ContextMenu.vue'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
-import { loadList } from '@/pages/applications/outgoing/outgoing-applications-page.model'
+import {
+  cancelApplicationsFx,
+  loadList,
+  $canUpdateTable,
+} from '@/pages/applications/outgoing/outgoing-applications-page.model'
 import {
   toggleVisibility,
   $visibility,
@@ -135,7 +112,9 @@ import CancelModal from '@/pages/applications/modals/cancel/CancelModal.vue'
 import { loadModal } from '@/pages/applications/modals/cancel/cancel.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
 import { RefsType } from '@/pages/common/types'
-// import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
+import { ApplicationType } from '@/pages/applications/types'
+import { navigatePush } from '@/features/navigation'
+import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -149,7 +128,6 @@ export default (Vue as VueConstructor<
     GeneralFilter,
     ApplicationsFilter,
     TableHeader,
-    TooltipCell,
     Actions,
     ContextMenu,
     Vuetable,
@@ -161,6 +139,7 @@ export default (Vue as VueConstructor<
     $visibility,
     $token,
     $session,
+    canRefreshTableAfterCancel: $canUpdateTable,
   },
   data() {
     return {
@@ -168,19 +147,25 @@ export default (Vue as VueConstructor<
       filterParams: {},
       total: 1,
       fields: outgoingApplicationsDataFields,
-      clickedRowId: 0,
       showContextMenu: false,
-      contextMenuType: 'table_theme',
       contextMenuStyles: { top: '0', left: '0' },
-      selectedRows: [] as number[] | null,
-      subject_id: null,
-      class_id: null,
-      selectedApplications: [] as number[],
+      selectedApplications: [] as ApplicationType[],
+      showTableHeaderActions: false,
     }
   },
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/ticket/moderation-ticket/list/`
+    },
+  },
+  watch: {
+    canRefreshTableAfterCancel: {
+      handler(newVal) {
+        if (newVal) {
+          this.$refs.vuetable.refresh()
+          this.resetHeaderActions()
+        }
+      },
     },
   },
   methods: {
@@ -196,14 +181,16 @@ export default (Vue as VueConstructor<
       )
     },
     editApplications(ids: number[]) {
-      console.log('EDIT ', ids)
+      navigatePush({ name: 'test-tasks-edit', params: { id: `${ids[0]}` } })
     },
     cancelApplications(ids: number[]) {
       loadModal(ids)
     },
+    submitCancelApplications(ids: number[]) {
+      cancelApplicationsFx({ tickets: ids })
+    },
     showComments(ids: number[]) {
-      console.log('show comments', ids)
-      // loadCommentModal(this.selectedApplications[0])
+      loadCommentModal(ids[0])
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
@@ -234,33 +221,38 @@ export default (Vue as VueConstructor<
         noInternetToastEvent()
       }
     },
-    handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
+    handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.test_assignment.id
+      this.selectedApplications = [{ application: data.id, task: data.test_assignment.id }]
       this.showContextMenu = true
-      this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
       const { selectedTo } = this.$refs.vuetable
-      if (selectedTo.length === 0) selectedTo.push(res.data.id)
-      else if (selectedTo.find((el: number) => el === res.data.id)) {
+      if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
-      } else selectedTo.push(res.data.id)
-      this.selectedRows = this.$refs.vuetable.selectedTo
-      if (this.selectedApplications.length === 0)
-        this.selectedApplications.push(res.data.test_assignment.id)
-      else if (this.selectedApplications.find((el: number) => el === res.data.test_assignment.id)) {
-        this.selectedApplications.splice(
-          this.selectedApplications.indexOf(res.data.test_assignment.id),
-          1
+        this.selectedApplications = this.selectedApplications.filter((el) =>
+          selectedTo.find((currentId: number) => currentId === el.application)
         )
-      } else this.selectedApplications.push(res.data.test_assignment.id)
+      } else {
+        selectedTo.push(res.data.id)
+        this.selectedApplications.push({
+          application: res.data.id,
+          task: res.data.test_assignment.id,
+        })
+      }
+      this.showTableHeaderActions = selectedTo.length > 0
     },
     hideContextMenu() {
+      this.selectedApplications = []
       this.showContextMenu = false
+    },
+    resetHeaderActions() {
+      this.$refs.vuetable.selectedTo = []
+      this.selectedApplications = []
+      this.showTableHeaderActions = false
     },
   },
   created() {

@@ -7,3 +7,9 @@ export type TableField = {
   width?: string
   formatter?: (value: any) => any
 }
+
+export type ApplicationType = {
+  application: number
+  task: number
+  type?: string
+}
