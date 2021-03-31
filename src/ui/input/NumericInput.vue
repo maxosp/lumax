@@ -1,36 +1,41 @@
 <template>
-  <div class="numeric-input-wrap">
-    <BaseInput
-      :value="value"
-      type="number"
-      min="0"
-      :max-length="maxLength"
-      :disabled="disabled"
-      :placeholder="placeholder"
-      class="inner-input"
-      :class="{'--disabled': disabled}"
-      v-on="{
-        ...$listeners,
-        input: (e) => $emit('input', e),
-      }"
-    />
-    <span
-      class="icons-wrap"
-    >
-      <Icon
-        type="chevron-up"
-        size="10"
-        class="icon up"
-        @click="increment"
-      />
-      <Icon
-        type="chevron-down"
-        size="10"
-        class="icon down"
-        @click="decrement"
-      />
+  <label v-tooltip.right-end="{content: errorMessage}">
+    <span class="label">
+      {{ label }}
     </span>
-  </div>
+    <div class="numeric-input-wrap">
+      <BaseInput
+        :value="value"
+        type="number"
+        min="0"
+        :max-length="maxLength"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        class="inner-input"
+        :class="{'--disabled': disabled}"
+        v-on="{
+          ...$listeners,
+          input: (e) => $emit('input', e),
+        }"
+      />
+      <span
+        class="icons-wrap"
+      >
+        <Icon
+          type="chevron-up"
+          size="10"
+          class="icon up"
+          @click="increment"
+        />
+        <Icon
+          type="chevron-down"
+          size="10"
+          class="icon down"
+          @click="decrement"
+        />
+      </span>
+    </div>
+  </label>
 </template>
 
 <script lang="ts">
@@ -46,6 +51,7 @@ export default Vue.extend({
   },
   props: {
     value: { type: Number as PropType<number>, default: 0 },
+    label: { type: String as PropType<string>, default: '' },
     type: { type: String as PropType<string>, default: 'text' },
     placeholder: { type: String as PropType<string> },
     maxLength: { type: Number },
@@ -68,6 +74,17 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+label {
+  width: 100%;
+  @mixin flex-column-central;
+  align-items: flex-start;
+}
+.label {
+  margin-bottom: 5px;
+  pointer-events: none;
+  font-weight: 600;
+  color: #000;
+}
 .numeric-input-wrap {
   display: flex;
   justify-content: space-between;

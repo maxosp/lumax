@@ -19,10 +19,11 @@
           />
         </div>
       </div>
-      <div class="hint-price">
-        <span class="label">Цена подсказки</span>
-        <NumericInput :value="+hint.price" @input="price => setHintPrice({ id: hint.id, price })" />
-      </div>
+      <NumericInput
+        :value="+hint.price" 
+        label="Цена подсказки"
+        @input="price => setHintPrice({ id: hint.id, price })" 
+      />
     </div>
     <div class="add-hint">
       <BaseButton @click="addHint">Добавить подсказку</BaseButton>

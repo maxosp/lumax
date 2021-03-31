@@ -3,15 +3,13 @@
     <div class='base'>
       <div class='left'>
         <PositionDropdown class="field" @setItem="setFolder" />
-        <div class="score-wrapper">
-          <p class="text"> Баллы </p>
-          <NumericInput
-            class="field numeric"
-            :value="+$score"
-            placeholder="Введите количество баллов"
-            @input="setScore"
-          />
-        </div>
+        <NumericInput
+          class="field"
+          :value="+$score"
+          label="Баллы"
+          placeholder="Введите количество баллов"
+          @input="setScore"
+        />
         <TaskTypesDropdown class="field" @setItem="setTaskType" />
         <component
           v-if="$taskType"
@@ -31,7 +29,11 @@
         >
           <p>Дублировать</p>
         </BaseSwitch>
-        <NumericInput :value="+$count" @input="setCount" />
+        <NumericInput 
+          :value="+$count" 
+          label="Количество"
+          @input="setCount" 
+        />
       </div>
     </div>
   </div>
@@ -133,15 +135,6 @@ export default Vue.extend({
 }
 .field {
   margin-bottom: 20px;
-}
-.field.numeric {
-  width: 100%;
-  & ::v-deep input {
-    width: 100%;
-  }
-  & ::v-deep span {
-    display: none;
-  }
 }
 .text {
   font-weight: 600;

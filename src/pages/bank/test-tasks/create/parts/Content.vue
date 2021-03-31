@@ -30,13 +30,11 @@
         >
           <p>Дублировать</p>
         </BaseSwitch>
-        <div class="count-wrapper">
-          <p class="label">Количество</p>
-          <NumericInput 
-            :value="$count"
-            @input="setCount" 
-          />
-        </div>        
+        <NumericInput 
+          :value="$count" 
+          label="Количество" 
+          @input="setCount" 
+        />
       </div>
     </div>
   </div>
@@ -118,11 +116,6 @@ export default Vue.extend({
 .base {
   display: flex;
   justify-content: space-between;
-}
-.label {
-  font-weight: 600;
-  line-height: 1;
-  margin-bottom: 5px;
 }
 .left,
 .right {
