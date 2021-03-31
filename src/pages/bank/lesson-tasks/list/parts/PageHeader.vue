@@ -1,5 +1,5 @@
 <template>
-  <GridPageHead title="Банк заданий">
+  <GridPageHead title="Задания для уроков">
     <div class="buttons">
       <RouterLink :to="{ name: 'lesson-tasks-creation' }">
         <BaseButton

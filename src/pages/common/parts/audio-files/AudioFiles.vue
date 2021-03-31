@@ -144,6 +144,10 @@ export default Vue.extend({
 .play-icon {
   fill: var(--c-yellow-1);
 }
+.close {
+  display: flex;
+  align-items: center;
+}
 .close-icon {
   fill: var(--c-grey-3);
 }

@@ -1,5 +1,5 @@
 <template>
-  <GridPageHead title="Банк заданий">
+  <GridPageHead title="Тестовые задания">
     <div class="buttons">
       <RouterLink :to="{ name: 'test-tasks-create' }">
         <BaseButton

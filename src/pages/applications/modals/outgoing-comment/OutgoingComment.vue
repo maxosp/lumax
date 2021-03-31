@@ -36,7 +36,7 @@
     </Swiper>
     <FullsizeCarousel
       v-if="showDialog"
-      :currentSlide="currentSlide"
+      :current-slide="currentSlide"
       :slides="$images"
     />
     <BaseButton
