@@ -94,5 +94,6 @@ export default Vue.extend({
 }
 .file-input {
   visibility: hidden;
+  height: 10px;
 }
 </style>

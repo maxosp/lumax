@@ -123,6 +123,9 @@ export default Vue.extend({
   justify-content: space-between;
   min-width: 530px;
 }
+.audio-file + .audio-file {
+  margin-top: 10px;
+}
 .main {
   display: flex;
   align-items: center;

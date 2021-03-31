@@ -3,15 +3,13 @@
     <div class='base'>
       <div class='left'>
         <PositionDropdown class="field" @setItem="setFolder" />
-        <div class="score-wrapper">
-          <p class="text"> Баллы </p>
-          <NumericInput
-            class="field numeric"
-            :value="+$score"
-            placeholder="Введите количество баллов"
-            @input="setScore"
-          />
-        </div>
+        <NumericInput
+          class="field"
+          :value="+$score"
+          label="Баллы"
+          placeholder="Введите количество баллов"
+          @input="setScore"
+        />
         <TaskTypesDropdown class="field" @setItem="setTaskType" />
         <component
           v-if="$taskType"

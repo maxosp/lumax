@@ -30,7 +30,11 @@
         >
           <p>Дублировать</p>
         </BaseSwitch>
-        <NumericInput :value="$count" @input="setCount" />
+        <NumericInput 
+          :value="$count" 
+          label="Количество" 
+          @input="setCount" 
+        />
       </div>
     </div>
   </div>
