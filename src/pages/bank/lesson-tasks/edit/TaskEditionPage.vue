@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { navigatePush } from '@/features/navigation'
 import TaskHeader from '@/pages/bank/common/parts/Header.vue'
 import TaskContent from '@/pages/bank/lesson-tasks/edit/parts/Content.vue'
 import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
@@ -26,6 +25,7 @@ import {
   $canSave,
   clearFields,
   loadTask,
+  setRedirectAfterSave,
 } from '@/pages/bank/lesson-tasks/edit/task-edition-page.model'
 
 export default Vue.extend({
@@ -41,9 +41,7 @@ export default Vue.extend({
   methods: {
     saveTask(isRedirect: boolean) {
       save()
-      if (isRedirect) {
-        navigatePush({ name: 'lesson-tasks-list' })
-      }
+      if (isRedirect) setRedirectAfterSave(true)
     },
   },
   created() {

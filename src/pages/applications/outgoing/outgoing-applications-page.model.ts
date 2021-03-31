@@ -11,7 +11,9 @@ export const cancelApplicationsFx = attach({
     ...params,
     accept: null,
     send_to_revision: null,
+    comment_id: null,
     set_moderator: null,
+    moderator_id: null,
     cancel_outcome: true,
   }),
 })

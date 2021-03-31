@@ -42,8 +42,8 @@
         />
       </div>
     </div>
-    <div class="add-question" @click="addMatch">
-      <BaseButton>Добавить сопоставление</BaseButton>
+    <div class="add-question">
+      <BaseButton @click="addMatch">Добавить сопоставление</BaseButton>
     </div>
   </div>
 </template>

@@ -1,4 +1,13 @@
-import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { updateTestAssignmentFx } from '@/features/api/assignment/test-assignment/update-test-assignment'
 import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
 import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
@@ -77,9 +86,9 @@ import {
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import {
-  $themesData,
+  $themes,
   themesDropdownModule,
-} from '@/pages/bank/test-tasks/edit/parts/themes-dropdown/themes-dropdown.model'
+} from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 import { $selectedLabels } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
@@ -87,7 +96,16 @@ import { mapTaskTypeToComponent } from '@/pages/common/dropdowns/bank/task-types
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { DropdownItem } from '@/pages/common/types'
-import { LANGUAGE_DATA } from '../../common/constants'
+import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
+import { navigatePush } from '@/features/navigation'
+import {
+  classesDropdownModule,
+  setSelectedClass,
+} from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import {
+  setSelectedSubject,
+  subjectsDropdownModule,
+} from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -99,6 +117,12 @@ export const loadAssignment = attach({
 
 export const loadTask = createEvent<number>()
 export const $taskId = restore(loadTask, 0)
+
+export const setSubject = createEvent<number | null>()
+export const $subject = restore(setSubject, null)
+
+export const setClass = createEvent<number | null>()
+export const $class = restore(setClass, null)
 
 export const setTheme = createEvent<number | null>()
 export const $theme = restore(setTheme, null)
@@ -122,6 +146,27 @@ export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
 export const save = createEvent<void>()
+export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
+
+forward({
+  from: clearFields,
+  to: [
+    classesDropdownModule.methods.resetItem,
+    classesDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetItem,
+    subjectsDropdownModule.methods.resetSearchString,
+    taskTypesDropdownModule.methods.resetItem,
+    taskTypesDropdownModule.methods.resetSearchString,
+    setTaskType.prepend(() => null),
+    themesDropdownModule.methods.resetItem,
+    themesDropdownModule.methods.resetSearchString,
+    difficultiesDropdownModule.methods.resetItem,
+    difficultiesDropdownModule.methods.resetSearchString,
+  ],
+})
 
 forward({
   from: loadTask,
@@ -131,6 +176,18 @@ forward({
 forward({
   from: loadAssignment.doneData.map((res) => res.body),
   to: [
+    subjectsDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.subject?.id}`),
+    setSelectedSubject.prepend((data) => ({
+      name: data && data.theme.subject ? `${data.theme.subject.id}` : '',
+      title: data && data.theme.subject ? data.theme.subject.name : '',
+    })),
+    setSubject.prepend((data) => data.theme?.subject?.id || 0),
+    classesDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.study_year?.id}`),
+    setClass.prepend((data) => data.theme?.study_year?.id || 0),
+    setSelectedClass.prepend((data) => ({
+      name: data && data.theme.study_year ? `${data.theme.study_year.id}` : '',
+      title: data && data.theme.study_year ? data.theme.study_year.name : '',
+    })),
     themesDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.id}`),
     setTheme.prepend((data) => data.theme.id || 0),
     difficultiesDropdownModule.methods.itemChanged.prepend((data) => `${data.difficulty}`),
@@ -187,13 +244,15 @@ const $isFilled = combine({
 })
 
 export const $canSave = combine(
+  $subject,
+  $class,
   $theme,
   $difficulty,
   $taskType,
   $isFilled,
-  (theme, difficulty, taskType, isFilled) => {
+  (subject, selectedClass, theme, difficulty, taskType, isFilled) => {
     const $isFilledTask = taskType && isFilled[mapTaskTypeToComponent[taskType]]
-    return $isFilledTask && theme && difficulty
+    return $isFilledTask && theme && difficulty && subject && selectedClass
   }
 )
 
@@ -215,16 +274,31 @@ const $taskform = combine({
 })
 
 const $baseForm = combine(
+  $subject,
+  $class,
   $theme,
-  $themesData,
+  $themes,
   $difficulty,
   $taskType,
   $needDuplicate,
   $count,
   $selectedLabels,
   $language,
-  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels, language) => ({
+  (
+    subject_id,
+    study_year_id,
+    theme_id,
+    themes,
+    difficulty,
+    taskType,
+    needDuplicate,
+    count,
+    labels,
+    language
+  ) => ({
     status: 'new',
+    subject_id,
+    study_year_id,
     is_test_assignment: true,
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
@@ -294,4 +368,10 @@ sample({
 forward({
   from: updateAssignment.doneData,
   to: successToastEvent('Задание успешно сохранено!'),
+})
+
+guard({
+  clock: updateAssignment.doneData,
+  filter: $redirectAfterSave,
+  target: navigatePush.prepend(() => ({ name: 'test-tasks-list' })),
 })

@@ -15,6 +15,7 @@ import {
   sample,
 } from 'effector-root'
 import { debounce, every, spread } from 'patronum'
+import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
 
 const getModeratorsFx = attach({
   effect: getUsersListFx,
@@ -60,7 +61,11 @@ export const $searchString = restore(searchStringChanged, '').reset(clearFields)
 
 forward({
   from: loadModeratorModal,
-  to: [modalVisibilityChanged.prepend(() => true), getModeratorsFx.prepend(() => ({}))],
+  to: [
+    modalVisibilityChanged.prepend(() => true),
+    getModeratorsFx.prepend(() => ({})),
+    canRefreshTableChanged.prepend(() => false),
+  ],
 })
 
 spread({
@@ -117,5 +122,6 @@ forward({
     successToastEvent('Заявка назначена'),
     modalVisibilityChanged.prepend(() => false),
     clearFields,
+    canRefreshTableChanged.prepend(() => true),
   ],
 })

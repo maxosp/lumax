@@ -1,4 +1,13 @@
-import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
 
 import {
@@ -114,6 +123,10 @@ export const $count = restore(setCount, 0)
 
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
+
 export const duplicateAssignment = createEvent<void>()
 
 forward({
@@ -283,10 +296,13 @@ sample({
 
 forward({
   from: updateAssignment.doneData.map((res) => res.body.id),
-  to: [
-    successToastEvent('Задание успешно сохранено!'),
-    navigatePush.prepend((id) => ({ name: 'lesson-tasks-edit', params: { id: `${id}` } })),
-  ],
+  to: successToastEvent('Задание успешно сохранено!'),
+})
+
+guard({
+  clock: updateAssignment.doneData,
+  filter: $redirectAfterSave,
+  target: navigatePush.prepend(() => ({ name: 'lesson-tasks-list' })),
 })
 
 sample({

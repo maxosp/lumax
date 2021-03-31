@@ -163,6 +163,7 @@ import { $session } from '@/features/session'
 import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model'
 import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
+import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -201,6 +202,7 @@ export default (Vue as VueConstructor<
     $treeView,
     $tasksTreeTotal,
     $session,
+    $canRefreshAfterMultiChanges,
   },
   data() {
     return {
@@ -222,6 +224,13 @@ export default (Vue as VueConstructor<
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/assignment/test-assignment/list/`
+    },
+  },
+  watch: {
+    $canRefreshAfterMultiChanges: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.refresh()
+      },
     },
   },
   methods: {

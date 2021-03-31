@@ -137,6 +137,7 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 import * as modals from '@/pages/bank/lesson-tasks/index'
 import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
+import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -172,6 +173,7 @@ export default (Vue as VueConstructor<
     $visibility,
     $treeView,
     $lessonsTreeTotal,
+    $canRefreshAfterMultiChanges,
   },
   data() {
     return {
@@ -189,6 +191,13 @@ export default (Vue as VueConstructor<
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/assignment/lesson-assignment/list/`
+    },
+  },
+  watch: {
+    $canRefreshAfterMultiChanges: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.refresh()
+      },
     },
   },
   methods: {

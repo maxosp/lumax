@@ -109,6 +109,7 @@ import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import {
   loadList,
   acceptApplicationsFx,
+  $canRefreshTable,
 } from '@/pages/applications/incoming/incoming-applications-page.model'
 import {
   toggleVisibility,
@@ -146,6 +147,7 @@ export default (Vue as VueConstructor<
     $visibility,
     $token,
     $session,
+    $canRefreshTable,
   },
   data() {
     return {
@@ -162,6 +164,13 @@ export default (Vue as VueConstructor<
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/ticket/moderation-ticket/list/`
+    },
+  },
+  watch: {
+    $canRefreshTable: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.refresh()
+      },
     },
   },
   methods: {

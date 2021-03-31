@@ -55,8 +55,8 @@
         </div>
       </div>
     </Draggable>
-    <div class="add-question" @click="addQuestion">
-      <BaseButton>Добавить вариант</BaseButton>
+    <div class="add-question">
+      <BaseButton @click="addQuestion">Добавить вариант</BaseButton>
     </div>
   </div>
 </template>

@@ -1,7 +1,10 @@
 import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
 import { createTestAssignmentFx } from '@/features/api/assignment/test-assignment/create-test-assignment'
 import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
-import { $themesData } from '@/pages/bank/test-tasks/create/parts/themes-dropdown/themes-dropdown.model'
+import {
+  $themes,
+  themesDropdownModule,
+} from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import {
   $isFilled as $isFilledBroadFile,
   $form as $formBroadFile,
@@ -65,11 +68,22 @@ import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { navigatePush } from '@/features/navigation'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { DropdownItem } from '@/pages/common/types'
-import { LANGUAGE_DATA } from '../../common/constants'
+import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
+import { condition } from 'patronum'
+import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
+import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
 })
+
+export const setSubject = createEvent<number | null>()
+export const $subject = restore(setSubject, null)
+
+export const setClass = createEvent<number | null>()
+export const $class = restore(setClass, null)
 
 export const setTheme = createEvent<number | null>()
 export const $theme = restore(setTheme, null)
@@ -93,6 +107,27 @@ export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
 export const save = createEvent<void>()
+export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
+
+forward({
+  from: clearFields,
+  to: [
+    classesDropdownModule.methods.resetItem,
+    classesDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetItem,
+    subjectsDropdownModule.methods.resetSearchString,
+    taskTypesDropdownModule.methods.resetItem,
+    taskTypesDropdownModule.methods.resetSearchString,
+    setTaskType.prepend(() => null),
+    themesDropdownModule.methods.resetItem,
+    themesDropdownModule.methods.resetSearchString,
+    difficultiesDropdownModule.methods.resetItem,
+    difficultiesDropdownModule.methods.resetSearchString,
+  ],
+})
 
 const $isFilled = combine({
   BroadFileAnswer: $isFilledBroadFile,
@@ -112,13 +147,15 @@ const $isFilled = combine({
 })
 
 export const $canSave = combine(
+  $subject,
+  $class,
   $theme,
   $difficulty,
   $taskType,
   $isFilled,
-  (theme, difficulty, taskType, isFilled) => {
+  (subject, selectedClass, theme, difficulty, taskType, isFilled) => {
     const $isFilledTask = taskType && isFilled[mapTaskTypeTo[taskType].componentName]
-    return $isFilledTask && theme && difficulty
+    return $isFilledTask && theme && difficulty && subject && selectedClass
   }
 )
 
@@ -140,16 +177,31 @@ const $taskform = combine({
 })
 
 const $baseForm = combine(
+  $subject,
+  $class,
   $theme,
-  $themesData,
+  $themes,
   $difficulty,
   $taskType,
   $needDuplicate,
   $count,
   $selectedLabels,
   $language,
-  (theme_id, themes, difficulty, taskType, needDuplicate, count, labels, language) => ({
+  (
+    subject_id,
+    study_year_id,
+    theme_id,
+    themes,
+    difficulty,
+    taskType,
+    needDuplicate,
+    count,
+    labels,
+    language
+  ) => ({
     status: 'new',
+    subject_id,
+    study_year_id,
     type: taskType,
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,
@@ -207,9 +259,21 @@ sample({
 
 forward({
   from: createTestAssignment.doneData,
-  to: [
-    successToastEvent('Задание успешно создано!'),
-    // @ts-ignore
-    navigatePush.prepend((res) => ({ name: 'test-tasks-edit', params: { id: res.body.id } })),
-  ],
+  to: successToastEvent('Задание успешно создано!'),
+})
+
+const $redirectHandler = sample({
+  clock: createTestAssignment.doneData.map((res) => res.body.id),
+  source: $redirectAfterSave,
+  fn: (redirect, id) => ({ redirect, id }),
+})
+
+condition({
+  source: $redirectHandler,
+  if: (payload: { redirect: boolean; id: number }) => payload.redirect,
+  then: navigatePush.prepend(() => ({ name: 'test-tasks-list' })),
+  else: navigatePush.prepend((payload: { redirect: boolean; id: number }) => ({
+    name: 'test-tasks-edit',
+    params: { id: `${payload.id}` },
+  })),
 })

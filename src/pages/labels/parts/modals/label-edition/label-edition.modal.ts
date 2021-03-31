@@ -2,15 +2,15 @@ import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.mod
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   $selectedClass,
-  classDropdownModule,
+  classesDropdownModule,
   setSelectedClass,
-} from '@/pages/labels/parts/modals/label-edition/parts/class/class-dropdown.model'
+} from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import {
   $selectedSubject,
   setSelectedSubject,
-  subjectDropdownModule,
-} from '@/pages/labels/parts/modals/label-edition/parts/subject/subject-dropdown.model'
-import { condition, debounce, every } from 'patronum'
+  subjectsDropdownModule,
+} from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { condition } from 'patronum'
 import {
   $selectedTheme,
   setSelectedTheme,
@@ -20,7 +20,6 @@ import { DEFAULT_ID } from '@/pages/common/constants'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { CreateLabelType, Label } from '@/features/api/assignment/types'
 import { updateLabelFx } from '@/features/api/assignment/update-label'
-import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { getLabelsTree } from '@/pages/labels/labels-page.model'
 import { createError } from '@/lib/effector/error-generator'
 
@@ -56,34 +55,6 @@ const $form = combine({
   theme_id: $selectedTheme.map((data) => (data ? +data.id! : DEFAULT_ID)),
 })
 
-export const $canSetThemePosition = every({
-  predicate: (value) => value !== null,
-  stores: [$selectedSubject, $selectedClass],
-})
-
-const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
-  study_year: cl && +cl.name,
-  subject: obj && +obj.name,
-}))
-
-const debounced = debounce({
-  source: $formToGetThemeList,
-  timeout: 150,
-})
-
-forward({
-  from: debounced,
-  to: [
-    getThemesTreeListFx.prepend((data) => {
-      return {
-        study_year: data.study_year ? data.study_year : undefined,
-        subject: data.subject ? data.subject : undefined,
-        is_prerequisite: false,
-      }
-    }),
-  ],
-})
-
 sample({
   source: $form,
   clock: checkIfThemeCanBeSend,
@@ -111,12 +82,12 @@ forward({
 })
 
 forward({
-  from: subjectDropdownModule.methods.itemChanged,
+  from: subjectsDropdownModule.methods.itemChanged,
   to: $subjectErrorModule.methods.resetError,
 })
 
 forward({
-  from: classDropdownModule.methods.itemChanged,
+  from: classesDropdownModule.methods.itemChanged,
   to: $classErrorModule.methods.resetError,
 })
 
@@ -135,14 +106,14 @@ sample({
   fn: (label: Label) => {
     $form.map((data) => (data.id = label.id))
     labelTitleChanged(label.name)
-    label.subject && subjectDropdownModule.methods.itemChanged(`${label.subject.id}`)
+    label.subject && subjectsDropdownModule.methods.itemChanged(`${label.subject.id}`)
     label.subject &&
       setSelectedSubject({
         id: label.subject.id,
         name: `${label.subject.id}`,
         title: label.subject.name,
       })
-    label.study_year && classDropdownModule.methods.itemChanged(`${label.study_year.id}`)
+    label.study_year && classesDropdownModule.methods.itemChanged(`${label.study_year.id}`)
     label.study_year &&
       setSelectedClass({
         id: label.study_year.id,
@@ -178,10 +149,10 @@ forward({
   from: clearFields,
   to: [
     labelTitleReset,
-    subjectDropdownModule.methods.resetItem,
-    subjectDropdownModule.methods.resetSearchString,
-    classDropdownModule.methods.resetItem,
-    classDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetItem,
+    subjectsDropdownModule.methods.resetSearchString,
+    classesDropdownModule.methods.resetItem,
+    classesDropdownModule.methods.resetSearchString,
     setSelectedTheme.prepend(() => null),
     setSelectedClass.prepend(() => null),
     setSelectedSubject.prepend(() => null),

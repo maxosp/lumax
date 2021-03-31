@@ -72,6 +72,7 @@ import {
   $selectedFolder,
   foldersDropdownModule,
 } from '@/pages/common/dropdowns/bank/position-dropdown/position-dropdown.model'
+import { condition } from 'patronum'
 
 const createLessonAssignment = attach({
   effect: createLessonAssignmentFx,
@@ -100,6 +101,9 @@ export const $count = restore(setCount, 0)
 
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 forward({
   from: clearFields,
@@ -222,8 +226,21 @@ sample({
 
 forward({
   from: createLessonAssignment.doneData.map((res) => res.body.id),
-  to: [
-    successToastEvent('Задание успешно создано!'),
-    navigatePush.prepend((id) => ({ name: 'lesson-tasks-edit', params: { id: `${id}` } })),
-  ],
+  to: successToastEvent('Задание успешно создано!'),
+})
+
+const $redirectHandler = sample({
+  clock: createLessonAssignment.doneData.map((res) => res.body.id),
+  source: $redirectAfterSave,
+  fn: (redirect, id) => ({ redirect, id }),
+})
+
+condition({
+  source: $redirectHandler,
+  if: (payload: { redirect: boolean; id: number }) => payload.redirect,
+  then: navigatePush.prepend(() => ({ name: 'lesson-tasks-list' })),
+  else: navigatePush.prepend((payload: { redirect: boolean; id: number }) => ({
+    name: 'lesson-tasks-edit',
+    params: { id: `${payload.id}` },
+  })),
 })

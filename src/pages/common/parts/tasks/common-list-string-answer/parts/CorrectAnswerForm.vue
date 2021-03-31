@@ -4,7 +4,7 @@
     <div class="answers-options">
       <div
         v-for="(option, index) in $answersOptions"
-        :key="`${option.name}-${index}`"
+        :key="option.id"
         class="answer-option"
       >
         <FormInput
@@ -86,8 +86,8 @@
         />
       </div>
     </div>
-    <div class="add-question" @click="addQuestion">
-      <BaseButton>Добавить сопоставление</BaseButton>
+    <div class="add-question">
+      <BaseButton @click="addQuestion">Добавить сопоставление</BaseButton>
     </div>
   </div>
 </template>

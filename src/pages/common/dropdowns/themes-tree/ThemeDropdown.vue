@@ -5,7 +5,7 @@
     :methods="themesDropdownMethods"
     :data="$themes"
     :store="{ $item, $itemsDropdown, $searchString }"
-    :disabled="isDisabled"
+    :disabled="isDisabled ? !$canSetThemePosition : false"
     is-recursive
     @item-changed="onSelectItem"
   />
@@ -20,6 +20,7 @@ import {
   themesDropdownModule,
   setSelectedTheme,
   loadThemes,
+  $canSetThemePosition,
 } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -33,6 +34,7 @@ export default Vue.extend({
   },
   effector: {
     $themes,
+    $canSetThemePosition,
     ...themesDropdownModule.store,
   },
   data() {

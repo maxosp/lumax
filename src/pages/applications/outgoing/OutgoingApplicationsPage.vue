@@ -117,7 +117,6 @@ import { navigatePush } from '@/features/navigation'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType
@@ -284,16 +283,13 @@ export default (Vue as VueConstructor<
 .table /deep/ tr:nth-child(2n) {
   background-color: var(--c-grey-7);
 }
-
 .table /deep/ .ui.table thead th {
   background-color: #fff;
 }
-
 .table /deep/ .ui.table {
   border-radius: 0px;
   border: none;
 }
-
 .table /deep/ .ui.table,
 .table /deep/ .ui.table thead th,
 .table /deep/ .ui.celled.table tr td,
@@ -305,16 +301,13 @@ export default (Vue as VueConstructor<
   overflow: hidden;
   white-space: nowrap;
 }
-
 .table /deep/ .vuetable-slot {
   overflow: initial !important;
 }
-
 .table /deep/ th[class^='vuetable-th'] {
   color: var(--base-text-primary);
   font-weight: 600;
 }
-
 .table /deep/ [type='checkbox'] {
   cursor: pointer;
   width: 24px;
@@ -324,7 +317,6 @@ export default (Vue as VueConstructor<
   border: none;
   appearance: none;
 }
-
 .table /deep/ [type='checkbox']:checked {
   width: 24px;
   height: 24px;
@@ -345,7 +337,6 @@ export default (Vue as VueConstructor<
     font-weight: bold;
   }
 }
-
 .no-data-content {
   width: 100%;
   min-height: 550px;
@@ -367,7 +358,6 @@ export default (Vue as VueConstructor<
   cursor: pointer;
   @mixin underline-text;
 }
-
 .context-menu {
   position: absolute;
   top: 0;

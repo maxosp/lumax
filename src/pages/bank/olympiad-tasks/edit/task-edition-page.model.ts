@@ -1,4 +1,13 @@
-import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
 
 import {
@@ -122,6 +131,9 @@ export const $solutionText = restore(setSolutionText, '')
 
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 const $formToGetTagsList = combine($class, $subject, (cl, obj) => ({
   study_year: cl || undefined,
@@ -320,8 +332,11 @@ sample({
 
 forward({
   from: updateAssignment.doneData.map((res) => res.body.id),
-  to: [
-    successToastEvent('Задание успешно сохранено!'),
-    navigatePush.prepend((id) => ({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })),
-  ],
+  to: successToastEvent('Задание успешно сохранено!'),
+})
+
+guard({
+  clock: updateAssignment.doneData,
+  filter: $redirectAfterSave,
+  target: navigatePush.prepend(() => ({ name: 'olympiad-tasks-list' })),
 })

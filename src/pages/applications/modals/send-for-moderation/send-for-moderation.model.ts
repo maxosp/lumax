@@ -18,6 +18,7 @@ import {
   restore,
   sample,
 } from 'effector-root'
+import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -57,7 +58,7 @@ export const checkIfFormCanBeSend = createEvent<void>()
 
 forward({
   from: loadModal,
-  to: modalVisibilityChanged.prepend(() => true),
+  to: [modalVisibilityChanged.prepend(() => true), canRefreshTableChanged.prepend(() => false)],
 })
 
 export const fileDataChanged = createEvent<Partial<File> | null>()
@@ -155,7 +156,11 @@ sample({
 
 forward({
   from: sendToRevision.doneData,
-  to: [successToastEvent('Задание(я) были успешно отправлены на доработку!'), clearFields],
+  to: [
+    successToastEvent('Задание(я) были успешно отправлены на доработку!'),
+    clearFields,
+    canRefreshTableChanged.prepend(() => true),
+  ],
 })
 
 forward({

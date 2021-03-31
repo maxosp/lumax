@@ -2,7 +2,13 @@
   <div class='content'>
     <div class='base'>
       <div class='left'>
-        <ThemesDropdown class="field" @setItem="setTheme" />
+        <SubjectDropdown class="field" @setItem="setSubject" />
+        <ClassDropdown class="field" @setItem="setClass" />
+        <ThemesDropdown
+          class="field"
+          is-disabled
+          @setItem="setTheme"
+        />
         <DifficultiesDropdown class="field" @setItem="setDifficulty" />
         <LabelsDropdown class="field" />
         <TaskTypesDropdown class="field" @setItem="setTaskType" />
@@ -37,9 +43,13 @@ import NumericInput from '@/ui/input/NumericInput.vue'
 import DifficultiesDropdown from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/DifficultiesDropdown.vue'
 import LabelsDropdown from '@/pages/bank/test-tasks/create/parts/labels-dropdown/LabelsDropdown.vue'
 import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown/TaskTypesDropdown.vue'
-import ThemesDropdown from '@/pages/bank/test-tasks/create/parts/themes-dropdown/ThemesDropdown.vue'
+import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
+import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
+import ThemesDropdown from '@/pages/common/dropdowns/themes-tree/ThemeDropdown.vue'
 import LanguagesDropdown from '@/pages/bank/olympiad-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
 import {
+  setSubject,
+  setClass,
   setTheme,
   setDifficulty,
   $language,
@@ -61,6 +71,8 @@ export default Vue.extend({
     DifficultiesDropdown,
     LabelsDropdown,
     TaskTypesDropdown,
+    SubjectDropdown,
+    ClassDropdown,
     ThemesDropdown,
     NumericInput,
     LanguagesDropdown,
@@ -77,6 +89,8 @@ export default Vue.extend({
     },
   },
   methods: {
+    setSubject,
+    setClass,
     setTheme,
     setDifficulty,
     toggleNeedDuplicate,

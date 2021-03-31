@@ -24,8 +24,8 @@
         <NumericInput :value="+hint.price" @input="price => setHintPrice({ id: hint.id, price })" />
       </div>
     </div>
-    <div class="add-hint" @click="addHint">
-      <BaseButton>Добавить подсказку</BaseButton>
+    <div class="add-hint">
+      <BaseButton @click="addHint">Добавить подсказку</BaseButton>
     </div>
   </div>
 </template>

@@ -19,7 +19,7 @@
     <ClassDropdown :class="{'--error': classError}" />
     <ThemeDropdown
       :class="{'--error': themeError}"
-      :is-disabled="!$canSetThemePosition"
+      is-disabled
     />
     <BaseTextarea
       class="textarea"
@@ -54,8 +54,8 @@
 import Vue from 'vue'
 import Modal from '@/ui/modal/Modal.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import SubjectDropdown from '@/pages/labels/parts/modals/label-edition/parts/subject/SubjectDropdown.vue'
-import ClassDropdown from '@/pages/labels/parts/modals/label-edition/parts/class/ClassDropdown.vue'
+import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
+import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
 import ThemeDropdown from '@/pages/common/dropdowns/themes-tree/ThemeDropdown.vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
@@ -69,7 +69,6 @@ import {
   checkIfThemeCanBeSend,
   $labelTitle,
   labelTitleChanged,
-  $canSetThemePosition,
 } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 
 export default Vue.extend({
@@ -89,7 +88,6 @@ export default Vue.extend({
     titleError: $titleErrorModule.store.$error,
     themeError: $themeErrorModule.store.$error,
     $labelTitle,
-    $canSetThemePosition,
   },
   methods: {
     modalVisibilityChanged,

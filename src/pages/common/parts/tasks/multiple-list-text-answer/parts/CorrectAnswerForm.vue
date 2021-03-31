@@ -18,8 +18,8 @@
     >
       Отключить перемешивание
     </BaseCheckbox>
-    <div class="add-list" @click="addList">
-      <BaseButton>Добавить список в текст</BaseButton>
+    <div class="add-list">
+      <BaseButton @click="addList">Добавить список в текст</BaseButton>
     </div>
     <div class="answers-lists">
       <div

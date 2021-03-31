@@ -11,6 +11,8 @@ import {
   scoreDropdownModule,
 } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/parts/score-dropdown/score-dropdown.model'
 import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
+import { DEFAULT_ID } from '@/pages/common/constants'
+import { condition } from 'patronum'
 
 const makeMultiChanges = attach({
   effect: updateOlympiadAssignmentBulkFx,
@@ -73,7 +75,11 @@ const $form = combine({
     const res = Object.entries(data).find((el) => el[1])
     return res && res[0]
   }),
-  score: $selectedScore.map((data) => (data && +data.name) || undefined),
+  score: $selectedScore.map((data) => {
+    if ((data && +data.name && +data.name !== DEFAULT_ID) || (data && +data.name === 0))
+      return +data.name
+    return undefined
+  }),
 })
 
 sample({
@@ -89,6 +95,12 @@ sample({
 forward({
   from: tasksIdsChanged,
   to: $tasksIdsErrorModule.methods.resetError,
+})
+
+condition({
+  source: modalVisibilityChanged,
+  if: (payload: boolean) => !payload,
+  then: clearFields,
 })
 
 forward({

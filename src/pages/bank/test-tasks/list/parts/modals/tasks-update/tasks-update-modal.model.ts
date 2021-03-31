@@ -8,13 +8,14 @@ import {
   moderatorDropdownModule,
   setSelectedModerator,
 } from '@/pages/common/dropdowns/users/moderator-dropdown/moderator-dropdown.model'
-import { $selectedDifficulty } from '@/pages/common/dropdowns/bank/test-tasks/difficulty-dropdown/difficulty-dropdown.model'
+import { $selectedDifficulty } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/difficulty-dropdown/difficulty.model'
 import { condition } from 'patronum'
 import { SwitchersOptionsType } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/switchers/types'
 import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'
 import { createError } from '@/lib/effector/error-generator'
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 const makeMultiChanges = attach({
   effect: updateTestAssignmentBulkFx,
@@ -88,7 +89,11 @@ const $form = combine({
     const res = Object.entries(data).find((el) => el[1])
     return res && res[0]
   }),
-  difficulty: $selectedDifficulty.map((data) => (data && +data.name) || undefined),
+  difficulty: $selectedDifficulty.map((data) => {
+    if ((data && +data.name && +data.name !== DEFAULT_ID) || (data && +data.name === 0))
+      return +data.name
+    return undefined
+  }),
   moderator_id: $selectedModerator.map((data) => (data && +data.name) || undefined),
 })
 
@@ -115,4 +120,15 @@ forward({
     clearFields,
     canRefreshAfterMultiChangesChanged.prepend(() => true),
   ],
+})
+
+condition({
+  source: modalVisibilityChanged,
+  if: (payload: boolean) => !payload,
+  then: clearFields,
+})
+
+forward({
+  from: makeMultiChanges.failData.map((res) => res.body),
+  to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
 })

@@ -14,7 +14,7 @@
           class="btn"
           yellow
         >
-          Создание темы
+          Создать папку
         </BaseButton>
       </RouterLink>
       <BaseButton

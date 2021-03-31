@@ -17,11 +17,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { navigatePush } from '@/features/navigation'
 import TaskHeader from '@/pages/bank/common/parts/Header.vue'
 import TaskContent from '@/pages/bank/test-tasks/create/parts/Content.vue'
 import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
-import { save, $canSave } from '@/pages/bank/test-tasks/create/task-creation-page.model'
+import {
+  save,
+  $canSave,
+  setRedirectAfterSave,
+  clearFields,
+} from '@/pages/bank/test-tasks/create/task-creation-page.model'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -36,10 +40,11 @@ export default Vue.extend({
   methods: {
     saveTask(isRedirect: boolean) {
       save()
-      if (isRedirect) {
-        navigatePush({ name: 'test-tasks-list' })
-      }
+      if (isRedirect) setRedirectAfterSave(true)
     },
+  },
+  beforeDestroy() {
+    clearFields()
   },
 })
 </script>

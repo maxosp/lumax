@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { navigatePush } from '@/features/navigation'
 import TaskHeader from '@/pages/bank/common/parts/Header.vue'
 import TaskContent from '@/pages/bank/olympiad-tasks/create/parts/Content.vue'
 import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
@@ -25,6 +24,7 @@ import {
   save,
   $canSave,
   clearFields,
+  setRedirectAfterSave,
 } from '@/pages/bank/olympiad-tasks/create/task-creation-page.model'
 
 export default Vue.extend({
@@ -40,9 +40,7 @@ export default Vue.extend({
   methods: {
     saveTask(isRedirect: boolean) {
       save()
-      if (isRedirect) {
-        navigatePush({ name: 'olympiad-tasks-list' })
-      }
+      if (isRedirect) setRedirectAfterSave(true)
     },
   },
   beforeDestroy() {

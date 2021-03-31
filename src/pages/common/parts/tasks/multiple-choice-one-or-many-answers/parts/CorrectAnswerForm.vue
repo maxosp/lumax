@@ -48,8 +48,8 @@
         />
       </div>
     </div>
-    <div class="add-question" @click="addQuestion">
-      <BaseButton>Добавить вариант ответа</BaseButton>
+    <div class="add-question">
+      <BaseButton @click="addQuestion">Добавить вариант ответа</BaseButton>
     </div>
   </div>
 </template>

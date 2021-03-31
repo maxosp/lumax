@@ -72,7 +72,7 @@ import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { debounce, every } from 'patronum'
+import { condition, debounce, every } from 'patronum'
 import { createOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/create-olympiad-assignment'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
@@ -113,6 +113,9 @@ export const $solutionText = restore(setSolutionText, '')
 
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
+
+export const setRedirectAfterSave = createEvent<boolean>()
+const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 export const $canSetTags = every({
   predicate: (value) => value !== null,
@@ -264,8 +267,21 @@ sample({
 
 forward({
   from: createOlympiadAssignment.doneData.map((res) => res.body.id),
-  to: [
-    successToastEvent('Задание успешно создано!'),
-    navigatePush.prepend((id) => ({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })),
-  ],
+  to: successToastEvent('Задание успешно создано!'),
+})
+
+const $redirectHandler = sample({
+  clock: createOlympiadAssignment.doneData.map((res) => res.body.id),
+  source: $redirectAfterSave,
+  fn: (redirect, id) => ({ redirect, id }),
+})
+
+condition({
+  source: $redirectHandler,
+  if: (payload: { redirect: boolean; id: number }) => payload.redirect,
+  then: navigatePush.prepend(() => ({ name: 'olympiad-tasks-list' })),
+  else: navigatePush.prepend((payload: { redirect: boolean; id: number }) => ({
+    name: 'olympiad-tasks-edit',
+    params: { id: `${payload.id}` },
+  })),
 })

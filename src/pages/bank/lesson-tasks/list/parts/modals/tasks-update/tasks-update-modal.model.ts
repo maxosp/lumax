@@ -7,6 +7,7 @@ import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'
 import { createError } from '@/lib/effector/error-generator'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
+import { condition } from 'patronum'
 
 const makeMultiChanges = attach({
   effect: updateLessonAssignmentBulkFx,
@@ -79,6 +80,12 @@ sample({
 forward({
   from: tasksIdsChanged,
   to: $tasksIdsErrorModule.methods.resetError,
+})
+
+condition({
+  source: modalVisibilityChanged,
+  if: (payload: boolean) => !payload,
+  then: clearFields,
 })
 
 forward({
