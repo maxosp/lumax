@@ -98,7 +98,7 @@ export const toggleNeedDuplicate = createEvent<boolean>()
 export const $needDuplicate = restore(toggleNeedDuplicate, false)
 
 export const setCount = createEvent<number>()
-export const $count = restore(setCount, 0)
+export const $count = restore(setCount, 1)
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
