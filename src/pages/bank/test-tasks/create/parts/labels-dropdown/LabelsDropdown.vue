@@ -2,9 +2,8 @@
   <div class="labels-dropdown">
     <BaseDropdown
       class="input dropdown"
-      value="Выберите метки"
       label="Метки"
-      placeholder=""
+      placeholder="Выберите метки"
       read-only-dropdown
       @clear="clear"
     >

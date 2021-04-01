@@ -320,7 +320,7 @@ export default Vue.extend({
 
 .input {
   flex-grow: 1;
-  max-width: 310px;
+  max-width: 81%;
 }
 
 .first-icon {
@@ -358,7 +358,7 @@ export default Vue.extend({
 
 .icon-btn {
   max-width: 150px;
-  margin-left: 10px;
+  margin-left: 20px;
   cursor: pointer;
   width: 46px;
   height: 46px;
