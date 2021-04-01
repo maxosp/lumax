@@ -23,9 +23,9 @@
         Удалить
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedRows.length"
         class="--basic"
-        @click="$emit('showPreview', selectedRows[0])"
+        @click="$emit('showPreview', selectedRows)"
       >
         Предпросмотр
       </span>

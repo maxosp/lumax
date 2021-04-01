@@ -3,12 +3,14 @@
     <BaseButton
       v-if="currentStatus === 'на проверке'"
       class="btn green"
+      @click="$emit('onAccept')"
     >
       Утвердить
     </BaseButton>
     <BaseButton
       v-if="currentStatus === 'на проверке'"
       class="btn red"
+      @click="$emit('onSendForModeration')"
     >
       На доработку
     </BaseButton>
@@ -16,21 +18,16 @@
       v-if="currentStatus === 'revision'"
       class="btn"
       yellow
+      @click="$emit('onSeeComments')"
     >
       Посмотреть/изменить комментарий
     </BaseButton>
     <BaseButton
       v-if="currentStatus === 'revision'"
       class="btn"
+      @click="$emit('onRevision')"
     >
       На проверку
-    </BaseButton>
-    <BaseButton
-      v-if="currentStatus === 'finished'"
-      class="btn"
-      yellow
-    >
-      Посмотреть комментарий (если есть)
     </BaseButton>
   </div>
 </template>
@@ -47,7 +44,7 @@ export default Vue.extend({
       // хз на проверке
       // revision на доработке
       // finished проверено
-      return 'на проверке'
+      return 'revision'
     },
   },
 })

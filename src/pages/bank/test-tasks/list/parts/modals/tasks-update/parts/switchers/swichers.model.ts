@@ -1,6 +1,6 @@
 import { createEvent, createStore, sample } from 'effector-root'
-import { SWITCHERS_OPTIONS } from '@/pages/bank//test-tasks/list/parts/modals/tasks-update/parts/switchers/constants'
-import { SwitchersOptionsType } from '@/pages/bank//test-tasks/list/parts/modals/tasks-update/parts/switchers/types'
+import { SWITCHERS_OPTIONS } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/switchers/constants'
+import { SwitchersOptionsType } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/switchers/types'
 
 export const resetSwitchers = createEvent<void>()
 
