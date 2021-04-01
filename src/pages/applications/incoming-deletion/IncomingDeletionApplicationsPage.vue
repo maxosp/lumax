@@ -139,7 +139,7 @@ import RejectedModal from '@/pages/applications/modals/rejected/RejectedModal.vu
 import { loadModal } from '@/pages/applications/modals/reject/reject.model'
 import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import {
   setDataToDelete,
@@ -251,7 +251,7 @@ export default (Vue as VueConstructor<
       if (this.$cannotDeleteData.length === 0 || this.showDeleteModal) return
       this.currentFailed = this.$cannotDeleteData.shift()!
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

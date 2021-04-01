@@ -33,7 +33,7 @@
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
-        @vuetable:cell-rightclicked="handleRightClick" 
+        @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
       >
         <template #assignments_ids="props">
@@ -161,9 +161,8 @@ import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/
 import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
 import { $session } from '@/features/session'
 import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 Vue.use(VueEvents)
@@ -220,7 +219,6 @@ export default (Vue as VueConstructor<
       subject: null,
       studyYear: null,
       theme: null,
-      localItems: [],
     }
   },
   computed: {
@@ -237,22 +235,10 @@ export default (Vue as VueConstructor<
   },
   methods: {
     toggleVisibility,
-    showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
-        const filteredList = this.localItems
-          // @ts-ignore
-          .filter((item) => idArr.filter((itemArr) => itemArr === item.id).length > 0)
-          // @ts-ignore
-          .map((item) => ({ id: item.id, name: `${item.id}`, title: item.theme.name }))
-        changeTasks(filteredList)
-      }
+    showPreview(id: number) {
       this.$router.push({
         name: 'preview-task',
-        query: {
-          questions: idArr.join(','),
-          type: 'test-assignment',
-          token: this.$token,
-        },
+        query: { questionId: `${id}`, type: 'test-assignment', token: this.$token },
       })
     },
     clearWording(str: string) {
@@ -264,15 +250,10 @@ export default (Vue as VueConstructor<
     getCorrectDescriptionType(type: string) {
       return mapTaskTypeTo[type].description
     },
-    async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
-      const request = axios.get(apiUrl, {
+    myFetch(apiUrl: string, httpOptions: any) {
+      return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
-      const {
-        data: { data },
-      } = await request
-      this.localItems = data
-      return request
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
