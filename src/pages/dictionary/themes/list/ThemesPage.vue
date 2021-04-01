@@ -124,7 +124,7 @@ import { loadModalToDelete } from '@/pages/dictionary/themes/list/parts/modals/t
 import { $session } from '@/features/session'
 import { loadModalToRequestDeletion } from '@/pages/dictionary/themes/list/parts/modals/deletion-request/deletion-request-modal.model'
 import DeletionRequestModal from '@/pages/dictionary/themes/list/parts/modals/deletion-request/DeletionRequestModal.vue'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, HttpOptionsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -194,7 +194,7 @@ export default (Vue as VueConstructor<
   methods: {
     loadModalToDelete,
     toggleVisibility,
-    myFetch(apiUrl: string, httpOptions: any) {
+    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

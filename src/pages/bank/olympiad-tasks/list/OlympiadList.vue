@@ -147,7 +147,7 @@ import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/
 import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -273,7 +273,7 @@ export default (Vue as VueConstructor<
         ? loadModalToDelete(ids)
         : loadModalToRequestDeletion(ids)
     },
-    myFetch(apiUrl: string, httpOptions: any) {
+    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

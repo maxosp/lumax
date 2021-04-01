@@ -2,7 +2,10 @@
   <Card class="controller">
     <div class="block">
       <div class="permission-controller">
-        <BaseSwitch :checked="true">
+        <BaseSwitch
+          :checked="$switcherIspreview"
+          @change="(val) => toggleState(val)"
+        >
           <p>Предпросмотр</p>
         </BaseSwitch>
         <BaseButton
@@ -25,8 +28,18 @@
         <p class="label-status">Статус заявки:</p>
         <p class="value-status">На доработке</p>
       </div>
-      <TasksButtons v-if="isTasks" />
-      <ApplicationButtons v-else />
+      <TasksButtons
+        v-if="isTasks"
+        @click="$emit('onSeeComments')"
+        @onRevision="$emit('onRevision')"
+      />
+      <ApplicationButtons
+        v-else
+        @onAccept="$emit('onAccept')"
+        @onSendForModeration="$emit('onSendForModeration')"
+        @onSeeComments="$emit('onSeeComments')"
+        @onRevision="$emit('onRevision')"
+      />
     </div>
   </Card>
 </template>
@@ -39,6 +52,7 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import TasksButtons from '@/pages/preview-tasks/buttons-block/Tasks.vue'
 import ApplicationButtons from '@/pages/preview-tasks/buttons-block/Application.vue'
+import { toggleSwitchers, $switcherIspreview } from '@/pages/preview-tasks/controller.model'
 
 export default Vue.extend({
   name: 'Controller',
@@ -50,9 +64,18 @@ export default Vue.extend({
     TasksButtons,
     ApplicationButtons,
   },
+  effector: {
+    $switcherIspreview,
+  },
   computed: {
     isTasks() {
-      return true
+      return false
+    },
+  },
+  methods: {
+    toggleState(val: boolean) {
+      toggleSwitchers(val)
+      if (!val) this.$emit('toEditPage')
     },
   },
 })
