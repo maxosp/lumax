@@ -131,7 +131,7 @@ import {
   $canRefreshTableAfterCreation,
   createTagFromTree,
 } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
-import { RefsType, HttpOptionsType } from '../common/types'
+import { RefsType } from '../common/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -214,7 +214,7 @@ export default (Vue as VueConstructor<
     editTag(id: number) {
       loadModalToEdit(id)
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

@@ -128,7 +128,7 @@ import CancelModal from '@/pages/applications/modals/cancel/CancelModal.vue'
 import { loadModal } from '@/pages/applications/modals/cancel/cancel.model'
 import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import { mapApplicationTypeToRoute } from '@/pages/applications/constants'
@@ -202,7 +202,7 @@ export default (Vue as VueConstructor<
     showComment(id: number) {
       loadCommentModal(id)
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

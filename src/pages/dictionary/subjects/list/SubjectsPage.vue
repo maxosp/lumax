@@ -96,7 +96,7 @@ import {
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -153,7 +153,7 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { sort: computeSortParam(httpOptions.params.sort) },
       })

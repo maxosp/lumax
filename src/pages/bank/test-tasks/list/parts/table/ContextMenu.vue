@@ -116,8 +116,7 @@ export default Vue.extend({
           this.$emit('onPublish', this.$props.selected)
           break
         case 'preview':
-        case 'preview_all':
-          this.$emit('onPreview', this.$props.selected)
+          this.$emit('onPreview', this.$props.id)
           break
         case 'edit-theme':
           navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })

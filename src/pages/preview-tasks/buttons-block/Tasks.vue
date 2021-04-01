@@ -3,14 +3,12 @@
     <BaseButton
       v-if="![ 'reserve', 'published', 'archive' ].includes(currentStatus) && isTestTasks"
       class="btn"
-      @click="$emit('onRevision')"
     >
       На проверку
     </BaseButton>
     <BaseButton
       v-if="['revision'].includes(currentStatus) && isTestTasks"
       class="btn"
-      @click="$emit('onSeeComments')"
     >
       Комментарий модератора
     </BaseButton>

@@ -135,7 +135,7 @@ import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/
 import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import * as modals from '@/pages/bank/lesson-tasks/index'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
@@ -217,7 +217,7 @@ export default (Vue as VueConstructor<
     getCorrectDescriptionType(type: string) {
       return mapTaskTypeTo[type].description
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
