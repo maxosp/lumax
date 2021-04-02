@@ -84,6 +84,7 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'create':
           navigatePush({ name: 'test-tasks-create' })
@@ -92,31 +93,31 @@ export default Vue.extend({
           navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } })
           break
         case 'delete-theme':
-          this.$emit('onRemoveTheme', [this.$props.id])
+          this.$emit('onRemoveTheme', ids)
           break
         case 'delete-task':
-          this.$emit('onRemoveTask', [this.$props.id])
+          this.$emit('onRemoveTask', ids)
           break
         case 'delete':
-          this.$emit('onRemove', this.$props.id)
+          this.$emit('onRemove', ids[0])
           break
         case 'delete_all':
-          this.$emit('onRemove', this.$props.selected)
+          this.$emit('onRemove', ids)
           break
         case 'send_to_check':
-          this.$emit('onCheck', this.$props.id)
+          this.$emit('onCheck', ids[0])
           break
         case 'send_to_check_all':
-          this.$emit('onCheck', this.$props.selected)
+          this.$emit('onCheck', ids)
           break
         case 'public':
-          this.$emit('onPublish', this.$props.id)
+          this.$emit('onPublish', ids[0])
           break
         case 'public_all':
-          this.$emit('onPublish', this.$props.selected)
+          this.$emit('onPublish', ids)
           break
         case 'preview':
-          this.$emit('onPreview', this.$props.id)
+          this.$emit('onPreview', ids)
           break
         case 'edit-theme':
           navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })

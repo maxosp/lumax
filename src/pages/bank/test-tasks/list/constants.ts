@@ -156,5 +156,5 @@ export const contextMethodsManyTasks = [
   { name: 'delete_all', title: 'Удалить выделенные задания' },
   { name: 'send_to_check_all', title: 'Отправить на проверку' },
   { name: 'public_all', title: 'Опубликовать' },
-  { name: 'preview_all', title: 'Предпросмотр' },
+  { name: 'preview', title: 'Предпросмотр' },
 ]

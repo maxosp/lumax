@@ -120,6 +120,7 @@
     <TaskDeleteModal />
     <TasksUpdateModal />
     <DeletionRequsetModal />
+    <ModeratorSelectModal />
   </div>
 </template>
 
@@ -139,6 +140,7 @@ import ContextMenu from '@/pages/bank/test-tasks/list/parts/table/ContextMenu.vu
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
 import * as modals from '@/pages/bank/test-tasks/'
+import ModeratorSelectModal from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
   $treeView,
@@ -148,7 +150,6 @@ import {
   deleteAssignment,
   deleteManyAssignments,
   sendAssignmentsPublish,
-  sendAssignmentsToModeration,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
   toggleVisibility,
@@ -167,6 +168,10 @@ import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import {
+  $canRefreshAfterSendingForModeration,
+  loadModalToSendForCheck,
+} from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 
 Vue.use(VueEvents)
@@ -199,6 +204,7 @@ export default (Vue as VueConstructor<
     TaskDeleteModal: modals.TaskDeletionModal,
     TasksUpdateModal: modals.TasksUpdateModal,
     DeletionRequsetModal: modals.DeletionRequestModal,
+    ModeratorSelectModal,
   },
   effector: {
     $token,
@@ -207,6 +213,7 @@ export default (Vue as VueConstructor<
     $tasksTreeTotal,
     $session,
     $canRefreshAfterMultiChanges,
+    $canRefreshAfterSendingForModeration,
   },
   data() {
     return {
@@ -233,6 +240,11 @@ export default (Vue as VueConstructor<
   },
   watch: {
     $canRefreshAfterMultiChanges: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.refresh()
+      },
+    },
+    $canRefreshAfterSendingForModeration: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.refresh()
       },
@@ -329,10 +341,9 @@ export default (Vue as VueConstructor<
       await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    async sendToModerationAssignments(ids: number | number[]) {
+    sendToModerationAssignments(ids: number | number[]) {
       const data = typeof ids === 'number' ? [ids] : ids
-      await sendAssignmentsToModeration({ assignments: data })
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      loadModalToSendForCheck(data)
     },
     handleLoadError(res: any) {
       if (!res.response) {

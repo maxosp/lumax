@@ -110,27 +110,28 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : this.id
       switch (item.name) {
         case 'edit':
-          this.$emit('onEdit', this.id)
+          this.$emit('onEdit', ids[0])
           break
         case 'duplicate':
-          this.$emit('duplicate', this.id)
+          this.$emit('duplicate', ids[0])
           break
         case 'duplicate-n-times':
           // TO DO add copy method
           break
         case 'send-for-check':
-          this.$emit('sendForCheck', this.id)
+          this.$emit('sendForCheck', ids[0])
           break
         case 'delete-all':
-          this.$emit('onRemove', this.selected)
+          this.$emit('onRemove', ids)
           break
         case 'delete':
-          this.$emit('onRemove', [this.id])
+          this.$emit('onRemove', ids)
           break
         case 'preview':
-          this.$emit('showPreview', this.id)
+          this.$emit('showPreview', ids)
           break
         default:
           break

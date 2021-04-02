@@ -8,14 +8,12 @@ import {
 } from '@/pages/common/dropdowns/users/moderator-dropdown/moderator-dropdown.model'
 import { createError } from '@/lib/effector/error-generator'
 import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
-import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
+import { loadTreeLight } from '@/pages/bank/test-tasks/list//tasks-page.model'
+import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 
-export const sendForModaration = attach({
-  effect: updateOlympiadAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({
-    ...params,
-    status: 'moderation',
-  }),
+export const sendAssignmentsToModeration = attach({
+  effect: updateTestAssignmentBulkFx,
+  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'moderation' }),
 })
 
 export const loadModalToSendForCheck = createEvent<number[]>()
@@ -55,7 +53,7 @@ sample({
   source: $form,
   clock: checkIfTaskCanBeSend,
   fn: (obj) => {
-    if (obj.moderator_id !== DEFAULT_ID && obj.assignments) sendForModaration(obj)
+    if (obj.moderator_id !== DEFAULT_ID && obj.assignments) sendAssignmentsToModeration(obj)
     else {
       if (obj.moderator_id === DEFAULT_ID) $moderatorErrorModule.methods.setError(true)
       errorToastEvent('Необходимо заполнить все обязательные поля')
@@ -79,18 +77,20 @@ forward({
 })
 
 forward({
-  from: sendForModaration.doneData,
-  to: [
-    modalVisibilityChanged.prepend(() => false),
-    successToastEvent('Задание было успешно отправлено на проверку'),
-    canRefreshAfterSendingForModerationChanged.prepend(() => true),
-  ],
-})
-forward({
-  from: sendForModaration.failData.map((res) => res.body),
+  from: sendAssignmentsToModeration.failData.map((res) => res.body),
   to: [
     addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
     modalVisibilityChanged.prepend(() => false),
+  ],
+})
+
+forward({
+  from: sendAssignmentsToModeration.doneData,
+  to: [
+    loadTreeLight.prepend(() => ({})),
+    modalVisibilityChanged.prepend(() => false),
+    successToastEvent('Задание было успешно отправлено на проверку'),
+    canRefreshAfterSendingForModerationChanged.prepend(() => true),
   ],
 })
 

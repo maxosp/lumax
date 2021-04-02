@@ -16,7 +16,7 @@
     />
     <DifficultyDropdown />
     <Switchers />
-    <ModeratorDropdown />
+    <ModeratorDropdown :disabled="!$canSetModerator" />
     <div class="btns-wrapper">
       <BaseButton
         class="btn"
@@ -54,6 +54,7 @@ import {
   cancelForm,
   $tasksIdsErrorModule,
   $selectedType,
+  $canSetModerator,
 } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { loadDifficultys } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/parts/difficulty-dropdown/difficulty.model'
 
@@ -72,6 +73,7 @@ export default Vue.extend({
     $tasksIds,
     idsError: $tasksIdsErrorModule.store.$error,
     $selectedType,
+    $canSetModerator,
   },
   methods: {
     modalVisibilityChanged,

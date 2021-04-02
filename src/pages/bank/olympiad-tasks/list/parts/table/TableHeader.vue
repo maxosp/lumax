@@ -41,7 +41,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('showPreview', selectedRows[0])"
+        @click="$emit('showPreview', selectedRows)"
       >
         Предпросмотр
       </span>

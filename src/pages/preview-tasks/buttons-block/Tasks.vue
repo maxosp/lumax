@@ -26,7 +26,7 @@ export default Vue.extend({
     currentStatus() {
       // new новое
       // хз на проверке
-      // revision на доработке
+      // moderation на доработке
       // reserve в резерве
       // published опубликовано
       // archive в архиве

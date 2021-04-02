@@ -1,11 +1,10 @@
 import { attach, createEvent, createStore, forward, restore } from 'effector-root'
-// TODO: correctly define WHICH type of assignment
 import {
   deleteTestAssignmentFx,
   deleteTestAssignmentsFx,
 } from '@/features/api/assignment/test-assignment/delete-test-assignment'
 import { getTestAssignmentTreeLightFx } from '@/features/api/assignment/test-assignment/get-test-tree-light'
-import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
+import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import {
   GetAssignmentTreeQueryParams,
@@ -31,10 +30,6 @@ export const deleteManyAssignments = attach({
 export const sendAssignmentsPublish = attach({
   effect: updateTestAssignmentBulkFx,
   mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'published' }),
-})
-export const sendAssignmentsToModeration = attach({
-  effect: updateTestAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'moderation' }),
 })
 
 export const toggleTreeView = createEvent<boolean>()
@@ -77,12 +72,4 @@ forward({
 forward({
   from: deleteAssignment.doneData,
   to: [loadTreeLight.prepend(() => ({})), successToastEvent('Задание было успешно удалено!')],
-})
-
-forward({
-  from: [
-    sendAssignmentsToModeration.failData.map((res) => res.body),
-    sendAssignmentsPublish.failData.map((res) => res.body),
-  ],
-  to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
 })

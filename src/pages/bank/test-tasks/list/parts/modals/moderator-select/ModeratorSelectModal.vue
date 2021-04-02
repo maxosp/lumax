@@ -47,7 +47,7 @@ import {
   modalVisibilityChanged,
   checkIfTaskCanBeSend,
   $moderatorErrorModule,
-} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
 
 export default Vue.extend({
   components: {
