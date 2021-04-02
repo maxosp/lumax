@@ -41,11 +41,8 @@ export const sortTreeLeaves = (leaves: TreeData[]) => {
 }
 
 export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
-  const res = oldData.map((el, index) => {
-    const i = newData.every((d) => d.element_type === 'study_year' || d.element_type === 'subject')
-      ? 0
-      : index
-    const nData = newData[i]
+  const res = oldData.map((el) => {
+    const nData = newData[0]
     if (nData === undefined) return el
     if (el[el.element_type].id === nData[nData.element_type].id) {
       if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)

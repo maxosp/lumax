@@ -114,7 +114,7 @@ export default Vue.extend({
     },
     showActions() {
       const { element_type } = this.$props.node
-      return element_type === 'label' || element_type === 'theme'
+      return ['label', 'theme'].includes(element_type)
     },
     dataToCreateLabel() {
       const { theme } = this.$props.node
@@ -167,13 +167,13 @@ export default Vue.extend({
     },
   },
   mounted() {
-    if (this.node.element_type === 'theme' || this.node.element_type === 'label') {
+    if (['theme', 'label'].includes(this.node.element_type)) {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    if (this.node.element_type === 'theme' || this.node.element_type === 'label') {
+    if (['theme', 'label'].includes(this.node.element_type)) {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
