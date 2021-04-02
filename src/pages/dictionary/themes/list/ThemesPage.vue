@@ -68,7 +68,10 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <ThemesTree @onRightClick="handleRightClick" />
+      <ThemesTree
+        @onRightClick="handleRightClick"
+        @loadTree="val => loadTree(val)"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -107,6 +110,7 @@ import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesT
 import ThemeDeletionModal from '@/pages/dictionary/themes/list/parts/modals/theme-deletion/ThemeDeletionModal.vue'
 import {
   $treeView,
+  loadTreeLight,
   loadTree,
   $themesTreeTotal,
   $canRefreshTableAfterDeletion,
@@ -192,6 +196,7 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    loadTree,
     loadModalToDelete,
     toggleVisibility,
     myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
@@ -215,7 +220,7 @@ export default (Vue as VueConstructor<
       container && container.dispatchEvent(resetEvent)
 
       // reload data
-      loadTree({})
+      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
@@ -228,7 +233,7 @@ export default (Vue as VueConstructor<
       reset() // search string and field
 
       // reload data
-      loadTree({})
+      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     handleRowClick(res: any) {
@@ -271,8 +276,7 @@ export default (Vue as VueConstructor<
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    // loadTree({})
-    loadTree({})
+    loadTreeLight()
   },
   created() {
     // Authorization request

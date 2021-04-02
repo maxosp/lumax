@@ -15,7 +15,10 @@
         />
       </template>
     </GeneralFilter>
-    <ResourcesTree @onRightClick="handleRightClick" />
+    <ResourcesTree
+      @onRightClick="handleRightClick"
+      @loadTree="val => loadTree(val)"
+    />
     <ContextMenu
       v-if="showContextMenu"
       :id="clickedRowId"
@@ -42,6 +45,7 @@ import ResourcesTree from '@/pages/dictionary/resources/list/parts/tree/Resource
 import ResourceDeletionModal from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/ResourceDeletionModal.vue'
 import {
   loadTree,
+  loadTreeLight,
   $resourcesTreeTotal,
 } from '@/pages/dictionary/resources/list/resources-page.model'
 import {
@@ -99,6 +103,7 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    loadTree,
     loadModalToDelete,
     toggleVisibility,
     onFilterSet(newFilter: any) {
@@ -109,7 +114,7 @@ export default (Vue as VueConstructor<
       this.filterParams = {}
       reset() // search string and field
       // reload data
-      loadTree({})
+      loadTreeLight()
     },
     removeSelected(id: number) {
       loadModalToDelete(id)
@@ -130,7 +135,7 @@ export default (Vue as VueConstructor<
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree({})
+    loadTreeLight()
   },
 })
 </script>

@@ -28,8 +28,8 @@ export const $treeView = restore(toggleTreeView, false)
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<GetAssignmentTreeQueryParams>()
-export const setLessonsTree = createEvent<TreeDataLight | TreeData | null>()
-export const $lessonsTree = restore<TreeDataLight | TreeData | null>(setLessonsTree, null)
+export const setLessonsTree = createEvent<TreeDataLight[] | TreeData[] | null>()
+export const $lessonsTree = restore<TreeDataLight[] | TreeData[] | null>(setLessonsTree, null)
 export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 

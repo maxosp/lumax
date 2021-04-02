@@ -8,9 +8,10 @@
       parent
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
       @onRightClick="$emit('onRightClick', $event)"
-      @onRemoveTask="(val) => $emit('onRemoveTask', val)"
-      @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
-      @onPreview="(val) => $emit('onPreview', val)"
+      @onRemoveTask="val => $emit('onRemoveTask', val)"
+      @onRemoveTheme="val => $emit('onRemoveTheme', val)"
+      @onPreview="val => $emit('onPreview', val)"
+      @loadTree="val => $emit('loadTree', val)"
     />
   </div>
 </template>

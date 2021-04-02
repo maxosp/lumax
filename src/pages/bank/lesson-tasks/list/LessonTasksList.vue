@@ -135,19 +135,17 @@ import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/
 import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import * as modals from '@/pages/bank/lesson-tasks/index'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-
 type RightClickParams = {
   data: any
   event: any
   type?: ContextMenuType
 }
-
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType
@@ -217,7 +215,7 @@ export default (Vue as VueConstructor<
     getCorrectDescriptionType(type: string) {
       return mapTaskTypeTo[type].description
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
@@ -232,11 +230,9 @@ export default (Vue as VueConstructor<
     resetAllFilters() {
       this.filterParams = {}
       reset() // search string and field
-
       const resetEvent = new Event('reset-themes-filter')
       const container = document.querySelector('#lessons-page')
       container && container.dispatchEvent(resetEvent)
-
       // reload data
       loadTree({})
       Vue.nextTick(() => this.$refs.vuetable.refresh())
@@ -249,7 +245,6 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.filterParams = {}
       reset() // search string and field
-
       // reload data
       loadTree({})
       Vue.nextTick(() => this.$refs.vuetable.refresh())
@@ -312,25 +307,20 @@ export default (Vue as VueConstructor<
 .invisible {
   display: none;
 }
-
 .table-container {
   overflow-x: auto;
   background-color: #fff;
 }
-
 .table /deep/ tr:nth-child(2n) {
   background-color: var(--c-grey-7);
 }
-
 .table /deep/ .ui.table thead th {
   background-color: #fff;
 }
-
 .table /deep/ .ui.table {
   border-radius: 0px;
   border: none;
 }
-
 .table /deep/ .ui.table,
 .table /deep/ .ui.table thead th,
 .table /deep/ .ui.celled.table tr td,
@@ -342,16 +332,13 @@ export default (Vue as VueConstructor<
   overflow: hidden;
   white-space: nowrap;
 }
-
 .table /deep/ .vuetable-slot {
   overflow: initial !important;
 }
-
 .table /deep/ th[class^='vuetable-th'] {
   color: var(--base-text-primary);
   font-weight: 600;
 }
-
 .table /deep/ [type='checkbox'] {
   cursor: pointer;
   width: 24px;
@@ -361,7 +348,6 @@ export default (Vue as VueConstructor<
   border: none;
   appearance: none;
 }
-
 .table /deep/ [type='checkbox']:checked {
   width: 24px;
   height: 24px;
@@ -382,7 +368,6 @@ export default (Vue as VueConstructor<
     font-weight: bold;
   }
 }
-
 .no-data-content {
   width: 100%;
   min-height: 550px;
@@ -404,7 +389,6 @@ export default (Vue as VueConstructor<
   cursor: pointer;
   @mixin underline-text;
 }
-
 .context-menu {
   position: absolute;
   top: 0;

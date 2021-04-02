@@ -1,4 +1,6 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
+import { Label, Tag } from '@/features/api/assignment/types'
+import { ResourceType } from '@/features/api/media/types'
 
 export type TreeElementType =
   | 'subject'
@@ -7,6 +9,8 @@ export type TreeElementType =
   | 'virtual_folder'
   | 'assignment'
   | 'study_resource'
+  | 'label'
+  | 'olympiad_tag'
 
 export type VirtualFolder = {
   name: string
@@ -38,6 +42,10 @@ export type TreeData = {
   subject: Subject | null
   study_year: StudyYear | null
   theme: Theme | null
+  label: Label | null
+  olympiad_tag: Tag | null
+  study_resource: ResourceType | null
+  // assignment: BaseAssignment | null
   virtual_folder: VirtualFolder | null
   text_resource_count: string
   link_resource_count: string
@@ -79,9 +87,9 @@ export type TreeDataLight = {
 }
 export type TreeLightDataResponse = {
   total: number
-  data: TreeDataLight
+  data: TreeDataLight[]
 }
 export type TreeDataResponse = {
   total: number
-  data: TreeData
+  data: TreeData[]
 }

@@ -49,8 +49,7 @@
       >
         <template id="one" #actions="props">
           <Actions
-            :id="props.rowData.id"
-            :selected-applications="selectedApplications"
+            :selected-applications="[{ application: props.rowData.id, task: props.rowData.test_assignment.id }]"
             @showPreview="showPreview"
             @onEdit="editApplications"
             @onAccept="acceptApplications"
@@ -71,8 +70,7 @@
     </div>
     <ContextMenu
       v-if="showContextMenu"
-      :id="clickedRowId"
-      :key="clickedRowId"
+      :key="selectedApplications[0].application"
       :selected-applications="selectedApplications"
       :style="contextMenuStyles"
       class="context-menu"
@@ -122,14 +120,11 @@ import SendForModerationModal from '@/pages/applications/modals/send-for-moderat
 import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import SetToModeratorModal from '@/pages/applications/modals/set-to-moderator/SetToModeratorModal.vue'
 import { loadModeratorModal } from '@/pages/applications/modals/set-to-moderator/set-to-moderator.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
-import { Ticket } from '@/features/api/ticket/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType
@@ -155,7 +150,6 @@ export default (Vue as VueConstructor<
   },
   data() {
     return {
-      clickedRowId: 0,
       searchFields: searchFieldsData,
       filterParams: {},
       total: 1,
@@ -164,7 +158,6 @@ export default (Vue as VueConstructor<
       contextMenuStyles: { top: '0', left: '0' },
       selectedApplications: [] as ApplicationType[],
       showTableHeaderActions: false,
-      localItems: [] as Ticket[],
     }
   },
   computed: {
@@ -183,27 +176,13 @@ export default (Vue as VueConstructor<
     toggleVisibility,
     loadList,
     reset,
-    showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
-        const filteredList = this.localItems
-          .filter(
-            (item) => idArr.filter((itemArr) => itemArr === item.test_assignment.id).length > 0
-          )
-          .map((item) => ({
-            id: item.test_assignment.id,
-            name: `${item.test_assignment.id}`,
-            title: item.test_assignment.theme.name,
-          }))
-        changeTasks(filteredList)
-      }
-      this.$router.push({
-        name: 'preview-task',
-        query: {
-          questions: idArr.join(','),
-          type: 'test-assignment',
-          token: this.$token,
-        },
-      })
+    showPreview(ids: number[]) {
+      ids.forEach((id) =>
+        window.open(
+          `${config.PREVIEW_URL}/question?questionId=${id}&type=test-assignment&token=${this.$token}`,
+          '_blank'
+        )
+      )
     },
     editApplications(ids: number[]) {
       navigatePush({ name: 'test-tasks-edit', params: { id: `${ids[0]}` } })
@@ -217,15 +196,10 @@ export default (Vue as VueConstructor<
     assignToModerator(ids: number[]) {
       loadModeratorModal(ids)
     },
-    async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
-      const request = axios.get(apiUrl, {
+    myFetch(apiUrl: string, httpOptions: any) {
+      return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
-      const {
-        data: { data },
-      } = await request
-      this.localItems = data
-      return request
     },
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
@@ -253,7 +227,7 @@ export default (Vue as VueConstructor<
     },
     handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.id
+      this.selectedApplications = [{ application: data.id, task: data.test_assignment.id }]
       this.showContextMenu = true
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
@@ -309,16 +283,13 @@ export default (Vue as VueConstructor<
 .table /deep/ tr:nth-child(2n) {
   background-color: var(--c-grey-7);
 }
-
 .table /deep/ .ui.table thead th {
   background-color: #fff;
 }
-
 .table /deep/ .ui.table {
   border-radius: 0px;
   border: none;
 }
-
 .table /deep/ .ui.table,
 .table /deep/ .ui.table thead th,
 .table /deep/ .ui.celled.table tr td,
@@ -330,16 +301,13 @@ export default (Vue as VueConstructor<
   overflow: hidden;
   white-space: nowrap;
 }
-
 .table /deep/ .vuetable-slot {
   overflow: initial !important;
 }
-
 .table /deep/ th[class^='vuetable-th'] {
   color: var(--base-text-primary);
   font-weight: 600;
 }
-
 .table /deep/ [type='checkbox'] {
   cursor: pointer;
   width: 24px;
@@ -349,7 +317,6 @@ export default (Vue as VueConstructor<
   border: none;
   appearance: none;
 }
-
 .table /deep/ [type='checkbox']:checked {
   width: 24px;
   height: 24px;
@@ -370,7 +337,6 @@ export default (Vue as VueConstructor<
     font-weight: bold;
   }
 }
-
 .no-data-content {
   width: 100%;
   min-height: 550px;
@@ -392,7 +358,6 @@ export default (Vue as VueConstructor<
   cursor: pointer;
   @mixin underline-text;
 }
-
 .context-menu {
   position: absolute;
   top: 0;

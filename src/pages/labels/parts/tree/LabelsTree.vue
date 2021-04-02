@@ -16,6 +16,7 @@
       :node="leaf"
       parent
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
+      @loadTree="val => $emit('loadTree', val)"
       @onRightClick="$emit('onRightClick', $event)"
     />
   </div>
@@ -27,7 +28,7 @@ import TreeNode from '@/pages/labels/parts/tree/TreeNode.vue'
 import { $labelsTree } from '@/pages/labels/labels-page.model'
 
 export default Vue.extend({
-  name: 'ThemesTree',
+  name: 'LabelsTree',
   components: {
     TreeNode,
   },

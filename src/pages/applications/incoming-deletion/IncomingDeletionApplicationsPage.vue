@@ -139,7 +139,7 @@ import RejectedModal from '@/pages/applications/modals/rejected/RejectedModal.vu
 import { loadModal } from '@/pages/applications/modals/reject/reject.model'
 import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import {
   setDataToDelete,
@@ -153,7 +153,6 @@ import { loadModal as loadDeleteModal } from '@/pages/applications/modals/delete
 import { CheckBeforeDeletionResponseType } from '@/features/api/ticket/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType
@@ -251,7 +250,7 @@ export default (Vue as VueConstructor<
       if (this.$cannotDeleteData.length === 0 || this.showDeleteModal) return
       this.currentFailed = this.$cannotDeleteData.shift()!
     },
-    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+    myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
@@ -345,16 +344,13 @@ export default (Vue as VueConstructor<
 .table /deep/ tr:nth-child(2n) {
   background-color: var(--c-grey-7);
 }
-
 .table /deep/ .ui.table thead th {
   background-color: #fff;
 }
-
 .table /deep/ .ui.table {
   border-radius: 0px;
   border: none;
 }
-
 .table /deep/ .ui.table,
 .table /deep/ .ui.table thead th,
 .table /deep/ .ui.celled.table tr td,
@@ -366,16 +362,13 @@ export default (Vue as VueConstructor<
   overflow: hidden;
   white-space: nowrap;
 }
-
 .table /deep/ .vuetable-slot {
   overflow: initial !important;
 }
-
 .table /deep/ th[class^='vuetable-th'] {
   color: var(--base-text-primary);
   font-weight: 600;
 }
-
 .table /deep/ [type='checkbox'] {
   cursor: pointer;
   width: 24px;
@@ -385,7 +378,6 @@ export default (Vue as VueConstructor<
   border: none;
   appearance: none;
 }
-
 .table /deep/ [type='checkbox']:checked {
   width: 24px;
   height: 24px;
@@ -406,7 +398,6 @@ export default (Vue as VueConstructor<
     font-weight: bold;
   }
 }
-
 .no-data-content {
   width: 100%;
   min-height: 550px;
@@ -428,7 +419,6 @@ export default (Vue as VueConstructor<
   cursor: pointer;
   @mixin underline-text;
 }
-
 .context-menu {
   position: absolute;
   top: 0;

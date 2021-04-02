@@ -6,6 +6,7 @@ export type Tag = {
   name: string
   study_year: StudyYear | null
   subject: Subject | null
+  assignments_count: number
 }
 
 export type CreateTagType = {
@@ -21,6 +22,7 @@ export type CreateLabelType = CreateTagType & {
 
 export type Label = Tag & {
   theme: Theme
+  assignments_count: number
 }
 
 export type GetTagsTreeQueryParams = {
@@ -151,7 +153,7 @@ export type CreateOlympiadAssignmentFxParams = {
 
 export type CreateLessonAssignmentFxParams = BaseCreateAssignmentParams
 
-type BaseAssignment = {
+export type BaseAssignment = {
   id: number
   wording: string
   type: AssignmentType

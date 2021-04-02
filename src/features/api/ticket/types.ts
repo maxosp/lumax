@@ -1,6 +1,5 @@
 import { User } from '@/features/api/user/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { StudyYear, SubjectGrid } from '@/features/api/subject/types'
 
 export type getTicketsListQueryParams = {
   sort?: string
@@ -24,14 +23,6 @@ export type TestAssignmentType = {
   wording: string
   type: string
   status: string
-  theme: {
-    id: number
-    name: string
-    study_year: StudyYear
-    subject: SubjectGrid
-    type: string
-    wording: string
-  }
 }
 
 export type TicketCommentType = {

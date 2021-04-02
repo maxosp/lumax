@@ -1,14 +1,9 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { TreeLightDataResponse } from '@/features/api/types'
-import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
+import { TreeDataResponse } from '@/features/api/types'
 
-export const getTestAssignmentTreeLightFx = createApiEffect<
-  GetAssignmentTreeQueryParams,
-  TreeLightDataResponse
->({
-  requestMapper: (query) => ({
+export const getTestAssignmentTreeLightFx = createApiEffect<void, TreeDataResponse>({
+  requestMapper: () => ({
     method: 'GET',
     url: '/api/assignment/test-assignment/tree/light/',
-    query,
   }),
 })

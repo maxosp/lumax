@@ -1,3 +1,5 @@
+import { TreeData } from '@/features/api/types'
+
 const wordDeclination = (total: number, words: string[]) => {
   /*
    Порядок слов для массива words:
@@ -33,3 +35,23 @@ export { formatTotalAmount }
 export const formatThemesTitle = formatTitleDecorator(['тема', 'темы', 'тем'])
 export const formatTasksTitle = formatTitleDecorator(['задание', 'задания', 'заданий'])
 export const formatTagsTitle = formatTitleDecorator(['тег', 'тега', 'тегов'])
+
+export const sortTreeLeaves = (leaves: TreeData[]) => {
+  return leaves.sort((a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number)
+}
+
+export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
+  const res = oldData.map((el, index) => {
+    const i = newData.every((d) => d.element_type === 'study_year' || d.element_type === 'subject')
+      ? 0
+      : index
+    const nData = newData[i]
+    if (nData === undefined) return el
+    if (el[el.element_type].id === nData[nData.element_type].id) {
+      if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
+      else el.leaves = nData.leaves
+    }
+    return el
+  })
+  return res
+}

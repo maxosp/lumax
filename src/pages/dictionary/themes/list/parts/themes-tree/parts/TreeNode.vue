@@ -29,6 +29,7 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="leaf.virtual_folder && leaf.virtual_folder.code === 'prerequisite'"
         @onRightClick="$emit('onRightClick', $event)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
   </div>
@@ -39,6 +40,7 @@ import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import { TreeData } from '@/features/api/types'
+import { sortTreeLeaves } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -80,34 +82,35 @@ export default Vue.extend({
           description: 'Количество заданий',
         },
         videos: {
-          // @ts-ignore
           count: this.node.media_resource_count,
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
-          // @ts-ignore
           count: this.node.text_resource_count,
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
-          // @ts-ignore
           count: this.node.link_resource_count,
           description: 'Количество ресурсов типа "Ссылка"',
         },
       }
     },
   },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+  },
   methods: {
-    toggle() {
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
+    toggle(evt: any) {
+      if (evt.target.closest('.action') || this.node.element_type === 'label') return
+      if (!this.node.leaves.length && this.node.element_type === 'study_year') {
+        const { subject_id, id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: subject_id, study_year: id })
       }
+      this.opened = !this.opened
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -132,20 +135,14 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     if (this.$props.node.element_type === 'theme') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     if (this.$props.node.element_type === 'theme') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

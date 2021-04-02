@@ -23,8 +23,8 @@
     </BaseSwitch>
     <BaseSwitch
       class="switch"
-      :checked="$switchers.revision"
-      @change="(val) => toggleSwitchers({ name: 'revision', value: val })"
+      :checked="$switchers.moderation"
+      @change="(val) => toggleSwitchers({ name: 'moderation', value: val })"
     >
       <p> Отправить заявки на проверку </p>
     </BaseSwitch>

@@ -59,7 +59,7 @@ forward({
 
 condition({
   source: $switchers,
-  if: (payload: SwitchersOptionsType) => payload.revision,
+  if: (payload: SwitchersOptionsType) => payload.moderation,
   then: canSetModeratorChanged.prepend(() => true),
   else: canSetModeratorChanged.prepend(() => false),
 })

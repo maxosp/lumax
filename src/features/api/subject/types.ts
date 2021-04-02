@@ -4,6 +4,7 @@ export type StudyYear = {
   id: number
   number: number
   name: string
+  subject_id: number
 }
 
 export type Icon = {

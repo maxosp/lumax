@@ -67,7 +67,10 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <TagsTree @onRightClick="handleRightClick" />
+      <TagsTree
+        @onRightClick="handleRightClick"
+        @loadTree="val => loadTree(val)"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -103,6 +106,7 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, tagsDataFields } from '@/pages/tags/constants'
 import { toggleVisibility, $visibility } from '@/pages/tags/parts/tags-filter/tags-filter.model'
 import {
+  loadTreeLight,
   loadTree,
   $tagsTreeTotal,
   $canRefreshTableAfterDeletion,
@@ -132,7 +136,7 @@ import {
   $canRefreshTableAfterCreation,
   createTagFromTree,
 } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
-import { RefsType, HttpOptionsType } from '../common/types'
+import { RefsType, HttpOptionsType } from '@/pages/common/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -204,8 +208,8 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
-    toggleVisibility,
     loadTree,
+    toggleVisibility,
     reset,
     loadModalToEdit,
     createTagFromTree,
@@ -230,7 +234,8 @@ export default (Vue as VueConstructor<
       reset() // search string and field
 
       // reload data
-      loadTree({})
+      // loadTree({})
+      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
@@ -281,7 +286,7 @@ export default (Vue as VueConstructor<
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree({})
+    loadTreeLight()
   },
 })
 </script>

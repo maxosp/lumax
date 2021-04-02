@@ -53,6 +53,7 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
   </div>
@@ -67,6 +68,7 @@ import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
 import { navigatePush } from '@/features/navigation'
+import { sortTreeLeaves } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -81,17 +83,13 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
     title() {
-      // @ts-ignore
       const entity = this.node[this.node.element_type]
       let fullName = ''
-      // @ts-ignore
       if (this.node.element_type !== 'study_resource') {
         fullName = entity ? entity.name : ''
         if (fullName.length > 100) {
@@ -107,56 +105,52 @@ export default Vue.extend({
       }
       return fullName
     },
-    resources() {
+    resources(): { [key in string]: { count: number; description: string } } {
       return {
         videos: {
-          // @ts-ignore
           count: this.calculateLeavesOfType('video'),
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
-          // @ts-ignore
           count: this.calculateLeavesOfType('text'),
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
-          // @ts-ignore
           count: this.calculateLeavesOfType('link'),
           description: 'Количество ресурсов типа "Ссылка"',
         },
         files: {
-          // @ts-ignore
           count: this.calculateLeavesOfType('file'),
           description: 'Количество ресурсов типа "Файл"',
         },
       }
     },
     showActions() {
-      // @ts-ignore
       const { element_type } = this.$props.node
       return element_type === 'study_resource' || element_type === 'theme'
+    },
+  },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
     },
   },
   methods: {
     loadModalToDelete,
     calculateLeavesOfType(type: string): number {
-      // @ts-ignore
       return this.node.leaves.filter(
-        // @ts-ignore
-        (el) => el.element_type === 'study_resource' && el.study_resource.resource_type === type
+        (el) => el.element_type === 'study_resource' && el.study_resource!.resource_type === type
       ).length
     },
     toggle(evt: any) {
-      if (evt.target.closest('.action')) return
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
+      if (evt.target.closest('.action') || this.node.element_type === 'study_resource') return
+      if (!this.node.leaves.length && this.node.element_type === 'theme') {
+        const { subject_id, study_year_id, id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: subject_id, study_year: study_year_id, theme: id })
       }
+      this.opened = !this.opened
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -189,26 +183,16 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     const { element_type } = this.$props.node
     if (element_type === 'theme' || element_type === 'study_resource') {
-      const nodeElement = document.querySelector(
-        // @ts-ignore
-        `#node-${this.$props.nodeId}-${element_type}`
-      )
-      // @ts-ignore
+      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}-${element_type}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     const { element_type } = this.$props.node
     if (element_type === 'theme' || element_type === 'study_resource') {
-      const nodeElement = document.querySelector(
-        // @ts-ignore
-        `#node-${this.$props.nodeId}-${element_type}`
-      )
-      // @ts-ignore
+      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}-${element_type}`)
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

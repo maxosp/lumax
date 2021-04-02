@@ -67,6 +67,7 @@
         @onRemoveTask="(val) => $emit('onRemoveTask', val)"
         @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
         @onPreview="(val) => $emit('onPreview', val)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -77,9 +78,10 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
-        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
-        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
-        @onPreview="(val) => $emit('onPreview', val)"
+        @onRemoveTask="val => $emit('onRemoveTask', val)"
+        @onRemoveTheme="val => $emit('onRemoveTheme', val)"
+        @onPreview="val => $emit('onPreview', val)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
   </div>
@@ -94,6 +96,7 @@ import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
+import { sortTreeLeaves } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -108,24 +111,23 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
     title() {
-      // @ts-ignore
       const entity = this.node[this.node.element_type]
       let fullName = ''
-      // @ts-ignore
       if (this.node.element_type !== 'assignment') {
+        // @ts-ignore
         fullName = entity ? entity.name : ''
         if (fullName.length > 100) {
           fullName = `${fullName.slice(0, 100)}...`
         }
       } else {
+        // @ts-ignore
         fullName = entity ? entity.wording : ''
+        // @ts-ignore
         if (!entity.wording) return ''
         fullName = removeHtmlTags(fullName)
         fullName = `${fullName.slice(0, 30)}...`
@@ -139,7 +141,6 @@ export default Vue.extend({
           description: 'Количество заданий в теме',
         },
         resources: {
-          // @ts-ignore
           count: this.node.text_resource_count,
           description: 'Количество обучающих ресурсов в теме',
         },
@@ -147,15 +148,15 @@ export default Vue.extend({
     },
     taskIcon() {
       // @ts-ignore
-      return mapTaskTypeTo[this.node.assignment.type].icon
+      return mapTaskTypeTo[this.node.assignment!.type].icon
     },
     correctStatus() {
       // @ts-ignore
-      return mapTaskStatus[this.node.assignment.status]
+      return mapTaskStatus[this.node.assignment!.status]
     },
     taskDifficultyLevel() {
       // @ts-ignore
-      switch (this.node.assignment.difficulty) {
+      switch (this.node.assignment!.difficulty) {
         case 0:
           return { title: 'Базовый уровень', class: '--green' }
         case 1:
@@ -167,23 +168,25 @@ export default Vue.extend({
       }
     },
     showActions() {
-      // @ts-ignore
       const { element_type } = this.$props.node
       return element_type === 'assignment' || element_type === 'theme'
     },
   },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+  },
   methods: {
     toggle(evt: any) {
-      if (evt.target.closest('.action')) return
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
+      if (evt.target.closest('.action') || this.node.element_type === 'study_resource') return
+      if (!this.node.leaves.length && this.node.element_type === 'theme') {
+        const { subject_id, study_year_id, id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: subject_id, study_year: study_year_id, theme: id })
       }
+      this.opened = !this.opened
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -208,22 +211,16 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     const { element_type } = this.$props.node
     if (element_type === 'theme' || element_type === 'assignment') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     const { element_type } = this.$props.node
     if (element_type === 'theme' || element_type === 'assignment') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

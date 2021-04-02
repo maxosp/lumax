@@ -57,6 +57,7 @@
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
   </div>
@@ -72,6 +73,7 @@ import { loadModalToDelete } from '@/pages/tags/parts/modals/tag-deletion/tag-de
 import { loadModalToEdit } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
 import { createTagFromTree } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
+import { sortTreeLeaves } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -86,11 +88,9 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
     title() {
       const entity = this.node[this.node.element_type]
@@ -103,12 +103,10 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          // @ts-ignore
           count: this.node.olympiad_tag ? this.node.olympiad_tag.assignments_count : null,
           description: 'Количество заданий',
         },
         tags: {
-          // @ts-ignore
           count: this.node.leaves.filter((el) => el.element_type === 'olympiad_tag').length,
           description: 'Количество тегов',
         },
@@ -128,22 +126,25 @@ export default Vue.extend({
       return element_type === 'olympiad_tag' || element_type === 'study_year'
     },
   },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+  },
   methods: {
     loadModalToDelete,
     loadModalToEdit,
     loadModal,
     createTagFromTree,
     toggle(evt: any) {
-      if (evt.target.closest('.action')) return
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
+      if (evt.target.closest('.action') || this.node.element_type === 'olympiad_tag') return
+      if (!this.node.leaves.length && this.node.element_type === 'study_year') {
+        const { subject_id, id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: subject_id, study_year: id })
       }
+      this.opened = !this.opened
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -176,23 +177,16 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     const type = this.$props.node.element_type
-    // @ts-ignore
     if (type === 'study_year' || type === 'olympiad_tag') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     const type = this.$props.node.element_type
     if (type === 'study_year' || type === 'olympiad_tag') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

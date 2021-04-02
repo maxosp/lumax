@@ -1,10 +1,11 @@
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, createEvent, createStore, forward, restore } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
 import { deleteResourceFx } from '@/features/api/media/delete-resource'
 import { getResourcesTreeLightFx } from '@/features/api/media/get-resources-tree-light'
+import { mergeTreeData } from '@/features/lib'
 
 const getResourcesTree = attach({
   effect: getResourcesTreeFx,
@@ -18,15 +19,22 @@ export const deleteResource = attach({
   effect: deleteResourceFx,
 })
 
-export const loadLightTree = createEvent<GetThemesTreeQueryParams>()
+export const loadTreeLight = createEvent<void>()
 export const loadTree = createEvent<GetThemesTreeQueryParams>()
-export const setResourcesTree = createEvent<TreeData | null>()
-export const $resourcesTree = restore<TreeData | null>(setResourcesTree, null)
+export const setResourcesTree = createEvent<TreeData[] | null>()
+export const $resourcesTree = createStore<TreeData[] | null>(null).on(
+  setResourcesTree,
+  (state, data) => {
+    if (state === null) return data
+    if (data === undefined) return state
+    return mergeTreeData(state, data!)
+  }
+)
 export const setResourcesTreeTotal = createEvent<number>()
 export const $resourcesTreeTotal = restore<number>(setResourcesTreeTotal, 0)
 
 forward({
-  from: loadLightTree,
+  from: loadTreeLight,
   to: getResourcesTreeLight,
 })
 
@@ -52,5 +60,8 @@ forward({
 })
 forward({
   from: deleteResource.doneData,
-  to: [loadTree.prepend(() => ({})), successToastEvent('Обучающий ресурс был успешно удален!')],
+  to: [
+    loadTreeLight.prepend(() => ({})),
+    successToastEvent('Обучающий ресурс был успешно удален!'),
+  ],
 })

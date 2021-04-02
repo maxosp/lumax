@@ -57,6 +57,7 @@
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
+        @loadTree="val => $emit('loadTree', val)"
       />
     </div>
   </div>
@@ -72,6 +73,7 @@ import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
 import { loadModalToDelete } from '@/pages/labels/parts/modals/label-deletion/label-deletion.model'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
+import { sortTreeLeaves } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -86,11 +88,9 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
     title() {
       const entity = this.node[this.node.element_type]
@@ -103,24 +103,20 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          // @ts-ignore
           count: this.node.label ? this.node.label.assignments_count : null,
           description: 'Количество заданий',
         },
         labels: {
-          // @ts-ignore
           count: this.node.leaves.filter((el) => el.element_type === 'label').length,
           description: 'Количество меток',
         },
       }
     },
     showActions() {
-      // @ts-ignore
       const { element_type } = this.$props.node
       return element_type === 'label' || element_type === 'theme'
     },
     dataToCreateLabel() {
-      // @ts-ignore
       const { theme } = this.$props.node
       if (theme)
         return {
@@ -131,22 +127,25 @@ export default Vue.extend({
       return null
     },
   },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+  },
   methods: {
     loadModal,
     loadModalToDelete,
     loadModalToEdit,
     createLabelFromTree,
     toggle(evt: any) {
-      if (evt.target.closest('.action')) return
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
-        // @ts-ignore
-        this.node.leaves = this.node.leaves.sort(
-          (a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number
-        )
+      if (evt.target.closest('.action') || this.node.element_type === 'label') return
+      if (!this.node.leaves.length && this.node.element_type === 'study_year') {
+        const { subject_id, id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: subject_id, study_year: id })
       }
+      this.opened = !this.opened
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -168,20 +167,14 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
     if (this.node.element_type === 'theme' || this.node.element_type === 'label') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     if (this.node.element_type === 'theme' || this.node.element_type === 'label') {
-      // @ts-ignore
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

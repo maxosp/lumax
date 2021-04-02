@@ -36,7 +36,6 @@ export type RefsType = {
     files: FileList
   }
 }
-
 export type ParamsHttpOptionsType = {
   page: number
   per_page: number

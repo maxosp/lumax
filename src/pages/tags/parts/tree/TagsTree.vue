@@ -16,6 +16,7 @@
       :node="leaf"
       parent
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
+      @loadTree="val => $emit('loadTree', val)"
       @onRightClick="$emit('onRightClick', $event)"
     />
   </div>

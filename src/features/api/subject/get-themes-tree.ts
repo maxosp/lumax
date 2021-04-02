@@ -10,10 +10,9 @@ export const getThemesTreeFx = createApiEffect<GetThemesTreeQueryParams, TreeDat
   }),
 })
 
-export const gethThemesTreeLightFx = createApiEffect<GetThemesTreeQueryParams, TreeDataResponse>({
-  requestMapper: (query) => ({
+export const gethThemesTreeLightFx = createApiEffect<void, TreeDataResponse>({
+  requestMapper: () => ({
     method: 'GET',
     url: '/api/subject/themes/tree/light/',
-    query,
   }),
 })

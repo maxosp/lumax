@@ -33,7 +33,7 @@
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
-        @vuetable:cell-rightclicked="handleRightClick" 
+        @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
       >
         <template #assignments_ids="props">
@@ -92,6 +92,7 @@
         @onRemoveTask="removeSelectedTask"
         @onRemoveTheme="removeSelectedTheme"
         @onPreview="showPreview"
+        @loadTree="val => loadTree(val)"
       />
     </div>
     <ContextMenu
@@ -142,6 +143,7 @@ import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.v
 import {
   $treeView,
   loadTree,
+  loadTreeLight,
   $tasksTreeTotal,
   deleteAssignment,
   deleteManyAssignments,
@@ -237,6 +239,7 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    loadTree,
     toggleVisibility,
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
@@ -289,7 +292,7 @@ export default (Vue as VueConstructor<
       container && container.dispatchEvent(resetEvent)
 
       // reload data
-      loadTree({})
+      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterSet(newFilter: any) {
@@ -302,7 +305,7 @@ export default (Vue as VueConstructor<
       reset() // search string and field
 
       // reload data
-      loadTree({})
+      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     removeSelectedTask(ids: number[]) {
@@ -363,7 +366,7 @@ export default (Vue as VueConstructor<
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree({})
+    loadTreeLight()
   },
   created() {
     // Authorization request

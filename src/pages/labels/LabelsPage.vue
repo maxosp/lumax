@@ -16,7 +16,10 @@
       </template>
     </GeneralFilter>
     <div>
-      <LabelsTree @onRightClick="handleRightClick" />
+      <LabelsTree
+        @onRightClick="handleRightClick"
+        @loadTree="val => loadTree(val)"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -57,7 +60,7 @@ import {
   $visibility,
   toggleVisibility,
 } from '@/pages/labels/parts/labels-filter/labels-filter.model'
-import { loadTree } from '@/pages/labels/labels-page.model'
+import { loadTree, loadTreeLight } from '@/pages/labels/labels-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/labels/constants'
 import { RightClickParams } from '@/pages/labels/types'
@@ -95,6 +98,7 @@ export default Vue.extend({
     }
   },
   methods: {
+    loadTree,
     toggleVisibility,
     createLabelFromTree,
     onFilterSet(newFilter: any) {
@@ -105,7 +109,7 @@ export default Vue.extend({
       this.filterParams = {}
       reset() // search string and field
       // reload data
-      loadTree({})
+      loadTreeLight()
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       this.subject_id = data.subject_id
@@ -134,7 +138,7 @@ export default Vue.extend({
   mounted() {
     this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
     this.$events.$on('filter-reset', () => this.onFilterReset())
-    loadTree({})
+    loadTreeLight()
   },
 })
 </script>

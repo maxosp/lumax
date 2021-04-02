@@ -63,7 +63,6 @@ type IframeData = {
   token: string | null
   type: string | null
 }
-
 export default Vue.extend({
   name: 'PreviewTasksPage',
   components: {

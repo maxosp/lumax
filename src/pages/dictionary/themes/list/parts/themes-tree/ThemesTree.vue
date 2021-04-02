@@ -8,6 +8,7 @@
       parent
       :prerequisite-folder="leaf.virtual_folder && leaf.virtual_folder.code === 'prerequisite'"
       @onRightClick="$emit('onRightClick', $event)"
+      @loadTree="val => $emit('loadTree', val)"
     />
   </div>
 </template>

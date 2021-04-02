@@ -4,5 +4,5 @@ export const SWITCHERS_OPTIONS: SwitchersOptionsType = {
   archive: false,
   reserve: false,
   published: false,
-  revision: false,
+  moderation: false,
 }
