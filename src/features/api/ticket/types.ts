@@ -33,17 +33,20 @@ export type TestAssignmentType = {
     wording: string
   }
 }
+
+export type TicketCommentType = {
+  id: number
+  media: UploadMediaResponse
+  text: string
+}
+
 export type Ticket = {
   id: number
   test_assignment: TestAssignmentType
   created_by: User
   moderate_by: User
   status: string
-  comment?: {
-    id: number
-    text: string
-    media: UploadMediaResponse
-  }
+  comment?: TicketCommentType
   created_at?: string
   updated_at?: string
   moderated_at?: string

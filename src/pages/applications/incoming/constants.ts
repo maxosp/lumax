@@ -3,6 +3,7 @@ import { DropdownItem } from '@/pages/common/types'
 import dayjs from 'dayjs'
 import { mapApplicationsStatus } from '@/pages/applications/constants'
 import { TestAssignment } from '@/features/api/assignment/types'
+import { TicketCommentType } from '@/features/api/ticket/types'
 
 export const incomingApplicationsDataFields: TableField[] = [
   {
@@ -84,8 +85,8 @@ export const incomingApplicationsDataFields: TableField[] = [
     sortField: 'comment',
     title: 'Комментарий',
     width: '200px',
-    formatter(text: string) {
-      return text || '–'
+    formatter(comment: TicketCommentType) {
+      return comment?.text || '–'
     },
   },
   {
