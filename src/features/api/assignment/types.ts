@@ -226,3 +226,13 @@ export type UpdateAssignmentsBulkParams = {
   moderator_id?: number
   score?: number
 }
+
+export type RequestDeleteAssignmentsParams = {
+  assignments: number[]
+  ticket_comment?: string
+}
+
+export type RequestDeleteThemesParams = {
+  themes: number[]
+  ticket_comment?: string
+}

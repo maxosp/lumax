@@ -1,13 +1,19 @@
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData, TreeDataLight } from '@/features/api/types'
-import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
+import {
+  GetAssignmentTreeQueryParams,
+  RequestDeleteAssignmentsParams,
+} from '@/features/api/assignment/types'
 import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 import {
-  deleteLessonAssignmentFx,
   deleteLessonAssignmentsFx,
+  requestDeleteLessonAssignmentsFx,
 } from '@/features/api/assignment/lesson-assignment/delete-lesson-assignment'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { condition } from 'patronum'
+import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
@@ -16,11 +22,24 @@ const getLessonsTreeLight = attach({
   effect: getLessonAssignmentTreeLightFx,
 })
 
-export const deleteAssignment = attach({
-  effect: deleteLessonAssignmentFx,
+export const deleteAssignments = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteLessonAssignmentsFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
-export const deleteManyAssignments = attach({
-  effect: deleteLessonAssignmentsFx,
+
+export const requestDeleteAssignments = attach({
+  effect: requestDeleteLessonAssignmentsFx,
+  mapParams: (payload: RequestDeleteAssignmentsParams): RequestDeleteAssignmentsParams => {
+    return {
+      assignments: payload.assignments,
+      ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
+    }
+  },
 })
 
 export const toggleTreeView = createEvent<boolean>()
@@ -32,6 +51,8 @@ export const setLessonsTree = createEvent<TreeDataLight[] | TreeData[] | null>()
 export const $lessonsTree = restore<TreeDataLight[] | TreeData[] | null>(setLessonsTree, null)
 export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
+
+const showDeleteAssignmentsToast = createEvent<number[]>()
 
 forward({
   from: loadTreeLight,
@@ -58,6 +79,25 @@ forward({
 })
 
 forward({
-  from: deleteAssignment.doneData,
-  to: [loadTree.prepend(() => ({})), successToastEvent('Задание было успешно удалено!')],
+  from: deleteAssignments.doneData,
+  to: [
+    loadTree.prepend(() => ({})),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
+    showDeleteAssignmentsToast,
+  ],
+})
+
+condition({
+  source: showDeleteAssignmentsToast,
+  if: (ids: number[]) => ids.length === 1,
+  then: successToastEvent('Задание было успешно удалено!'),
+  else: successToastEvent('Задания были успешно удалены!'),
+})
+
+forward({
+  from: requestDeleteAssignments.doneData,
+  to: [
+    successToastEvent('Отправлена заявка на удаление'),
+    requestDeleteModalVisibilityChanged.prepend(() => false),
+  ],
 })

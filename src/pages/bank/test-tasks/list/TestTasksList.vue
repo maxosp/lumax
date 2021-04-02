@@ -20,6 +20,7 @@
       :selected-rows="selectedRows"
       @onEdit="handleEditTask"
       @showPreview="showPreview"
+      @onRemove="onRemoveTask"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable
@@ -64,7 +65,7 @@
             :selected="selectedRows"
             :subject="subject"
             :study-year="studyYear"
-            @onRemove="removeSelected"
+            @onRemove="onRemoveTask"
             @onCheck="sendToModerationAssignments"
             @onPublish="publishAssignments"
             @onPreview="showPreview"
@@ -89,8 +90,8 @@
     <div :class="{ invisible: !$treeView }">
       <TasksTree
         @onRightClick="handleRightClick"
-        @onRemoveTask="removeSelectedTask"
-        @onRemoveTheme="removeSelectedTheme"
+        @onRemoveTask="onRemoveTask"
+        @onRemoveTheme="onRemoveTheme"
         @onPreview="showPreview"
         @loadTree="val => loadTree(val)"
       />
@@ -108,18 +109,24 @@
       :study-year="studyYear"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTask"
       @onCheck="sendToModerationAssignments"
       @onPublish="publishAssignments"
-      @onRemoveTask="removeSelectedTask"
-      @onRemoveTheme="removeSelectedTheme"
+      @onRemoveTask="onRemoveTask"
+      @onRemoveTheme="onRemoveTheme"
       @onPreview="showPreview"
       @onEdit="handleEditTask"
     />
     <TasksTypesModal />
-    <TaskDeleteModal />
     <TasksUpdateModal />
-    <DeletionRequsetModal />
+    <ConfirmDeleteModal
+      :type="showDeleteModalType"
+      @confirmDeleteTask="removeSelectedTask"
+      @confirmDeleteTheme="removeSelectedTheme"
+    />
+    <RequestDeleteModal
+      @confirmRequestDelete="sendRequestDeleteTask"
+    />
     <ModeratorSelectModal />
   </div>
 </template>
@@ -139,7 +146,6 @@ import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import ContextMenu from '@/pages/bank/test-tasks/list/parts/table/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
-import * as modals from '@/pages/bank/test-tasks/'
 import ModeratorSelectModal from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
@@ -147,8 +153,8 @@ import {
   loadTree,
   loadTreeLight,
   $tasksTreeTotal,
-  deleteAssignment,
-  deleteManyAssignments,
+  deleteAssignments,
+  requestDeleteAssignments,
   sendAssignmentsPublish,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
@@ -160,12 +166,16 @@ import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
 import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
-import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { $session } from '@/features/session'
-import { deleteTheme } from '@/pages/dictionary/themes/list/themes-page.model'
+import { deleteThemes } from '@/pages/dictionary/themes/list/themes-page.model'
 import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
+import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
+import TasksUpdateModal from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
+import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import {
@@ -200,10 +210,10 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     TasksTree,
-    TasksTypesModal: modals.TasksTypesModal,
-    TaskDeleteModal: modals.TaskDeletionModal,
-    TasksUpdateModal: modals.TasksUpdateModal,
-    DeletionRequsetModal: modals.DeletionRequestModal,
+    TasksTypesModal,
+    TasksUpdateModal,
+    ConfirmDeleteModal,
+    RequestDeleteModal,
     ModeratorSelectModal,
   },
   effector: {
@@ -231,6 +241,7 @@ export default (Vue as VueConstructor<
       studyYear: null,
       theme: null,
       localItems: [] as TestAssignment[],
+      showDeleteModalType: 'task',
     }
   },
   computed: {
@@ -320,19 +331,31 @@ export default (Vue as VueConstructor<
       loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
-    removeSelectedTask(ids: number[]) {
+    onRemoveTask(ids: number[]) {
+      this.showDeleteModalType = 'task'
       this.$session?.permissions?.assignments_assignment?.delete
-        ? loadModalToDelete(ids)
-        : loadModalToRequestDeletion(ids)
+        ? loadConfirmDeleteModal(ids)
+        : loadRequestDeleteModal(ids)
+    },
+    async removeSelectedTask(ids: number[]) {
+      await deleteAssignments(ids)
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
+    },
+    async sendRequestDeleteTask(comment: string, ids: number[]) {
+      await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
+    },
+    onRemoveTheme(ids: number[]) {
+      this.showDeleteModalType = 'theme'
+      this.$session?.permissions?.subjects_theme?.delete
+        ? loadConfirmDeleteModal(ids)
+        : loadRequestDeleteModal(ids)
     },
     async removeSelectedTheme(ids: number[]) {
-      await deleteTheme(ids[0])
-    },
-    async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') await deleteAssignment(ids)
-      else await deleteManyAssignments(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
+      await deleteThemes(ids)
     },
     handleEditTask(id: number) {
       navigatePush({ name: 'test-tasks-edit', params: { id: `${id}` } })

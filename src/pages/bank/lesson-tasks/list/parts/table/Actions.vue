@@ -96,7 +96,7 @@ export default Vue.extend({
           navigatePush({ name: 'lesson-tasks-edit', params: { id: this.$props.id } })
           break
         case 'delete':
-          this.$emit('onRemove', this.$props.id)
+          this.$emit('onRemove', [this.$props.id])
           break
         case 'delete_all':
           this.$emit('onRemove', this.$props.selected)

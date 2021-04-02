@@ -1,10 +1,10 @@
 <template>
   <Modal
     class="dialog"
-    :value="$deletionRequestModalVisibility"
-    @change="deletionRequestModalVisibilityChanged"
+    :value="$requestDeleteModalVisibility"
+    @change="requestDeleteModalVisibilityChanged"
   >
-    <p class="title"> {{ correctForm }} Продолжить? </p>
+    <p class="title"> Будет отправлена заявка на удаление. <br> Продолжить? </p>
     <BaseTextarea
       class="textarea"
       :max-length="200"
@@ -18,13 +18,14 @@
         class="btn"
         big
         border-without-bg
+        @click="$emit('confirmRequestDelete', $comment, $selectedIds)"
       >
         Продолжить
       </BaseButton>
       <BaseButton
         class="btn"
         big
-        @click="deletionRequestModalVisibilityChanged(false)"
+        @click="requestDeleteModalVisibilityChanged(false)"
       >
         Отменить
       </BaseButton>
@@ -38,36 +39,28 @@ import Modal from '@/ui/modal/Modal.vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
+  $requestDeleteModalVisibility,
+  requestDeleteModalVisibilityChanged,
   $comment,
-  $deletionRequestModalVisibility,
-  $selectedIds,
   commentChanged,
-  deletionRequestModalVisibilityChanged,
-} from '@/pages/dictionary/themes/list/parts/modals/deletion-request/deletion-request-modal.model'
+  $selectedIds,
+} from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
 export default Vue.extend({
-  name: 'DeletionRequest',
+  name: 'DeleteRequestModal',
   components: {
     Modal,
     BaseTextarea,
     BaseButton,
   },
   effector: {
-    $deletionRequestModalVisibility,
-    $comment,
     $selectedIds,
-  },
-  computed: {
-    correctForm() {
-      return this.$selectedIds.length === 1
-        ? 'Будет отправлена заявка на удаление выбранной темы.'
-        : 'Будет отправлена заявка на удаление выбранных тем.'
-    },
+    $requestDeleteModalVisibility,
+    $comment,
   },
   methods: {
-    deletionRequestModalVisibilityChanged,
+    requestDeleteModalVisibilityChanged,
     commentChanged,
-    // TODO add form confirm method
   },
 })
 </script>
@@ -77,33 +70,25 @@ export default Vue.extend({
   width: 420px;
   padding: 30px 20px;
 }
-
 .title {
   font-size: 18px;
   line-height: 22px;
-  color: #000000;
+  color: #000;
   margin: 0 auto 20px;
   text-align: center;
 }
-
 .textarea {
-  margin-bottom: 26px;
-
-  &::v-deep textarea {
+  margin-bottom: 20px;
+  & ::v-deep textarea {
     min-height: 150px;
   }
 }
 .btns-wrapper {
   width: 100%;
   @mixin flex-row-central;
-  justify-content: center;
-
+  justify-content: space-between;
   .btn {
     width: 144px;
-
-    &:first-child {
-      margin-right: 10px;
-    }
   }
 }
 </style>

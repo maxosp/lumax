@@ -18,7 +18,7 @@
     <TableHeader
       :total="total"
       :selected-rows="selectedRows"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTask"
       @onPreview="showPreview"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
@@ -63,7 +63,7 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
+            @onRemove="onRemoveTask"
             @onPreview="showPreview"
           />
         </template>
@@ -84,7 +84,11 @@
       </div>
     </div>
     <div :class="{ invisible: !$treeView }">
-      <LessonsTree @onRightClick="handleRightClick" />
+      <!--todo: onRemoveTask -->
+      <LessonsTree
+        @onRightClick="handleRightClick"
+        @onRemove="onRemoveTask"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -94,11 +98,18 @@
       :type="contextMenuType"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTask"
       @onPreview="showPreview"
     />
     <TasksTypesModal />
-    <TaskUpdateModal />
+    <TasksUpdateModal />
+    <ConfirmDeleteModal
+      type="task"
+      @confirmDeleteTask="removeSelectedTask"
+    />
+    <RequestDeleteModal
+      @confirmRequestDelete="sendRequestDeleteTask"
+    />
   </div>
 </template>
 
@@ -122,8 +133,8 @@ import {
   $treeView,
   loadTree,
   $lessonsTreeTotal,
-  deleteAssignment,
-  deleteManyAssignments,
+  deleteAssignments,
+  requestDeleteAssignments,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -134,10 +145,16 @@ import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
 import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import * as modals from '@/pages/bank/lesson-tasks/index'
 import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
+import TasksUpdateModal from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
+import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { $session } from '@/features/session'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -163,8 +180,10 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     LessonsTree,
-    TasksTypesModal: modals.TasksTypesModal,
-    TaskUpdateModal: modals.TasksUpdateModal,
+    TasksTypesModal,
+    TasksUpdateModal,
+    ConfirmDeleteModal,
+    RequestDeleteModal,
   },
   effector: {
     $token,
@@ -172,6 +191,7 @@ export default (Vue as VueConstructor<
     $treeView,
     $lessonsTreeTotal,
     $canRefreshAfterMultiChanges,
+    $session,
   },
   data() {
     return {
@@ -252,15 +272,21 @@ export default (Vue as VueConstructor<
     editTask(id: number) {
       navigatePush({ name: 'lesson-tasks-edit', params: { id: `${id}` } })
     },
-    async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') await deleteAssignment(ids)
-      else if (ids.length === 1) await deleteAssignment(ids[0])
-      else await deleteManyAssignments(ids)
+    onRemoveTask(ids: number[]) {
+      this.$session?.permissions?.assignments_assignment?.delete
+        ? loadConfirmDeleteModal(ids)
+        : loadRequestDeleteModal(ids)
+    },
+    async removeSelectedTask(ids: number[]) {
+      await deleteAssignments(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      if (typeof ids !== 'number') {
-        this.$refs.vuetable.selectedTo = []
-        this.selectedRows = []
-      }
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
+    },
+    async sendRequestDeleteTask(comment: string, ids: number[]) {
+      await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
     },
     handleLoadError(res: any) {
       if (!res.response) {

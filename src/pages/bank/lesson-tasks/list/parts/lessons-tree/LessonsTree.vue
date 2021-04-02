@@ -8,6 +8,7 @@
       parent
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
       @onRightClick="$emit('onRightClick', $event)"
+      @onRemove="$emit('onRemove', val)"
     />
   </div>
 </template>

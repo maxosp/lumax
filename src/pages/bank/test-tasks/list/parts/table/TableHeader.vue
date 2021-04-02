@@ -78,8 +78,7 @@ export default Vue.extend({
     toggleTreeView,
     modalTasksTypesVisibilityChanged,
     handleRemove() {
-      const data = this.selectedRows?.length > 1 ? this.selectedRows : this.selectedRows[0]
-      this.$emit('onRemove', data)
+      this.$emit('onRemove', this.selectedRows)
     },
   },
 })

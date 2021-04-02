@@ -1,25 +1,43 @@
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
-import { DuplicateAssignmentType } from '@/features/api/assignment/types'
+import {
+  DuplicateAssignmentType,
+  RequestDeleteAssignmentsParams,
+} from '@/features/api/assignment/types'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
-  deleteOlympiadAssignmentFx,
   deleteOlympiadAssignmentsFx,
+  requestDeleteOlympiadAssignmentsFx,
 } from '@/features/api/assignment/olympiad-assignment/delete-olympiad-assignment'
-import { modalTaskDeleteVisibilityChanged } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
 import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
 import { GetListQueryParams } from '@/features/api/types'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { condition } from 'patronum'
+import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { loadTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
 })
 
-export const deleteAssignment = attach({
-  effect: deleteOlympiadAssignmentFx,
+export const deleteAssignments = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteOlympiadAssignmentsFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
 
-export const deleteAssignments = attach({
-  effect: deleteOlympiadAssignmentsFx,
+export const requestDeleteAssignments = attach({
+  effect: requestDeleteOlympiadAssignmentsFx,
+  mapParams: (payload: RequestDeleteAssignmentsParams): RequestDeleteAssignmentsParams => {
+    return {
+      assignments: payload.assignments,
+      ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
+    }
+  },
 })
 
 export const duplicateAssignment = attach({
@@ -35,6 +53,8 @@ export const $canRefreshTableAfterDeletion = restore<boolean>(
   canrefreshTableAfterDeletionChanged,
   false
 )
+
+const showDeleteAssignmentsToast = createEvent<number[]>()
 
 export const loadList = createEvent<GetListQueryParams>()
 
@@ -58,21 +78,27 @@ forward({
 })
 
 forward({
-  from: deleteAssignment.doneData,
+  from: deleteAssignments.doneData,
   to: [
-    loadList.prepend(() => ({})),
-    successToastEvent('Задание было успешно удалено!'),
+    loadTree.prepend(() => ({})),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
-    modalTaskDeleteVisibilityChanged.prepend(() => false),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
+    showDeleteAssignmentsToast,
   ],
 })
 
+condition({
+  source: showDeleteAssignmentsToast,
+  if: (ids: number[]) => ids.length === 1,
+  then: successToastEvent('Задание было успешно удалено!'),
+  else: successToastEvent('Задания были успешно удалены!'),
+})
+
 forward({
-  from: deleteAssignments.doneData,
+  from: requestDeleteAssignments.doneData,
   to: [
-    loadList.prepend(() => ({})),
-    successToastEvent('Задания были успешно удалены!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
-    modalTaskDeleteVisibilityChanged.prepend(() => false),
+    successToastEvent('Отправлена заявка на удаление'),
+    requestDeleteModalVisibilityChanged.prepend(() => false),
   ],
 })

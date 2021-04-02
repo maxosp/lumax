@@ -19,7 +19,7 @@
       :total="total"
       :selected-rows="selectedRows"
       @onEdit="editTask"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTask"
       @duplicate="duplicateTask"
       @showPreview="showPreview"
     />
@@ -66,7 +66,7 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
+            @onRemove="onRemoveTask"
             @onEdit="editTask"
             @showPreview="showPreview"
             @sendForCheck="sendForCheck"
@@ -95,7 +95,7 @@
       :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTask"
       @onEdit="editTask"
       @showPreview="showPreview"
       @sendForCheck="sendForCheck"
@@ -104,8 +104,13 @@
     <TasksTypesModal />
     <TasksUpdateModal />
     <ModeratorSelectModal />
-    <TaskDeleteModal />
-    <DeletionRequsetModal />
+    <ConfirmDeleteModal
+      type="task"
+      @confirmDeleteTask="removeSelectedTask"
+    />
+    <RequestDeleteModal
+      @confirmRequestDelete="sendRequestDeleteTask"
+    />
   </div>
 </template>
 
@@ -125,7 +130,6 @@ import TasksFilter from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/Tas
 import TableHeader from '@/pages/bank/olympiad-tasks/list/parts/table/TableHeader.vue'
 import TooltipCell from '@/pages/bank/olympiad-tasks/list/parts/table/TooltipCell.vue'
 import Actions from '@/pages/bank/olympiad-tasks/list/parts/table/Actions.vue'
-import * as modals from '@/pages/bank/olympiad-tasks/index'
 import ContextMenu from '@/pages/bank/olympiad-tasks/list/parts/ContextMenu.vue'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import {
@@ -133,6 +137,8 @@ import {
   $canRefreshTableAfterDeletion,
   duplicateAssignment,
   $canRefreshAfterDuplicate,
+  deleteAssignments,
+  requestDeleteAssignments,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
   toggleVisibility,
@@ -143,12 +149,17 @@ import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
 } from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
-import { loadModalToDelete } from '@/pages/common/modals/tasks-bank/task-delete/task-delete-modal.model'
-import { loadModalToRequestDeletion } from '@/pages/common/modals/tasks-bank/deletion-request/deletion-request-modal.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
+import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
+import TasksUpdateModal from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
+import ModeratorSelectModal from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -167,11 +178,11 @@ export default (Vue as VueConstructor<
     ContextMenu,
     Vuetable,
     VuetablePagination,
-    TasksTypesModal: modals.TasksTypesModal,
-    TasksUpdateModal: modals.TasksUpdateModal,
-    ModeratorSelectModal: modals.ModeratorSelectModal,
-    TaskDeleteModal: modals.TaskDeletionModal,
-    DeletionRequsetModal: modals.DeletionRequestModal,
+    TasksTypesModal,
+    TasksUpdateModal,
+    ModeratorSelectModal,
+    ConfirmDeleteModal,
+    RequestDeleteModal,
   },
   effector: {
     $visibility,
@@ -239,8 +250,6 @@ export default (Vue as VueConstructor<
     toggleVisibility,
     loadList,
     reset,
-    loadModalToDelete,
-    loadModalToRequestDeletion,
     duplicateTask(id: number) {
       duplicateAssignment({ assignments: [id] })
     },
@@ -268,10 +277,21 @@ export default (Vue as VueConstructor<
     editTask(id: number) {
       navigatePush({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })
     },
-    removeSelected(ids: number[]) {
+    onRemoveTask(ids: number[]) {
       this.$session?.permissions?.assignments_assignment?.delete
-        ? loadModalToDelete(ids)
-        : loadModalToRequestDeletion(ids)
+        ? loadConfirmDeleteModal(ids)
+        : loadRequestDeleteModal(ids)
+    },
+    async removeSelectedTask(ids: number[]) {
+      await deleteAssignments(ids)
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
+    },
+    async sendRequestDeleteTask(comment: string, ids: number[]) {
+      await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
     },
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
