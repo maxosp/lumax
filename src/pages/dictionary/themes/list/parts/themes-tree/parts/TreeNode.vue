@@ -109,6 +109,9 @@ export default Vue.extend({
       if (!this.node.leaves.length && this.node.element_type === 'study_year') {
         const { subject_id, id } = this.node[this.node.element_type]!
         this.$emit('loadTree', { subject: subject_id, study_year: id })
+      } else if (!this.node.leaves.length && !this.parent && this.node.element_type === 'subject') {
+        const { id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', { subject: id, is_prerequisite: true })
       }
       this.opened = !this.opened
     },

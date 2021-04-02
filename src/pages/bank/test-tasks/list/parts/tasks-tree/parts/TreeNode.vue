@@ -184,7 +184,12 @@ export default Vue.extend({
       if (evt.target.closest('.action') || this.node.element_type === 'study_resource') return
       if (!this.node.leaves.length && this.node.element_type === 'theme') {
         const { subject_id, study_year_id, id } = this.node[this.node.element_type]!
-        this.$emit('loadTree', { subject: subject_id, study_year: study_year_id, theme: id })
+        this.$emit('loadTree', {
+          subject: subject_id,
+          study_year: study_year_id,
+          theme: id,
+          is_prerequisite: this.prerequisiteFolder ? true : undefined,
+        })
       }
       this.opened = !this.opened
     },
