@@ -262,7 +262,7 @@ export default (Vue as VueConstructor<
     showPreview(id: number) {
       this.$router.push({
         name: 'preview-task',
-        query: { questionId: `${id}`, type: 'olympiad-assignment', token: this.$token },
+        query: { questions: `${id}`, type: 'olympiad-assignment', token: this.$token },
       })
     },
     editTask(id: number) {

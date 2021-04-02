@@ -56,6 +56,7 @@ import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-
 import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
+import { goBack } from '@/features/navigation/index'
 
 type IframeData = {
   activeTask: string | null
@@ -78,7 +79,6 @@ export default Vue.extend({
     token: null as null | string,
     type: null as null | string,
     heightIframe: 0,
-    prevRouteName: '',
     currentIndex: null as null | number,
   }),
   computed: {
@@ -127,25 +127,16 @@ export default Vue.extend({
       if (this.activeTask) loadCommentModal(parseInt(this.activeTask, 10))
     },
   },
-  // записываю предыдущий раут
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      // @ts-ignore
-      vm.prevRoute = from.name || 'home'
-    })
-  },
   created() {
     const { questions, token, type } = this.$route.query
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
       this.currentIndex = 0
-      if (questions.length) initDropDown()
+      if (questions.length > 1) initDropDown()
     }
     if (token && typeof token === 'string') this.token = token
     if (type && typeof type === 'string') this.type = type
-    if (!this.questions || !this.token || !this.type) {
-      this.$router.push({ name: this.prevRouteName })
-    }
+    if (!this.questions || !this.token || !this.type) goBack()
   },
   mounted() {
     // костыль для получения высоты контента внутри iframe

@@ -4,7 +4,7 @@
       <BaseButton
         class="back-btn"
         yellow
-        @click="navigatePush({ name: 'test-tasks-list' })"
+        @click="goBack(getWishedRouter)"
       >
         <Icon
           type='back'
@@ -37,7 +37,7 @@
 
 <script>
 import Vue from 'vue'
-import { navigatePush } from '@/features/navigation'
+import { goBack } from '@/features/navigation'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 
@@ -51,8 +51,22 @@ export default Vue.extend({
     title: { type: String, default: '' },
     disabled: { type: Boolean, default: true },
   },
+  computed: {
+    getWishedRouter() {
+      switch (this.$route.name) {
+        case 'test-tasks-edit':
+          return { name: 'test-tasks-list' }
+        case 'olympiad-tasks-edit':
+          return { name: 'olympiad-tasks-list' }
+        case 'lesson-tasks-edit':
+          return { name: 'lesson-tasks-list' }
+        default:
+          return { name: 'test-tasks-list' }
+      }
+    },
+  },
   methods: {
-    navigatePush,
+    goBack,
   },
 })
 </script>

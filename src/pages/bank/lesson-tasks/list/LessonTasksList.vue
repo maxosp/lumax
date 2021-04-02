@@ -205,7 +205,7 @@ export default (Vue as VueConstructor<
     showPreview(id: number) {
       this.$router.push({
         name: 'preview-task',
-        query: { questionId: `${id}`, type: 'lesson-assignment', token: this.$token },
+        query: { questions: `${id}`, type: 'lesson-assignment', token: this.$token },
       })
     },
     clearWording(str: string) {

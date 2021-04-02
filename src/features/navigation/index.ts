@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import VueRouter, { Route } from 'vue-router'
 import VueMeta from 'vue-meta'
 import { createEvent } from 'effector-root'
 
@@ -15,6 +15,28 @@ type MetaItem = {
   content: string
 }
 
+let prevRoute: Route | null = null
+
+export const goBack = (wishedRoute: Route | null = null) => {
+  let routeName = 'home'
+  let routeQuery = {}
+  let routeParams = {}
+  const setRouteData = (arg: Route) => {
+    const { name, query, params } = arg
+    if (name) routeName = name
+    if (query && Object.keys(query).length) routeQuery = query
+    if (params && Object.keys(params).length) routeParams = params
+  }
+  if (prevRoute) setRouteData(prevRoute)
+  if (prevRoute && prevRoute.path === '/' && !prevRoute.name && wishedRoute)
+    setRouteData(wishedRoute)
+  router.push({
+    name: routeName,
+    params: routeParams,
+    query: routeQuery,
+  })
+}
+
 router.beforeEach((to, from, next) => {
   const nearestWithTitle = to.matched
     .slice()
@@ -27,9 +49,11 @@ router.beforeEach((to, from, next) => {
   const nameDataAtr = 'data-vue-router'
   // set title if it exist
   if (nearestWithTitle) document.title = nearestWithTitle.meta.title || 'CMS Letovo Online'
-  // // remove prev page meta tags
+  // remove prev page meta tags
   const oldMetaTags: HTMLElement[] = Array.from(document.querySelectorAll(`[${nameDataAtr}]`))
   if (oldMetaTags.length) oldMetaTags.map((el: any) => el.parentNode.removeChild(el))
+  // check prev route
+  prevRoute = from
   if (!nearestWithMeta) return next()
   // set arr meta tags
   const metaTags: HTMLMetaElement[] = nearestWithMeta.meta.metaTags.map((tagDef: MetaItem) => {
