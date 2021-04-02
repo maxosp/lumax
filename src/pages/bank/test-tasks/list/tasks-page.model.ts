@@ -4,7 +4,7 @@ import {
   deleteTestAssignmentsFx,
 } from '@/features/api/assignment/test-assignment/delete-test-assignment'
 import { getTestAssignmentTreeLightFx } from '@/features/api/assignment/test-assignment/get-test-tree-light'
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import {
   GetAssignmentTreeQueryParams,
@@ -72,4 +72,9 @@ forward({
 forward({
   from: deleteAssignment.doneData,
   to: [loadTreeLight.prepend(() => ({})), successToastEvent('Задание было успешно удалено!')],
+})
+
+forward({
+  from: sendAssignmentsPublish.failData.map((res) => res.body),
+  to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
 })
