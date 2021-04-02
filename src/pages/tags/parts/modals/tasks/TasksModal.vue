@@ -16,7 +16,9 @@
       </div>
     </div>
     <div class="main">
-      <p class="title"> Список ID заданий </p>
+      <p class="title">
+        {{ $tagsList.length ? 'Список ID заданий' : 'Задания не привязаны к тегу' }}
+      </p>
       <div class="list">
         <span
           v-for="(item, index) in $tagsList"
@@ -26,7 +28,7 @@
         </span>
       </div>
     </div>
-    <div class="btn-wrapper">
+    <div v-if="$tagsList.length" class="btn-wrapper">
       <BaseButton
         class="btn"
         big

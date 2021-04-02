@@ -20,6 +20,7 @@
       :selected-rows="selectedRows"
       @onEdit="editTag"
       @onRemove="removeSelected"
+      @showTasks="showTasks"
     />
     <div :class="{ 'table-container': true, invisible: $treeView, hideHeader: !total }">
       <Vuetable

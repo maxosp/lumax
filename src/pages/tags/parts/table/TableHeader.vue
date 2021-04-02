@@ -19,9 +19,16 @@
     <span
       v-if="selectedRows.length"
       class="--red"
-      @click="handleRemove"
+      @click="$emit('onRemove', this.selectedRows)"
     >
       Удалить
+    </span>
+    <span
+      v-if="selectedRows && selectedRows.length === 1"
+      class="--basic"
+      @click="$emit('showTasks', selectedRows)"
+    >
+      Показать задания
     </span>
   </div>
 </template>
@@ -38,11 +45,6 @@ export default Vue.extend({
   props: {
     total: { type: Number, required: true },
     selectedRows: { type: Array as PropType<number[]> },
-  },
-  methods: {
-    handleRemove() {
-      this.$emit('onRemove', this.selectedRows)
-    },
   },
 })
 </script>
@@ -78,6 +80,7 @@ export default Vue.extend({
   }
   span.--red {
     color: var(--c-red-1);
+    margin-right: 25px;
   }
 }
 </style>
