@@ -19,7 +19,7 @@
       :total="$treeView ? $tagsTreeTotal : total"
       :selected-rows="selectedRows"
       @onEdit="editTag"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTags"
       @showTasks="showTasks"
     />
     <div :class="{ 'table-container': true, invisible: $treeView, hideHeader: !total }">
@@ -49,7 +49,7 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
+            @onRemove="onRemoveTags"
             @onEdit="editTag"
             @showTasks="showTasks"
             @createTag="(val) => createTagFromTree(val)"
@@ -70,6 +70,7 @@
       <TagsTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
+        @onRemove="onRemoveTags"
       />
     </div>
     <ContextMenu
@@ -83,15 +84,18 @@
       :subject-id="subject_id"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveTags"
       @onEdit="editTag"
       @showTasks="showTasks"
       @createTag="(val) => createTagFromTree(val)"
     />
     <TagCreationModal />
     <TagEditionModal />
-    <TagDeletionModal />
     <TasksModal />
+    <ConfirmDeleteModal
+      type="tag"
+      @confirmDelete="removeSelectedTags"
+    />
   </div>
 </template>
 
@@ -105,12 +109,7 @@ import { RightClickParams } from '@/pages/tags/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, tagsDataFields } from '@/pages/tags/constants'
 import { toggleVisibility, $visibility } from '@/pages/tags/parts/tags-filter/tags-filter.model'
-import {
-  loadTreeLight,
-  loadTree,
-  $tagsTreeTotal,
-  $canRefreshTableAfterDeletion,
-} from '@/pages/tags/tags-page.model'
+import { loadTreeLight, loadTree, $tagsTreeTotal, deleteTags } from '@/pages/tags/tags-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { $treeView } from '@/pages/tags/parts/header/page-header.model'
 import PageHeader from '@/pages/tags/parts/header/PageHeader.vue'
@@ -123,7 +122,6 @@ import TagsTree from '@/pages/tags/parts/tree/TagsTree.vue'
 import ContextMenu from '@/pages/tags/parts/ContextMenu.vue'
 import TagCreationModal from '@/pages/tags/parts/modals/tag-creation/TagCreationModal.vue'
 import TagEditionModal from '@/pages/tags/parts/modals/tag-edition/TagEditionModal.vue'
-import TagDeletionModal from '@/pages/tags/parts/modals/tag-deletion/TagDeletionModal.vue'
 import TasksModal from '@/pages/tags/parts/modals/tasks/TasksModal.vue'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
@@ -131,12 +129,13 @@ import {
   loadModalToEdit,
   $canRefreshTable,
 } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
-import { loadModalToDelete } from '@/pages/tags/parts/modals/tag-deletion/tag-deletion.model'
 import {
   $canRefreshTableAfterCreation,
   createTagFromTree,
 } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -156,10 +155,10 @@ export default (Vue as VueConstructor<
     ContextMenu,
     TagCreationModal,
     TagEditionModal,
-    TagDeletionModal,
     TasksModal,
     Vuetable,
     VuetablePagination,
+    ConfirmDeleteModal,
   },
   effector: {
     $visibility,
@@ -168,7 +167,6 @@ export default (Vue as VueConstructor<
     $token,
     $canRefreshTable,
     $canRefreshTableAfterCreation,
-    $canRefreshTableAfterDeletion,
   },
   data() {
     return {
@@ -197,11 +195,6 @@ export default (Vue as VueConstructor<
       },
     },
     $canRefreshTableAfterCreation: {
-      handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
-      },
-    },
-    $canRefreshTableAfterDeletion: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.refresh()
       },
@@ -269,8 +262,17 @@ export default (Vue as VueConstructor<
       } else selectedTo.push(res.data.id)
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
-    removeSelected(ids: number[]) {
-      loadModalToDelete(ids)
+    onRemoveTags(ids: number[]) {
+      loadConfirmDeleteModal(ids)
+    },
+    async removeSelectedTags(ids: number[]) {
+      await deleteTags(ids)
+      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      this.removeSelection()
+    },
+    removeSelection() {
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
     },
     hideContextMenu() {
       this.showContextMenu = false

@@ -19,7 +19,7 @@
     <span
       v-if="selectedRows.length"
       class="--red"
-      @click="$emit('onRemove', this.selectedRows)"
+      @click="$emit('onRemove', selectedRows)"
     >
       Удалить
     </span>

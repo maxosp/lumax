@@ -121,8 +121,7 @@
     <TasksUpdateModal />
     <ConfirmDeleteModal
       :type="showDeleteModalType"
-      @confirmDeleteTask="removeSelectedTask"
-      @confirmDeleteTheme="removeSelectedTheme"
+      @confirmDelete="handleConfirmDelete"
     />
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTask"
@@ -337,14 +336,24 @@ export default (Vue as VueConstructor<
         ? loadConfirmDeleteModal(ids)
         : loadRequestDeleteModal(ids)
     },
+    handleConfirmDelete(ids: number[], type: string) {
+      if (type === 'task') {
+        this.removeSelectedTask(ids)
+      }
+      if (type === 'theme') {
+        this.removeSelectedTheme(ids)
+      }
+    },
     async removeSelectedTask(ids: number[]) {
       await deleteAssignments(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      this.$refs.vuetable.selectedTo = []
-      this.selectedRows = []
+      this.removeSelection()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {
       await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      this.removeSelection()
+    },
+    removeSelection() {
       this.$refs.vuetable.selectedTo = []
       this.selectedRows = []
     },

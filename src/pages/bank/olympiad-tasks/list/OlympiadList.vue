@@ -106,7 +106,7 @@
     <ModeratorSelectModal />
     <ConfirmDeleteModal
       type="task"
-      @confirmDeleteTask="removeSelectedTask"
+      @confirmDelete="removeSelectedTask"
     />
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTask"
@@ -227,22 +227,19 @@ export default (Vue as VueConstructor<
     $canRefreshAfterDuplicate: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.refresh()
-        this.$refs.vuetable.selectedTo = []
-        this.selectedRows = []
+        this.removeSelection()
       },
     },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.refresh()
-        this.$refs.vuetable.selectedTo = []
-        this.selectedRows = []
+        this.removeSelection()
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.refresh()
-        this.$refs.vuetable.selectedTo = []
-        this.selectedRows = []
+        this.removeSelection()
       },
     },
   },
@@ -285,11 +282,13 @@ export default (Vue as VueConstructor<
     async removeSelectedTask(ids: number[]) {
       await deleteAssignments(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      this.$refs.vuetable.selectedTo = []
-      this.selectedRows = []
+      this.removeSelection()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {
       await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      this.removeSelection()
+    },
+    removeSelection() {
       this.$refs.vuetable.selectedTo = []
       this.selectedRows = []
     },

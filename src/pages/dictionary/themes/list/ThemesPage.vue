@@ -48,7 +48,7 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="onRemoveTheme"
+            @onRemove="onRemoveThemes"
           />
         </template>
       </Vuetable>
@@ -84,11 +84,11 @@
       :theme="theme"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="onRemoveTheme"
+      @onRemove="onRemoveThemes"
     />
     <ConfirmDeleteModal
       type="theme"
-      @confirmDeleteTask="removeSelectedTheme"
+      @confirmDelete="removeSelectedThemes"
     />
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTheme"
@@ -117,7 +117,6 @@ import {
   loadTreeLight,
   loadTree,
   $themesTreeTotal,
-  $canRefreshTableAfterDeletion,
   deleteThemes,
   requestDeleteThemes,
 } from '@/pages/dictionary/themes/list/themes-page.model'
@@ -171,7 +170,6 @@ export default (Vue as VueConstructor<
     $visibility,
     $treeView,
     $themesTreeTotal,
-    $canRefreshTableAfterDeletion,
     $session,
   },
   data() {
@@ -193,13 +191,6 @@ export default (Vue as VueConstructor<
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/subject/themes/list/`
-    },
-  },
-  watch: {
-    $canRefreshTableAfterDeletion: {
-      handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
-      },
     },
   },
   methods: {
@@ -251,19 +242,21 @@ export default (Vue as VueConstructor<
       } else selectedTo.push(res.data.id)
       this.selectedRows = this.$refs.vuetable.selectedTo
     },
-    onRemoveTheme(ids: number[]) {
+    onRemoveThemes(ids: number[]) {
       this.$session?.permissions?.subjects_theme?.delete
         ? loadConfirmDeleteModal(ids)
         : loadRequestDeleteModal(ids)
     },
-    async removeSelectedTheme(ids: number[]) {
+    async removeSelectedThemes(ids: number[]) {
       await deleteThemes(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      this.$refs.vuetable.selectedTo = []
-      this.selectedRows = []
+      this.removeSelection()
     },
     async sendRequestDeleteTheme(comment: string, ids: number[]) {
       await requestDeleteThemes({ themes: ids, ticket_comment: comment })
+      this.removeSelection()
+    },
+    removeSelection() {
       this.$refs.vuetable.selectedTo = []
       this.selectedRows = []
     },

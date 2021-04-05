@@ -43,7 +43,7 @@
         :is-theme="node.element_type === 'theme'"
         :selected="[]"
         class="action"
-        @onRemove="(val) => loadModalToDelete(val)"
+        @onRemove="(val) => $emit('onRemove', val)"
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
         @create="(val) => createLabelFromTree(val)"
@@ -58,6 +58,7 @@
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
+        @onRemove="(val) => $emit('onRemove', val)"
       />
     </div>
   </div>
@@ -70,7 +71,6 @@ import Chip from '@/pages/labels/parts/tree/Chip.vue'
 import Actions from '@/pages/tags/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
-import { loadModalToDelete } from '@/pages/labels/parts/modals/label-deletion/label-deletion.model'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 import { sortTreeLeaves } from '@/features/lib'
@@ -136,7 +136,6 @@ export default Vue.extend({
   },
   methods: {
     loadModal,
-    loadModalToDelete,
     loadModalToEdit,
     createLabelFromTree,
     toggle(evt: any) {

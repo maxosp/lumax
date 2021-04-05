@@ -57,8 +57,6 @@
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         class="action"
         @onRemove="(val) => $emit('onRemove', val)"
-        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
-        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
         @onPreview="(val) => $emit('onPreview', val)"
       />
     </div>
@@ -71,8 +69,6 @@
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
         @onRemove="(val) => $emit('onRemove', val)"
-        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
-        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
         @onPreview="(val) => $emit('onPreview', val)"
       />
     </div>

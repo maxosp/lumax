@@ -1,11 +1,12 @@
-import { attach, createEvent, createStore, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, createStore, forward, restore } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
-import { deleteResourceFx } from '@/features/api/media/delete-resource'
+import { deleteResourcesFx } from '@/features/api/media/delete-resources'
 import { getResourcesTreeLightFx } from '@/features/api/media/get-resources-tree-light'
 import { mergeTreeData } from '@/features/lib'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 
 const getResourcesTree = attach({
   effect: getResourcesTreeFx,
@@ -15,8 +16,14 @@ const getResourcesTreeLight = attach({
   effect: getResourcesTreeLightFx,
 })
 
-export const deleteResource = attach({
-  effect: deleteResourceFx,
+export const deleteResources = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteResourcesFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
 
 export const loadTreeLight = createEvent<void>()
@@ -58,10 +65,12 @@ forward({
     setResourcesTreeTotal.prepend((res) => res.body.total),
   ],
 })
+
 forward({
-  from: deleteResource.doneData,
+  from: deleteResources.doneData,
   to: [
     loadTreeLight.prepend(() => ({})),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
     successToastEvent('Обучающий ресурс был успешно удален!'),
   ],
 })

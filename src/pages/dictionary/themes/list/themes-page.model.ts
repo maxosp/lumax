@@ -38,12 +38,6 @@ export const requestDeleteThemes = attach({
   },
 })
 
-export const canRefreshTableAfterDeletionChanged = createEvent<boolean>()
-export const $canRefreshTableAfterDeletion = restore<boolean>(
-  canRefreshTableAfterDeletionChanged,
-  false
-)
-
 export const toggleTreeView = createEvent<boolean>()
 export const $treeView = restore(toggleTreeView, false)
 
@@ -88,7 +82,6 @@ forward({
   from: deleteThemes.doneData,
   to: [
     loadTree.prepend(() => ({})),
-    canRefreshTableAfterDeletionChanged.prepend(() => true),
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     showDeleteThemesToast,
   ],
@@ -102,7 +95,7 @@ condition({
 })
 
 forward({
-  from: requestDeleteThemesFx.doneData,
+  from: requestDeleteThemes.doneData,
   to: [
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),

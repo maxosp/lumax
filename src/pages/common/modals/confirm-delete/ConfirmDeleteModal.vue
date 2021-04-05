@@ -10,7 +10,7 @@
         class="btn"
         big
         border-without-bg
-        @click="confirm"
+        @click="$emit('confirmDelete', $selectedIds, type)"
       >
         Продолжить
       </BaseButton>
@@ -63,18 +63,6 @@ export default Vue.extend({
   },
   methods: {
     confirmDeleteModalVisibilityChanged,
-    confirm() {
-      switch (this.type) {
-        case 'task':
-          this.$emit('confirmDeleteTask', this.$selectedIds)
-          break
-        case 'theme':
-          this.$emit('confirmDeleteTheme', this.$selectedIds)
-          break
-        default:
-          break
-      }
-    },
   },
 })
 </script>
@@ -84,7 +72,6 @@ export default Vue.extend({
   width: 420px;
 }
 .title {
-  max-width: 220px;
   font-size: 18px;
   line-height: 22px;
   color: #000;

@@ -50,10 +50,6 @@ export type GetLabelsTreeQueryParams = {
   search_study_year?: string
 }
 
-export type DeleteTagsType = {
-  olympiad_tags: number[]
-}
-
 export type GetTypesResponse = {
   code: string
   name: string
@@ -234,5 +230,10 @@ export type RequestDeleteAssignmentsParams = {
 
 export type RequestDeleteThemesParams = {
   themes: number[]
+  ticket_comment?: string
+}
+
+export type RequestDeleteSubjectsParams = {
+  subjects: number[]
   ticket_comment?: string
 }

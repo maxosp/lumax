@@ -19,6 +19,7 @@
       <LabelsTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
+        @onRemove="onRemoveLabel"
       />
     </div>
     <ContextMenu
@@ -33,15 +34,18 @@
       :subject-id="subject_id"
       :theme-id="theme_id"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveLabel"
       @onEdit="editLabel"
       @showTasks="showTasks"
       @createLabel="(val) => createLabelFromTree(val)"
     />
     <LabelCreationModal />
     <LabelEditionModal />
-    <LabelDeletionModal />
     <TasksModal />
+    <ConfirmDeleteModal
+      type="label"
+      @confirmDelete="removeLabel"
+    />
   </div>
 </template>
 
@@ -54,20 +58,20 @@ import LabelsTree from '@/pages/labels/parts/tree/LabelsTree.vue'
 import ContextMenu from '@/pages/labels/parts/ContextMenu.vue'
 import LabelCreationModal from '@/pages/labels/parts/modals/label-creation/LabelCreationModal.vue'
 import LabelEditionModal from '@/pages/labels/parts/modals/label-edition/LabelEditionModal.vue'
-import LabelDeletionModal from '@/pages/labels/parts/modals/label-deletion/LabelDeletionModal.vue'
 import TasksModal from '@/pages/labels/parts/modals/tasks/TasksModal.vue'
 import {
   $visibility,
   toggleVisibility,
 } from '@/pages/labels/parts/labels-filter/labels-filter.model'
-import { loadTree, loadTreeLight } from '@/pages/labels/labels-page.model'
+import { deleteLabels, loadTree, loadTreeLight } from '@/pages/labels/labels-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/labels/constants'
 import { RightClickParams } from '@/pages/labels/types'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
-import { loadModalToDelete } from '@/pages/labels/parts/modals/label-deletion/label-deletion.model'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 
 export default Vue.extend({
   components: {
@@ -78,8 +82,8 @@ export default Vue.extend({
     ContextMenu,
     LabelCreationModal,
     LabelEditionModal,
-    LabelDeletionModal,
     TasksModal,
+    ConfirmDeleteModal,
   },
   effector: {
     $visibility,
@@ -125,8 +129,11 @@ export default Vue.extend({
     hideContextMenu() {
       this.showContextMenu = false
     },
-    removeSelected(ids: number) {
-      loadModalToDelete(ids)
+    onRemoveLabel(ids: number[]) {
+      loadConfirmDeleteModal(ids)
+    },
+    removeLabel(ids: number[]) {
+      deleteLabels(ids)
     },
     showTasks(id: number) {
       loadModal(id)

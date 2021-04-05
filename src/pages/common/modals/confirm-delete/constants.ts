@@ -19,4 +19,44 @@ export const mapDeleteModalTypeToTitle = {
       plural: 'удалены',
     },
   },
+  subject: {
+    typeWord: {
+      singular: 'Предмет',
+      plural: 'Предметы',
+    },
+    deleteWord: {
+      singular: 'удален',
+      plural: 'удалены',
+    },
+  },
+  resource: {
+    typeWord: {
+      singular: 'Обучающий ресурс',
+      plural: 'Обучающие ресурсы',
+    },
+    deleteWord: {
+      singular: 'удален',
+      plural: 'удалены',
+    },
+  },
+  label: {
+    typeWord: {
+      singular: 'Метка',
+      plural: 'Метки',
+    },
+    deleteWord: {
+      singular: 'удалена',
+      plural: 'удалены',
+    },
+  },
+  tag: {
+    typeWord: {
+      singular: 'Тег',
+      plural: 'Теги',
+    },
+    deleteWord: {
+      singular: 'удален',
+      plural: 'удалены',
+    },
+  },
 }

@@ -1,11 +1,12 @@
-import { deleteLabelFx } from '@/features/api/assignment/labels/delete-label'
+import { deleteLabelsFx } from '@/features/api/assignment/labels/delete-label'
 import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tree'
 import { getLabelsTreeLightFx } from '@/features/api/assignment/labels/get-labels-tree-light'
 import { GetLabelsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 import { mergeTreeData } from '@/features/lib'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 
 export const getLabelsTree = attach({
   effect: getLabelsTreeFx,
@@ -15,8 +16,15 @@ export const getLabelsTree = attach({
 const getLabelsTreeLight = attach({
   effect: getLabelsTreeLightFx,
 })
-export const deleteLabel = attach({
-  effect: deleteLabelFx,
+
+export const deleteLabels = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteLabelsFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
 
 export const loadTreeLight = createEvent<void>()
@@ -57,6 +65,10 @@ forward({
 })
 
 forward({
-  from: deleteLabelFx.doneData,
-  to: [loadTreeLight, successToastEvent('Метка была успешно удалена!')],
+  from: deleteLabels.doneData,
+  to: [
+    loadTreeLight.prepend(() => ({})),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
+    successToastEvent('Метка была успешно удалена!'),
+  ],
 })

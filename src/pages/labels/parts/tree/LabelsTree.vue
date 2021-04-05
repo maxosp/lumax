@@ -18,6 +18,7 @@
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
       @loadTree="val => $emit('loadTree', val)"
       @onRightClick="$emit('onRightClick', $event)"
+      @onRemove="val => $emit('onRemove', val)"
     />
   </div>
 </template>

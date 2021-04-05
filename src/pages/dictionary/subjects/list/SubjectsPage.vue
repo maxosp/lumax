@@ -37,7 +37,7 @@
           <Actions
             :id="props.rowData.id"
             :selected="selectedRows"
-            @onRemove="removeSelected"
+            @onRemove="onRemoveSubjects"
             @doMondatory="updateTypeSubject($event, true)"
             @doOptional="updateTypeSubject($event, false)"
             @doMondatoryAll="updateTypeSubject($event, true)"
@@ -62,11 +62,18 @@
       :type="contextMenuType"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveSubjects"
       @doMondatory="updateTypeSubject($event, true)"
       @doOptional="updateTypeSubject($event, false)"
       @doMondatoryAll="updateTypeSubject($event, true)"
       @doOptionalAll="updateTypeSubject($event, false)"
+    />
+    <ConfirmDeleteModal
+      type="subject"
+      @confirmDelete="removeSelectedSubject"
+    />
+    <RequestDeleteModal
+      @confirmRequestDelete="sendRequestDeleteSubject"
     />
   </div>
 </template>
@@ -87,16 +94,21 @@ import Actions from '@/pages/dictionary/subjects/list/parts/Actions.vue'
 import ContextMenu from '@/pages/dictionary/subjects/list/parts/ContextMenu.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import {
-  deleteSubject,
-  deleteManySubjects,
   changeIdSubject,
   changeIsMondatory,
   $triggerToRefreshTable,
+  deleteSubjects,
+  requestDeleteSubjects,
 } from '@/pages/dictionary/subjects/list/subjects-page.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
 import { RefsType } from '@/pages/common/types'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import { $session } from '@/features/session'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -121,10 +133,13 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     BaseButton,
+    ConfirmDeleteModal,
+    RequestDeleteModal,
   },
   effector: {
     $token,
     $triggerToRefreshTable,
+    $session,
   },
   data() {
     return {
@@ -189,11 +204,23 @@ export default (Vue as VueConstructor<
       }
     },
     // TODO delete all
-    async removeSelected(ids: number | number[]) {
-      if (typeof ids === 'number') await deleteSubject(ids)
-      else await deleteManySubjects(ids)
+    onRemoveSubjects(ids: number[]) {
+      this.$session?.permissions?.subjects_subject?.delete
+        ? loadConfirmDeleteModal(ids)
+        : loadRequestDeleteModal(ids)
+    },
+    async removeSelectedSubject(ids: number[]) {
+      await deleteSubjects(ids)
       await Vue.nextTick(() => this.$refs.vuetable.refresh())
-      if (typeof ids !== 'number') this.$refs.vuetable.selectedTo = []
+      this.removeSelection()
+    },
+    async sendRequestDeleteSubject(comment: string, ids: number[]) {
+      await requestDeleteSubjects({ subjects: ids, ticket_comment: comment })
+      this.removeSelection()
+    },
+    removeSelection() {
+      this.$refs.vuetable.selectedTo = []
+      this.selectedRows = []
     },
     handleLoadError(res: any) {
       if (!res.response) noInternetToastEvent()

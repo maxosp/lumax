@@ -1,11 +1,13 @@
-import { attach, createEvent, createStore, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, createStore, forward, restore } from 'effector-root'
 import { getTagsTreeFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree'
-import { deleteTagFx, deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag'
+import { deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { DeleteTagsType, GetTagsTreeQueryParams } from '@/features/api/assignment/types'
+import { GetTagsTreeQueryParams } from '@/features/api/assignment/types'
 import { TreeData } from '@/features/api/types'
 import { getTagsTreeLightFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree-light'
 import { mergeTreeData } from '@/features/lib'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { condition } from 'patronum'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -14,13 +16,14 @@ export const getTagsTreeLight = attach({
   effect: getTagsTreeLightFx,
 })
 
-export const deleteTag = attach({
-  effect: deleteTagFx,
-})
-
-export const deleteTags = attach({
-  effect: deleteTagsFx,
-  mapParams: (params: DeleteTagsType) => params,
+export const deleteTags = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteTagsFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
 
 export const canrefreshTableAfterDeletionChanged = createEvent<boolean>()
@@ -38,6 +41,8 @@ export const $tagsTree = createStore<TreeData[] | null>(null).on(setTagsTree, (s
 })
 export const setTagsTreeTotal = createEvent<number>()
 export const $tagsTreeTotal = createStore<number>(0)
+
+const showDeleteAssignmentsToast = createEvent<number[]>()
 
 forward({
   from: loadTree,
@@ -67,19 +72,18 @@ forward({
 })
 
 forward({
-  from: deleteTag.doneData,
-  to: [
-    loadTreeLight.prepend(() => ({})),
-    successToastEvent('Тег был успешно удален!'),
-    canrefreshTableAfterDeletionChanged.prepend(() => true),
-  ],
-})
-
-forward({
   from: deleteTags.doneData,
   to: [
     loadTreeLight.prepend(() => ({})),
-    successToastEvent('Теги были успешно удалены!'),
     canrefreshTableAfterDeletionChanged.prepend(() => true),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
+    showDeleteAssignmentsToast,
   ],
+})
+
+condition({
+  source: showDeleteAssignmentsToast,
+  if: (ids: number[]) => ids.length === 1,
+  then: successToastEvent('Тег был успешно удален!'),
+  else: successToastEvent('Теги были успешно удалены!'),
 })

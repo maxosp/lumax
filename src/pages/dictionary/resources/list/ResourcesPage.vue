@@ -18,6 +18,7 @@
     <ResourcesTree
       @onRightClick="handleRightClick"
       @loadTree="val => loadTree(val)"
+      @onRemove="onRemoveResource"
     />
     <ContextMenu
       v-if="showContextMenu"
@@ -28,9 +29,12 @@
       :theme="theme"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
-      @onRemove="removeSelected"
+      @onRemove="onRemoveResource"
     />
-    <ResourceDeletionModal />
+    <ConfirmDeleteModal
+      type="resource"
+      @confirmDelete="removeResource"
+    />
   </div>
 </template>
 
@@ -42,11 +46,11 @@ import ContextMenu from '@/pages/dictionary/resources/list/parts/ContextMenu.vue
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ResourcesFilter from '@/pages/dictionary/resources/list/parts/resources-filter/ResourcesFilter.vue'
 import ResourcesTree from '@/pages/dictionary/resources/list/parts/tree/ResourcesTree.vue'
-import ResourceDeletionModal from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/ResourceDeletionModal.vue'
 import {
   loadTree,
   loadTreeLight,
   $resourcesTreeTotal,
+  deleteResources,
 } from '@/pages/dictionary/resources/list/resources-page.model'
 import {
   toggleVisibility,
@@ -55,8 +59,9 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
-import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
 import { RefsType } from '@/pages/common/types'
+import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 
 Vue.use(VueEvents)
 
@@ -78,7 +83,7 @@ export default (Vue as VueConstructor<
     ResourcesFilter,
     ContextMenu,
     ResourcesTree,
-    ResourceDeletionModal,
+    ConfirmDeleteModal,
   },
   effector: {
     $visibility,
@@ -104,7 +109,6 @@ export default (Vue as VueConstructor<
   },
   methods: {
     loadTree,
-    loadModalToDelete,
     toggleVisibility,
     onFilterSet(newFilter: any) {
       this.filterParams = newFilter
@@ -116,8 +120,11 @@ export default (Vue as VueConstructor<
       // reload data
       loadTreeLight()
     },
-    removeSelected(id: number) {
-      loadModalToDelete(id)
+    onRemoveResource(ids: number[]) {
+      loadConfirmDeleteModal(ids)
+    },
+    removeResource(ids: number[]) {
+      deleteResources(ids)
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       event.preventDefault()

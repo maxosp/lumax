@@ -78,7 +78,7 @@ export default Vue.extend({
       if (this.isStudyYear) return [{ name: 'create', title: 'Создать тег' }]
       if (this.isTheme) return [{ name: 'create', title: 'Создать метку' }]
       if (this.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные темы' }]
+        return [{ name: 'delete-all', title: 'Удалить выделенные теги' }]
       }
       return [
         { name: 'edit', title: 'Редактировать' },

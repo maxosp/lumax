@@ -1,16 +1,43 @@
-import { attach, combine, createEvent, createStore, forward, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  createStore,
+  forward,
+  restore,
+  sample,
+} from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
-import { deleteSubjectFx, deleteSubjectsFx } from '@/features/api/subject/delete-subject'
+import { deleteSubjectsFx, requestDeleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { CreateSubjectType } from '@/features/api/subject/types'
+import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
+import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { condition } from 'patronum'
+import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
-export const deleteSubject = attach({
-  effect: deleteSubjectFx,
+export const deleteSubjects = createEffect({
+  handler: (ids: number[]): Promise<number[]> => {
+    return new Promise((resolve) => {
+      deleteSubjectsFx(ids).then(() => {
+        resolve(ids)
+      })
+    })
+  },
 })
-export const deleteManySubjects = attach({
-  effect: deleteSubjectsFx,
+
+export const requestDeleteSubjects = attach({
+  effect: requestDeleteSubjectsFx,
+  mapParams: (payload: RequestDeleteSubjectsParams): RequestDeleteSubjectsParams => {
+    return {
+      subjects: payload.subjects,
+      ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
+    }
+  },
 })
+
 const updateSubjectDataFx = attach({
   effect: updateSubjectFx,
   mapParams: (params: CreateSubjectType) => params,
@@ -31,7 +58,8 @@ $triggerToRefreshTable.on(updateSubjectDataFx.doneData, (state) => !state)
 const changeSubject = createEvent<any>()
 const $subject = restore(changeSubject, null)
 
-// методы
+const showDeleteThemesToast = createEvent<number[]>()
+
 sample({
   clock: changeIdSubject,
   source: $idSubject,
@@ -49,10 +77,27 @@ sample({
   })),
   target: updateSubjectDataFx,
 })
+
 forward({
-  from: deleteSubject.doneData,
-  to: successToastEvent('Предмет был успешно удалён!'),
+  from: deleteSubjects.doneData,
+  to: [confirmDeleteModalVisibilityChanged.prepend(() => false), showDeleteThemesToast],
 })
+
+condition({
+  source: showDeleteThemesToast,
+  if: (ids: number[]) => ids.length === 1,
+  then: successToastEvent('Предмет был успешно удалён!'),
+  else: successToastEvent('Предмет был успешно удалены!'),
+})
+
+forward({
+  from: requestDeleteSubjects.doneData,
+  to: [
+    successToastEvent('Отправлена заявка на удаление'),
+    requestDeleteModalVisibilityChanged.prepend(() => false),
+  ],
+})
+
 forward({
   from: updateSubjectDataFx.doneData,
   to: successToastEvent('Предмет был успешно изменен!'),

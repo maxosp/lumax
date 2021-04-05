@@ -43,10 +43,10 @@
         :selected="[]"
         class="action"
         :data-to-create-tag="dataToCreateTag"
-        @onRemove="(val) => loadModalToDelete(val)"
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
         @create="(val) => createTagFromTree(val)"
+        @onRemove="val => $emit('onRemove', val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -58,6 +58,7 @@
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
+        @onRemove="val => $emit('onRemove', val)"
       />
     </div>
   </div>
@@ -69,7 +70,6 @@ import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/tags/parts/tree/Chip.vue'
 import Actions from '@/pages/tags/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
-import { loadModalToDelete } from '@/pages/tags/parts/modals/tag-deletion/tag-deletion.model'
 import { loadModalToEdit } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
 import { createTagFromTree } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
@@ -134,7 +134,6 @@ export default Vue.extend({
     },
   },
   methods: {
-    loadModalToDelete,
     loadModalToEdit,
     loadModal,
     createTagFromTree,
@@ -165,12 +164,6 @@ export default Vue.extend({
         event,
         type,
       })
-    },
-    removeSelected() {
-      this.$emit('onRemove', this.$props.node.olympiad_tag.id)
-    },
-    editTag() {
-      this.$emit('onEdit', this.$props.node.olympiad_tag.id)
     },
     showTasks() {
       this.$emit('tasks', this.$props.node.olympiad_tag.id)

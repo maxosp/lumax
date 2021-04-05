@@ -40,7 +40,7 @@
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         class="action"
-        @onRemove="(val) => loadModalToDelete(val)"
+        @onRemove="(val) => $emit('onRemove', val)"
         @onEdit="(val) => handleEdit(val)"
         @create="(val) => handleCreate(val)"
       />
@@ -54,6 +54,7 @@
         :prerequisite-folder="$props.prerequisiteFolder"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
+        @onRemove="(val) => $emit('onRemove', val)"
       />
     </div>
   </div>
@@ -66,7 +67,6 @@ import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
 import Actions from '@/pages/dictionary/resources/list/parts/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
-import { loadModalToDelete } from '@/pages/dictionary/resources/list/parts/modals/resource-deletion/resource-deletion.model'
 import { navigatePush } from '@/features/navigation'
 import { sortTreeLeaves } from '@/features/lib'
 
@@ -138,7 +138,6 @@ export default Vue.extend({
     },
   },
   methods: {
-    loadModalToDelete,
     calculateLeavesOfType(type: string): number {
       return this.node.leaves.filter(
         (el) => el.element_type === 'study_resource' && el.study_resource!.resource_type === type
