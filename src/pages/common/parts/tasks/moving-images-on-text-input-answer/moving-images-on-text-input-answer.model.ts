@@ -67,9 +67,14 @@ export const $isAudioUploadLoading = uploadAudioFilesFx.pending
 
 export const $isFilled = combine(
   $wording,
-  $containing,
-  $answerExample,
-  (wording, containing, answerExample) => wording && containing && answerExample
+  $questionData,
+  (wording, questionData) =>
+    wording &&
+    questionData.draggable.length === questionData.droppable.length &&
+    (questionData.droppable.length || questionData.inputs.length) &&
+    questionData.draggable.every((img) => img.value !== 0) &&
+    questionData['draggable-text'].every((input) => input.text !== '') &&
+    questionData.inputs.every((input) => input.value.some((value) => value.value !== ''))
 )
 
 export const $form = combine(

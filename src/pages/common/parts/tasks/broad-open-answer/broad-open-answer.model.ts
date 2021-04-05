@@ -61,12 +61,7 @@ sample({
 
 export const $isAudioUploadLoading = uploadAudioFilesFx.pending
 
-export const $isFilled = combine(
-  $wording,
-  $containing,
-  $answerExample,
-  (wording, containing, answerExample) => wording && containing && answerExample
-)
+export const $isFilled = combine($wording, (wording) => wording)
 
 export const $form = combine(
   $wording,

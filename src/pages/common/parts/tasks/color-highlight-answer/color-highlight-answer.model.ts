@@ -75,11 +75,10 @@ export const $isAudioUploadLoading = uploadAudioFilesFx.pending
 
 export const $isFilled = combine(
   $wording,
-  $containing,
-  $answerExample,
   $textTemplate,
-  (wording, containing, answerExample, textTemplate) =>
-    wording && containing && answerExample && textTemplate
+  $colorsPalette,
+  (wording, textTemplate, colorsPalette) =>
+    wording && colorsPalette.length && colorsPalette.some((color) => textTemplate.includes(color))
 )
 
 export const $form = combine(

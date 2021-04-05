@@ -72,15 +72,9 @@ export const $isAudioUploadLoading = uploadAudioFilesFx.pending
 
 export const $isFilled = combine(
   $wording,
-  $containing,
-  $answerExample,
   $questions,
-  (wording, containing, answerExample, questions) =>
-    wording &&
-    containing &&
-    answerExample &&
-    questions.length &&
-    questions.reduce((acc, question) => acc && !!question.question, true)
+  (wording, questions) =>
+    wording && questions.length > 1 && questions.every((question) => question.question)
 )
 
 export const $form = combine(
