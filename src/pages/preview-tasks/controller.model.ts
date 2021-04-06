@@ -1,4 +1,4 @@
 import { createEvent, restore } from 'effector-root'
 
-export const toggleSwitchers = createEvent<boolean>()
-export const $switcherIspreview = restore(toggleSwitchers, true)
+export const toggleIsPreview = createEvent<boolean>()
+export const $isPreview = restore(toggleIsPreview, true)

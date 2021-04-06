@@ -1,6 +1,8 @@
 <template>
   <div class="preview-tasks-page">
     <Controller
+      :is-tasks="!isApplications"
+      :is-test-tasks="type && type === 'test-assignment'"
       @onAccept="acceptApplications"
       @onSendForModeration="sendForModeration"
       @onSeeComments="showComments"
@@ -50,13 +52,18 @@ import {
   changeTasks,
   initDropDown,
 } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
-import { toggleSwitchers } from '@/pages/preview-tasks/controller.model'
+import { $isPreview, toggleIsPreview } from '@/pages/preview-tasks/controller.model'
 import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
 import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
-import { goBack } from '@/features/navigation/index'
+import {
+  loadTestTask,
+  loadOlympiadTask,
+  loadLessonTask,
+} from '@/pages/preview-tasks/preview-tasks-page.model'
+import { goBack, navigatePush } from '@/features/navigation/index'
 
 type IframeData = {
   activeTask: string | null
@@ -79,7 +86,11 @@ export default Vue.extend({
     type: null as null | string,
     heightIframe: 0,
     currentIndex: null as null | number,
+    isApplications: false,
   }),
+  effector: {
+    $isPreview,
+  },
   computed: {
     activeTask() {
       return this.questions.length && typeof this.currentIndex === 'number'
@@ -91,6 +102,44 @@ export default Vue.extend({
       return activeTask && token && type
         ? `${config.PREVIEW_URL}/question?questionId=${activeTask}&type=${type}&token=${token}`
         : ''
+    },
+  },
+  watch: {
+    $isPreview(value) {
+      if (!value) {
+        switch (this.type) {
+          case 'test-assignment':
+            navigatePush({ name: 'test-tasks-edit', params: { id: this.activeTask || '1' } })
+            break
+          case 'olympiad-assignment':
+            navigatePush({ name: 'olympiad-tasks-edit', params: { id: this.activeTask || '1' } })
+            break
+          case 'lesson-assignment':
+            navigatePush({ name: 'lesson-tasks-edit', params: { id: this.activeTask || '1' } })
+            break
+          default:
+            navigatePush({ name: 'test-tasks-edit', params: { id: this.activeTask || '1' } })
+        }
+      } else {
+        goBack()
+      }
+    },
+    activeTask(value) {
+      if (this.type) {
+        switch (this.type) {
+          case 'test-assignment':
+            loadTestTask(value)
+            break
+          case 'olympiad-assignment':
+            loadOlympiadTask(value)
+            break
+          case 'lesson-assignment':
+            loadLessonTask(value)
+            break
+          default:
+            loadLessonTask(value)
+        }
+      }
     },
   },
   methods: {
@@ -127,7 +176,7 @@ export default Vue.extend({
     },
   },
   created() {
-    const { questions, token, type } = this.$route.query
+    const { questions, token, type, application } = this.$route.query
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
       this.currentIndex = 0
@@ -135,6 +184,8 @@ export default Vue.extend({
     }
     if (token && typeof token === 'string') this.token = token
     if (type && typeof type === 'string') this.type = type
+    if (application && typeof application === 'string' && application === 'true')
+      this.isApplications = true
     if (!this.questions || !this.token || !this.type) goBack()
   },
   mounted() {
@@ -149,7 +200,7 @@ export default Vue.extend({
   },
   beforeDestroy() {
     changeTasks([])
-    toggleSwitchers(true)
+    toggleIsPreview(true)
   },
 })
 </script>

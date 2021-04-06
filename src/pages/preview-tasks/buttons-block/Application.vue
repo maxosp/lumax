@@ -1,32 +1,36 @@
 <template>
   <div class="buttons-block">
     <BaseButton
-      v-if="currentStatus === 'на проверке'"
+      v-if="$statusTask === 'moderation'"
       class="btn green"
+      @click="$emit('onAccept')"
     >
       Утвердить
     </BaseButton>
     <BaseButton
-      v-if="currentStatus === 'на проверке'"
+      v-if="$statusTask === 'moderation'"
       class="btn red"
+      @click="$emit('onSendForModeration')"
     >
       На доработку
     </BaseButton>
     <BaseButton
-      v-if="currentStatus === 'revision'"
+      v-if="$statusTask === 'revision'"
       class="btn"
       yellow
+      @click="$emit('onSeeComments')"
     >
       Посмотреть/изменить комментарий
     </BaseButton>
     <BaseButton
-      v-if="currentStatus === 'revision'"
+      v-if="$statusTask === 'revision'"
       class="btn"
+      @click="$emit('onRevision')"
     >
       На проверку
     </BaseButton>
     <BaseButton
-      v-if="currentStatus === 'finished'"
+      v-if="$statusTask === 'finished'"
       class="btn"
       yellow
     >
@@ -38,17 +42,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
+import { $statusTask } from '@/pages/preview-tasks/preview-tasks-page.model'
 
 export default Vue.extend({
   name: 'Controller',
   components: { BaseButton },
-  computed: {
-    currentStatus() {
-      // хз на проверке
-      // revision на доработке
-      // finished проверено
-      return 'на проверке'
-    },
+  effector: {
+    $statusTask,
   },
 })
 </script>

@@ -2,16 +2,18 @@
   <Card class="controller">
     <div class="block">
       <div class="permission-controller">
-        <BaseSwitch :checked="true">
+        <BaseSwitch :checked="$isPreview" @change="toggleIsPreview">
           <p>Предпросмотр</p>
         </BaseSwitch>
         <BaseButton
+          v-if="isPreviewPage"
           class="btn"
           yellow
         >
           Сохранить и вернуться к списку
         </BaseButton>
         <BaseButton
+          v-if="isPreviewPage"
           class="btn"
           yellow
         >
@@ -23,22 +25,35 @@
     <div class="block">
       <div class="status-block">
         <p class="label-status">Статус заявки:</p>
-        <p class="value-status">На доработке</p>
+        <p class="value-status">{{ currentStatus }}</p>
       </div>
-      <TasksButtons v-if="isTasks" />
-      <ApplicationButtons v-else />
+      <TasksButtons
+        v-if="isTasks"
+        :is-test-tasks="isTestTasks"
+        @click="$emit('onSeeComments')"
+        @onRevision="$emit('onRevision')"
+      />
+      <ApplicationButtons
+        v-else
+        @onAccept="$emit('onAccept')"
+        @onSendForModeration="$emit('onSendForModeration')"
+        @onSeeComments="$emit('onSeeComments')"
+        @onRevision="$emit('onRevision')"
+      />
     </div>
   </Card>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Card from '@/ui/card/Card.vue'
 import Divider from '@/ui/divider/Divider.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import TasksButtons from '@/pages/preview-tasks/buttons-block/Tasks.vue'
 import ApplicationButtons from '@/pages/preview-tasks/buttons-block/Application.vue'
+import { $statusTask } from '@/pages/preview-tasks/preview-tasks-page.model'
+import { $isPreview, toggleIsPreview } from '@/pages/preview-tasks/controller.model'
 
 export default Vue.extend({
   name: 'Controller',
@@ -50,10 +65,49 @@ export default Vue.extend({
     TasksButtons,
     ApplicationButtons,
   },
-  computed: {
-    isTasks() {
-      return true
+  props: {
+    isTasks: {
+      type: Boolean as PropType<boolean>,
+      default: true,
     },
+    isTestTasks: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
+  },
+  effector: {
+    $statusTask,
+    $isPreview,
+  },
+  computed: {
+    currentStatus() {
+      // Костыль: не типизирует поле эффектора
+      const status = (this as any).$statusTask
+      switch (status) {
+        case 'moderation':
+          return 'На проверке'
+        case 'revision':
+          return 'На доработке'
+        case 'finished':
+          return 'Проверено'
+        case 'new':
+          return 'Новое'
+        case 'reserve':
+          return 'Резерв'
+        case 'published':
+          return 'Опубликовано'
+        case 'archive':
+          return 'Архив'
+        default:
+          return 'На проверке'
+      }
+    },
+    isPreviewPage() {
+      return this.$route.name !== 'preview-task'
+    },
+  },
+  methods: {
+    toggleIsPreview,
   },
 })
 </script>
