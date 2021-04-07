@@ -76,11 +76,7 @@ export default Vue.extend({
         return
       }
       // check for general filter icon
-      if (
-        event.target.id !== 'filter-icon' &&
-        event.target.parentElement &&
-        event.target.parentElement.id !== 'filter-icon'
-      ) {
+      if (!event.target.closest('#filter-icon')) {
         toggleVisibility(false)
       }
     },
