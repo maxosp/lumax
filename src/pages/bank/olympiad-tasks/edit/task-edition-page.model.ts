@@ -86,7 +86,7 @@ import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { debounce } from 'patronum'
+import { condition, debounce } from 'patronum'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { scoreDropdownModule } from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/score-dropdown.model'
@@ -123,6 +123,15 @@ export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
+export const setStatus = createEvent<string | null>()
+export const $status = restore(setStatus, null)
+
+export const setIsArchive = createEvent<boolean>()
+export const $isArchive = restore(setIsArchive, false)
+
+export const setIsPublished = createEvent<boolean>()
+export const $isPublished = restore(setIsPublished, false)
+
 export const showSolutionEnabledChanged = createEvent<boolean>()
 export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false)
 // TO DO add to form
@@ -148,6 +157,18 @@ const debounced = debounce({
 forward({
   from: debounced,
   to: getTags,
+})
+
+condition({
+  source: setIsArchive,
+  if: (payload: boolean) => payload,
+  then: setIsPublished.prepend((data) => !data),
+})
+
+condition({
+  source: setIsPublished,
+  if: (payload: boolean) => payload,
+  then: setIsArchive.prepend((data) => !data),
 })
 
 forward({
@@ -185,6 +206,7 @@ forward({
     })),
     setSelectedTagsIds.prepend((data) => data.tags),
     setSolutionText.prepend((data) => data.answer_text),
+    setStatus.prepend((data) => data.status),
     // setHint.prepend((data) => data.clue.map((hint) => ({ text: hint.name, price: hint.price. }))),
   ],
 })
@@ -254,14 +276,28 @@ const $taskform = combine({
   ShortClosedAnswer: $formShortClosed,
 })
 
+const $correctStatus = combine(
+  $status,
+  $isArchive,
+  $isPublished,
+  (status, isArchive, isPublished) => {
+    let res = status
+    if (isArchive) res = 'archive'
+    if (isPublished) res = 'published'
+    return res
+  }
+)
+
 const $baseForm = combine(
+  $correctStatus,
   $subject,
   $class,
   $score,
   $taskType,
   $selectedTags,
   $language,
-  (subject_id, study_year_id, score, taskType, tags, language) => ({
+  (correctStatus, subject_id, study_year_id, score, taskType, tags, language) => ({
+    status: correctStatus,
     type: taskType,
     subject_id,
     study_year_id,

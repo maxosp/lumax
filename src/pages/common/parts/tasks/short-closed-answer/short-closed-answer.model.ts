@@ -103,15 +103,13 @@ forward({
     setWording.prepend((data) => data.wording || ''),
     setContaining.prepend((data) => data.text || ''),
     setAnswerExample.prepend((data) => data.example_answer || ''),
-    // setLanguage.prepend((data) => ({
-    //   name: data.interface_language,
-    //   title: data.interface_language,
-    // })),
     setCorrectAnswerInputs.prepend((data) =>
-      data.correct_answer.map((value: string, idx: number) => ({
-        id: idx + 1,
-        value,
-      }))
+      data.correct_answer
+        ? data.correct_answer.map((value: string, idx: number) => ({
+            id: idx + 1,
+            value,
+          }))
+        : null
     ),
   ],
 })

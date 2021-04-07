@@ -88,6 +88,7 @@ import {
 import { getLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment'
 import { updateLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
+import { condition } from 'patronum'
 
 const updateAssignment = attach({
   effect: updateLessonAssignmentFx,
@@ -121,6 +122,15 @@ export const $audioIds = restore(setAudioIds, [])
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
 
+export const setStatus = createEvent<string | null>()
+export const $status = restore(setStatus, null)
+
+export const setIsArchive = createEvent<boolean>()
+export const $isArchive = restore(setIsArchive, false)
+
+export const setIsPublished = createEvent<boolean>()
+export const $isPublished = restore(setIsPublished, false)
+
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
 
@@ -128,6 +138,18 @@ export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 export const duplicateAssignment = createEvent<void>()
+
+condition({
+  source: setIsArchive,
+  if: (payload: boolean) => payload,
+  then: setIsPublished.prepend((data) => !data),
+})
+
+condition({
+  source: setIsPublished,
+  if: (payload: boolean) => payload,
+  then: setIsArchive.prepend((data) => !data),
+})
 
 forward({
   from: loadTask,
@@ -155,6 +177,7 @@ forward({
       title: data.interface_language,
     })),
     setSelectedFolder.prepend((data) => ({ title: `${data.folder.id}`, name: data.folder.name })),
+    setStatus.prepend((data) => data.status),
   ],
 })
 
@@ -222,13 +245,26 @@ const $taskform = combine({
   ShortClosedAnswer: $formShortClosed,
 })
 
+const $correctStatus = combine(
+  $status,
+  $isArchive,
+  $isPublished,
+  (status, isArchive, isPublished) => {
+    let res = status
+    if (isArchive) res = 'archive'
+    if (isPublished) res = 'published'
+    return res
+  }
+)
 const $baseForm = combine(
+  $correctStatus,
   $selectedFolder,
   $folder,
   $score,
   $taskType,
   $language,
-  (folder, folder_id, score, taskType, language) => ({
+  (correctStatus, folder, folder_id, score, taskType, language) => ({
+    status: correctStatus,
     folder,
     folder_id,
     type: taskType,

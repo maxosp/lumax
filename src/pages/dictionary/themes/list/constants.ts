@@ -110,8 +110,8 @@ export const searchFieldsData: DropdownItem[] = [
 export const mapTaskStatus = {
   new: 'Новое',
   reserve: 'Резерв',
-  moderation: 'На доработке',
-  revision: 'На проверке',
+  moderation: 'На проверке',
+  revision: 'На доработке',
   published: 'Опубликовано',
   archive: 'Архив',
 }

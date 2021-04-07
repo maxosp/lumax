@@ -106,9 +106,15 @@ import {
   setSelectedSubject,
   subjectsDropdownModule,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
+import { condition } from 'patronum'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
+})
+
+export const duplicateTestAssignment = attach({
+  effect: updateTestAssignmentBulkFx,
 })
 
 export const loadAssignment = attach({
@@ -133,9 +139,6 @@ export const $difficulty = restore(setDifficulty, null)
 export const setTaskType = createEvent<string | null>()
 export const $taskType = restore(setTaskType, null)
 
-export const toggleNeedDuplicate = createEvent<boolean>()
-export const $needDuplicate = restore(toggleNeedDuplicate, false)
-
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
 
@@ -145,11 +148,34 @@ export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
+export const setStatus = createEvent<string | null>()
+export const $status = restore(setStatus, null)
+
+export const setIsArchive = createEvent<boolean>()
+export const $isArchive = restore(setIsArchive, false)
+
+export const setIsPublished = createEvent<boolean>()
+export const $isPublished = restore(setIsPublished, false)
+
+export const duplicateAssignment = createEvent<void>()
+
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
 
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
+
+condition({
+  source: setIsArchive,
+  if: (payload: boolean) => payload,
+  then: setIsPublished.prepend((data) => !data),
+})
+
+condition({
+  source: setIsPublished,
+  if: (payload: boolean) => payload,
+  then: setIsArchive.prepend((data) => !data),
+})
 
 forward({
   from: clearFields,
@@ -193,6 +219,7 @@ forward({
       name: data.interface_language,
       title: data.interface_language,
     })),
+    setStatus.prepend((data) => data.status),
   ],
 })
 
@@ -268,30 +295,39 @@ const $taskform = combine({
   MovingImagesOnTextInputAnswer: $formMovingOnText,
 })
 
+const $correctStatus = combine(
+  $status,
+  $isArchive,
+  $isPublished,
+  (status, isArchive, isPublished) => {
+    let res = status
+    if (isArchive) res = 'archive'
+    if (isPublished) res = 'published'
+    return res
+  }
+)
 const $baseForm = combine(
+  $correctStatus,
   $subject,
   $class,
   $theme,
   $themes,
   $difficulty,
   $taskType,
-  $needDuplicate,
-  $count,
   $selectedLabels,
   $language,
   (
+    correctStatus,
     subject_id,
     study_year_id,
     theme_id,
     themes,
     difficulty,
     taskType,
-    needDuplicate,
-    count,
     labels,
     language
   ) => ({
-    status: 'new',
+    status: correctStatus,
     subject_id,
     study_year_id,
     is_test_assignment: true,
@@ -300,7 +336,6 @@ const $baseForm = combine(
     theme_id,
     difficulty,
     labels: labels.map(({ name }) => name),
-    ...(needDuplicate ? { duplicate_count: count } : {}),
     interface_language: language.title,
   })
 )
@@ -369,4 +404,21 @@ guard({
   clock: updateAssignment.doneData,
   filter: $redirectAfterSave,
   target: navigatePush.prepend(() => ({ name: 'test-tasks-list' })),
+})
+
+sample({
+  clock: duplicateAssignment,
+  source: { id: $taskId, count: $count },
+  fn: (data: { id: number; count: number }) => {
+    return {
+      assignments: [data.id],
+      number_of_duplicates: data.count,
+    }
+  },
+  target: duplicateTestAssignment,
+})
+
+forward({
+  from: duplicateTestAssignment.doneData,
+  to: [successToastEvent('Задание было успешно продублировано!'), setCount.prepend(() => 0)],
 })

@@ -19,18 +19,33 @@
         />
       </div>
       <div class='right'>
+        <p class="text"> Количество </p>
+        <div class="wrapper">
+          <NumericInput :value="+$count" @input="setCount" />
+          <BaseButton
+            class="btn"
+            big
+            @click="duplicateAssignment"
+          >
+            Дублировать
+          </BaseButton>
+        </div>
         <BaseSwitch
+          v-if="![ 'new', 'archive' ].includes($status)"
           class="switch field"
-          :checked="$needDuplicate"
-          @change="toggleNeedDuplicate"
+          :checked="$isArchive"
+          @change="setIsArchive"
         >
-          <p>Дублировать</p>
+          <p>Архив</p>
         </BaseSwitch>
-        <NumericInput
-          :value="+$count"
-          label="Количество"
-          @input="setCount" 
-        />
+        <BaseSwitch
+          v-if="[ 'reserve', 'archive' ].includes($status)"
+          class="switch field"
+          :checked="$isPublished"
+          @change="setIsPublished"
+        >
+          <p>Опубликовано</p>
+        </BaseSwitch>
       </div>
     </div>
   </div>
@@ -39,6 +54,7 @@
 <script>
 import Vue from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
+import BaseButton from '@/ui/button/BaseButton.vue'
 import NumericInput from '@/ui/input/NumericInput.vue'
 import DifficultiesDropdown from '@/pages/bank/test-tasks/edit/parts/difficulties-dropdown/DifficultiesDropdown.vue'
 import LabelsDropdown from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/LabelsDropdown.vue'
@@ -54,12 +70,16 @@ import {
   setDifficulty,
   $language,
   setLanguage,
-  $needDuplicate,
-  toggleNeedDuplicate,
   $count,
   setCount,
   $taskType,
   setTaskType,
+  $status,
+  setIsArchive,
+  $isArchive,
+  duplicateAssignment,
+  $isPublished,
+  setIsPublished,
 } from '@/pages/bank/test-tasks/edit/task-edition-page.model'
 import * as tasks from '@/pages/common/parts/tasks'
 import { mapTaskTypeTo } from '@/pages/common/constants'
@@ -68,6 +88,7 @@ export default Vue.extend({
   name: 'TaskContent',
   components: {
     BaseSwitch,
+    BaseButton,
     DifficultiesDropdown,
     LabelsDropdown,
     TaskTypesDropdown,
@@ -78,10 +99,12 @@ export default Vue.extend({
     LanguagesDropdown,
   },
   effector: {
-    $needDuplicate,
     $count,
     $taskType,
     $language,
+    $status,
+    $isArchive,
+    $isPublished,
   },
   computed: {
     taskComponent() {
@@ -93,10 +116,12 @@ export default Vue.extend({
     setClass,
     setTheme,
     setDifficulty,
-    toggleNeedDuplicate,
     setCount,
     setTaskType,
     setLanguage,
+    setIsArchive,
+    setIsPublished,
+    duplicateAssignment,
   },
 })
 </script>
@@ -134,5 +159,18 @@ export default Vue.extend({
 .switch {
   display: flex;
   margin-top: 0px;
+}
+.wrapper {
+  @mixin flex-row-central;
+  margin-bottom: 20px;
+  & ::v-deep .numeric-input-wrap {
+    max-width: 190px;
+    height: 46px;
+    box-sizing: border-box;
+    margin-right: 20px;
+    .inner-input {
+      width: 90%;
+    }
+  }
 }
 </style>

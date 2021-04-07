@@ -34,12 +34,31 @@
           @click="setLanguage"
         />
       </div>
+      <div class="right">
+        <BaseSwitch
+          v-if="![ 'new', 'archive' ].includes($status)"
+          class="switch field"
+          :checked="$isArchive"
+          @change="setIsArchive"
+        >
+          <p>Архив</p>
+        </BaseSwitch>
+        <BaseSwitch
+          v-if="[ 'reserve', 'archive' ].includes($status)"
+          class="switch field"
+          :checked="$isPublished"
+          @change="setIsPublished"
+        >
+          <p>Опубликовано</p>
+        </BaseSwitch>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
+import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
 import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
 import ScoreDropdown from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/ScoreDropdown.vue'
@@ -60,6 +79,11 @@ import {
   showSolutionEnabledChanged,
   $solutionText,
   setSolutionText,
+  $status,
+  $isArchive,
+  setIsArchive,
+  $isPublished,
+  setIsPublished,
 } from '@/pages/bank/olympiad-tasks/edit/task-edition-page.model'
 import * as tasks from '@/pages/common/parts/tasks/'
 import { mapTaskTypeTo } from '@/pages/common/constants'
@@ -67,6 +91,7 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 export default Vue.extend({
   name: 'TaskContent',
   components: {
+    BaseSwitch,
     SubjectDropdown,
     ClassDropdown,
     ScoreDropdown,
@@ -81,6 +106,9 @@ export default Vue.extend({
     $language,
     $showSolutionEnabled,
     $solutionText,
+    $status,
+    $isArchive,
+    $isPublished,
   },
   computed: {
     taskComponent() {
@@ -95,6 +123,8 @@ export default Vue.extend({
     setLanguage,
     showSolutionEnabledChanged,
     setSolutionText,
+    setIsArchive,
+    setIsPublished,
   },
 })
 </script>
@@ -115,6 +145,9 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   flex-basis: 60%;
+}
+.right {
+  flex-basis: 30%;
 }
 .field {
   margin-bottom: 20px;

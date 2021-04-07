@@ -33,6 +33,22 @@
             Дублировать
           </BaseButton>
         </div>
+        <BaseSwitch
+          v-if="![ 'new', 'archive' ].includes($status)"
+          class="switch field"
+          :checked="$isArchive"
+          @change="setIsArchive"
+        >
+          <p>Архив</p>
+        </BaseSwitch>
+        <BaseSwitch
+          v-if="[ 'reserve', 'archive' ].includes($status)"
+          class="switch field"
+          :checked="$isPublished"
+          @change="setIsPublished"
+        >
+          <p>Опубликовано</p>
+        </BaseSwitch>
       </div>
     </div>
   </div>
@@ -45,6 +61,7 @@ import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown
 import LanguagesDropdown from '@/pages/bank/lesson-tasks/edit/parts/languages-dropdown/LanguagesDropdown.vue'
 import NumericInput from '@/ui/input/NumericInput.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
+import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import {
   setFolder,
@@ -57,6 +74,11 @@ import {
   $count,
   setCount,
   duplicateAssignment,
+  $status,
+  $isArchive,
+  $isPublished,
+  setIsArchive,
+  setIsPublished,
 } from '@/pages/bank/lesson-tasks/edit/task-edition-page.model'
 import * as tasks from '@/pages/common/parts/tasks/'
 import { mapTaskTypeTo } from '@/pages/common/constants'
@@ -69,6 +91,7 @@ export default Vue.extend({
     LanguagesDropdown,
     NumericInput,
     BaseButton,
+    BaseSwitch,
     FormInput,
   },
   effector: {
@@ -76,6 +99,9 @@ export default Vue.extend({
     $taskType,
     $language,
     $count,
+    $status,
+    $isArchive,
+    $isPublished,
   },
   computed: {
     taskComponent() {
@@ -89,6 +115,8 @@ export default Vue.extend({
     setLanguage,
     setCount,
     duplicateAssignment,
+    setIsArchive,
+    setIsPublished,
   },
 })
 </script>
@@ -117,13 +145,14 @@ export default Vue.extend({
   flex-basis: 30%;
   .wrapper {
     @mixin flex-row-central;
-    .numeric-input-wrap {
+    margin-bottom: 20px;
+    & ::v-deep .numeric-input-wrap {
       max-width: 190px;
       height: 46px;
       box-sizing: border-box;
       margin-right: 20px;
-      & ::v-deep input {
-        width: 110px;
+      .inner-input {
+        width: 90%;
       }
     }
   }

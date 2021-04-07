@@ -127,9 +127,7 @@ forward({
         let mark = ''
         let isCorrect = false
 
-        const existingCorrectAnswer = data.correct_answer.find(
-          ({ index }: { index: string }) => index === `${idx}`
-        )
+        const existingCorrectAnswer = data.correct_answer === idx ? data.correct_answer : undefined
         if (existingCorrectAnswer) {
           isCorrect = true
           if (data.is_add_score_for_each_answer) {
