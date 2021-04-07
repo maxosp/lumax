@@ -5,12 +5,12 @@
     class="themes-filter"
   >
     <div class="row">
-      <SubjectsDropdown class="half-third" @setItem="val => changeFilter('subject', val)" />
-      <ClassesDropdown class="half-third" @setItem="val => changeFilter('study_year', val)" />
-      <StatusDropdown class="half-third" @setItem="val => changeFilter('status', val)" />
+      <SubjectsDropdown class="half-third" @setItem="val => setItem({'subject': val})" />
+      <ClassesDropdown class="half-third" @setItem="val => setItem({'study_year': val})" />
+      <StatusDropdown class="half-third" @setItem="val => setItem({'status': val})" />
     </div>
     <div class="row">
-      <ModeratorDropdown class="half-third" @setItem="val => changeFilter('moderate_by', val)" />
+      <ModeratorDropdown class="half-third" @setItem="val => setItem({'moderate_by': val})" />
       <div class="buttons half-second">
         <div class="btn">
           <BaseButton
@@ -46,10 +46,9 @@
 import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import * as dropdowns from '@/pages/applications/outgoing/parts/filter/parts/dropdowns.index'
-import { modules } from '@/pages/applications/outgoing/parts/filter/parts/'
 import { reset, toggleVisibility } from '@/pages/applications/outgoing/parts/filter/filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
+import { dropdownComponents } from '@/pages/applications/outgoing/parts/filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -57,26 +56,16 @@ export default Vue.extend({
   name: 'OutgoingApplicationsFilter',
   components: {
     Icon,
-    ClassesDropdown: dropdowns.ClassesDropdown,
-    SubjectsDropdown: dropdowns.SubjectsDropdown,
-    StatusDropdown: dropdowns.StatusDropdown,
-    ModeratorDropdown: dropdowns.ModeratorDropdown,
+    ClassesDropdown: dropdownComponents.ClassesDropdown,
+    SubjectsDropdown: dropdownComponents.SubjectsDropdown,
+    StatusDropdown: dropdownComponents.StatusDropdown,
+    ModeratorDropdown: dropdownComponents.ModeratorDropdown,
     BaseButton,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
   },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null },
-      // modules methods should be here for reset
-      classesModuleMethods: modules.classesDropdownModule.methods,
-      subjectsModuleMethods: modules.subjectsDropdownModule.methods,
-      statusDropdownModule: modules.statusDropdownModule.methods,
-      moderatorDropdownModule: modules.moderatorDropdownModule.methods,
-    }
-  },
+
   methods: {
     toggleVisibility,
     closeFilter(event) {
@@ -93,40 +82,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      const filter = {}
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        } else if (this.$props.filterParams.hasOwnProperty(dropdownFilterKey)) {
-          delete this.$props.filterParams[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-      this.classesModuleMethods.resetItem()
-      this.subjectsModuleMethods.resetItem()
-      this.statusDropdownModule.resetItem()
-      this.moderatorDropdownModule.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#themes-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#themes-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>

@@ -199,7 +199,6 @@ forward({
     resetSubjectTitle,
     resetIconSubjectId,
     resetImageSubjectId,
-    colorDropdownModule.methods.resetItem,
-    colorDropdownModule.methods.resetSearchString,
+    colorDropdownModule.methods.resetDropdown,
   ],
 })

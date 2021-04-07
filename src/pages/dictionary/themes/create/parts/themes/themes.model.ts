@@ -50,9 +50,5 @@ sample({
 })
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: [
-    themeDropdownModule.methods.resetItem,
-    themeDropdownModule.methods.resetSearchString,
-    resetSelectedThemes,
-  ],
+  to: [themeDropdownModule.methods.resetDropdown, resetSelectedThemes],
 })

@@ -69,8 +69,7 @@ forward({
   to: [
     resetField,
     resetSwitchers,
-    moderatorDropdownModule.methods.resetItem,
-    moderatorDropdownModule.methods.resetSearchString,
+    moderatorDropdownModule.methods.resetDropdown,
     setSelectedModerator.prepend(() => null),
   ],
 })

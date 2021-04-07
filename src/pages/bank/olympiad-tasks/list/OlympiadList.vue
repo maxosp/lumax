@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
       @setFilter="onFilterSet"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <TasksFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -32,7 +33,7 @@
         :api-url="apiUrl"
         :fields="fields"
         :http-fetch="myFetch"
-        :append-params="filterParams"
+        :append-params="$filterParams"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -74,9 +75,10 @@
           />
         </template>
       </Vuetable>
-      <div v-if="!total" class="no-data-content">
-        Задания не найдены
-      </div>
+      <NoDataContent
+        v-if="!total"
+        @resetFilters="onFilterReset"
+      />
       <div class="vuetable-pagination ui basic segment grid">
         <VuetablePagination
           ref="pagination"
@@ -141,6 +143,7 @@ import {
   requestDeleteAssignments,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
+  olympiadTasksFilters,
   toggleVisibility,
   $visibility,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
@@ -152,6 +155,7 @@ import {
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { navigatePush } from '@/features/navigation'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
 import TasksUpdateModal from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
@@ -169,6 +173,7 @@ export default (Vue as VueConstructor<
   }
 >).extend({
   components: {
+    NoDataContent,
     PageHeader,
     GeneralFilter,
     TasksFilter,
@@ -192,11 +197,11 @@ export default (Vue as VueConstructor<
     $session,
     $canRefreshAfterMultiChanges,
     $canRefreshAfterDuplicate,
+    $filterParams: olympiadTasksFilters.store.$filterParams,
   },
   data() {
     return {
       searchFields: searchFieldsData,
-      filterParams: {},
       total: 1,
       fields: olympiadTasksDataFields,
       clickedRowId: 0,
@@ -244,6 +249,9 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: olympiadTasksFilters.methods.changeFilter,
+    resetFilters: olympiadTasksFilters.methods.resetFilters,
+    applyFilters: olympiadTasksFilters.methods.applyFilters,
     toggleVisibility,
     loadList,
     reset,
@@ -297,16 +305,13 @@ export default (Vue as VueConstructor<
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
     },
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadList({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
-      this.filterParams = {}
+      this.resetFilters()
       reset() // search string and field
-      // reload data
-      loadList({})
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
@@ -350,8 +355,6 @@ export default (Vue as VueConstructor<
     })
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadList({})
   },
 })
@@ -432,27 +435,8 @@ export default (Vue as VueConstructor<
     font-weight: bold;
   }
 }
-
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-}
-.no-data-content ~ .vuetable-pagination {
-  margin: 0 !important;
-}
 .vuetable-pagination {
   @mixin vuetable-pagination;
-}
-.reset-filters {
-  color: var(--base-text-primary);
-  cursor: pointer;
-  @mixin underline-text;
 }
 
 .context-menu {

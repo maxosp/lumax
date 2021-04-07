@@ -149,10 +149,8 @@ forward({
   from: clearFields,
   to: [
     labelTitleReset,
-    subjectsDropdownModule.methods.resetItem,
-    subjectsDropdownModule.methods.resetSearchString,
-    classesDropdownModule.methods.resetItem,
-    classesDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetDropdown,
+    classesDropdownModule.methods.resetDropdown,
     setSelectedTheme.prepend(() => null),
     setSelectedClass.prepend(() => null),
     setSelectedSubject.prepend(() => null),

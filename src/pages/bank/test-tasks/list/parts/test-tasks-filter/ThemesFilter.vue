@@ -6,35 +6,35 @@
   >
     <BaseSwitch
       class="block"
-      :checked="$togglers.created_by_me"
-      @change="setToggler('created_by_me', $event)"
+      :checked="$filterParams.created_by_me"
+      @change="setItem({'created_by_me': $event})"
     >
       <p>Созданные мной</p>
     </BaseSwitch>
     <div class="row">
-      <SubjectsDropdown class="half-third" @setItem="val => changeFilter('subject', val)" />
-      <ClassesDropdown class="half-third" @setItem="val => changeFilter('study_year', val)" />
-      <DifficultyDropdown class="half-third" @setItem="val => changeFilter('difficulty', val)" />
+      <SubjectsDropdown class="half-third" @setItem="val => setItem({'subject': val})" />
+      <ClassesDropdown class="half-third" @setItem="val => setItem({'study_year': val})" />
+      <DifficultyDropdown class="half-third" @setItem="val => setItem({'difficulty': val})" />
     </div>
     <div class="row">
       <ThemeDropdown
         class="half-second"
         :is-disabled="!$canSetThemePosition"
-        @setItem="val => changeFilter('theme', val)"
+        @setItem="val => setItem({'theme': val})"
       />
-      <StatusDropdown class="half-third" @setItem="val => changeFilter('status', val)" />
+      <StatusDropdown class="half-third" @setItem="val => setItem({'status': val})" />
     </div>
     <div class="row">
-      <TypeDropdown class="half-second" @setItem="val => changeFilter('type', val)" />
-      <LanguageDropdown class="half-third" @setItem="val => changeFilter('interface_language', val)" />
+      <TypeDropdown class="half-second" @setItem="val => setItem({'type': val})" />
+      <LanguageDropdown class="half-third" @setItem="val => setItem({'interface_language': val})" />
     </div>
     <div class="row">
-      <TagsDropdown class="half-second" @setItem="val => changeFilter('labels', val)" />
+      <TagsDropdown class="half-second" @setItem="val => setItem({'labels': val})" />
       <div class="tags-input-relative-align">
         <BaseSwitch
           class="switch"
-          :checked="$togglers.is_prerequisite"
-          @change="setToggler('is_prerequisite', $event)"
+          :checked="$filterParams.is_prerequisite"
+          @change="setItem({'is_prerequisite': $event})"
         >
           <p>Пререквизит</p>
         </BaseSwitch>
@@ -74,14 +74,12 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
-import * as dropdowns from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdowns.index'
-import { modules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/'
+import { dropdownComponents } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdown-components'
 import {
   reset,
   toggleVisibility,
-  $togglers,
-  setTogglers,
   $canSetThemePosition,
+  testTasksFilters,
 } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
 
@@ -91,38 +89,23 @@ export default Vue.extend({
   name: 'ThemesFilter',
   components: {
     Icon,
-    ClassesDropdown: dropdowns.ClassesDropdown,
-    SubjectsDropdown: dropdowns.SubjectsDropdown,
-    DifficultyDropdown: dropdowns.DifficultyDropdown,
-    ThemeDropdown: dropdowns.ThemeDropdown,
-    StatusDropdown: dropdowns.StatusDropdown,
-    TypeDropdown: dropdowns.TypeDropdown,
-    LanguageDropdown: dropdowns.LanguageDropdown,
+    ClassesDropdown: dropdownComponents.ClassesDropdown,
+    SubjectsDropdown: dropdownComponents.SubjectsDropdown,
+    DifficultyDropdown: dropdownComponents.DifficultyDropdown,
+    ThemeDropdown: dropdownComponents.ThemeDropdown,
+    StatusDropdown: dropdownComponents.StatusDropdown,
+    TypeDropdown: dropdownComponents.TypeDropdown,
+    LanguageDropdown: dropdownComponents.LanguageDropdown,
     BaseButton,
-    TagsDropdown: dropdowns.TagsDropdown,
+    TagsDropdown: dropdownComponents.TagsDropdown,
     BaseSwitch,
   },
   effector: {
-    $togglers,
+    $filterParams: testTasksFilters.store.$filterParams,
     $canSetThemePosition,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
-  },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null },
-      // modules methods should be here for reset
-      difficultyDropdownModule: modules.difficultyDropdownModule.methods,
-      classesModuleMethods: modules.classesDropdownModule.methods,
-      subjectsModuleMethods: modules.subjectsDropdownModule.methods,
-      themesDropdownModule: modules.themesDropdownModule.methods,
-      statusDropdownModule: modules.statusDropdownModule.methods,
-      typeDropdownModule: modules.typeDropdownModule.methods,
-      languagesDropdownModule: modules.languagesDropdownModule.methods,
-      tagsDropdownModule: modules.tagsDropdownModule.methods,
-    }
   },
   methods: {
     toggleVisibility,
@@ -140,59 +123,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
-    },
-    setToggler(name, value) {
-      setTogglers({
-        ...this.$togglers,
-        [name]: value,
-      })
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      // set switchers values to filter
-      const filter = {}
-      Object.keys(this.$togglers).forEach((toggler) => {
-        if (this.$togglers[toggler]) filter[toggler] = this.$togglers[toggler]
-        else if (this.$props.filterParams.hasOwnProperty(toggler))
-          delete this.$props.filterParams[toggler]
-      })
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        } else if (this.$props.filterParams.hasOwnProperty(dropdownFilterKey)) {
-          delete this.$props.filterParams[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-      this.classesModuleMethods.resetItem()
-      this.subjectsModuleMethods.resetItem()
-      this.difficultyDropdownModule.resetItem()
-      this.themesDropdownModule.resetItem()
-      this.statusDropdownModule.resetItem()
-      this.typeDropdownModule.resetItem()
-      this.languagesDropdownModule.resetItem()
-      this.tagsDropdownModule.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#themes-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#themes-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
-    // TO DO: update resetting of class & subject dd when resetfilters is updated
-    this.classesModuleMethods.resetItem()
-    this.subjectsModuleMethods.resetItem()
   },
 })
 </script>

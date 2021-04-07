@@ -36,12 +36,8 @@ export type ResourceType = {
 
 export type GetResourcesTreeQueryParams = {
   sort?: string
-  subject?: string
+  subject?: number
   study_year?: number
   search?: string
-  search_all?: string
-  search_id?: string
-  search_name?: string
-  search_subject?: string
-  search_study_year?: string
+  search_area?: string
 }

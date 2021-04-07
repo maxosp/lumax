@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @setFilter="onFilterSet"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <ResourcesFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -55,6 +56,7 @@ import {
 import {
   toggleVisibility,
   $visibility,
+  resourcesFilters,
 } from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
@@ -97,7 +99,6 @@ export default (Vue as VueConstructor<
       contextMenuStyles: { top: '0', left: '0' },
       searchFields: searchFieldsData,
       total: 0,
-      filterParams: {},
       theme: null,
     }
   },
@@ -108,17 +109,17 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: resourcesFilters.methods.changeFilter,
+    resetFilters: resourcesFilters.methods.resetFilters,
+    applyFilters: resourcesFilters.methods.applyFilters,
     loadTree,
     toggleVisibility,
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadTree({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
     },
     onFilterReset() {
-      this.filterParams = {}
+      this.resetFilters()
       reset() // search string and field
-      // reload data
-      loadTreeLight()
     },
     onRemoveResource(ids: number[]) {
       loadConfirmDeleteModal(ids)
@@ -140,8 +141,6 @@ export default (Vue as VueConstructor<
     },
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadTreeLight()
   },
 })
@@ -222,19 +221,6 @@ export default (Vue as VueConstructor<
   }
 }
 
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-  & > div + div {
-    margin-top: 10px;
-  }
-}
 .vuetable-pagination {
   @mixin vuetable-pagination;
 }

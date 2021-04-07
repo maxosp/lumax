@@ -11,6 +11,8 @@
       :is-show-filter="false"
       :search-fields="searchFields"
       @setFilter="onFilterSet"
+      @resetFilter="onFilterReset"
+      @changeFilter="changeFilter"
     />
     <div class="table-container">
       <Vuetable
@@ -20,7 +22,7 @@
         :api-url="apiUrl"
         :fields="fields"
         :http-fetch="myFetch"
-        :append-params="filterParams"
+        :append-params="$filterParams"
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
@@ -45,14 +47,10 @@
           />
         </template>
       </Vuetable>
-      <div v-if="!total" class="no-data-content">
-        <div>Поиск не дал результатов.</div>
-        <div>Попробуйте
-          <span class="reset-filters" @click="resetAllFilters">
-            сбросить все фильтры
-          </span>
-        </div>
-      </div>
+      <NoDataContent
+        v-if="!total"
+        @resetFilters="onFilterReset"
+      />
     </div>
     <ContextMenu
       v-if="showContextMenu"
@@ -97,6 +95,7 @@ import {
   changeIdSubject,
   changeIsMondatory,
   $triggerToRefreshTable,
+  subjectsFilters,
   deleteSubjects,
   requestDeleteSubjects,
 } from '@/pages/dictionary/subjects/list/subjects-page.model'
@@ -104,6 +103,7 @@ import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
 import { RefsType } from '@/pages/common/types'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
@@ -133,12 +133,14 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     BaseButton,
+    NoDataContent,
     ConfirmDeleteModal,
     RequestDeleteModal,
   },
   effector: {
     $token,
     $triggerToRefreshTable,
+    $filterParams: subjectsFilters.store.$filterParams,
     $session,
   },
   data() {
@@ -150,7 +152,6 @@ export default (Vue as VueConstructor<
       fields: subjectsTableFields,
       searchFields: searchFieldsData,
       total: 0,
-      filterParams: {},
     }
   },
   computed: {
@@ -168,6 +169,9 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: subjectsFilters.methods.changeFilter,
+    resetFilters: subjectsFilters.methods.resetFilters,
+    applyFilters: subjectsFilters.methods.applyFilters,
     myFetch(apiUrl: string, httpOptions: any) {
       return axios.get(apiUrl, {
         params: { sort: computeSortParam(httpOptions.params.sort) },
@@ -176,24 +180,13 @@ export default (Vue as VueConstructor<
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
     },
-    resetAllFilters() {
-      this.filterParams = {}
-      reset() // search string and field
-
-      const resetEvent = new Event('reset-themes-filter')
-      const container = document.querySelector('#subjects-page')
-      container && container.dispatchEvent(resetEvent)
-
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
-    },
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
+    onFilterSet() {
+      this.applyFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
-      this.filterParams = {}
+      this.resetFilters()
       reset() // search string and field
-
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     // TODO like removeSelected
@@ -236,10 +229,6 @@ export default (Vue as VueConstructor<
     hideContextMenu() {
       this.showContextMenu = false
     },
-  },
-  mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
   },
   created() {
     // Authorization request
@@ -341,19 +330,6 @@ export default (Vue as VueConstructor<
   }
 }
 
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-  & > div + div {
-    margin-top: 10px;
-  }
-}
 .reset-filters {
   color: var(--base-text-primary);
   cursor: pointer;

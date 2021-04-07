@@ -12,13 +12,13 @@
     />
     <div class="arrow-up" />
     <div class="section">
-      <SubjectDropdown @setItem="val => changeFilter('subject', val)" />
+      <SubjectDropdown @setItem="val => setItem({'subject': val})" />
     </div>
     <div class="section">
-      <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
+      <ClassDropdown @setItem="val => setItem({'study_year': val})" />
     </div>
     <div class="section">
-      <ThemeDropdown is-preload @setItem="val => changeFilter('theme', val)" />
+      <ThemeDropdown is-preload @setItem="val => setItem({'theme': val})" />
       <div class="btns">
         <div class="btn">
           <BaseButton
@@ -48,13 +48,9 @@ import Vue from 'vue'
 import ClickOutside from '@/features/directives/click-outside'
 import Icon from '@/ui/icon/Icon.vue'
 import { toggleVisibility, reset } from '@/pages/labels/parts/labels-filter/labels-filter.model'
-import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
-import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
-import ThemeDropdown from '@/pages/common/dropdowns/themes-tree/ThemeDropdown.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
-import { themesDropdownModule } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
+import { FiltersParams } from '@/pages/common/types'
+import { dropdownComponents } from '@/pages/labels/parts/labels-filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -62,22 +58,14 @@ export default Vue.extend({
   name: 'TagsFilter',
   components: {
     Icon,
-    SubjectDropdown,
-    ClassDropdown,
-    ThemeDropdown,
+    SubjectDropdown: dropdownComponents.SubjectDropdown,
+    ClassDropdown: dropdownComponents.ClassDropdown,
+    ThemeDropdown: dropdownComponents.ThemeDropdown,
     BaseButton,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
     filterParams: { type: Object, required: true },
-  },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null } as any,
-      classModuleMethods: classesDropdownModule.methods,
-      subjectModuleMethods: subjectsDropdownModule.methods,
-      themeModuleMethods: themesDropdownModule.methods,
-    }
   },
   methods: {
     toggleVisibility,
@@ -96,37 +84,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name: string, value: string | null) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    setItem(filter: FiltersParams) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      const filter = {}
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        }
-      })
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-
-      this.classModuleMethods.resetItem()
-      this.subjectModuleMethods.resetItem()
-      this.themeModuleMethods.resetItem()
       this.$emit('resetFilter') // general filter
-      reset() // visibility
+      reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#tags-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#tags-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>

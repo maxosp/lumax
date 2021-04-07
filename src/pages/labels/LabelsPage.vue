@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
       @setFilter="onFilterSet"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <LabelsFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -19,6 +20,7 @@
       <LabelsTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
+        @resetFilter="onFilterReset"
         @onRemove="onRemoveLabel"
       />
     </div>
@@ -61,6 +63,7 @@ import LabelEditionModal from '@/pages/labels/parts/modals/label-edition/LabelEd
 import TasksModal from '@/pages/labels/parts/modals/tasks/TasksModal.vue'
 import {
   $visibility,
+  labelsFilters,
   toggleVisibility,
 } from '@/pages/labels/parts/labels-filter/labels-filter.model'
 import { deleteLabels, loadTree, loadTreeLight } from '@/pages/labels/labels-page.model'
@@ -87,10 +90,10 @@ export default Vue.extend({
   },
   effector: {
     $visibility,
+    $filterParams: labelsFilters.store.$filterParams,
   },
   data() {
     return {
-      filterParams: {},
       searchFields: searchFieldsData,
       clickedRowId: 0,
       showContextMenu: false,
@@ -102,18 +105,18 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeFilter: labelsFilters.methods.changeFilter,
+    resetFilters: labelsFilters.methods.resetFilters,
+    applyFilters: labelsFilters.methods.applyFilters,
     loadTree,
     toggleVisibility,
     createLabelFromTree,
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadTree({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
     },
     onFilterReset() {
-      this.filterParams = {}
+      this.resetFilters()
       reset() // search string and field
-      // reload data
-      loadTreeLight()
     },
     handleRightClick({ data, event, type = 'table_theme' }: RightClickParams) {
       this.subject_id = data.subject_id
@@ -143,8 +146,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadTreeLight()
   },
 })

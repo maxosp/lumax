@@ -13,11 +13,18 @@ import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { deleteSubjectsFx, requestDeleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { CreateSubjectType } from '@/features/api/subject/types'
+import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
+export const subjectsFilters = createFiltersModel(
+  {
+    search_area: 'search_all',
+  },
+  {}
+)
 export const deleteSubjects = createEffect({
   handler: (ids: number[]): Promise<number[]> => {
     return new Promise((resolve) => {

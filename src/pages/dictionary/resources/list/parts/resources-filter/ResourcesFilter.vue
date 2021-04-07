@@ -7,19 +7,19 @@
     <div class="section">
       <BaseSwitch
         class="switch"
-        :checked="$createdByMe"
-        @change="createdByMeChanged"
+        :checked="$filterParams.created_by_me"
+        @change="setItem({'created_by_me': $event})"
       >
         <p>Созданные мной</p>
       </BaseSwitch>
     </div>
     <div class="section">
-      <TypeDropdown @setItem="val => changeFilter('type', val)" />
-      <ThemeDropdown is-preload @setItem="val => changeFilter('theme', val)" />
+      <TypeDropdown @setItem="val => setItem({'type': val})" />
+      <ThemeDropdown is-preload @setItem="val => setItem({'theme': val})" />
     </div>
     <div class="section">
-      <SubjectDropdown @setItem="val => changeFilter('subject', val)" />
-      <ClassDropdown @setItem="val => changeFilter('study_year', val)" />
+      <SubjectDropdown @setItem="val => setItem({'subject': val})" />
+      <ClassDropdown @setItem="val => setItem({'study_year': val})" />
       <div class="buttons">
         <div class="btn">
           <BaseButton
@@ -56,21 +56,13 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
-import SubjectDropdown from '@/pages/common/dropdowns/subject/SubjectsDropdown.vue'
-import ThemeDropdown from '@/pages/common/dropdowns/themes-tree/ThemeDropdown.vue'
-import TypeDropdown from '@/pages/dictionary/resources/list/parts/resources-filter/parts/type/TypeDropdown.vue'
-import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
-import { themesDropdownModule } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
-import { typeDropdownModule } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/type/type-dropdown.model'
 import {
-  $createdByMe,
-  createdByMeChanged,
   reset,
+  resourcesFilters,
   toggleVisibility,
 } from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
+import { dropdownComponents } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -80,31 +72,19 @@ export default Vue.extend({
     Icon,
     BaseSwitch,
     BaseButton,
-    ClassDropdown,
-    SubjectDropdown,
-    ThemeDropdown,
-    TypeDropdown,
+    ClassDropdown: dropdownComponents.ClassDropdown,
+    SubjectDropdown: dropdownComponents.SubjectDropdown,
+    ThemeDropdown: dropdownComponents.ThemeDropdown,
+    TypeDropdown: dropdownComponents.TypeDropdown,
   },
   effector: {
-    $createdByMe,
+    $filterParams: resourcesFilters.store.$filterParams,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
-  },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null },
-      // modules methods should be here for reset
-      classModuleMethods: classesDropdownModule.methods,
-      subjectModuleMethods: subjectsDropdownModule.methods,
-      themeModuleMethods: themesDropdownModule.methods,
-      typeModuleMethods: typeDropdownModule.methods,
-    }
   },
   methods: {
     toggleVisibility,
-    createdByMeChanged,
     closeFilter(event) {
       // check for close icon (clear filter dropdown)
       if (event.target.href && event.target.href.baseVal === '#close-icon') {
@@ -119,44 +99,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      // set switchers values to filter
-      const filter = {}
-      if (this.$createdByMe) filter.created_by_me = this.$createdByMe
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-      this.classModuleMethods.resetItem()
-      this.subjectModuleMethods.resetItem()
-      this.themeModuleMethods.resetItem()
-      this.typeModuleMethods.resetItem()
-      this.createdByMeChanged(false)
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#resources-page')
-    container && container.addEventListener('reset-resources-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#resources-page')
-    container && container.removeEventListener('reset-resources-filter', this.resetFilters, false)
-    // TO DO: update resetting of class & subject dd when resetfilters is updated
-    this.classModuleMethods.resetItem()
-    this.subjectModuleMethods.resetItem()
   },
 })
 </script>

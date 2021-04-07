@@ -3,7 +3,7 @@ import { statusDropdownModule } from '@/pages/applications/outgoing/parts/filter
 import { subjectsDropdownModule } from '@/pages/applications/outgoing/parts/filter/parts/subjects-dropdown/subjects-dropdown.model'
 import { moderatorDropdownModule } from '@/pages/applications/outgoing/parts/filter/parts/moderator-dropdown/moderator-dropdown.model'
 
-export const modules = {
+export const dropdownModules = {
   classesDropdownModule,
   statusDropdownModule,
   subjectsDropdownModule,

@@ -20,9 +20,16 @@ export const createFilter = () => {
   const searchItem = createEvent<string>()
   const restoreItems = createEvent<void>()
 
+  const resetDropdown = createEvent<void>()
+
   forward({
     from: setItems,
     to: [$itemsDropdown, $_itemsDropdown],
+  })
+
+  forward({
+    from: resetDropdown,
+    to: [resetItem, resetSearchString],
   })
 
   const debounced = debounce({
@@ -89,6 +96,7 @@ export const createFilter = () => {
       itemChanged,
       searchStringChanged,
       resetSearchString,
+      resetDropdown,
     },
   }
 }

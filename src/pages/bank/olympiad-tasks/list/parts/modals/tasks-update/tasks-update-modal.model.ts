@@ -53,12 +53,7 @@ forward({
 
 forward({
   from: clearFields,
-  to: [
-    resetField,
-    resetSwitchers,
-    scoreDropdownModule.methods.resetItem,
-    scoreDropdownModule.methods.resetSearchString,
-  ],
+  to: [resetField, resetSwitchers, scoreDropdownModule.methods.resetDropdown],
 })
 
 forward({

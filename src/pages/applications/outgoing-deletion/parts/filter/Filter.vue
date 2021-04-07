@@ -5,9 +5,9 @@
     class="themes-filter"
   >
     <div class="row">
-      <TypesDropdown class="half-third" @setItem="val => changeFilter('object_type', val)" />
-      <StatusDropdown class="half-third" @setItem="val => changeFilter('status', val)" />
-      <ModeratorDropdown class="half-third" @setItem="val => changeFilter('moderate_by', val)" />
+      <TypesDropdown class="half-third" @setItem="val => setItem({'object_type': val})" />
+      <StatusDropdown class="half-third" @setItem="val => setItem({'status': val})" />
+      <ModeratorDropdown class="half-third" @setItem="val => setItem({'moderate_by': val})" />
     </div>
     <div class="row">
       <div class="buttons">
@@ -45,13 +45,12 @@
 import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import * as dropdowns from '@/pages/applications/outgoing-deletion/parts/filter/parts/dropdowns.index'
-import { modules } from '@/pages/applications/outgoing-deletion/parts/filter/parts/'
 import {
   reset,
   toggleVisibility,
 } from '@/pages/applications/outgoing-deletion/parts/filter/filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
+import { dropdownComponents } from '@/pages/applications/outgoing-deletion/parts/filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -59,24 +58,15 @@ export default Vue.extend({
   name: 'OutgoingDeletionApplicationsFilter',
   components: {
     Icon,
-    TypesDropdown: dropdowns.TypesDropdown,
-    StatusDropdown: dropdowns.StatusDropdown,
-    ModeratorDropdown: dropdowns.ModeratorDropdown,
+    TypesDropdown: dropdownComponents.TypesDropdown,
+    StatusDropdown: dropdownComponents.StatusDropdown,
+    ModeratorDropdown: dropdownComponents.ModeratorDropdown,
     BaseButton,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
   },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null },
-      // modules methods should be here for reset
-      typesModuleMethods: modules.typesDropdownModule.methods,
-      statusDropdownModule: modules.statusDropdownModule.methods,
-      moderatorDropdownModule: modules.moderatorDropdownModule.methods,
-    }
-  },
+
   methods: {
     toggleVisibility,
     closeFilter(event) {
@@ -93,39 +83,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      const filter = {}
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        } else if (this.$props.filterParams.hasOwnProperty(dropdownFilterKey)) {
-          delete this.$props.filterParams[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-      this.typesModuleMethods.resetItem()
-      this.statusDropdownModule.resetItem()
-      this.moderatorDropdownModule.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#themes-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#themes-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>

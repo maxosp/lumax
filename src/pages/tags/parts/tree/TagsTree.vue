@@ -1,10 +1,8 @@
 <template>
-  <div
+  <NoDataContent
     v-if="$tagsTree && !$tagsTree.length"
-    class="no-data-content"
-  >
-    Теги не найдены.
-  </div>
+    @resetFilters="$emmit('resetFilters')"
+  />
   <div
     v-else
     class="tags-tree"
@@ -27,10 +25,12 @@
 import Vue from 'vue'
 import TreeNode from '@/pages/tags/parts/tree/TreeNode.vue'
 import { $tagsTree } from '@/pages/tags/tags-page.model'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 export default Vue.extend({
   name: 'TagsTree',
   components: {
+    NoDataContent,
     TreeNode,
   },
   effector: { $tagsTree },

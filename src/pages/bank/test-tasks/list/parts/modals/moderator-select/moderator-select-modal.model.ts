@@ -69,11 +69,7 @@ condition({
 
 forward({
   from: clearFields,
-  to: [
-    $moderatorErrorModule.methods.resetError,
-    moderatorDropdownModule.methods.resetItem,
-    moderatorDropdownModule.methods.resetSearchString,
-  ],
+  to: [$moderatorErrorModule.methods.resetError, moderatorDropdownModule.methods.resetDropdown],
 })
 
 forward({

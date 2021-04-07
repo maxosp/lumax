@@ -81,17 +81,17 @@ export default Vue.extend({
     searchFieldChanged,
     handleSearchString(value: string) {
       searchStringChanged(value)
-      this.$emit('setFilter', {
-        [`search_${this.$searchField.name}`]: 'true',
+      this.$emit('changeFilter', {
         search: value,
       })
+      this.$emit('setFilter')
     },
     handleSearchFieldClick(item: DropdownItem, cb: any) {
       searchFieldChanged(item)
-      this.$emit('setFilter', {
-        [`search_${item.name}`]: 'true',
-        search: this.$searchString,
+      this.$emit('changeFilter', {
+        search_area: `search_${item.name}`,
       })
+      this.$emit('setFilter')
       cb()
     },
     clear() {

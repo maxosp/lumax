@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
       @setFilter="onFilterSet"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <ApplicationsFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -33,7 +34,7 @@
         :api-url="apiUrl"
         :fields="fields"
         :http-fetch="myFetch"
-        :append-params="filterParams"
+        :append-params="$filterParams"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -52,16 +53,17 @@
           />
         </template>
       </Vuetable>
-      <div v-if="!total" class="no-data-content">
-        Заявки не найдены
-      </div>
+      <NoDataContent
+        v-if="!total"
+        @resetFilters="onFilterReset"
+      />
       <div class="vuetable-pagination ui basic segment grid">
         <VuetablePagination
           ref="pagination"
           @vuetable-pagination:change-page="onChangePage"
         />
       </div>
-    </div> 
+    </div>
     <ContextMenu
       v-if="showContextMenu"
       :id="clickedRowId"
@@ -108,6 +110,7 @@ import {
 import {
   toggleVisibility,
   $visibility,
+  outgoingApplicationsFilters,
 } from '@/pages/applications/outgoing/parts/filter/filter.model'
 import { $session } from '@/features/session'
 import CancelModal from '@/pages/applications/modals/cancel/CancelModal.vue'
@@ -119,6 +122,7 @@ import { navigatePush } from '@/features/navigation'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -127,6 +131,7 @@ export default (Vue as VueConstructor<
   }
 >).extend({
   components: {
+    NoDataContent,
     PageHeader,
     GeneralFilter,
     ApplicationsFilter,
@@ -143,12 +148,12 @@ export default (Vue as VueConstructor<
     $token,
     $session,
     canRefreshTableAfterCancel: $canUpdateTable,
+    $filterParams: outgoingApplicationsFilters.store.$filterParams,
   },
   data() {
     return {
       clickedRowId: 0,
       searchFields: searchFieldsData,
-      filterParams: {},
       total: 1,
       fields: outgoingApplicationsDataFields,
       showContextMenu: false,
@@ -174,6 +179,9 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: outgoingApplicationsFilters.methods.changeFilter,
+    resetFilters: outgoingApplicationsFilters.methods.resetFilters,
+    applyFilters: outgoingApplicationsFilters.methods.applyFilters,
     toggleVisibility,
     loadList,
     reset,
@@ -222,16 +230,13 @@ export default (Vue as VueConstructor<
       this.localItems = data
       return request
     },
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadList({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
-      this.filterParams = {}
       reset() // search string and field
-      // reload data
-      loadList({})
+      this.resetFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
@@ -288,8 +293,6 @@ export default (Vue as VueConstructor<
     })
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadList({})
   },
 })
@@ -362,19 +365,6 @@ export default (Vue as VueConstructor<
     transform: rotate(35deg);
     font-weight: bold;
   }
-}
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-}
-.no-data-content ~ .vuetable-pagination {
-  margin: 0 !important;
 }
 .vuetable-pagination {
   @mixin vuetable-pagination;

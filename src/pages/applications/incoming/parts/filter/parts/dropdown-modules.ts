@@ -4,7 +4,7 @@ import { subjectsDropdownModule } from '@/pages/applications/incoming/parts/filt
 import { creatorDropdownModule } from '@/pages/applications/incoming/parts/filter/parts/creator-dropdown/creator-dropdown.model'
 import { moderatorDropdownModule } from '@/pages/applications/incoming/parts/filter/parts/moderator-dropdown/moderator-dropdown.model'
 
-export const modules = {
+export const dropdownModules = {
   classesDropdownModule,
   statusDropdownModule,
   subjectsDropdownModule,

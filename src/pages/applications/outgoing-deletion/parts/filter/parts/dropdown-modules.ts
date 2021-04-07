@@ -2,7 +2,7 @@ import { typesDropdownModule } from '@/pages/applications/outgoing-deletion/part
 import { statusDropdownModule } from '@/pages/applications/outgoing/parts/filter/parts/status-dropdown/status-dropdown.model'
 import { moderatorDropdownModule } from '@/pages/applications/outgoing/parts/filter/parts/moderator-dropdown/moderator-dropdown.model'
 
-export const modules = {
+export const dropdownModules = {
   typesDropdownModule,
   statusDropdownModule,
   moderatorDropdownModule,

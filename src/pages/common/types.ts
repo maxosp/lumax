@@ -45,3 +45,28 @@ export type ParamsHttpOptionsType = {
 export type HttpOptionsType = {
   params: ParamsHttpOptionsType
 }
+
+export type FiltersParams = {
+  sort?: string
+  subject?: number
+  study_year?: number
+  difficulty?: number
+  status?: number
+  type?: number
+  interface_language?: number
+  labels?: number
+  page?: number
+  per_page?: number
+  tags?: string
+  created_by?: User
+  moderate_by?: User
+  is_prerequisite?: boolean
+  is_test_assignment?: boolean
+  is_lesson_assignment?: boolean
+  is_olympiad_assignment?: boolean
+  has_assignment?: boolean
+  created_by_me?: boolean
+  moderate_by_me?: boolean
+  search?: string
+  search_area?: string
+}

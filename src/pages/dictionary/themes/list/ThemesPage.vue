@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @setFilter="onFilterSet"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <ThemesFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -29,7 +30,7 @@
         :api-url="apiUrl"
         :fields="fields"
         :http-fetch="myFetch"
-        :append-params="filterParams"
+        :append-params="$filterParams"
         :per-page="25"
         pagination-path=""
         @vuetable:load-error="handleLoadError"
@@ -52,14 +53,10 @@
           />
         </template>
       </Vuetable>
-      <div v-if="!total" class="no-data-content">
-        <div>Поиск не дал результатов.</div>
-        <div>Попробуйте
-          <span class="reset-filters" @click="resetAllFilters">
-            сбросить все фильтры
-          </span>
-        </div>
-      </div>
+      <NoDataContent
+        v-if="!total"
+        @resetFilters="onFilterReset"
+      />
       <div class="vuetable-pagination ui basic segment grid">
         <VuetablePagination
           ref="pagination"
@@ -71,6 +68,7 @@
       <ThemesTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
+        @resetFilter="onFilterReset"
       />
     </div>
     <ContextMenu
@@ -123,6 +121,7 @@ import {
 import {
   toggleVisibility,
   $visibility,
+  themesFilters,
 } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
@@ -130,6 +129,7 @@ import { themesTableFields, searchFieldsData } from '@/pages/dictionary/themes/l
 import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { navigatePush } from '@/features/navigation'
 import { $session } from '@/features/session'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
@@ -162,6 +162,7 @@ export default (Vue as VueConstructor<
     Actions,
     ContextMenu,
     ThemesTree,
+    NoDataContent,
     ConfirmDeleteModal,
     RequestDeleteModal,
   },
@@ -171,6 +172,7 @@ export default (Vue as VueConstructor<
     $treeView,
     $themesTreeTotal,
     $session,
+    $filterParams: themesFilters.store.$filterParams,
   },
   data() {
     return {
@@ -181,7 +183,6 @@ export default (Vue as VueConstructor<
       fields: themesTableFields,
       searchFields: searchFieldsData,
       total: 0,
-      filterParams: {},
       selectedRows: [] as number[] | null,
       subject: null,
       studyYear: null,
@@ -194,6 +195,9 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: themesFilters.methods.changeFilter,
+    resetFilters: themesFilters.methods.resetFilters,
+    applyFilters: themesFilters.methods.applyFilters,
     loadTree,
     toggleVisibility,
     myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
@@ -208,29 +212,13 @@ export default (Vue as VueConstructor<
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
     },
-    resetAllFilters() {
-      this.filterParams = {}
-      reset() // search string and field
-
-      const resetEvent = new Event('reset-themes-filter')
-      const container = document.querySelector('#themes-page')
-      container && container.dispatchEvent(resetEvent)
-
-      // reload data
-      loadTreeLight()
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
-    },
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadTree({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
-      this.filterParams = {}
+      this.resetFilters()
       reset() // search string and field
-
-      // reload data
-      loadTreeLight()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     handleRowClick(res: any) {
@@ -284,8 +272,6 @@ export default (Vue as VueConstructor<
     },
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadTreeLight()
   },
   created() {
@@ -373,19 +359,6 @@ export default (Vue as VueConstructor<
   }
 }
 
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-  & > div + div {
-    margin-top: 10px;
-  }
-}
 .vuetable-pagination {
   @mixin vuetable-pagination;
 }

@@ -1,10 +1,8 @@
 <template>
-  <div
+  <NoDataContent
     v-if="$labelsTree && !$labelsTree.length"
-    class="no-data-content"
-  >
-    Метки не найдены.
-  </div>
+    @resetFilters="$emit('resetFilter')"
+  />
   <div
     v-else
     class="labels-tree"
@@ -27,11 +25,13 @@
 import Vue from 'vue'
 import TreeNode from '@/pages/labels/parts/tree/TreeNode.vue'
 import { $labelsTree } from '@/pages/labels/labels-page.model'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 export default Vue.extend({
   name: 'LabelsTree',
   components: {
     TreeNode,
+    NoDataContent,
   },
   effector: { $labelsTree },
 })
@@ -44,15 +44,5 @@ export default Vue.extend({
   width: 100%;
   background-color: #fff;
   padding: 30px;
-}
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
 }
 </style>

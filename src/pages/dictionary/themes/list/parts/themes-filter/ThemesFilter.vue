@@ -5,61 +5,41 @@
     class="themes-filter"
   >
     <div class="section">
-      <SubjectsDropdown @setItem="val => changeFilter('subject', val)" />
+      <SubjectsDropdown @setItem="val => setItem({'subject': val})" />
       <BaseSwitch
         class="switch"
-        :checked="$togglers.hide_prerequisites"
-        @change="val => {
-          setToggler('hide_prerequisites', val)
-          if (val) {
-            setToggler('show_only_prerequisites', false)
-          }
-        }"
+        :checked="!$filterParams.is_prerequisite"
+        @change="setItem({'is_prerequisite': !$event})"
       >
         <p>Скрыть пререквизиты</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
-        :checked="$togglers.show_only_prerequisites"
-        @change="val => {
-          setToggler('show_only_prerequisites', val)
-          if (val) {
-            setToggler('hide_prerequisites', false)
-          }
-        }"
+        :checked="$filterParams.is_prerequisite"
+        @change="setItem({'is_prerequisite': $event})"
       >
         <p>Отобразить только пререквизиты</p>
       </BaseSwitch>
     </div>
     <div class="section">
-      <ClassesDropdown @setItem="val => changeFilter('study_year', val)" />
+      <ClassesDropdown @setItem="val => setItem({'study_year': val})" />
       <BaseSwitch
         class="switch"
-        :checked="$togglers.show_without_tasks"
-        @change="val => {
-          setToggler('show_without_tasks', val)
-          if (val) {
-            setToggler('show_with_tasks', false)
-          }
-        }"
+        :checked="!$filterParams.has_assignment"
+        @change="setItem({'has_assignment': !$event})"
       >
         <p>Отобразить только темы без заданий</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
-        :checked="$togglers.show_with_tasks"
-        @change="val => {
-          setToggler('show_with_tasks', val)
-          if (val) {
-            setToggler('show_without_tasks', false)
-          }
-        }"
+        :checked="$filterParams.has_assignment"
+        @change="setItem({'has_assignment': $event})"
       >
         <p>Отобразить только темы с заданиями</p>
       </BaseSwitch>
     </div>
     <div class="section">
-      <AuthorsDropdown @setItem="val => changeFilter('created_by', val)" />
+      <AuthorsDropdown @setItem="val => setItem({'created_by': val})" />
       <div class="buttons">
         <div class="btn">
           <BaseButton
@@ -96,20 +76,14 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import AuthorsDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/authors-dropdown/AuthorsDropdown.vue'
-import ClassesDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/ClassesDropdown.vue'
-import SubjectsDropdown from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/SubjectsDropdown.vue'
-import { authorsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/authors-dropdown/authors-dropdown.model'
-import { classesDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/classes-dropdown/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/subjects-dropdown/subjects-dropdown.model'
+
 import {
-  $togglers,
-  setTogglers,
   reset,
+  themesFilters,
   toggleVisibility,
 } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
-import { mapTogglerToEntity } from '@/pages/dictionary/themes/list/parts/themes-filter/constants'
 import ClickOutside from '@/features/directives/click-outside.ts'
+import { dropdownComponents } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -119,25 +93,15 @@ export default Vue.extend({
     Icon,
     BaseSwitch,
     BaseButton,
-    AuthorsDropdown,
-    ClassesDropdown,
-    SubjectsDropdown,
+    AuthorsDropdown: dropdownComponents.AuthorsDropdown,
+    ClassesDropdown: dropdownComponents.ClassesDropdown,
+    SubjectsDropdown: dropdownComponents.SubjectsDropdown,
   },
   effector: {
-    $togglers,
+    $filterParams: themesFilters.store.$filterParams,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
-  },
-  data() {
-    return {
-      dropdownsFilter: { subject: null, study_year: null, created_by: null },
-      // modules methods should be here for reset
-      authorsModuleMethods: authorsDropdownModule.methods,
-      classesModuleMethods: classesDropdownModule.methods,
-      subjectsModuleMethods: subjectsDropdownModule.methods,
-    }
   },
   methods: {
     toggleVisibility,
@@ -155,51 +119,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    setToggler(name, value) {
-      setTogglers({
-        ...this.$togglers,
-        [name]: value,
-      })
-    },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      // set switchers values to filter
-      const filter = {}
-      Object.keys(this.$togglers).forEach((toggler) => {
-        if (this.$togglers[toggler]) {
-          const togglerEntity = mapTogglerToEntity[toggler]
-          filter[togglerEntity.name] = togglerEntity.value
-        }
-      })
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-
-      this.authorsModuleMethods.resetItem()
-      this.classesModuleMethods.resetItem()
-      this.subjectsModuleMethods.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#themes-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#themes-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>

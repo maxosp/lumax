@@ -62,12 +62,9 @@ export const $link = restore(linkChanged, '').reset(clearFields)
 forward({
   from: clearFields,
   to: [
-    classDropdownModule.methods.resetItem,
-    classDropdownModule.methods.resetSearchString,
-    subjectDropdownModule.methods.resetItem,
-    subjectDropdownModule.methods.resetSearchString,
-    themeDropdownModule.methods.resetItem,
-    themeDropdownModule.methods.resetSearchString,
+    classDropdownModule.methods.resetDropdown,
+    subjectDropdownModule.methods.resetDropdown,
+    themeDropdownModule.methods.resetDropdown,
     fileDataChanged.prepend(() => null),
   ],
 })

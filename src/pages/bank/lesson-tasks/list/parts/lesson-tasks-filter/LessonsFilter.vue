@@ -6,14 +6,14 @@
   >
     <BaseSwitch
       class="block"
-      :checked="$togglers.created_by_me"
-      @change="setToggler('created_by_me', $event)"
+      :checked="$filterParams.created_by_me"
+      @change="setItem({'created_by_me': $event})"
     >
       <p>Созданные мной</p>
     </BaseSwitch>
     <div class="row">
-      <TypeDropdown class="half-second" @setItem="val => changeFilter('type', val)" />
-      <StatusDropdown class="half-third" @setItem="val => changeFilter('status', val)" />
+      <TypeDropdown class="half-second" @setItem="val => setItem({'type': val})" />
+      <StatusDropdown class="half-third" @setItem="val => setItem({'status': val})" />
     </div>
     <div class="row">
       <div class="buttons">
@@ -51,15 +51,13 @@ import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
-import * as dropdowns from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdowns.index'
-import { modules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/'
 import {
   reset,
   toggleVisibility,
-  $togglers,
-  setTogglers,
+  lessonTasksFilters,
 } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/lesson-tasks-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
+import { dropdownComponents } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/parts/dropdown-components'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -67,26 +65,18 @@ export default Vue.extend({
   name: 'ThemesFilter',
   components: {
     Icon,
-    StatusDropdown: dropdowns.StatusDropdown,
-    TypeDropdown: dropdowns.TypeDropdown,
     BaseButton,
     BaseSwitch,
+    StatusDropdown: dropdownComponents.StatusDropdown,
+    TypeDropdown: dropdownComponents.TypeDropdown,
   },
   effector: {
-    $togglers,
+    $filterParams: lessonTasksFilters.store.$filterParams,
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
   },
-  data() {
-    return {
-      dropdownsFilter: {},
-      // modules methods should be here for reset
-      typeDropdownModule: modules.typeDropdownModule.methods,
-      statusDropdownModule: modules.statusDropdownModule.methods,
-    }
-  },
+
   methods: {
     toggleVisibility,
     closeFilter(event) {
@@ -103,50 +93,17 @@ export default Vue.extend({
         toggleVisibility(false)
       }
     },
-    changeFilter(name, value) {
-      this.dropdownsFilter = { ...this.dropdownsFilter, [name]: value }
-    },
-    setToggler(name, value) {
-      setTogglers({
-        ...this.$togglers,
-        [name]: value,
-      })
+    setItem(filter) {
+      this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      // set switchers values to filter
-      const filter = {}
-      Object.keys(this.$togglers).forEach((toggler) => {
-        if (this.$togglers[toggler]) filter[toggler] = this.$togglers[toggler]
-        else if (this.$props.filterParams.hasOwnProperty(toggler))
-          delete this.$props.filterParams[toggler]
-      })
-      // set dropdowns value to filter
-      Object.keys(this.dropdownsFilter).forEach((dropdownFilterKey) => {
-        if (this.dropdownsFilter[dropdownFilterKey]) {
-          filter[dropdownFilterKey] = this.dropdownsFilter[dropdownFilterKey]
-        } else if (this.$props.filterParams.hasOwnProperty(dropdownFilterKey)) {
-          delete this.$props.filterParams[dropdownFilterKey]
-        }
-      })
-      // call table filter
-      this.$emit('setFilter', filter)
+      this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
-      this.dropdownsFilter = {}
-      this.typeDropdownModule.resetItem()
-      this.statusDropdownModule.resetItem()
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
     },
-  },
-  mounted() {
-    const container = document.querySelector('#lessons-page')
-    container && container.addEventListener('reset-themes-filter', this.resetFilters, false)
-  },
-  beforeDestroy() {
-    const container = document.querySelector('#lessons-page')
-    container && container.removeEventListener('reset-themes-filter', this.resetFilters, false)
   },
 })
 </script>

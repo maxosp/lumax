@@ -5,13 +5,14 @@
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
       @setFilter="onFilterSet"
+      @changeFilter="changeFilter"
     >
       <template #filter>
         <TagsFilter
           :visible="$visibility"
-          :filter-params="filterParams"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
+          @changeFilter="changeFilter"
         />
       </template>
     </GeneralFilter>
@@ -30,7 +31,7 @@
         :api-url="apiUrl"
         :fields="fields"
         :http-fetch="myFetch"
-        :append-params="filterParams"
+        :append-params="$filterParams"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -56,9 +57,10 @@
           />
         </template>
       </Vuetable>
-      <div v-if="!total" class="no-data-content">
-        Теги не найдены
-      </div>
+      <NoDataContent
+        v-if="!total"
+        @resetFilters="onFilterReset"
+      />
       <div class="vuetable-pagination ui basic segment grid">
         <VuetablePagination
           ref="pagination"
@@ -71,6 +73,7 @@
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
         @onRemove="onRemoveTags"
+        @resetFilters="onFilterReset"
       />
     </div>
     <ContextMenu
@@ -108,7 +111,11 @@ import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import { RightClickParams } from '@/pages/tags/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, tagsDataFields } from '@/pages/tags/constants'
-import { toggleVisibility, $visibility } from '@/pages/tags/parts/tags-filter/tags-filter.model'
+import {
+  toggleVisibility,
+  $visibility,
+  tagsFilters,
+} from '@/pages/tags/parts/tags-filter/tags-filter.model'
 import { loadTreeLight, loadTree, $tagsTreeTotal, deleteTags } from '@/pages/tags/tags-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { $treeView } from '@/pages/tags/parts/header/page-header.model'
@@ -136,6 +143,7 @@ import {
 import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -159,6 +167,7 @@ export default (Vue as VueConstructor<
     Vuetable,
     VuetablePagination,
     ConfirmDeleteModal,
+    NoDataContent,
   },
   effector: {
     $visibility,
@@ -167,11 +176,11 @@ export default (Vue as VueConstructor<
     $token,
     $canRefreshTable,
     $canRefreshTableAfterCreation,
+    $filterParams: tagsFilters.store.$filterParams,
   },
   data() {
     return {
       searchFields: searchFieldsData,
-      filterParams: {},
       total: 0,
       fields: tagsDataFields,
       clickedRowId: 0,
@@ -201,6 +210,9 @@ export default (Vue as VueConstructor<
     },
   },
   methods: {
+    changeFilter: tagsFilters.methods.changeFilter,
+    resetFilters: tagsFilters.methods.resetFilters,
+    applyFilters: tagsFilters.methods.applyFilters,
     loadTree,
     toggleVisibility,
     reset,
@@ -217,18 +229,13 @@ export default (Vue as VueConstructor<
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
     },
-    onFilterSet(newFilter: any) {
-      this.filterParams = newFilter
-      loadTree({ ...this.filterParams })
+    onFilterSet() {
+      this.applyFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onFilterReset() {
-      this.filterParams = {}
       reset() // search string and field
-
-      // reload data
-      // loadTree({})
-      loadTreeLight()
+      this.resetFilters()
       Vue.nextTick(() => this.$refs.vuetable.refresh())
     },
     onPaginationData(paginationData: any) {
@@ -286,8 +293,6 @@ export default (Vue as VueConstructor<
     })
   },
   mounted() {
-    this.$events.$on('filter-set', (data: any) => this.onFilterSet(data))
-    this.$events.$on('filter-reset', () => this.onFilterReset())
     loadTreeLight()
   },
 })
@@ -367,20 +372,6 @@ export default (Vue as VueConstructor<
     transform: rotate(35deg);
     font-weight: bold;
   }
-}
-
-.no-data-content {
-  width: 100%;
-  min-height: 550px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--base-text-secondary);
-}
-.no-data-content ~ .vuetable-pagination {
-  margin: 0 !important;
 }
 .vuetable-pagination {
   @mixin vuetable-pagination;

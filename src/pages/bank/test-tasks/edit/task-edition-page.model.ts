@@ -154,17 +154,12 @@ const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearField
 forward({
   from: clearFields,
   to: [
-    classesDropdownModule.methods.resetItem,
-    classesDropdownModule.methods.resetSearchString,
-    subjectsDropdownModule.methods.resetItem,
-    subjectsDropdownModule.methods.resetSearchString,
-    taskTypesDropdownModule.methods.resetItem,
-    taskTypesDropdownModule.methods.resetSearchString,
+    classesDropdownModule.methods.resetDropdown,
+    subjectsDropdownModule.methods.resetDropdown,
+    taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
-    themesDropdownModule.methods.resetItem,
-    themesDropdownModule.methods.resetSearchString,
-    difficultiesDropdownModule.methods.resetItem,
-    difficultiesDropdownModule.methods.resetSearchString,
+    themesDropdownModule.methods.resetDropdown,
+    difficultiesDropdownModule.methods.resetDropdown,
   ],
 })
 

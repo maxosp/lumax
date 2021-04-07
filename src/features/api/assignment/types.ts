@@ -27,14 +27,10 @@ export type Label = Tag & {
 
 export type GetTagsTreeQueryParams = {
   sort?: string
-  subject?: string
+  subject?: number
   study_year?: number
   search?: string
-  search_all?: string
-  search_id?: string
-  search_name?: string
-  search_subject?: string
-  search_study_year?: string
+  search_area?: string
 }
 
 export type GetLabelsTreeQueryParams = {
@@ -43,11 +39,7 @@ export type GetLabelsTreeQueryParams = {
   study_year?: number
   theme?: number
   search?: string
-  search_all?: string
-  search_id?: string
-  search_name?: string
-  search_subject?: string
-  search_study_year?: string
+  search_area?: string
 }
 
 export type GetTypesResponse = {

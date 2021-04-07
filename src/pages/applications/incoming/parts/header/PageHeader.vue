@@ -4,8 +4,8 @@
     <div class="buttons">
       <BaseSwitch
         class="switch"
-        :checked="$assignedToMe"
-        @change="applyFilter"
+        :checked="$filterParams.moderate_by_me"
+        @change="setItem({'moderate_by_me': $event})"
       >
         <p class="text"> Отображать только назначенные на меня </p>
       </BaseSwitch>
@@ -45,10 +45,8 @@ import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderPopup from '@/pages/applications/incoming/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
-import {
-  $assignedToMe,
-  assignedToMeChanged,
-} from '@/pages/applications/incoming/parts/header/page-header.model'
+import { incomingApplicationsFilters } from '@/pages/applications/incoming/parts/filter/filter.model'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   components: {
@@ -59,7 +57,7 @@ export default Vue.extend({
     HeaderPopup,
   },
   effector: {
-    $assignedToMe,
+    $filterParams: incomingApplicationsFilters.store.$filterParams,
   },
   props: {
     tableColumnsNames: { type: Array as PropType<TableField[]> },
@@ -71,10 +69,9 @@ export default Vue.extend({
     }
   },
   methods: {
-    assignedToMeChanged,
-    applyFilter(val: boolean) {
-      assignedToMeChanged(val)
-      this.$emit('setFilter', { ...this.filterParams, moderate_by_me: val || undefined })
+    setItem(filter: FiltersParams) {
+      this.$emit('changeFilter', filter)
+      this.$emit('setFilter')
     },
   },
 })

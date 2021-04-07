@@ -18,7 +18,7 @@ import {
   $moderators,
   moderatorDropdownModule,
   setSelectedModerator,
-} from '@/pages/applications/outgoing/parts/filter/parts/moderator-dropdown/moderator-dropdown.model'
+} from '@/pages/applications/incoming-deletion/parts/filter/parts/moderator-dropdown/moderator-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({

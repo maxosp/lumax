@@ -1,5 +1,12 @@
 <template>
-  <div class="themes-tree">
+  <NoDataContent
+    v-if="$themesTree && !$themesTree.length"
+    @resetFilters="$emit('resetFilter')"
+  />
+  <div
+    v-else
+    class="themes-tree"
+  >
     <TreeNode
       v-for="leaf in $themesTree"
       :key="leaf[leaf.element_type].id"
@@ -17,11 +24,13 @@
 import Vue from 'vue'
 import TreeNode from '@/pages/dictionary/themes/list/parts/themes-tree/parts/TreeNode.vue'
 import { $themesTree } from '@/pages/dictionary/themes/list/themes-page.model'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 export default Vue.extend({
   name: 'ThemesTree',
   components: {
     TreeNode,
+    NoDataContent,
   },
   effector: { $themesTree },
 })

@@ -128,10 +128,8 @@ forward({
   from: clearFields,
   to: [
     tagTitleReset,
-    subjectsDropdownModule.methods.resetItem,
-    subjectsDropdownModule.methods.resetSearchString,
-    classesDropdownModule.methods.resetItem,
-    classesDropdownModule.methods.resetSearchString,
+    subjectsDropdownModule.methods.resetDropdown,
+    classesDropdownModule.methods.resetDropdown,
     $titleErrorModule.methods.resetError,
     $subjectErrorModule.methods.resetError,
     $classErrorModule.methods.resetError,

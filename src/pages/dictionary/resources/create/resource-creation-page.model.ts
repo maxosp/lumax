@@ -61,14 +61,10 @@ const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
 forward({
   from: clearFields,
   to: [
-    classDropdownModule.methods.resetItem,
-    classDropdownModule.methods.resetSearchString,
-    subjectDropdownModule.methods.resetItem,
-    subjectDropdownModule.methods.resetSearchString,
-    themeDropdownModule.methods.resetItem,
-    themeDropdownModule.methods.resetSearchString,
-    typeDropdownModule.methods.resetItem,
-    typeDropdownModule.methods.resetSearchString,
+    classDropdownModule.methods.resetDropdown,
+    subjectDropdownModule.methods.resetDropdown,
+    themeDropdownModule.methods.resetDropdown,
+    typeDropdownModule.methods.resetDropdown,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),
     fileDataChanged.prepend(() => null),

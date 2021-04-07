@@ -139,14 +139,10 @@ forward({
 forward({
   from: clearFields,
   to: [
-    classesDropdownModule.methods.resetItem,
-    classesDropdownModule.methods.resetSearchString,
-    subjectsDropdownModule.methods.resetItem,
-    subjectsDropdownModule.methods.resetSearchString,
-    scoreDropdownModule.methods.resetItem,
-    scoreDropdownModule.methods.resetSearchString,
-    taskTypesDropdownModule.methods.resetItem,
-    taskTypesDropdownModule.methods.resetSearchString,
+    classesDropdownModule.methods.resetDropdown,
+    subjectsDropdownModule.methods.resetDropdown,
+    scoreDropdownModule.methods.resetDropdown,
+    taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
     resetHintsList,
     resetSelectedTags,

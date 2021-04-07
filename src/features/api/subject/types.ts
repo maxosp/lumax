@@ -106,17 +106,13 @@ export type CreateThemeType = {
 
 export type GetThemesTreeQueryParams = {
   sort?: string
-  subject?: string
+  subject?: number
   study_year?: number
-  is_prerequisite?: 'true' | 'false'
-  created_by?: number
-  has_assignment?: 'true' | 'false'
+  is_prerequisite?: boolean
+  created_by?: User
+  has_assignment?: boolean
   search?: string
-  search_all?: string
-  search_id?: string
-  search_name?: string
-  search_subject?: string
-  search_study_year?: string
+  search_area?: string
 }
 
 export type CreateSubjectType = {

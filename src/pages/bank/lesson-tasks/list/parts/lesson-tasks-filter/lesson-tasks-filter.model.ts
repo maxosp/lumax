@@ -1,11 +1,26 @@
-import { createEvent, restore } from 'effector-root'
-import { TogglerSettings } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/types'
-import { DEFAULT_TOGGLERS } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/constants'
+import { createEvent, forward, restore, sample } from 'effector-root'
+import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
+import { loadTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
+import { dropdownModules } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/parts/dropdown-modules'
 
+export const lessonTasksFilters = createFiltersModel(
+  {
+    created_by_me: false,
+  },
+  dropdownModules
+)
 export const reset = createEvent<void>()
 
 export const toggleVisibility = createEvent<boolean>()
 export const $visibility = restore(toggleVisibility, false).reset(reset)
 
-export const setTogglers = createEvent<TogglerSettings>()
-export const $togglers = restore(setTogglers, DEFAULT_TOGGLERS).reset(reset)
+forward({
+  from: lessonTasksFilters.methods.resetFilters,
+  to: loadTree.prepend(() => ({})),
+})
+
+sample({
+  clock: lessonTasksFilters.methods.applyFilters,
+  source: lessonTasksFilters.store.$filterParams,
+  target: loadTree,
+})

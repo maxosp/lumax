@@ -6,7 +6,7 @@ export type getTicketsListQueryParams = {
   sort?: string
   subject?: number
   study_year?: number
-  status?: string
+  status?: number
   created_by?: User
   moderate_by?: User
   created_by_me?: boolean
