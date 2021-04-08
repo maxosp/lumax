@@ -10,6 +10,7 @@ import tagsRoutes from '@/pages/tags/tags-routes'
 import labelsRoutes from '@/pages/labels/labels-routes'
 import applicationsRoutes from '@/pages/applications/applications-routes'
 import PreviewTasksPage from '@/pages/preview-tasks/PreviewTasksPage.vue'
+import testingRoutes from './pages/testing/testing-routes'
 
 export const routes: RouteConfig[] = [
   {
@@ -47,6 +48,7 @@ export const routes: RouteConfig[] = [
       ...bankRoutes,
       ...dictionaryRoutes,
       ...applicationsRoutes,
+      ...testingRoutes,
       {
         name: 'preview-task',
         path: '/preview',

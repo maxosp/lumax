@@ -35,6 +35,7 @@ export { formatTotalAmount }
 export const formatThemesTitle = formatTitleDecorator(['тема', 'темы', 'тем'])
 export const formatTasksTitle = formatTitleDecorator(['задание', 'задания', 'заданий'])
 export const formatTagsTitle = formatTitleDecorator(['тег', 'тега', 'тегов'])
+export const formatTestsTitle = formatTitleDecorator(['тест', 'теста', 'тестов'])
 
 export const sortTreeLeaves = (leaves: TreeData[]) => {
   return leaves.sort((a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number)

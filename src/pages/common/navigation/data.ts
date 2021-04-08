@@ -27,7 +27,7 @@ export const data: NavItem[] = [
     title: 'Тестирование',
     icon: 'check',
     children: [
-      { title: 'Тесты', link: '/' },
+      { title: 'Тесты', link: 'tests-list' },
       { title: 'Метки для заданий', link: '/' },
     ],
   },

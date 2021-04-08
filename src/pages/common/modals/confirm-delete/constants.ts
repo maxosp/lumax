@@ -59,4 +59,14 @@ export const mapDeleteModalTypeToTitle = {
       plural: 'удалены',
     },
   },
+  test: {
+    typeWord: {
+      singular: 'Тест',
+      plural: 'Тесты',
+    },
+    deleteWord: {
+      singular: 'удален',
+      plural: 'удалены',
+    },
+  },
 }

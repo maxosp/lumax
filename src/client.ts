@@ -13,6 +13,7 @@ import {
   formatThemesTitle,
   formatTotalAmount,
   formatTagsTitle,
+  formatTestsTitle,
 } from '@/features/lib/index'
 
 import App from './App.vue'
@@ -31,6 +32,7 @@ Vue.filter('formatTagsTitle', formatTagsTitle)
 Vue.filter('formatThemesTitle', formatThemesTitle)
 Vue.filter('formatTotalAmount', formatTotalAmount)
 Vue.filter('formatTasksTitle', formatTasksTitle)
+Vue.filter('formatTestsTitle', formatTestsTitle)
 
 Vue.use(VueEffector)
 
