@@ -31,7 +31,7 @@
         :key="+moderator.name"
         class="element"
       >
-        <span> {{ moderator.title }} </span>
+        <span class="moderator-title"> {{ moderator.title }} </span>
         <span
           class="btn"
           @click="submit(+moderator.name)"
@@ -134,6 +134,11 @@ export default Vue.extend({
     height: 24px;
     @mixin flex-row-central;
     justify-content: space-between;
+    margin-bottom: 16px;
+    .moderator-title {
+      color: #0f2345;
+      font-weight: 600;
+    }
     .btn {
       @mixin flex-center;
       height: 100%;
