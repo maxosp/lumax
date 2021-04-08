@@ -5,7 +5,7 @@ import { loadList } from '@/pages/applications/incoming/incoming-applications-pa
 
 export const incomingApplicationsFilters = createFiltersModel(
   {
-    moderate_by_me: false,
+    moderate_by_me: true,
     search_area: 'search_all',
   },
   dropdownModules
