@@ -90,7 +90,6 @@ export default Vue.extend({
   },
   effector: {
     $visibility,
-    $filterParams: labelsFilters.store.$filterParams,
   },
   data() {
     return {

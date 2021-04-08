@@ -156,6 +156,7 @@ export default (Vue as VueConstructor<
     $token,
     $session,
     $canRefreshTable,
+    $filterParams: incomingApplicationsFilters.store.$filterParams,
   },
   data() {
     return {
