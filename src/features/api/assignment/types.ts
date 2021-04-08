@@ -16,6 +16,19 @@ export type CreateTagType = {
   study_year_id: number
 }
 
+export type CreateFolderType = {
+  name: string
+  parent_id: number
+  owner?: number
+}
+
+export type FolderType = {
+  id?: number
+  name?: string
+  parent_id?: number
+  owner?: number
+}
+
 export type CreateLabelType = CreateTagType & {
   theme_id: number
 }

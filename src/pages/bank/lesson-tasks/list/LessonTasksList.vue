@@ -106,6 +106,7 @@
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTask"
     />
+    <CreatingFolderModal />
   </div>
 </template>
 
@@ -153,6 +154,7 @@ import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/con
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { $session } from '@/features/session'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import CreatingFolderModal from '@/pages/common/modals/tasks-bank/creating-folder/CreatingFolderModal.vue'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -183,6 +185,7 @@ export default (Vue as VueConstructor<
     NoDataContent,
     ConfirmDeleteModal,
     RequestDeleteModal,
+    CreatingFolderModal,
   },
   effector: {
     $token,

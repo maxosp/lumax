@@ -9,14 +9,13 @@
           Создать задание
         </BaseButton>
       </RouterLink>
-      <RouterLink :to="{ name: 'themes-create' }">
-        <BaseButton
-          class="btn"
-          yellow
-        >
-          Создать папку
-        </BaseButton>
-      </RouterLink>
+      <BaseButton
+        class="btn btn_creating-theme"
+        yellow
+        @click="modalVisibilityChanged(true)"
+      >
+        Создать папку
+      </BaseButton>
       <BaseButton
         class="btn --square"
         @click="loadModalForMultiChanges(selectedRows)"
@@ -47,6 +46,7 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { loadModalForMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import { modalVisibilityChanged } from '@/pages/common/modals/tasks-bank/creating-folder/creating-folder-modal.model'
 
 export default Vue.extend({
   name: 'PageHeader',
@@ -59,7 +59,7 @@ export default Vue.extend({
   props: {
     selectedRows: { type: Array as PropType<number[]> },
   },
-  methods: { loadModalForMultiChanges },
+  methods: { loadModalForMultiChanges, modalVisibilityChanged },
 })
 </script>
 
@@ -111,7 +111,8 @@ export default Vue.extend({
     background-color: var(--c-dark-1);
   }
 }
-a {
+a,
+.btn_creating-theme {
   margin-right: 15px;
 }
 a + .btn {
