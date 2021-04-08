@@ -10,7 +10,7 @@
       :clear-btn="!readOnlyDropdown"
       :read-only-dropdown="readOnlyDropdown"
       @click="$emit('click')"
-      @clear="$emit('clear')"
+      @clear="$emit('clear', $event)"
       @input="(e) => $emit('input', e)"
     >
       <template #icon>

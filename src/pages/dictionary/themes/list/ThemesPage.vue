@@ -20,7 +20,7 @@
       :total="$treeView ? $themesTreeTotal : total"
       :selected-rows="selectedRows"
       @onEdit="handleEditTheme"
-      @onRemove="onRemoveTheme"
+      @onRemove="onRemoveThemes"
     />
     <div :class="{ 'table-container': true, invisible: $treeView }">
       <Vuetable

@@ -28,7 +28,7 @@
           type="close"
           size="10"
           class="icon cross"
-          @click="$emit('clear')"
+          @click="$emit('clear', $event)"
         />
         <slot name="icon" />
       </span>

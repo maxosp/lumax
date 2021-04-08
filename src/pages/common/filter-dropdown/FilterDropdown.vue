@@ -95,7 +95,8 @@ export default Vue.extend({
       this.$props.methods.resetSearchString()
       cb()
     },
-    clear() {
+    clear(event: MouseEvent) {
+      event.stopPropagation()
       this.$emit('item-changed', null)
       this.$props.methods.resetItem()
       this.$props.methods.resetSearchString()

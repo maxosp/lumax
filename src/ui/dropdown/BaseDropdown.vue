@@ -14,7 +14,7 @@
         :disabled="disabled"
         :read-only-dropdown="readOnlyDropdown"
         @click="onActivatorClick"
-        @clear="$emit('clear')"
+        @clear="$emit('clear', $event)"
         @input="(e) => $emit('input', e)"
       >
         <template #error>
