@@ -137,8 +137,8 @@ export default Vue.extend({
     setupContextMenu(element: HTMLElement) {
       this.selectedElement = element
       this.contextMenuStyle = {
-        top: `${CONTEXT_MENU_Y_OFFSET + element.getBoundingClientRect().y}px`,
-        left: `${CONTEXT_MENU_X_OFFSET + element.getBoundingClientRect().x}px`,
+        top: `${CONTEXT_MENU_Y_OFFSET + element.offsetTop - element.parentElement!.scrollTop}px`,
+        left: `${CONTEXT_MENU_X_OFFSET + element.offsetLeft}px`,
       }
       if (element.hasAttribute('it-fill')) {
         this.selectedColor = element.getAttribute('it-fill');
@@ -172,9 +172,7 @@ export default Vue.extend({
     removeTextColor() {
       this.selectedColor = null
       this.selectedElement.removeAttribute('it-fill')
-      if (this.selectedElement.hasAttribute('own-color')) {
-        this.selectedElement.style.backgroundColor = this.selectedElement.getAttribute('own-color') || ''
-      }
+      this.selectedElement.style['backgroundColor'] = ''
       toggleContextMenu(false)
     },
   },

@@ -15,14 +15,15 @@
     <!--
       For the correct draggable usage need to add plugin to ckeditor4
       https://ckeditor.com/cke4/addon/divarea
+      'divarea' plugin is not included in full version, so using full-all
+      https://ckeditor.com/cke4/presets-all
       ISSUE: https://github.com/SortableJS/Vue.Draggable/issues/222
     -->
     <Draggable
       v-model="$questions"
       group="questions"
       handle=".handle"
-      @start="drag = true"
-      @end="drag = false"
+      @end="handlerEnd"
     >
       <div
         v-for="(question, idx) in $questions"
@@ -104,6 +105,9 @@ export default Vue.extend({
     removeQuestion({ id }) {
       const questions = this.$questions.filter((question) => question.id !== id)
       setQuestions(questions)
+    },
+    handlerEnd() {
+      this.$questions.map((question, id) => (question.order = id))
     },
   },
 })

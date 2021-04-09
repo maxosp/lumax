@@ -48,7 +48,7 @@ const markup = (assetsCss: string, assetsJs: string) => `
     <div id="app"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js" charset="utf-8"></script>
-    <script src="https://cdn.ckeditor.com/4.16.0/full/ckeditor.js" charset="utf-8"></script>
+    <script src="https://cdn.ckeditor.com/4.16.0/full-all/ckeditor.js" charset="utf-8"></script>
   </body>
 </html>
 `

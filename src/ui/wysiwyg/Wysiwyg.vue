@@ -93,7 +93,9 @@ export default Vue.extend({
       editor.insertHtml(event.detail)
     },
     handleRightClick(el) {
-      this.$emit('right-click', el.$)
+      if (el.$) {
+        this.$emit('right-click', el.$)
+      }
     },
   },
   mounted() {

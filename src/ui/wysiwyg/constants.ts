@@ -1,11 +1,11 @@
 import { config } from '@/config'
 
-export const url = 'https://cdn.ckeditor.com/4.16.0/full/ckeditor.js'
+export const url = 'https://cdn.ckeditor.com/4.16.0/full-all/ckeditor.js'
 
 export const wysiwygConfig = {
   language: 'ru',
-  extraPlugins: 'uploadimage',
-  removePlugins: 'easyimage, cloudservices',
+  extraPlugins: 'uploadimage, divarea',
+  removePlugins: 'easyimage, cloudservices, exportpdf',
   uploadUrl: `${config.BACKEND_URL}/api/media/media/upload/`,
   allowedContent: true,
   toolbar: [
