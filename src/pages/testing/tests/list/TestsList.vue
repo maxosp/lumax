@@ -4,11 +4,11 @@
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"
-      @handleFilterVisibility="toggleVisibility(!$visibility)"      
+      @handleFilterVisibility="toggleVisibility(!$visibility)"
       @changeFilter="changeFilter"
     >
       <template #filter>
-        <TestsFilter 
+        <TestsFilter
           :visible="$visibility"
           @setFilter="onFilterSet"
           @resetFilter="onFilterReset"
@@ -16,7 +16,7 @@
         />
       </template>
     </GeneralFilter>
-    <TableHeader 
+    <TableHeader
       :total="total"
       :selected-rows="selectedRows"
       @onEdit="editTask"
@@ -139,7 +139,7 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
-} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
