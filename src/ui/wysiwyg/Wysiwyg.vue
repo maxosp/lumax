@@ -107,6 +107,7 @@ export default Vue.extend({
     if (this.$props.listenRightClick) {
       window.CKEDITOR.on('instanceReady', () => {
         const currentEditor = window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]
+        if (!currentEditor) return
         currentEditor.contextMenu.addListener((el) => {
           currentEditor.contextMenu.removeAll()
           this.handleRightClick(el)

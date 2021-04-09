@@ -98,17 +98,13 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
   },
-  data() {
-    return {
-      opened: false,
-    }
-  },
+  data: () => ({
+    opened: false,
+  }),
   computed: {
     title() {
-      // @ts-ignore
       const entity = this.node[this.node.element_type]
       let fullName = ''
-      // @ts-ignore
       if (this.node.element_type !== 'assignment') {
         fullName = entity ? entity.name : ''
         if (fullName.length > 100) {
@@ -129,7 +125,6 @@ export default Vue.extend({
           description: 'Количество заданий в теме',
         },
         resources: {
-          // @ts-ignore
           count: this.node.text_resource_count,
           description: 'Количество обучающих ресурсов в теме',
         },

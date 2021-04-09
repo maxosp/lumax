@@ -134,6 +134,9 @@ export const $isPublished = restore(setIsPublished, false)
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
 
+export const toggleIsPreview = createEvent<boolean>()
+export const $isPreview = restore(toggleIsPreview, false).reset(clearFields)
+
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 

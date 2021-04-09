@@ -165,6 +165,9 @@ export const clearFields = createEvent<void>()
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
+export const toggleIsPreview = createEvent<boolean>()
+export const $isPreview = restore(toggleIsPreview, false)
+
 condition({
   source: setIsArchive,
   if: (payload: boolean) => payload,
@@ -186,6 +189,8 @@ forward({
     setTaskType.prepend(() => null),
     themesDropdownModule.methods.resetDropdown,
     difficultiesDropdownModule.methods.resetDropdown,
+    setIsArchive.prepend(() => false),
+    setIsPublished.prepend(() => false),
   ],
 })
 

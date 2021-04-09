@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Modal from '@/ui/modal/Modal.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import ModeratorDropdown from '@/pages/common/dropdowns/users/moderator-dropdown/ModeratorDropdown.vue'
@@ -47,7 +47,9 @@ import {
   modalVisibilityChanged,
   checkIfTaskCanBeSend,
   $moderatorErrorModule,
-} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
+  setTaskType,
+} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
+import { TaskType } from '@/pages/bank/common/modals/moderator-select/constants'
 
 export default Vue.extend({
   components: {
@@ -56,6 +58,9 @@ export default Vue.extend({
     ModeratorDropdown,
     BaseButton,
   },
+  props: {
+    type: { type: String as PropType<TaskType> },
+  },
   effector: {
     $modalVisibility,
     moderatorError: $moderatorErrorModule.store.$error,
@@ -63,6 +68,9 @@ export default Vue.extend({
   methods: {
     modalVisibilityChanged,
     checkIfTaskCanBeSend,
+  },
+  mounted() {
+    setTaskType(this.type)
   },
 })
 </script>

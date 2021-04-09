@@ -48,10 +48,7 @@ import TasksDropdown from '@/pages/preview-tasks/tasks-dropdown/TasksDropdown.vu
 import Card from '@/ui/card/Card.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { config } from '@/config'
-import {
-  changeTasks,
-  initDropDown,
-} from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { initDropDown } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { $isPreview, toggleIsPreview } from '@/pages/preview-tasks/controller.model'
 import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
 import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
@@ -109,7 +106,11 @@ export default Vue.extend({
       if (!value) {
         switch (this.type) {
           case 'test-assignment':
-            navigatePush({ name: 'test-tasks-edit', params: { id: this.activeTask || '1' } })
+            navigatePush({
+              name: 'test-tasks-edit',
+              params: { id: this.activeTask || '1' },
+              query: { questions: this.questions.join(', ') },
+            })
             break
           case 'olympiad-assignment':
             navigatePush({ name: 'olympiad-tasks-edit', params: { id: this.activeTask || '1' } })
@@ -199,7 +200,7 @@ export default Vue.extend({
     })
   },
   beforeDestroy() {
-    changeTasks([])
+    // changeTasks([])
     toggleIsPreview(true)
   },
 })

@@ -123,7 +123,7 @@
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTask"
     />
-    <ModeratorSelectModal />
+    <ModeratorSelectModal type="test" />
   </div>
 </template>
 
@@ -142,7 +142,7 @@ import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import ContextMenu from '@/pages/bank/test-tasks/list/parts/table/ContextMenu.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/ThemesFilter.vue'
-import ModeratorSelectModal from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
+import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
   $treeView,
@@ -178,7 +178,7 @@ import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts
 import {
   $canRefreshAfterSendingForModeration,
   loadModalToSendForCheck,
-} from '@/pages/bank/test-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 

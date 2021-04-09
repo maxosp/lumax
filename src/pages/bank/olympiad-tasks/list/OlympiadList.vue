@@ -105,7 +105,7 @@
     />
     <TasksTypesModal />
     <TasksUpdateModal />
-    <ModeratorSelectModal />
+    <ModeratorSelectModal type="olympiad" />
     <ConfirmDeleteModal
       type="task"
       @confirmDelete="removeSelectedTask"
@@ -151,7 +151,7 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
-} from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/moderator-select-modal.model'
+} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
@@ -159,7 +159,7 @@ import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vu
 import { navigatePush } from '@/features/navigation'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
 import TasksUpdateModal from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
-import ModeratorSelectModal from '@/pages/bank/olympiad-tasks/list/parts/modals/moderator-select/ModeratorSelectModal.vue'
+import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'

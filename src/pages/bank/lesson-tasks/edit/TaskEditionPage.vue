@@ -3,6 +3,10 @@
     <TaskHeader
       title="Редактирование урочного задания"
       :disabled="!$canSave"
+      :is-preview="$isPreview"
+      :status="$status"
+      class="header"
+      @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
     />
@@ -25,8 +29,13 @@ import {
   $canSave,
   clearFields,
   loadTask,
+  $status,
+  $taskId,
   setRedirectAfterSave,
+  $isPreview,
+  toggleIsPreview,
 } from '@/pages/bank/lesson-tasks/edit/task-edition-page.model'
+import { $token } from '@/features/api/common/request'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -37,8 +46,30 @@ export default Vue.extend({
   },
   effector: {
     $canSave,
+    $status,
+    $taskId,
+    $token,
+    $isPreview,
+  },
+  watch: {
+    $isPreview: {
+      handler(newVal) {
+        if (newVal) {
+          this.$router.push({
+            name: 'preview-task',
+            query: {
+              questions: `${this.$taskId}`,
+              type: 'lesson-assignment',
+              token: this.$token,
+              application: 'true',
+            },
+          })
+        }
+      },
+    },
   },
   methods: {
+    toggleIsPreview,
     saveTask(isRedirect: boolean) {
       save()
       if (isRedirect) setRedirectAfterSave(true)
@@ -52,4 +83,11 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.header ::v-deep .bottom .buttons {
+  display: none;
+}
+</style>
+
 
