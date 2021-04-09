@@ -10,12 +10,7 @@ import { loadList } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.m
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { dropdownModules } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/dropdown-modules'
 
-export const olympiadTasksFilters = createFiltersModel(
-  {
-    created_by_me: false,
-  },
-  dropdownModules
-)
+export const olympiadTasksFilters = createFiltersModel({}, dropdownModules)
 
 export const reset = createEvent<void>()
 
