@@ -1,6 +1,9 @@
 import { createEvent, createStore, forward, attach, restore } from 'effector-root'
 import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
+import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
+
+export const labelsDropdownModule = createFilter()
 
 const getLabels = attach({
   effect: getLabelsListFx,
@@ -21,5 +24,5 @@ forward({
   from: getLabels.doneData.map((res) =>
     res.body.data.map((label) => ({ name: `${label.id}`, title: label.name }))
   ),
-  to: $labels,
+  to: [$labels, labelsDropdownModule.methods.setItems],
 })

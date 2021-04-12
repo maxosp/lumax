@@ -123,12 +123,12 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
     setQuestionsAnswers.prepend((data) =>
-      data.question_data.variants.map((question: any, idx: number) => {
+      data.question_data.variants.map((question: string, idx: number) => {
         let mark = ''
         let isCorrect = false
 
         const existingCorrectAnswer = data.correct_answer === idx ? data.correct_answer : undefined
-        if (existingCorrectAnswer) {
+        if (existingCorrectAnswer !== undefined) {
           isCorrect = true
           if (data.is_add_score_for_each_answer) {
             mark = existingCorrectAnswer.score

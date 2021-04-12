@@ -122,11 +122,11 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     setTextTemplate.prepend((data) => data.common_list_answer_choices),
     setAnswersList.prepend((data) =>
-      data.question_data.variant.map((variant: any, idx: number) => ({
+      data.question_data.variants.map((variant: any, idx: number) => ({
         id: idx + 1,
         answers: variant.options.map((value: string, index: number) => {
           let isCorrect = false
-          if (data.correct_answer[index] === index + 1) {
+          if (data.correct_answer[idx] === `${index}`) {
             isCorrect = true
           }
           return {

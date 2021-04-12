@@ -128,7 +128,7 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        if (val.split('<input').length < oldVal.split('<input').length) {
+        if (val && val.split('<input').length < oldVal.split('<input').length) {
           const oldInputsIds = getInputsIds(oldVal)
           const newInputsIds = getInputsIds(val)
 

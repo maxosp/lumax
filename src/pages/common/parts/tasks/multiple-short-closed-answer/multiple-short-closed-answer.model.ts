@@ -3,7 +3,11 @@ import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { getRandomId } from '@/pages/common/parts/tasks/utils'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, MultipleShortClosedQuestion } from '@/pages/common/parts/tasks/types'
+import {
+  AudioFile,
+  MultipleShortClosedQuestion,
+  MultipleShortClosedAnswer,
+} from '@/pages/common/parts/tasks/types'
 import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
@@ -26,7 +30,7 @@ export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
 export const setQuestionsAnswers = createEvent<MultipleShortClosedQuestion[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', answers: [{ id: getRandomId(), value: '', mark: '' }] },
+  { id: getRandomId(), question: '', answer: [{ id: getRandomId(), value: '', mark: '' }] },
 ]).reset(clearFields)
 
 export const toggleMarksEnabling = createEvent<boolean>()
@@ -76,7 +80,7 @@ export const $isFilled = combine(
   (wording, questionsAnswers) =>
     wording &&
     questionsAnswers.length &&
-    questionsAnswers.every((qa) => qa.question && qa.answers.every((answer) => answer.value))
+    questionsAnswers.every((qa) => qa.question && qa.answer.every((answer) => answer.value))
 )
 
 export const $form = combine(
@@ -91,9 +95,9 @@ export const $form = combine(
     example_answer,
     text: containing,
     question_data: null,
-    correct_answer: questionsAnswers.map(({ question, answers }) => ({
+    correct_answer: questionsAnswers.map(({ question, answer }) => ({
       question,
-      answers: answers.map(({ value, mark }) => ({
+      answers: answer.map(({ value, mark }) => ({
         answer: value,
         ...(marks ? { score: mark } : {}),
       })),
@@ -117,12 +121,12 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
     setQuestionsAnswers.prepend((data) =>
-      data.correct_answer.map((ca: any, idx: number) => ({
+      data.correct_answer.map((questionAnswer: MultipleShortClosedQuestion, idx: number) => ({
         id: idx + 1,
-        question: ca.question,
-        answers: ca.answers.map((value: any, index: number) => ({
+        question: questionAnswer.question,
+        answers: questionAnswer.answer.map((value: MultipleShortClosedAnswer, index: number) => ({
           id: index + 1,
-          value: value.answer,
+          value,
         })),
       }))
     ),

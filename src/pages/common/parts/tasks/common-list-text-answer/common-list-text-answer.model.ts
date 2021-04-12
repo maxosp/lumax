@@ -127,7 +127,12 @@ forward({
         title: value,
       }))
     ),
-    setCorrectAnswers.prepend((data) => data.correct_answer),
+    setCorrectAnswers.prepend((data) =>
+      data.correct_answer.map((value: string, index: number) => ({
+        id: index + 1,
+        title: data.question_data[+value],
+      }))
+    ),
     setTextTemplate.prepend((data) => data.common_list_answer_choices),
   ],
 })

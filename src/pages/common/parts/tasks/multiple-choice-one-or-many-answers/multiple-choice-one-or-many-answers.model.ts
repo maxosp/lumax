@@ -130,7 +130,7 @@ forward({
         let isCorrect = false
 
         const existingCorrectAnswer = data.correct_answer.find(
-          ({ index }: { index: string }) => index === `${question.number}`
+          (index: number) => index === question.number
         )
         if (existingCorrectAnswer) {
           isCorrect = true

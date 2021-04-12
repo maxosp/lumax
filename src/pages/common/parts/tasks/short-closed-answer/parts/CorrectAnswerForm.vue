@@ -49,6 +49,7 @@ import {
   $correctAnswerInputs,
   setCorrectAnswerInputs,
 } from '@/pages/common/parts/tasks/short-closed-answer/short-closed-answer.model'
+import { getRandomId } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -67,10 +68,7 @@ export default Vue.extend({
       setCorrectAnswerInputs(inputs)
     },
     addInput() {
-      setCorrectAnswerInputs([
-        ...this.$correctAnswerInputs,
-        { id: this.$correctAnswerInputs.length, value: '' },
-      ])
+      setCorrectAnswerInputs([...this.$correctAnswerInputs, { id: getRandomId(), value: '' }])
     },
     removeInput({ id }) {
       const inputs = this.$correctAnswerInputs.filter((input) => input.id !== id)

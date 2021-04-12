@@ -2,15 +2,16 @@
   <div class="labels-dropdown">
     <BaseDropdown
       class="input dropdown"
+      :value="correctValue"
       label="Метки"
       placeholder="Выберите метки"
-      read-only-dropdown
+      @input="searchStringChanged"
       @clear="clear"
     >
       <template #default="{closeMenu}">
-        <div v-if="$labels.length">
+        <div v-if="$itemsDropdown.length">
           <SelectItem
-            v-for="item in $labels"
+            v-for="item in $itemsDropdown"
             :key="item.name"
             :placeholder="item.title"
             @click="onSelectItem(item, closeMenu)"
@@ -48,9 +49,9 @@ import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import {
   loadLabels,
-  $labels,
   $selectedLabels,
   setSelectedLabels,
+  labelsDropdownModule,
 } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -61,11 +62,19 @@ export default Vue.extend({
     SelectItem,
   },
   effector: {
-    $labels,
     $selectedLabels,
+    ...labelsDropdownModule.store,
+  },
+  computed: {
+    correctValue() {
+      const arr = [...this.$itemsDropdown]
+      const currentItem = arr.find((el: DropdownItem) => el.name === this.$item)
+      return currentItem ? currentItem.title : this.$searchString
+    },
   },
   methods: {
     loadLabels,
+    ...labelsDropdownModule.methods,
     onSelectItem(item: DropdownItem, cb: any) {
       const existedItem = this.$selectedLabels.find(
         (label: DropdownItem) => label.name === item.name
@@ -85,7 +94,8 @@ export default Vue.extend({
       setSelectedLabels(labels)
     },
     clear() {
-      // clear handle
+      this.resetItem()
+      this.resetSearchString()
     },
   },
   mounted() {
