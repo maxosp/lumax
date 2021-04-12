@@ -7,6 +7,7 @@ import { getTicketsDeletionListFx } from '@/features/api/ticket/deletion/get-tic
 import { updateTicketBulkFx } from '@/features/api/ticket/deletion/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { modalVisibilityChanged } from '@/pages/applications/modals/cancel/cancel.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsDeletionListFx,
@@ -23,6 +24,8 @@ export const cancelApplicationFx = attach({
   }),
 })
 export const loadList = createEvent<getTicketsDeletionListQueryParams>()
+
+export const outgoingDeletionPageParams = createPageParamsModel()
 
 const canRefreshTableChanged = createEvent<boolean>()
 export const $canRefreshTable = restore(canRefreshTableChanged, false)

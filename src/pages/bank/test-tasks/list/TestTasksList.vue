@@ -32,6 +32,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
@@ -145,13 +146,13 @@ import ThemesFilter from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/T
 import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import TasksTree from '@/pages/bank/test-tasks/list/parts/tasks-tree/TasksTree.vue'
 import {
-  $treeView,
   loadTree,
   loadTreeLight,
   $tasksTreeTotal,
   deleteAssignments,
   requestDeleteAssignments,
   sendAssignmentsPublish,
+  testTaskPageParams,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
   toggleVisibility,
@@ -181,6 +182,7 @@ import {
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -218,12 +220,14 @@ export default (Vue as VueConstructor<
   effector: {
     $token,
     $visibility,
-    $treeView,
     $tasksTreeTotal,
     $session,
     $filterParams: testTasksFilters.store.$filterParams,
     $canRefreshAfterMultiChanges,
     $canRefreshAfterSendingForModeration,
+    $pageParams: testTaskPageParams.store.$pageParams,
+    $treeView: testTaskPageParams.store.treeView,
+    $currentPage: testTaskPageParams.store.currentPage,
   },
   data() {
     return {
@@ -259,11 +263,21 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: testTasksFilters.methods.changeFilter,
     resetFilters: testTasksFilters.methods.resetFilters,
     applyFilters: testTasksFilters.methods.applyFilters,
+    toggleTreeView: testTaskPageParams.methods.toggleTreeView,
+    changePage: testTaskPageParams.methods.changePage,
+    queryToParams: testTaskPageParams.methods.queryToParams,
     loadTree,
     toggleVisibility,
     showPreview(idArr: number[]) {
@@ -307,6 +321,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     onFilterSet() {
       this.applyFilters()
@@ -402,6 +417,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
 })
 </script>

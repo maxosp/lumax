@@ -35,6 +35,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -130,6 +131,7 @@ import {
   loadList,
   rejectApplications,
   $canRefreshTable,
+  incomingDeletionPageParams,
 } from '@/pages/applications/incoming-deletion/incoming-deletion-applications-page.model'
 import {
   toggleVisibility,
@@ -155,6 +157,7 @@ import DeleteModal from '@/pages/applications/modals/delete/DeleteModal.vue'
 import { loadModal as loadDeleteModal } from '@/pages/applications/modals/delete/delete.model'
 import { CheckBeforeDeletionResponseType } from '@/features/api/ticket/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -186,6 +189,8 @@ export default (Vue as VueConstructor<
     canRefreshTableAfterReject: $canRefreshTable,
     $cannotDeleteData,
     $filterParams: incomingDeletionFilters.store.$filterParams,
+    $pageParams: incomingDeletionPageParams.store.$pageParams,
+    $currentPage: incomingDeletionPageParams.store.currentPage,
   },
   data() {
     return {
@@ -221,11 +226,20 @@ export default (Vue as VueConstructor<
         this.showNextFailed()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: incomingDeletionFilters.methods.changeFilter,
     resetFilters: incomingDeletionFilters.methods.resetFilters,
     applyFilters: incomingDeletionFilters.methods.applyFilters,
+    changePage: incomingDeletionPageParams.methods.changePage,
+    queryToParams: incomingDeletionPageParams.methods.queryToParams,
     toggleVisibility,
     loadList,
     reset,
@@ -278,6 +292,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -326,6 +341,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
   mounted() {
     loadList({})

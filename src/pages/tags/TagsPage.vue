@@ -32,6 +32,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -116,9 +117,14 @@ import {
   $visibility,
   tagsFilters,
 } from '@/pages/tags/parts/tags-filter/tags-filter.model'
-import { loadTreeLight, loadTree, $tagsTreeTotal, deleteTags } from '@/pages/tags/tags-page.model'
+import {
+  loadTreeLight,
+  loadTree,
+  $tagsTreeTotal,
+  deleteTags,
+  tagsPageParams,
+} from '@/pages/tags/tags-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
-import { $treeView } from '@/pages/tags/parts/header/page-header.model'
 import PageHeader from '@/pages/tags/parts/header/PageHeader.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import TagsFilter from '@/pages/tags/parts/tags-filter/TagsFilter.vue'
@@ -144,6 +150,7 @@ import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -171,12 +178,14 @@ export default (Vue as VueConstructor<
   },
   effector: {
     $visibility,
-    $treeView,
     $tagsTreeTotal,
     $token,
     $canRefreshTable,
     $canRefreshTableAfterCreation,
     $filterParams: tagsFilters.store.$filterParams,
+    $pageParams: tagsPageParams.store.$pageParams,
+    $treeView: tagsPageParams.store.treeView,
+    $currentPage: tagsPageParams.store.currentPage,
   },
   data() {
     return {
@@ -208,11 +217,20 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: tagsFilters.methods.changeFilter,
     resetFilters: tagsFilters.methods.resetFilters,
     applyFilters: tagsFilters.methods.applyFilters,
+    changePage: tagsPageParams.methods.changePage,
+    queryToParams: tagsPageParams.methods.queryToParams,
     loadTree,
     toggleVisibility,
     reset,
@@ -244,6 +262,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) noInternetToastEvent()
@@ -291,6 +310,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
   mounted() {
     loadTreeLight()

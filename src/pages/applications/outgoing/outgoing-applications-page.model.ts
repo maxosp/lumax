@@ -3,6 +3,7 @@ import { getTicketsListFx } from '@/features/api/ticket/moderation/get-tickets-l
 import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 import { modalVisibilityChanged } from '../modals/cancel/cancel.model'
 
 export const cancelApplicationsFx = attach({
@@ -17,6 +18,8 @@ export const cancelApplicationsFx = attach({
     cancel_outcome: true,
   }),
 })
+
+export const outgoingApplicationsPageParams = createPageParamsModel()
 
 export const canUpdateTableChanged = createEvent<boolean>()
 export const $canUpdateTable = restore(canUpdateTableChanged, false)

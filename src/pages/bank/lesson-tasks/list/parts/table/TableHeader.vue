@@ -68,7 +68,7 @@ import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import { navigatePush } from '@/features/navigation'
-import { toggleTreeView, $treeView } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
+import { lessonTaskPageParams } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
 
 export default Vue.extend({
@@ -79,7 +79,7 @@ export default Vue.extend({
     BaseSwitch,
   },
   effector: {
-    $treeView,
+    $treeView: lessonTaskPageParams.store.treeView,
   },
   props: {
     total: { type: Number, required: true },
@@ -92,7 +92,7 @@ export default Vue.extend({
   },
   methods: {
     navigatePush,
-    toggleTreeView,
+    toggleTreeView: lessonTaskPageParams.methods.toggleTreeView,
     modalTasksTypesVisibilityChanged,
     handleRemove() {
       this.$emit('onRemove', this.selectedRows)

@@ -70,3 +70,8 @@ export type FiltersParams = {
   search?: string
   search_area?: string
 }
+
+export type PageParams = {
+  currentPage?: number
+  treeView?: boolean
+}

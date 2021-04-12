@@ -31,6 +31,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -127,11 +128,11 @@ import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import LessonsFilter from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/LessonsFilter.vue'
 import LessonsTree from '@/pages/bank/lesson-tasks/list/parts/lessons-tree/LessonsTree.vue'
 import {
-  $treeView,
   loadTree,
   $lessonsTreeTotal,
   deleteAssignments,
   requestDeleteAssignments,
+  lessonTaskPageParams,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -155,6 +156,7 @@ import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/req
 import { $session } from '@/features/session'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import CreatingFolderModal from '@/pages/common/modals/tasks-bank/creating-folder/CreatingFolderModal.vue'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -190,11 +192,13 @@ export default (Vue as VueConstructor<
   effector: {
     $token,
     $visibility,
-    $treeView,
     $lessonsTreeTotal,
     $canRefreshAfterMultiChanges,
     $session,
     $filterParams: lessonTasksFilters.store.$filterParams,
+    $pageParams: lessonTaskPageParams.store.$pageParams,
+    $treeView: lessonTaskPageParams.store.treeView,
+    $currentPage: lessonTaskPageParams.store.currentPage,
   },
   data() {
     return {
@@ -219,11 +223,21 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: lessonTasksFilters.methods.changeFilter,
     resetFilters: lessonTasksFilters.methods.resetFilters,
     applyFilters: lessonTasksFilters.methods.applyFilters,
+    toggleTreeView: lessonTaskPageParams.methods.toggleTreeView,
+    changePage: lessonTaskPageParams.methods.changePage,
+    queryToParams: lessonTaskPageParams.methods.queryToParams,
     toggleVisibility,
     showPreview(id: number) {
       this.$router.push({
@@ -251,6 +265,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     onFilterSet() {
       this.applyFilters()
@@ -317,6 +332,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
 })
 </script>

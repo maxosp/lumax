@@ -15,6 +15,7 @@ import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confi
 import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { loadTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
@@ -44,6 +45,8 @@ export const duplicateAssignment = attach({
   effect: updateOlympiadAssignmentBulkFx,
   mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
 })
+
+export const olympiadTaskPageParams = createPageParamsModel()
 
 export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
 export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)

@@ -35,7 +35,7 @@
 import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import Divider from '@/ui/divider/Divider.vue'
-import { toggleTreeView, $treeView } from '@/pages/dictionary/themes/list/themes-page.model'
+import { themesPageParams } from '@/pages/dictionary/themes/list/themes-page.model'
 
 export default Vue.extend({
   name: 'TableHeader',
@@ -44,14 +44,14 @@ export default Vue.extend({
     Divider,
   },
   effector: {
-    $treeView,
+    $treeView: themesPageParams.store.treeView,
   },
   props: {
     total: { type: Number, required: true },
     selectedRows: { type: Array as PropType<number[]> },
   },
   methods: {
-    toggleTreeView,
+    toggleTreeView: themesPageParams.methods.toggleTreeView,
     handleRemove() {
       this.$emit('onRemove', this.selectedRows)
     },

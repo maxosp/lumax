@@ -41,6 +41,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -114,6 +115,7 @@ import {
   loadList,
   acceptApplicationsFx,
   $canRefreshTable,
+  incomingApplicationsPageParams,
 } from '@/pages/applications/incoming/incoming-applications-page.model'
 import {
   toggleVisibility,
@@ -131,6 +133,7 @@ import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -157,6 +160,8 @@ export default (Vue as VueConstructor<
     $session,
     $canRefreshTable,
     $filterParams: incomingApplicationsFilters.store.$filterParams,
+    $pageParams: incomingApplicationsPageParams.store.$pageParams,
+    $currentPage: incomingApplicationsPageParams.store.currentPage,
   },
   data() {
     return {
@@ -182,11 +187,20 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.refresh()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: incomingApplicationsFilters.methods.changeFilter,
     resetFilters: incomingApplicationsFilters.methods.resetFilters,
     applyFilters: incomingApplicationsFilters.methods.applyFilters,
+    changePage: incomingApplicationsPageParams.methods.changePage,
+    queryToParams: incomingApplicationsPageParams.methods.queryToParams,
     toggleVisibility,
     loadList,
     reset,
@@ -250,6 +264,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -291,6 +306,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
   mounted() {
     loadList({})

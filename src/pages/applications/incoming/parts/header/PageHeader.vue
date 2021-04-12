@@ -61,7 +61,6 @@ export default Vue.extend({
   },
   props: {
     tableColumnsNames: { type: Array as PropType<TableField[]> },
-    filterParams: { type: Object, required: true },
   },
   data() {
     return {

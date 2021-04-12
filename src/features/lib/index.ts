@@ -1,4 +1,6 @@
 import { TreeData } from '@/features/api/types'
+import { Dictionary } from 'vue-router/types/router'
+import { PageParams } from '@/pages/common/types'
 
 const wordDeclination = (total: number, words: string[]) => {
   /*
@@ -52,4 +54,50 @@ export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
     return el
   })
   return res
+}
+
+export const combineRouteQueries = (
+  currentQueries: Dictionary<string | (string | null)[]>,
+  newQueries: Dictionary<string | (string | null)[]>
+) => {
+  /* https://stegriff.co.uk/upblog/get-vue-router-to-change-part-of-the-query-string-without-a-page-refresh/ */
+  const queries = JSON.parse(JSON.stringify(currentQueries))
+
+  return {
+    query: {
+      ...queries,
+      ...newQueries,
+    },
+  }
+}
+
+export const parseToPrimitive = (value: string | (string | null)[]) => {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch (e) {
+      return value.toString()
+    }
+  }
+  return null
+}
+
+export const isQueryParamsEquelToPage = (
+  query: Dictionary<string | (string | null)[]>,
+  pageParams: PageParams
+) => {
+  const queryKeys = Object.keys(query)
+  const stateKeys = Object.keys(pageParams)
+
+  if (queryKeys.length !== stateKeys.length) {
+    return false
+  }
+
+  for (const key of queryKeys) {
+    if (parseToPrimitive(query[key]) !== pageParams[key]) {
+      return false
+    }
+  }
+
+  return true
 }

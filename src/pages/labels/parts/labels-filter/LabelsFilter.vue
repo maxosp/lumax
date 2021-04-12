@@ -65,7 +65,6 @@ export default Vue.extend({
   },
   props: {
     visible: { type: Boolean, required: true, default: false },
-    filterParams: { type: Object, required: true },
   },
   methods: {
     toggleVisibility,

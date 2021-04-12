@@ -9,6 +9,7 @@ import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { RequestDeleteThemesParams } from '@/features/api/assignment/types'
 import { mergeTreeData } from '@/features/lib'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -38,8 +39,7 @@ export const requestDeleteThemes = attach({
   },
 })
 
-export const toggleTreeView = createEvent<boolean>()
-export const $treeView = restore(toggleTreeView, false)
+export const themesPageParams = createPageParamsModel()
 
 export const loadTreeLight = createEvent<void>()
 export const loadTree = createEvent<GetThemesTreeQueryParams>()

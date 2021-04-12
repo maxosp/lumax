@@ -34,6 +34,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         pagination-path=""
         :per-page="25"
         @vuetable:load-error="handleLoadError"
@@ -141,6 +142,7 @@ import {
   $canRefreshAfterDuplicate,
   deleteAssignments,
   requestDeleteAssignments,
+  olympiadTaskPageParams,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
   olympiadTasksFilters,
@@ -164,6 +166,7 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -198,6 +201,8 @@ export default (Vue as VueConstructor<
     $canRefreshAfterMultiChanges,
     $canRefreshAfterDuplicate,
     $filterParams: olympiadTasksFilters.store.$filterParams,
+    $pageParams: olympiadTaskPageParams.store.$pageParams,
+    $currentPage: olympiadTaskPageParams.store.currentPage,
   },
   data() {
     return {
@@ -247,11 +252,20 @@ export default (Vue as VueConstructor<
         this.removeSelection()
       },
     },
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
   },
   methods: {
     changeFilter: olympiadTasksFilters.methods.changeFilter,
     resetFilters: olympiadTasksFilters.methods.resetFilters,
     applyFilters: olympiadTasksFilters.methods.applyFilters,
+    changePage: olympiadTaskPageParams.methods.changePage,
+    queryToParams: olympiadTaskPageParams.methods.queryToParams,
     toggleVisibility,
     loadList,
     reset,
@@ -320,6 +334,7 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      this.changePage(page)
     },
     handleLoadError(res: any) {
       if (!res.response) {
@@ -353,6 +368,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
   mounted() {
     loadList({})

@@ -8,6 +8,7 @@ import { getTagsTreeLightFx } from '@/features/api/assignment/olympiad-tags/get-
 import { mergeTreeData } from '@/features/lib'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition } from 'patronum'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -25,6 +26,8 @@ export const deleteTags = createEffect({
     })
   },
 })
+
+export const tagsPageParams = createPageParamsModel()
 
 export const canrefreshTableAfterDeletionChanged = createEvent<boolean>()
 export const $canRefreshTableAfterDeletion = restore<boolean>(

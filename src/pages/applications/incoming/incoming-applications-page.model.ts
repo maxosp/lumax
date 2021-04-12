@@ -3,6 +3,7 @@ import { getTicketsListFx } from '@/features/api/ticket/moderation/get-tickets-l
 import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsListFx,
@@ -21,6 +22,8 @@ export const acceptApplicationsFx = attach({
     cancel_outcome: null,
   }),
 })
+
+export const incomingApplicationsPageParams = createPageParamsModel()
 
 export const loadList = createEvent<getTicketsListQueryParams>()
 

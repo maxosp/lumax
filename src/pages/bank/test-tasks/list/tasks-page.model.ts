@@ -18,6 +18,7 @@ import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confi
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { condition } from 'patronum'
 import { mergeTreeData } from '@/features/lib'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getTasksTree = attach({
   effect: getTestAssignmentTreeFx,
@@ -46,13 +47,12 @@ export const requestDeleteAssignments = attach({
   },
 })
 
+export const testTaskPageParams = createPageParamsModel()
+
 export const sendAssignmentsPublish = attach({
   effect: updateTestAssignmentBulkFx,
   mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'published' }),
 })
-
-export const toggleTreeView = createEvent<boolean>()
-export const $treeView = restore(toggleTreeView, false)
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<void>()

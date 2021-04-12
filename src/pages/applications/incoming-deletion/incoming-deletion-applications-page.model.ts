@@ -9,6 +9,7 @@ import { modalVisibilityChanged } from '@/pages/applications/modals/reject/rejec
 import { modalVisibilityChanged as rejectedModalVisibilityChanged } from '@/pages/applications/modals/rejected/rejected.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { modalVisibilityChanged as deleteModalVisibilityChanged } from '@/pages/applications/modals/delete/delete.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsDeletionListFx,
@@ -34,6 +35,8 @@ export const deleteApplication = attach({
     cancel_outcome: null,
   }),
 })
+
+export const incomingDeletionPageParams = createPageParamsModel()
 
 export const loadList = createEvent<getTicketsDeletionListQueryParams>()
 

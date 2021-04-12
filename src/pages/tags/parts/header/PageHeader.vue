@@ -5,7 +5,7 @@
       <BaseSwitch
         class="switch"
         :checked="$treeView"
-        @change="treeViewChanged"
+        @change="toggleTreeView"
       >
         <span> Дерево </span>
       </BaseSwitch>
@@ -52,9 +52,9 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import HeaderPopup from '@/pages/tags/parts/header/header-popup/HeaderPopup.vue'
-import { $treeView, treeViewChanged } from '@/pages/tags/parts/header/page-header.model'
 import { modalVisibilityChanged } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 import { TableField } from '@/pages/dictionary/themes/list/types'
+import { tagsPageParams } from '@/pages/tags/tags-page.model'
 
 export default Vue.extend({
   components: {
@@ -68,7 +68,7 @@ export default Vue.extend({
     tableColumnsNames: { type: Array as PropType<TableField[]> },
   },
   effector: {
-    $treeView,
+    $treeView: tagsPageParams.store.treeView,
   },
   data() {
     return {
@@ -76,7 +76,8 @@ export default Vue.extend({
     }
   },
   methods: {
-    treeViewChanged,
+    toggleTreeView: tagsPageParams.methods.toggleTreeView,
+
     modalVisibilityChanged,
   },
 })

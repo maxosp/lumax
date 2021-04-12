@@ -31,6 +31,7 @@
         :fields="fields"
         :http-fetch="myFetch"
         :append-params="$filterParams"
+        :initial-page="$currentPage"
         :per-page="25"
         pagination-path=""
         @vuetable:load-error="handleLoadError"
@@ -111,12 +112,12 @@ import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
 import ThemesFilter from '@/pages/dictionary/themes/list/parts/themes-filter/ThemesFilter.vue'
 import ThemesTree from '@/pages/dictionary/themes/list/parts/themes-tree/ThemesTree.vue'
 import {
-  $treeView,
   loadTreeLight,
   loadTree,
   $themesTreeTotal,
   deleteThemes,
   requestDeleteThemes,
+  themesPageParams,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -135,6 +136,7 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -169,10 +171,12 @@ export default (Vue as VueConstructor<
   effector: {
     $token,
     $visibility,
-    $treeView,
     $themesTreeTotal,
     $session,
     $filterParams: themesFilters.store.$filterParams,
+    $pageParams: themesPageParams.store.$pageParams,
+    $treeView: themesPageParams.store.treeView,
+    $currentPage: themesPageParams.store.currentPage,
   },
   data() {
     return {
@@ -194,10 +198,22 @@ export default (Vue as VueConstructor<
       return `${config.BACKEND_URL}/api/subject/themes/list/`
     },
   },
+  watch: {
+    $pageParams: {
+      handler(newVal) {
+        if (!isQueryParamsEquelToPage(this.$route.query, newVal)) {
+          this.$router.replace(combineRouteQueries(this.$route.query, newVal))
+        }
+      },
+    },
+  },
   methods: {
     changeFilter: themesFilters.methods.changeFilter,
     resetFilters: themesFilters.methods.resetFilters,
     applyFilters: themesFilters.methods.applyFilters,
+    toggleTreeView: themesPageParams.methods.toggleTreeView,
+    changePage: themesPageParams.methods.changePage,
+    queryToParams: themesPageParams.methods.queryToParams,
     loadTree,
     toggleVisibility,
     myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
@@ -211,6 +227,8 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
+      console.log(this.$refs.pagination.tablePagination)
+      this.changePage(page)
     },
     onFilterSet() {
       this.applyFilters()
@@ -280,6 +298,7 @@ export default (Vue as VueConstructor<
       request.headers.Authorization = `Bearer ${this.$token}`
       return request
     })
+    this.queryToParams(this.$route.query)
   },
 })
 </script>

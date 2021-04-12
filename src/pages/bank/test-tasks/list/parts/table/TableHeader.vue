@@ -50,7 +50,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
-import { toggleTreeView, $treeView } from '@/pages/bank/test-tasks/list/tasks-page.model'
+import { testTaskPageParams } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
@@ -63,7 +63,7 @@ export default Vue.extend({
     Icon,
   },
   effector: {
-    $treeView,
+    $treeView: testTaskPageParams.store.treeView,
   },
   props: {
     total: { type: Number, required: true },
@@ -75,7 +75,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    toggleTreeView,
+    toggleTreeView: testTaskPageParams.methods.toggleTreeView,
     modalTasksTypesVisibilityChanged,
     handleRemove() {
       this.$emit('onRemove', this.selectedRows)

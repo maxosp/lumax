@@ -14,6 +14,7 @@ import {
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
@@ -42,8 +43,7 @@ export const requestDeleteAssignments = attach({
   },
 })
 
-export const toggleTreeView = createEvent<boolean>()
-export const $treeView = restore(toggleTreeView, false)
+export const lessonTaskPageParams = createPageParamsModel()
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<GetAssignmentTreeQueryParams>()
