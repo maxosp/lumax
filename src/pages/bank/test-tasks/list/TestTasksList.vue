@@ -419,6 +419,9 @@ export default (Vue as VueConstructor<
     })
     this.queryToParams(this.$route.query)
   },
+  beforeDestroy() {
+    this.onFilterReset()
+  },
 })
 </script>
 
