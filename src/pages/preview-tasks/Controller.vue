@@ -31,14 +31,14 @@
         v-if="isTasks"
         :is-test-tasks="isTestTasks"
         @click="$emit('onSeeComments')"
-        @onRevision="$emit('onRevision')"
+        @onReview="$emit('onReview')"
       />
       <ApplicationButtons
         v-else
         @onAccept="$emit('onAccept')"
         @onSendForModeration="$emit('onSendForModeration')"
         @onSeeComments="$emit('onSeeComments')"
-        @onRevision="$emit('onRevision')"
+        @onRevision="$emit('onReview')"
       />
     </div>
   </Card>

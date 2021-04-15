@@ -148,13 +148,13 @@ export const contextMethodsOneTask = [
   { name: 'delete', title: 'Удалить задание' },
   { name: 'double_task', title: 'Дублировать задание' },
   { name: 'double_n_task', title: 'Дублировать задание n раз' },
-  { name: 'send_to_check', title: 'Отправить заявку на проверку' },
+  { name: 'send_to_check', title: 'Отправить задание на проверку' },
   { name: 'public', title: 'Опубликовать' },
   { name: 'preview', title: 'Предпросмотр' },
 ]
 export const contextMethodsManyTasks = [
   { name: 'delete_all', title: 'Удалить выделенные задания' },
-  { name: 'send_to_check_all', title: 'Отправить на проверку' },
+  { name: 'send_to_check_all', title: 'Отправить задания на проверку' },
   { name: 'public_all', title: 'Опубликовать' },
   { name: 'preview', title: 'Предпросмотр' },
 ]

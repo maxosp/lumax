@@ -25,7 +25,7 @@
     <BaseButton
       v-if="$statusTask === 'revision'"
       class="btn"
-      @click="$emit('onRevision')"
+      @click="$emit('onReview')"
     >
       На проверку
     </BaseButton>

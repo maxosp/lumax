@@ -54,6 +54,8 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
+    applicationId: { type: Number, required: true },
+    taskId: { type: Number, required: true },
     selectedApplications: {
       type: Array as PropType<ApplicationType[]>,
       required: true,
@@ -95,11 +97,15 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
-      const selectedApplicationsIds = this.selectedApplications.map((el) => el.application)
-      const selectedTasksIds = this.selectedApplications.map((el) => el.task)
+      const selectedApplicationsIds = this.selectedApplications.length
+        ? this.selectedApplications.map((el) => el.application)
+        : [this.applicationId]
+      const selectedTasksIds = this.selectedApplications.length
+        ? this.selectedApplications.map((el) => el.task)
+        : [this.taskId]
       switch (item.name) {
         case 'preview':
-          this.$emit('showPreview', selectedTasksIds)
+          this.$emit('showPreview', selectedApplicationsIds, selectedTasksIds)
           break
         case 'edit':
           this.$emit('onEdit', selectedTasksIds)

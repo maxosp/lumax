@@ -227,7 +227,6 @@ export default (Vue as VueConstructor<
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)
-      console.log(this.$refs.pagination.tablePagination)
       this.changePage(page)
     },
     onFilterSet() {

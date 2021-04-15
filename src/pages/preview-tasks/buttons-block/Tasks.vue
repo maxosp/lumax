@@ -3,7 +3,7 @@
     <BaseButton
       v-if="[ 'revision', 'new', 'archive' ].includes($statusTask) && isTestTasks"
       class="btn"
-      @click="$emit('onRevision')"
+      @click="$emit('onReview')"
     >
       На проверку
     </BaseButton>

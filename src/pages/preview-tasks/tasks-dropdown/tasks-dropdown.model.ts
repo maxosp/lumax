@@ -8,15 +8,24 @@ export const initDropDown = createEvent<void>()
 export const setSelectedTasks = createEvent<DropdownItem | null>()
 export const $selectedTasks = restore(setSelectedTasks, null)
 
+export const taskIndexChanged = createEvent<number>()
+export const $taskIndex = restore(taskIndexChanged, 0)
+
 export const changeTasks = createEvent<DropdownItem[]>()
 export const $tasks = restore(changeTasks, [])
 
-const selectedFirstItem = createEffect((data: DropdownItem[]) => {
-  if (data.length) tasksDropdownModule.methods.itemChanged(data[0].name)
+const selectTaskByCurrentIndex = createEffect((data: DropdownItem[]) => {
+  if (data.length) tasksDropdownModule.methods.itemChanged(data[$taskIndex.getState()].name)
+})
+
+sample({
+  clock: taskIndexChanged,
+  source: $tasks,
+  target: selectTaskByCurrentIndex,
 })
 
 sample({
   clock: initDropDown,
   source: $tasks,
-  target: selectedFirstItem,
+  target: selectTaskByCurrentIndex,
 })

@@ -7,9 +7,10 @@
       @onSendForModeration="sendForModeration"
       @onSeeComments="showComments"
       @toEditPage="toEditPage"
+      @onReview="sendToModeration"
     />
     <Card v-if="questions.length > 1" class="toggler-tasks">
-      <TasksDropdown @setItem="val => changeIndexTask(val)" />
+      <TasksDropdown @setItem="val => onSelectTask(val)" />
       <div class="counter-tasks">
         <span>{{ currentIndex + 1 }}</span>
         <span>/</span>
@@ -36,6 +37,7 @@
         width="100%"
       />
     </Card>
+    <ModeratorSelectModal type="test" />
     <SendForModerationModal />
     <OutgoingModal />
   </div>
@@ -48,7 +50,10 @@ import TasksDropdown from '@/pages/preview-tasks/tasks-dropdown/TasksDropdown.vu
 import Card from '@/ui/card/Card.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { config } from '@/config'
-import { initDropDown } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import {
+  initDropDown,
+  taskIndexChanged,
+} from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { $isPreview, toggleIsPreview } from '@/pages/preview-tasks/controller.model'
 import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
 import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
@@ -61,6 +66,8 @@ import {
   loadLessonTask,
 } from '@/pages/preview-tasks/preview-tasks-page.model'
 import { goBack, navigatePush } from '@/features/navigation/index'
+import { loadModalToSendForCheck } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
+import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 
 type IframeData = {
   activeTask: string | null
@@ -76,11 +83,13 @@ export default Vue.extend({
     TasksDropdown,
     SendForModerationModal,
     OutgoingModal,
+    ModeratorSelectModal,
   },
   data: () => ({
     questions: [] as string[],
     token: null as null | string,
     type: null as null | string,
+    applications: [] as number[],
     heightIframe: 0,
     currentIndex: null as null | number,
     isApplications: false,
@@ -92,6 +101,11 @@ export default Vue.extend({
     activeTask() {
       return this.questions.length && typeof this.currentIndex === 'number'
         ? this.questions[this.currentIndex]
+        : null
+    },
+    activeApplication() {
+      return this.applications.length && typeof this.currentIndex === 'number'
+        ? this.applications[this.currentIndex]
         : null
     },
     iframeLink() {
@@ -154,30 +168,35 @@ export default Vue.extend({
       if (typeof this.currentIndex === 'number') {
         if (this.currentIndex === this.questions.length - 1) this.currentIndex = 0
         else this.currentIndex += 1
+        taskIndexChanged(this.currentIndex)
       }
     },
     prevTask() {
       if (typeof this.currentIndex === 'number') {
         if (this.currentIndex === 0) this.currentIndex = this.questions.length - 1
         else this.currentIndex -= 1
+        taskIndexChanged(this.currentIndex)
       }
     },
-    changeIndexTask(val: string) {
+    onSelectTask(val: string) {
       const index = this.questions.findIndex((item) => item === val)
       if (index !== -1) this.currentIndex = index
     },
     acceptApplications() {
-      if (this.activeTask) acceptApplicationsFx({ tickets: [parseInt(this.activeTask, 10)] })
+      if (this.activeApplication) acceptApplicationsFx({ tickets: [this.activeApplication] })
     },
     sendForModeration() {
-      if (this.activeTask) loadModal([parseInt(this.activeTask, 10)])
+      if (this.activeApplication) loadModal([this.activeApplication])
     },
     showComments() {
       if (this.activeTask) loadCommentModal(parseInt(this.activeTask, 10))
     },
+    sendToModeration() {
+      if (this.activeTask) loadModalToSendForCheck([parseInt(this.activeTask, 10)])
+    },
   },
   created() {
-    const { questions, token, type, application } = this.$route.query
+    const { questions, token, type, application, applications } = this.$route.query
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
       this.currentIndex = 0
@@ -185,9 +204,13 @@ export default Vue.extend({
     }
     if (token && typeof token === 'string') this.token = token
     if (type && typeof type === 'string') this.type = type
-    if (application && typeof application === 'string' && application === 'true')
+    if (application && typeof application === 'string' && application === 'true') {
       this.isApplications = true
-    if (!this.questions || !this.token || !this.type) goBack()
+    }
+    if (applications && typeof applications === 'string') {
+      this.applications = applications.split(',').map((appId) => Number(appId))
+    }
+    if (!this.questions || !this.token || !this.type || !this.applications) goBack()
   },
   mounted() {
     // костыль для получения высоты контента внутри iframe

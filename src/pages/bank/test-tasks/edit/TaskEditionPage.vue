@@ -5,7 +5,7 @@
       :disabled="!$canSave"
       :is-preview="$isPreview"
       :status="$status"
-      @onRevision="sendToModerationAssignments"
+      @onReview="sendToModerationAssignments"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"

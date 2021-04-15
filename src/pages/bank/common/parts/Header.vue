@@ -61,7 +61,7 @@
         <BaseButton
           v-if="[ 'revision', 'new', 'archive' ].includes(status)"
           class="btn"
-          @click="$emit('onRevision')"
+          @click="$emit('onReview')"
         >
           На проверку
         </BaseButton>

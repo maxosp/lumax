@@ -14,7 +14,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('showPreview', selectedTasksIds)"
+        @click="$emit('showPreview', selectedApplicationsIds, selectedTasksIds)"
       >
         Предпросмотр
       </span>

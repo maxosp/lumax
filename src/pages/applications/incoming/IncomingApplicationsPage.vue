@@ -2,7 +2,6 @@
   <div id="applications-page">
     <PageHeader
       :table-columns-names="fields"
-      :selected-rows="selectedApplications"
       @setFilter="onFilterSet"
       @changeFilter="changeFilter"
     />
@@ -51,7 +50,8 @@
       >
         <template id="one" #actions="props">
           <Actions
-            :id="props.rowData.id"
+            :application-id="props.rowData.id"
+            :task-id="props.rowData.test_assignment.id"
             :selected-applications="selectedApplications"
             @showPreview="showPreview"
             @onEdit="editApplications"
@@ -74,8 +74,9 @@
     </div>
     <ContextMenu
       v-if="showContextMenu"
-      :id="clickedRowId"
-      :key="clickedRowId"
+      :key="clickedRowApplicationId"
+      :application-id="clickedRowApplicationId"
+      :task-id="clickedRowTaskId"
       :selected-applications="selectedApplications"
       :style="contextMenuStyles"
       class="context-menu"
@@ -116,6 +117,7 @@ import {
   acceptApplicationsFx,
   $canRefreshTable,
   incomingApplicationsPageParams,
+  canRefreshTableChanged,
 } from '@/pages/applications/incoming/incoming-applications-page.model'
 import {
   toggleVisibility,
@@ -133,7 +135,7 @@ import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import { combineRouteQueries, cropString, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -165,7 +167,8 @@ export default (Vue as VueConstructor<
   },
   data() {
     return {
-      clickedRowId: 0,
+      clickedRowApplicationId: 0,
+      clickedRowTaskId: 0,
       searchFields: searchFieldsData,
       total: 1,
       fields: incomingApplicationsDataFields,
@@ -184,7 +187,10 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal === true) {
+          this.$refs.vuetable.refresh()
+          canRefreshTableChanged(false)
+        }
       },
     },
     $pageParams: {
@@ -204,26 +210,28 @@ export default (Vue as VueConstructor<
     toggleVisibility,
     loadList,
     reset,
-    showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
+    showPreview(applicationIds: number[], taskIds: number[]) {
+      if (applicationIds.length > 1) {
         const filteredList = this.localItems
-          .filter(
-            (item) => idArr.filter((itemArr) => itemArr === item.test_assignment.id).length > 0
-          )
+          .filter((item) => taskIds.filter((id) => id === item.test_assignment.id).length > 0)
           .map((item) => ({
             id: item.test_assignment.id,
             name: `${item.test_assignment.id}`,
-            title: item.test_assignment.theme.name,
+            title: `[id${item.test_assignment.id}] - ${cropString(
+              item.test_assignment.wording,
+              34
+            )}`,
           }))
         changeTasks(filteredList)
       }
       this.$router.push({
         name: 'preview-task',
         query: {
-          questions: idArr.join(','),
+          questions: taskIds.join(','),
           type: 'test-assignment',
-          token: this.$token,
           application: 'true',
+          applications: applicationIds.join(','),
+          token: this.$token,
         },
       })
     },
@@ -232,12 +240,15 @@ export default (Vue as VueConstructor<
     },
     acceptApplications(ids: number[]) {
       acceptApplicationsFx({ tickets: ids })
+      this.removeSelection()
     },
     sendForModeration(ids: number[]) {
       loadModal(ids)
+      this.removeSelection()
     },
     assignToModerator(ids: number[]) {
       loadModeratorModal(ids)
+      this.removeSelection()
     },
     async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
       const request = axios.get(apiUrl, {
@@ -273,7 +284,8 @@ export default (Vue as VueConstructor<
     },
     handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.id
+      this.clickedRowApplicationId = data.id
+      this.clickedRowTaskId = data.test_assignment.id
       this.showContextMenu = true
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
@@ -295,8 +307,11 @@ export default (Vue as VueConstructor<
       }
       this.showTableHeaderActions = selectedTo.length > 0
     },
-    hideContextMenu() {
+    removeSelection() {
+      this.$refs.vuetable.selectedTo = []
       this.selectedApplications = []
+    },
+    hideContextMenu() {
       this.showContextMenu = false
     },
   },
