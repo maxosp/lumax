@@ -373,6 +373,9 @@ export default (Vue as VueConstructor<
   mounted() {
     loadList({})
   },
+  beforeDestroy() {
+    this.onFilterReset()
+  },
 })
 </script>
 
