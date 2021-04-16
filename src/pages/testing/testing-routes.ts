@@ -1,5 +1,6 @@
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TestsList from '@/pages/testing/tests/list/TestsList.vue'
+import TestCreationPage from '@/pages/testing/tests/create/TestCreationPage.vue'
 
 export default [
   {
@@ -20,6 +21,14 @@ export default [
             component: TestsList,
             meta: {
               title: 'Тесты - Школа Летово',
+            },
+          },
+          {
+            name: 'test-creation-page',
+            path: 'create',
+            component: TestCreationPage,
+            meta: {
+              title: 'Создание теста - Школа Летово',
             },
           },
         ],

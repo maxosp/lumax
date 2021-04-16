@@ -22,7 +22,7 @@ forward({
 
 forward({
   from: getDifficulties.doneData.map((res) =>
-    res.body.map((item) => ({ name: `${item.code}`, title: item.name }))
+    res.body.map((item) => ({ name: `${item.code}`, title: `Тест ${item.name}` }))
   ),
   to: $difficulties,
 })

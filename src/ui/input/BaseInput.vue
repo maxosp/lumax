@@ -19,6 +19,7 @@ export default Vue.extend({
     placeholder: { type: String as PropType<string>, default: '' },
     maxLength: { type: Number },
     disabled: { type: Boolean },
+    type: { type: String as PropType<string>, default: '' },
   },
   model: {
     event: 'input',
@@ -26,3 +27,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+input::after {
+  content: '*';
+}
+</style>

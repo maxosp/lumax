@@ -1,7 +1,7 @@
 <template>
   <FilterDropdown
     v-if="$types.length"
-    label="Тип генерации"
+    :label="label"
     placeholder="Выберите тип"
     :data="$types"
     :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
@@ -27,6 +27,9 @@ export default Vue.extend({
   effector: {
     $types,
     ...typeDropdownModule.store,
+  },
+  props: {
+    label: { type: String, default: '' },
   },
   methods: {
     ...typeDropdownModule.methods,

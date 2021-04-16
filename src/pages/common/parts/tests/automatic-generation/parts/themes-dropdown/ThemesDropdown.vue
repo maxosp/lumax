@@ -1,0 +1,193 @@
+<template>
+  <div class="themes-dropdown">
+    <BaseDropdown
+      class="input dropdown"
+      :disabled="disabled"
+      :value="correctValue"
+      label="Выбор тем"
+      placeholder="Выберите темы"
+      @input="searchStringChanged"
+      @clear="clear"
+    >
+      <template #default="{closeMenu}">
+        <div v-if="$itemsDropdown.length">
+          <SelectItem            
+            v-for="item in $itemsDropdown"
+            :key="item.name"
+            class="select-item"
+            :placeholder="item.title"
+            @click="onSelectItem(item, closeMenu)"
+          >
+            <BaseCheckbox
+              :value="$selectedThemes.includes(item)" 
+              @click="onSelectItem(item, closeMenu)"
+            />
+            {{ item.title }}
+          </SelectItem>
+        </div>
+        <div v-else>
+          <SelectItem @click="closeMenu">Нет созданных меток</SelectItem>
+        </div>
+      </template>
+    </BaseDropdown>
+    <div class="selected-themes">
+      <Draggable      
+        v-model="$selectedThemes"
+        group="selectedThemes"
+        handle=".handle"
+        class="field"
+        @end="handlerEnd"
+      >
+        <div
+          v-for="(item, index) in $selectedThemes"
+          :key="item.name"  
+          class="selected-theme"
+        >
+          <div class="label">
+            <span class="order">{{ index + 1 }}.</span>
+            {{ item.title }}
+          </div>        
+          <Icon
+            type='close'
+            class='close'
+            size="10"
+            @click="onRemoveItem(item)"
+          />
+          <div class="handle">
+            <Icon
+              type="burger"
+              class="icon-handle"
+              size="12"
+            />
+          </div>
+        </div>
+      </Draggable>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import Icon from '@/ui/icon/Icon.vue'
+import BaseCheckbox from '@/ui/checkbox/BaseCheckbox.vue'
+import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
+import Draggable from 'vuedraggable'
+import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import {
+  loadThemes,
+  $selectedThemes,
+  setSelectedThemes,
+  themesDropdownModule,
+} from '@/pages/common/parts/tests/automatic-generation/parts/themes-dropdown/themes-dropdown.model'
+import { DropdownItem } from '@/pages/common/types'
+
+export default Vue.extend({
+  components: {
+    Icon,
+    BaseCheckbox,
+    BaseDropdown,
+    Draggable,
+    SelectItem,
+  },
+  props: {
+    disabled: { type: Boolean as PropType<boolean> },
+  },
+  effector: {
+    $selectedThemes,
+    ...themesDropdownModule.store,
+  },
+  computed: {
+    correctValue(): string {
+      const arr = [...this.$itemsDropdown]
+      const currentItem = arr.find((el: DropdownItem) => el.name === this.$item)
+      return currentItem ? currentItem.title : this.$searchString
+    },
+  },
+  methods: {
+    loadThemes,
+    ...themesDropdownModule.methods,
+    onSelectItem(item: DropdownItem, postAction: any) {
+      const existedItem = this.$selectedThemes.find(
+        (label: DropdownItem) => label.name === item.name
+      )
+      if (existedItem) {
+        const themes = this.$selectedThemes.filter(
+          (label: DropdownItem) => label.name !== item.name
+        )
+        setSelectedThemes(themes)
+      } else {
+        setSelectedThemes([...this.$selectedThemes, item])
+      }
+      this.$emit(
+        'setThemes',
+        this.$selectedThemes.map((theme) => theme.name)
+      )
+      postAction()
+    },
+    onRemoveItem(item: DropdownItem) {
+      const themes = this.$selectedThemes.filter((label: DropdownItem) => label.name !== item.name)
+      setSelectedThemes(themes)
+    },
+    handlerEnd() {
+      this.$selectedThemes.map((theme, id) => (theme.id = id))
+    },
+    clear() {
+      this.resetItem()
+      this.resetSearchString()
+    },
+  },
+  mounted() {
+    loadThemes()
+  },
+})
+</script>
+
+<style scoped>
+.selected-themes {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.selected-theme {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.select-item {
+  justify-content: start;
+}
+.label {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+}
+.order {
+  margin-right: 20px;
+}
+.close {
+  cursor: pointer;
+  margin-left: 20px;
+  fill: var(--base-text-secondary);
+}
+.handle,
+.icon-btn {
+  margin-left: 10px;
+}
+.handle {
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 7px;
+}
+.icon-handle {
+  fill: var(--c-grey-3);
+}
+</style>

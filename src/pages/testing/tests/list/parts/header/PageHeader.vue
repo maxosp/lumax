@@ -2,7 +2,7 @@
   <div class="header">
     <div class="title"> Тесты </div>
     <div class="buttons">
-      <RouterLink :to="{ name: 'tests-create' }">
+      <RouterLink :to="{ name: 'test-creation-page' }">
         <BaseButton
           class="btn"
           yellow
