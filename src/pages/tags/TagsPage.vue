@@ -108,7 +108,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import { RightClickParams } from '@/pages/tags/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, tagsDataFields } from '@/pages/tags/constants'
@@ -150,7 +149,7 @@ import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 

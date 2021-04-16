@@ -39,7 +39,7 @@
         Дублировать n раз
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedRows.length"
         class="text --basic"
         @click="$emit('showPreview', selectedRows)"
       >

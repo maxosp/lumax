@@ -81,9 +81,9 @@ import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
-import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
+import { removeHtmlTags } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TreeNode',

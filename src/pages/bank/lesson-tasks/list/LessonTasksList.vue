@@ -118,7 +118,6 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam, removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import PageHeader from '@/pages/bank/lesson-tasks/list/parts/PageHeader.vue'
 import TableHeader from '@/pages/bank/lesson-tasks/list/parts/table/TableHeader.vue'
 import TooltipCell from '@/pages/bank/olympiad-tasks/list/parts/table/TooltipCell.vue'
@@ -156,7 +155,15 @@ import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/req
 import { $session } from '@/features/session'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import CreatingFolderModal from '@/pages/common/modals/tasks-bank/creating-folder/CreatingFolderModal.vue'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import {
+  combineRouteQueries,
+  computeSortParam,
+  cropString,
+  isQueryParamsEquelToPage,
+  removeHtmlTags,
+} from '@/features/lib'
+import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { LessonAssignment } from '@/features/api/assignment/types'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -210,6 +217,7 @@ export default (Vue as VueConstructor<
       searchFields: searchFieldsData,
       total: 0,
       selectedRows: [] as number[] | null,
+      localItems: [] as LessonAssignment[],
     }
   },
   computed: {
@@ -239,10 +247,20 @@ export default (Vue as VueConstructor<
     changePage: lessonTaskPageParams.methods.changePage,
     queryToParams: lessonTaskPageParams.methods.queryToParams,
     toggleVisibility,
-    showPreview(id: number) {
+    showPreview(idArr: number[]) {
+      if (idArr.length > 1) {
+        const filteredList = this.localItems
+          .filter((item) => idArr.filter((itemArr) => itemArr === item.id).length > 0)
+          .map((item) => ({
+            id: item.id,
+            name: `${item.id}`,
+            title: `[id${item.id}] - ${cropString(item.wording, 34)}`,
+          }))
+        changeTasks(filteredList)
+      }
       this.$router.push({
         name: 'preview-task',
-        query: { questions: `${id}`, type: 'lesson-assignment', token: this.$token },
+        query: { questions: idArr.join(','), type: 'lesson-assignment', token: this.$token },
       })
     },
     clearWording(str: string) {
@@ -254,10 +272,16 @@ export default (Vue as VueConstructor<
     getCorrectDescriptionType(type: string) {
       return mapTaskTypeTo[type].description
     },
-    myFetch(apiUrl: string, httpOptions: any) {
-      return axios.get(apiUrl, {
+    async myFetch(apiUrl: string, httpOptions: any) {
+      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
+      const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
+      const {
+        data: { data },
+      } = await request
+      this.localItems = data
+      return request
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total

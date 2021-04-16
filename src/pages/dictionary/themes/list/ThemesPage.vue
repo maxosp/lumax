@@ -102,7 +102,6 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import PageHeader from '@/pages/dictionary/themes/list/parts/PageHeader.vue'
 import TableHeader from '@/pages/dictionary/themes/list/parts/TableHeader.vue'
 import TooltipCell from '@/pages/dictionary/themes/list/parts/TooltipCell.vue'
@@ -136,7 +135,7 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)

@@ -135,7 +135,6 @@ import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam, removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import PageHeader from '@/pages/bank/test-tasks/list/parts/PageHeader.vue'
 import TableHeader from '@/pages/bank/test-tasks/list/parts/table/TableHeader.vue'
 import TooltipCell from '@/pages/bank/olympiad-tasks/list/parts/table/TooltipCell.vue'
@@ -182,7 +181,13 @@ import {
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { TestAssignment } from '@/features/api/assignment/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import {
+  combineRouteQueries,
+  computeSortParam,
+  cropString,
+  isQueryParamsEquelToPage,
+  removeHtmlTags,
+} from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -284,7 +289,11 @@ export default (Vue as VueConstructor<
       if (idArr.length > 1) {
         const filteredList = this.localItems
           .filter((item) => idArr.filter((itemArr) => itemArr === item.id).length > 0)
-          .map((item) => ({ id: item.id, name: `${item.id}`, title: item.theme.name || '' }))
+          .map((item) => ({
+            id: item.id,
+            name: `${item.id}`,
+            title: `[id${item.id}] - ${cropString(item.wording, 34)}`,
+          }))
         changeTasks(filteredList)
       }
       this.$router.push({
@@ -306,6 +315,7 @@ export default (Vue as VueConstructor<
       return mapTaskTypeTo[type].description
     },
     async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
       const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

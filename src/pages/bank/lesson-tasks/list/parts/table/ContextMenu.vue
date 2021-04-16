@@ -67,6 +67,7 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'create':
           navigatePush({ name: 'lesson-tasks-creation' })
@@ -75,19 +76,19 @@ export default Vue.extend({
           navigatePush({ name: 'lesson-tasks-edit', params: { id: this.$props.id } })
           break
         case 'delete':
-          this.$emit('onRemove', [this.$props.id])
+          this.$emit('onRemove', ids)
           break
         case 'delete_all':
-          this.$emit('onRemove', this.$props.selected)
+          this.$emit('onRemove', ids)
           break
         case 'double_task':
           this.$emit('onDoubleTask', this.$props.id)
           break
         case 'double_n_task':
-          this.$emit('onDoubleTask', this.$props.selected)
+          this.$emit('onDoubleTask', ids)
           break
         case 'preview':
-          this.$emit('onPreview', this.$props.id)
+          this.$emit('onPreview', ids)
           break
         default:
           break

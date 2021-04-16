@@ -78,7 +78,10 @@ export default Vue.extend({
       if (this.isStudyYear) return [{ name: 'create', title: 'Создать тег' }]
       if (this.isTheme) return [{ name: 'create', title: 'Создать метку' }]
       if (this.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
+        return [
+          { name: 'delete-all', title: 'Удалить выделенные задания' },
+          { name: 'preview', title: 'Предпросмотр' },
+        ]
       }
       return [
         { name: 'edit', title: 'Редактировать' },
@@ -110,7 +113,7 @@ export default Vue.extend({
       }
     },
     handleAction(item: SelectItemI) {
-      const ids = this.selected.length ? this.selected : this.id
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'edit':
           this.$emit('onEdit', ids[0])

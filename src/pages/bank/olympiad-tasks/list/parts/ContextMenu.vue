@@ -57,7 +57,10 @@ export default Vue.extend({
   computed: {
     items(): DropdownItem[] {
       if (this.$props.selected.length > 1) {
-        return [{ name: 'delete-all', title: 'Удалить выделенные задания' }]
+        return [
+          { name: 'delete-all', title: 'Удалить выделенные задания' },
+          { name: 'preview', title: 'Предпросмотр' },
+        ]
       }
       return [
         { name: 'edit', title: 'Редактировать' },
@@ -71,6 +74,7 @@ export default Vue.extend({
   },
   methods: {
     handleAction(item: SelectItemI) {
+      const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'edit':
           this.$emit('onEdit', this.id)
@@ -85,13 +89,13 @@ export default Vue.extend({
           this.$emit('sendForCheck', this.id)
           break
         case 'delete-all':
-          this.$emit('onRemove', this.selected)
+          this.$emit('onRemove', ids)
           break
         case 'delete':
-          this.$emit('onRemove', [this.id])
+          this.$emit('onRemove', ids)
           break
         case 'preview':
-          this.$emit('showPreview', this.id)
+          this.$emit('showPreview', ids)
           break
         default:
           break

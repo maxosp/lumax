@@ -66,9 +66,8 @@ import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
 import Actions from '@/pages/dictionary/resources/list/parts/Actions.vue'
 import { TreeData } from '@/features/api/types'
-import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { navigatePush } from '@/features/navigation'
-import { sortTreeLeaves } from '@/features/lib'
+import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({

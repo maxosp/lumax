@@ -104,9 +104,20 @@ export const isQueryParamsEquelToPage = (
   return true
 }
 
+export const removeHtmlTags = (str: string) => {
+  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
+}
+
 export const cropString = (str: string, len: number) => {
   if (str.length > len) {
-    return `${str.slice(0, len)}...`
+    return `${removeHtmlTags(str).slice(0, len)}...`
   }
   return str
+}
+
+export const computeSortParam = (sortParam: string) => {
+  if (!sortParam) return ''
+  const [field, order] = sortParam.split('|')
+  const sign = order === 'desc' ? '-' : ''
+  return `${sign}${field}`
 }

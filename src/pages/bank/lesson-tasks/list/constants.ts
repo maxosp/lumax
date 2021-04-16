@@ -142,5 +142,6 @@ export const contextMethodsOneLesson = [
   { name: 'preview', title: 'Предпросмотр' },
 ]
 export const contextMethodsManyLessons = [
-  { name: 'delete_all', title: 'Удалить выделенные задания' },
+  { name: 'delete-all', title: 'Удалить выделенные задания' },
+  { name: 'preview', title: 'Предпросмотр' },
 ]

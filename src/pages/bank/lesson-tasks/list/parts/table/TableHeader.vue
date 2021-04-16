@@ -38,9 +38,9 @@
         Дублировать n раз
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="selectedRows.length"
         class="text --basic"
-        @click="$emit('onPreview', selectedRows[0])"
+        @click="$emit('onPreview', selectedRows)"
       >
         Предпросмотр
       </span>

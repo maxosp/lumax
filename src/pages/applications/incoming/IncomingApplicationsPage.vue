@@ -97,7 +97,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import { RightClickParams } from '@/pages/bank/olympiad-tasks/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import {
@@ -135,7 +134,12 @@ import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
-import { combineRouteQueries, cropString, isQueryParamsEquelToPage } from '@/features/lib'
+import {
+  combineRouteQueries,
+  computeSortParam,
+  cropString,
+  isQueryParamsEquelToPage,
+} from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -251,6 +255,7 @@ export default (Vue as VueConstructor<
       this.removeSelection()
     },
     async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
+      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
       const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })

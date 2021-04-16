@@ -119,7 +119,6 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam, removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { RightClickParams } from '@/pages/bank/olympiad-tasks/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, testsDataFields } from '@/pages/testing/tests/list/constants'
@@ -147,6 +146,7 @@ import { navigatePush } from '@/features/navigation'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import { computeSortParam, removeHtmlTags } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 

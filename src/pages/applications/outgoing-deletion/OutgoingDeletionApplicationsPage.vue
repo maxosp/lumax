@@ -101,7 +101,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import { RightClickParams } from '@/pages/bank/olympiad-tasks/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import {
@@ -138,7 +137,7 @@ import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import { mapApplicationTypeToRoute } from '@/pages/applications/constants'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { combineRouteQueries, isQueryParamsEquelToPage } from '@/features/lib'
+import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<

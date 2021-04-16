@@ -83,7 +83,6 @@ import { Vuetable, VuetableFieldCheckbox } from 'vuetable-2'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { computeSortParam } from '@/pages/dictionary/themes/list/utils'
 import GridPageHead from '@/pages/common/grid-parts/GridPageHead.vue'
 import TooltipCell from '@/pages/common/grid-parts/TooltipCell.vue'
 import GeneralFilter from '@/pages/common/general-filter/GeneralFilter.vue'
@@ -109,6 +108,7 @@ import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/req
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { $session } from '@/features/session'
+import { computeSortParam } from '@/features/lib'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
