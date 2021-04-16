@@ -39,10 +39,12 @@ export default Vue.extend({
     return {
       editorUrl: url,
       editorConfig: { ...wysiwygConfig, editorplaceholder: this.placeholder },
+      editorName: '',
     }
   },
   methods: {
     onEditorReady(editor) {
+      this.editorName = editor.name
       editor.on('fileUploadRequest', (event) => {
         const { xhr } = event.data.fileLoader
         const formData = new FormData()
@@ -82,8 +84,7 @@ export default Vue.extend({
       }
     },
     handleInsert(event) {
-      const editor = window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]
-
+      const editor = window.CKEDITOR.instances[this.editorName]
       if (!editor) {
         alert('Editor did not instanced, try to reload page')
         return
