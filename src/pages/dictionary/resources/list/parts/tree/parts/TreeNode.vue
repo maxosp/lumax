@@ -40,7 +40,7 @@
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         class="action"
-        @onRemove="(val) => $emit('onRemove', val)"
+        @onRemove="(val) => handleOnRemove(val)"
         @onEdit="(val) => handleEdit(val)"
         @create="(val) => handleCreate(val)"
       />
@@ -69,6 +69,7 @@ import { TreeData } from '@/features/api/types'
 import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { navigatePush } from '@/features/navigation'
 import { sortTreeLeaves } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -167,6 +168,7 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
+      this.setDataForTree()
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
@@ -184,6 +186,19 @@ export default Vue.extend({
         name: 'resources-create',
         params: { id: `${id}` },
       })
+    },
+    handleOnRemove(val: number[]) {
+      this.$emit('onRemove', val)
+      this.setDataForTree()
+    },
+    setDataForTree() {
+      if (this.node.study_resource) {
+        setDataToUpdateTree({
+          subject: this.node.study_resource.subject_id,
+          study_year: this.node.study_resource.study_year_id,
+          theme: this.node.study_resource.theme_id,
+        })
+      }
     },
   },
   mounted() {

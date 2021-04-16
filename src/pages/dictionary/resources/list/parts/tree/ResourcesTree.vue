@@ -1,30 +1,44 @@
 <template>
-  <div class="resources-tree">
-    <TreeNode
-      v-for="leaf in $resourcesTree"
-      :key="leaf[leaf.element_type].id"
-      :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
-      :node="leaf"
-      parent
-      :prerequisite-folder="leaf.element_type === 'virtual_folder'"
-      @onRightClick="$emit('onRightClick', $event)"
-      @loadTree="val => $emit('loadTree', val)"
-      @onRemove="val => $emit('onRemove', val)"
-    />
+  <div class="tree-wrapper">
+    <TreeHeader :total="correctTotal" />
+    <div class="resources-tree">
+      <TreeNode
+        v-for="leaf in $resourcesTree"
+        :key="leaf[leaf.element_type].id"
+        :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
+        :node="leaf"
+        parent
+        :prerequisite-folder="leaf.element_type === 'virtual_folder'"
+        @onRightClick="$emit('onRightClick', $event)"
+        @loadTree="val => $emit('loadTree', val)"
+        @onRemove="val => $emit('onRemove', val)"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import TreeNode from '@/pages/dictionary/resources/list/parts/tree/parts/TreeNode.vue'
-import { $resourcesTree } from '@/pages/dictionary/resources/list/resources-page.model'
+import {
+  $resourcesTree,
+  $resourcesTreeTotal,
+} from '@/pages/dictionary/resources/list/resources-page.model'
+import TreeHeader from '@/pages/common/parts/tree/TreeHeader.vue'
+import { formatResourcesTitle } from '@/features/lib'
 
 export default Vue.extend({
   name: 'ResourcesTree',
   components: {
     TreeNode,
+    TreeHeader,
   },
-  effector: { $resourcesTree },
+  effector: { $resourcesTree, $resourcesTreeTotal },
+  computed: {
+    correctTotal() {
+      return formatResourcesTitle(this.$resourcesTreeTotal)
+    },
+  },
 })
 </script>
 

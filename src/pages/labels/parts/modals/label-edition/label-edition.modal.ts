@@ -20,8 +20,9 @@ import { DEFAULT_ID } from '@/pages/common/constants'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { CreateLabelType, Label } from '@/features/api/assignment/types'
 import { updateLabelFx } from '@/features/api/assignment/update-label'
-import { getLabelsTree } from '@/pages/labels/labels-page.model'
+import { getLabelsTreeLight } from '@/pages/labels/labels-page.model'
 import { createError } from '@/lib/effector/error-generator'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const updateLabel = attach({
   effect: updateLabelFx,
@@ -64,9 +65,10 @@ sample({
       obj.study_year_id !== DEFAULT_ID &&
       obj.subject_id !== DEFAULT_ID &&
       obj.theme_id !== DEFAULT_ID
-    )
+    ) {
       updateLabel(obj)
-    else {
+      setDataToUpdateTree({ subject: obj.subject_id, study_year: obj.study_year_id })
+    } else {
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
@@ -134,7 +136,7 @@ forward({
   from: updateLabelFx.doneData,
   to: [
     successToastEvent('Метка была успешно обновлена!'),
-    getLabelsTree.prepend(() => ({})),
+    getLabelsTreeLight.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
   ],
 })

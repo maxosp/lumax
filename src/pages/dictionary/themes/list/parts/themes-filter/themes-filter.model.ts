@@ -1,6 +1,6 @@
 import { createEvent, forward, restore, sample } from 'effector-root'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { loadTree } from '@/pages/dictionary/themes/list/themes-page.model'
+import { loadFilteredTree, loadTreeLight } from '@/pages/dictionary/themes/list/themes-page.model'
 import { dropdownModules } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/dropdown-modules'
 
 export const themesFilters = createFiltersModel(
@@ -19,11 +19,11 @@ export const $visibility = restore(toggleVisibility, false).reset(reset)
 
 forward({
   from: themesFilters.methods.resetFilters,
-  to: loadTree.prepend(() => ({})),
+  to: loadTreeLight.prepend(() => ({})),
 })
 
 sample({
   clock: themesFilters.methods.applyFilters,
   source: themesFilters.store.$filterParams,
-  target: loadTree,
+  target: loadFilteredTree,
 })

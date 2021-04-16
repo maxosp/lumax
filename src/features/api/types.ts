@@ -45,12 +45,12 @@ export type TreeData = {
   label: Label | null
   olympiad_tag: Tag | null
   study_resource: ResourceType | null
-  // assignment: BaseAssignment | null
   virtual_folder: VirtualFolder | null
   text_resource_count: string
   link_resource_count: string
   media_resource_count: string
   ordering_number: number
+  // assignment: TestAssignment | null
 }
 
 export type GetThemeTreeFilterListResponse = {
@@ -92,4 +92,8 @@ export type TreeLightDataResponse = {
 export type TreeDataResponse = {
   total: number
   data: TreeData[]
+}
+
+export type TreeDataInfoResponse = {
+  total_amount: number
 }

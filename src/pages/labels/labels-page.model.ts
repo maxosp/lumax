@@ -1,20 +1,33 @@
 import { deleteLabelsFx } from '@/features/api/assignment/labels/delete-label'
 import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tree'
 import { getLabelsTreeLightFx } from '@/features/api/assignment/labels/get-labels-tree-light'
-import { GetLabelsTreeQueryParams } from '@/features/api/assignment/types'
+import { getLabelsInfoFx } from '@/features/api/assignment/labels/get-labels-info'
 import { TreeData } from '@/features/api/types'
 import { mergeTreeData } from '@/features/lib'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore, guard, sample } from 'effector-root'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { FiltersParams } from '@/pages/common/types'
+import { every } from 'patronum'
+import {
+  $dataToUpdateTree,
+  resetDataToUpdateTree,
+} from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const getLabelsTree = attach({
   effect: getLabelsTreeFx,
-  mapParams: (params: GetLabelsTreeQueryParams) => params,
 })
 
-const getLabelsTreeLight = attach({
+export const getFilteredTree = attach({
+  effect: getLabelsTreeFx,
+})
+
+export const getLabelsTreeLight = attach({
   effect: getLabelsTreeLightFx,
+})
+
+const getLabelsTreeInfo = attach({
+  effect: getLabelsInfoFx,
 })
 
 export const deleteLabels = createEffect({
@@ -28,7 +41,8 @@ export const deleteLabels = createEffect({
 })
 
 export const loadTreeLight = createEvent<void>()
-export const loadTree = createEvent<any>()
+export const loadTree = createEvent<FiltersParams>()
+export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteLabelsTree = createEvent<TreeData[] | null>()
 export const setLabelsTree = createEvent<TreeData[] | null>()
 export const $labelsTree = restore<TreeData[] | null>(rewriteLabelsTree, null).on(
@@ -40,28 +54,49 @@ export const $labelsTreeTotal = restore<number>(setLabelsTreeTotal, 0)
 
 forward({
   from: loadTreeLight,
-  to: getLabelsTreeLight,
+  to: [getLabelsTreeLight, getLabelsTreeInfo],
 })
 
 forward({
   from: loadTree,
-  to: getLabelsTree,
+  to: [getLabelsTree, getLabelsTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: loadFilteredTree,
+  to: [getFilteredTree, getLabelsTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: getLabelsInfoFx.doneData.map((res) => res.body.total_amount),
+  to: setLabelsTreeTotal,
 })
 
 forward({
   from: getLabelsTreeLight.doneData,
-  to: [
-    rewriteLabelsTree.prepend((res) => res.body.data),
-    setLabelsTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: rewriteLabelsTree.prepend((res) => res.body.data),
+})
+
+const $canUpdateTree = every({
+  stores: [$dataToUpdateTree],
+  predicate: (value) => !!Object.entries(value).length,
+})
+
+sample({
+  clock: guard({ source: getLabelsTreeLight.doneData, filter: $canUpdateTree }),
+  source: $dataToUpdateTree,
+  fn: (obj) => ({ subject: obj.subject, study_year: obj.study_year }),
+  target: loadTree,
+})
+
+forward({
+  from: getFilteredTree.doneData,
+  to: rewriteLabelsTree.prepend((res) => res.body.data),
 })
 
 forward({
   from: getLabelsTree.doneData,
-  to: [
-    setLabelsTree.prepend((res) => res.body.data),
-    setLabelsTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: [setLabelsTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({

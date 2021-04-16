@@ -32,6 +32,9 @@ export type ResourceType = {
   theme?: number
   media?: File
   id: number
+  study_year_id?: number
+  subject_id?: number
+  theme_id?: number
 } & CreateResourceType
 
 export type GetResourcesTreeQueryParams = {

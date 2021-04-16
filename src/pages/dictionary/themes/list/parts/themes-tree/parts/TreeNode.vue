@@ -41,6 +41,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import { TreeData } from '@/features/api/types'
 import { sortTreeLeaves } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -126,6 +127,11 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
+      setDataToUpdateTree({
+        subject: this.node.subject!.id,
+        study_year: this.node.study_year!.id,
+        theme: this.node.theme?.parent_theme_id,
+      })
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,

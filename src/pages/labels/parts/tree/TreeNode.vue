@@ -43,7 +43,7 @@
         :is-theme="node.element_type === 'theme'"
         :selected="[]"
         class="action"
-        @onRemove="(val) => $emit('onRemove', val)"
+        @onRemove="(val) => handleOnRemove(val)"
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
         @create="(val) => createLabelFromTree(val)"
@@ -74,6 +74,7 @@ import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 import { sortTreeLeaves } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -150,10 +151,11 @@ export default Vue.extend({
       event.preventDefault()
       const type = this.$props.node.element_type
       const obj = {}
-      if (this.$props.node.theme)
+      this.setDataForTree()
+      if (this.node.theme)
         Object.assign(obj, {
-          class_id: this.$props.node.theme.study_year_id,
-          subject_id: this.$props.node.theme.subject_id,
+          class_id: this.node[this.node.element_type].study_year_id,
+          subject_id: this.node[this.node.element_type].subject_id,
         })
       this.$emit('onRightClick', {
         data: {
@@ -163,6 +165,18 @@ export default Vue.extend({
         event,
         type,
       })
+    },
+    handleOnRemove(val: number[]) {
+      this.$emit('onRemove', val)
+      this.setDataForTree()
+    },
+    setDataForTree() {
+      if (this.node.label) {
+        setDataToUpdateTree({
+          subject: this.node.label.subject_id,
+          study_year: this.node.label.study_year_id,
+        })
+      }
     },
   },
   mounted() {

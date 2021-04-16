@@ -163,8 +163,9 @@ sample({
       $fileErrorModule.methods.setError(true)
       errors += 1
     }
-    if (errors === 0) saveResource()
-    else if (errors > 0) errorToastEvent('Необходимо заполнить все обязательные поля')
+    if (errors === 0) {
+      saveResource()
+    } else if (errors > 0) errorToastEvent('Необходимо заполнить все обязательные поля')
   },
 })
 

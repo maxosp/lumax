@@ -55,7 +55,7 @@ import { dropdownComponents } from '@/pages/labels/parts/labels-filter/parts/dro
 Vue.directive('click-outside', ClickOutside)
 
 export default Vue.extend({
-  name: 'TagsFilter',
+  name: 'LabelsFilter',
   components: {
     Icon,
     SubjectDropdown: dropdownComponents.SubjectDropdown,

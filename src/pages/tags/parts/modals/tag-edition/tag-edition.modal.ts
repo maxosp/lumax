@@ -16,8 +16,9 @@ import {
   subjectsDropdownModule,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
-import { getTagsTree } from '@/pages/tags/tags-page.model'
+import { getTagsTreeLight } from '@/pages/tags/tags-page.model'
 import { CreateTagType, Tag } from '@/features/api/assignment/types'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const updateTag = attach({
   effect: updateTagFx,
@@ -55,9 +56,14 @@ sample({
   source: $form,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+    if (
+      obj.name.trim().length &&
+      obj.study_year_id !== DEFAULT_ID &&
+      obj.subject_id !== DEFAULT_ID
+    ) {
       updateTag(obj)
-    else {
+      setDataToUpdateTree({ subject: obj.subject_id, study_year: obj.study_year_id })
+    } else {
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
@@ -111,7 +117,7 @@ forward({
   from: updateTagFx.doneData,
   to: [
     successToastEvent('Тег был успешно обновлен!'),
-    getTagsTree.prepend(() => ({})),
+    getTagsTreeLight.prepend(() => ({})),
     getTagsListFx.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
     canRefreshTableChanged.prepend(() => true),

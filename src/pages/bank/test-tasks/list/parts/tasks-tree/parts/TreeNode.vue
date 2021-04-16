@@ -64,8 +64,8 @@
         :subject="node.theme && node.theme.subject_id"
         :study-year="node.theme && node.theme.study_year_id"
         class="action"
-        @onRemoveTask="(val) => $emit('onRemoveTask', val)"
-        @onRemoveTheme="(val) => $emit('onRemoveTheme', val)"
+        @onRemoveTask="(val) => handleRemove('task', val)"
+        @onRemoveTheme="(val) => handleRemove('theme', val)"
         @onPreview="(val) => $emit('onPreview', val)"
         @loadTree="val => $emit('loadTree', val)"
       />
@@ -97,6 +97,7 @@ import { removeHtmlTags } from '@/pages/dictionary/themes/list/utils'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { sortTreeLeaves } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -181,7 +182,7 @@ export default Vue.extend({
   },
   methods: {
     toggle(evt: any) {
-      if (evt.target.closest('.action') || this.node.element_type === 'study_resource') return
+      if (evt.target.closest('.action') || this.node.element_type === 'assignment') return
       if (!this.node.leaves.length && this.node.element_type === 'theme') {
         const { subject_id, study_year_id, id } = this.node[this.node.element_type]!
         this.$emit('loadTree', {
@@ -203,6 +204,9 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
+      this.node.element_type === 'theme'
+        ? this.setDataForTreeAfterThemeDeletion()
+        : this.setDataForTree()
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
@@ -213,6 +217,38 @@ export default Vue.extend({
         event,
         type,
       })
+    },
+    setDataForTree() {
+      // @ts-ignore
+      const { assignment } = this.node
+      if (assignment) {
+        setDataToUpdateTree({
+          subject: assignment.subject,
+          study_year: assignment.study_year,
+          theme: assignment.theme,
+        })
+      }
+    },
+    setDataForTreeAfterThemeDeletion() {
+      setDataToUpdateTree({
+        subject: this.node.theme!.subject_id,
+        study_year: this.node.theme!.study_year_id,
+        theme: this.node.theme?.parent_theme_id ? this.node.theme.parent_theme_id : undefined,
+      })
+    },
+    handleRemove(type: string, val: number) {
+      switch (type) {
+        case 'task':
+          this.$emit('onRemoveTask', val)
+          this.setDataForTree()
+          break
+        case 'theme':
+          this.$emit('onRemoveTheme', val)
+          this.setDataForTreeAfterThemeDeletion()
+          break
+        default:
+          break
+      }
     },
   },
   mounted() {

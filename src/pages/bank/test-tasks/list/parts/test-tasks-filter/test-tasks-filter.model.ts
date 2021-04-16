@@ -7,7 +7,7 @@ import {
   $selectedTheme,
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { loadTree } from '@/pages/bank/test-tasks/list/tasks-page.model'
+import { loadFilteredTree, loadTreeLight } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import { dropdownModules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdown-modules'
 
 export const testTasksFilters = createFiltersModel(
@@ -35,13 +35,13 @@ export const $canSetTags = every({
 
 forward({
   from: testTasksFilters.methods.resetFilters,
-  to: loadTree.prepend(() => ({})),
+  to: loadTreeLight.prepend(() => ({})),
 })
 
 sample({
   clock: testTasksFilters.methods.applyFilters,
   source: testTasksFilters.store.$filterParams,
-  target: loadTree,
+  target: loadFilteredTree,
 })
 
 forward({

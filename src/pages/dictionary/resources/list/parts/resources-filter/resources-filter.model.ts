@@ -1,6 +1,9 @@
 import { createEvent, forward, restore, sample } from 'effector-root'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { loadTree, loadTreeLight } from '@/pages/dictionary/resources/list/resources-page.model'
+import {
+  loadFilteredTree,
+  loadTreeLight,
+} from '@/pages/dictionary/resources/list/resources-page.model'
 import { dropdownModules } from '@/pages/dictionary/resources/list/parts/resources-filter/parts/dropdown-modules'
 
 export const resourcesFilters = createFiltersModel(
@@ -24,5 +27,5 @@ forward({
 sample({
   clock: resourcesFilters.methods.applyFilters,
   source: resourcesFilters.store.$filterParams,
-  target: loadTree,
+  target: loadFilteredTree,
 })

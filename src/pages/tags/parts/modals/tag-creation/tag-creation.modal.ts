@@ -16,8 +16,9 @@ import {
   subjectDropdownModule,
 } from '@/pages/tags/parts/modals/tag-creation/parts/subject/subject-dropdown.model'
 import { canRefreshTableChanged } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
-import { getTagsTree } from '@/pages/tags/tags-page.model'
+import { getTagsTreeLight } from '@/pages/tags/tags-page.model'
 import { CreateTagType } from '@/features/api/assignment/types'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const createTag = attach({
   effect: createTagFx,
@@ -55,9 +56,14 @@ sample({
   source: $form,
   clock: checkIfThemeCanBeSend,
   fn: (obj) => {
-    if (obj.name.trim().length && obj.study_year_id !== DEFAULT_ID && obj.subject_id !== DEFAULT_ID)
+    if (
+      obj.name.trim().length &&
+      obj.study_year_id !== DEFAULT_ID &&
+      obj.subject_id !== DEFAULT_ID
+    ) {
+      setDataToUpdateTree({ subject: obj.subject_id, study_year: obj.study_year_id })
       createTag(obj)
-    else {
+    } else {
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
@@ -117,7 +123,7 @@ forward({
   from: createTagFx.doneData,
   to: [
     getTagsListFx.prepend(() => ({})),
-    getTagsTree.prepend(() => ({})),
+    getTagsTreeLight.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
     successToastEvent('Тег был успешно создан!'),
     canRefreshAfterCreationChange.prepend(() => true),

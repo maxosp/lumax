@@ -67,6 +67,7 @@ export type FiltersParams = {
   has_assignment?: boolean
   created_by_me?: boolean
   moderate_by_me?: boolean
+  theme?: number
   search?: string
   search_area?: string
 }

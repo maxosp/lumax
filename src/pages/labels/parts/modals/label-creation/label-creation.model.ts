@@ -19,9 +19,10 @@ import { condition, debounce, every } from 'patronum'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { createLabelFx } from '@/features/api/assignment/labels/create-label'
 import { CreateLabelType } from '@/features/api/assignment/types'
-import { getLabelsTree } from '@/pages/labels/labels-page.model'
+import { getLabelsTreeLight } from '@/pages/labels/labels-page.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { createError } from '@/lib/effector/error-generator'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const createLabel = attach({
   effect: createLabelFx,
@@ -96,9 +97,10 @@ sample({
       obj.study_year_id !== DEFAULT_ID &&
       obj.subject_id !== DEFAULT_ID &&
       obj.theme_id !== DEFAULT_ID
-    )
+    ) {
       createLabel(obj)
-    else {
+      setDataToUpdateTree({ subject: obj.subject_id, study_year: obj.study_year_id })
+    } else {
       if (!obj.name.trim().length) $titleErrorModule.methods.setError(true)
       if (obj.study_year_id === DEFAULT_ID) $classErrorModule.methods.setError(true)
       if (obj.subject_id === DEFAULT_ID) $subjectErrorModule.methods.setError(true)
@@ -168,7 +170,7 @@ forward({
   from: createLabelFx.doneData,
   to: [
     successToastEvent('Метка была успешно создана!'),
-    getLabelsTree.prepend(() => ({})),
+    getLabelsTreeLight.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
   ],
 })

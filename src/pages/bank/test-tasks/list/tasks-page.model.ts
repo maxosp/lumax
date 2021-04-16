@@ -1,4 +1,4 @@
-import { attach, createEffect, createStore, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, restore, sample, guard } from 'effector-root'
 // TODO: correctly define WHICH type of assignment
 import {
   deleteTestAssignmentsFx,
@@ -16,15 +16,28 @@ import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assig
 import { getTestAssignmentTreeFx } from '@/features/api/assignment/test-assignment/get-test-tree'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
-import { condition } from 'patronum'
+import { condition, every } from 'patronum'
 import { mergeTreeData } from '@/features/lib'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import { getAssignmentInfoFx } from '@/features/api/assignment/test-assignment/get-tree-info'
+import { FiltersParams } from '@/pages/common/types'
+import {
+  $dataToUpdateTree,
+  resetDataToUpdateTree,
+} from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 const getTasksTree = attach({
   effect: getTestAssignmentTreeFx,
 })
+const getFilteredTree = attach({
+  effect: getTestAssignmentTreeFx,
+})
 const getTasksTreeLight = attach({
   effect: getTestAssignmentTreeLightFx,
+})
+
+const getAssignmentTreeInfo = attach({
+  effect: getAssignmentInfoFx,
 })
 
 export const deleteAssignments = createEffect({
@@ -56,11 +69,16 @@ export const sendAssignmentsPublish = attach({
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
 export const loadTreeLight = createEvent<void>()
+export const loadFilteredTree = createEvent<FiltersParams>()
 export const setTasksTree = createEvent<TreeData[] | null>()
-export const $tasksTree = createStore<TreeData[] | null>(null).on(setTasksTree, (state, data) => {
-  if (state === null) return data
-  return mergeTreeData(state, data!)
-})
+const rewriteTasksTree = createEvent<TreeData[] | null>()
+export const $tasksTree = restore<TreeData[] | null>(rewriteTasksTree, null).on(
+  setTasksTree,
+  (state, data) => {
+    if (state === null) return data
+    return mergeTreeData(state, data!)
+  }
+)
 export const setTasksTreeTotal = createEvent<number>()
 export const $tasksTreeTotal = restore<number>(setTasksTreeTotal, 0)
 
@@ -68,32 +86,55 @@ const showDeleteAssignmentsToast = createEvent<number[]>()
 
 forward({
   from: loadTreeLight,
-  to: getTasksTreeLight,
+  to: [getTasksTreeLight, getAssignmentTreeInfo],
 })
 
 forward({
   from: loadTree,
-  to: getTasksTree,
+  to: [getTasksTree, getAssignmentTreeInfo.prepend(() => ({}))],
 })
+
+forward({
+  from: loadFilteredTree,
+  to: [getFilteredTree, getAssignmentTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: getAssignmentTreeInfo.doneData.map((res) => res.body.total_amount),
+  to: setTasksTreeTotal,
+})
+
 forward({
   from: getTasksTreeLight.doneData,
-  to: [
-    setTasksTree.prepend((res) => res.body.data),
-    setTasksTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: rewriteTasksTree.prepend((res) => res.body.data),
 })
+
+const $canUpdateTree = every({
+  stores: [$dataToUpdateTree],
+  predicate: (value) => !!Object.entries(value).length,
+})
+
+sample({
+  clock: guard({ source: getTasksTreeLight.doneData, filter: $canUpdateTree }),
+  source: $dataToUpdateTree,
+  fn: (obj) => ({ subject: obj.subject, study_year: obj.study_year, theme: obj.theme }),
+  target: loadTree,
+})
+
+forward({
+  from: getFilteredTree.doneData,
+  to: rewriteTasksTree.prepend((res) => res.body.data),
+})
+
 forward({
   from: getTasksTree.doneData,
-  to: [
-    setTasksTree.prepend((res) => res.body.data),
-    setTasksTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: [setTasksTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({
   from: deleteAssignments.doneData,
   to: [
-    loadTree.prepend(() => ({})),
+    loadTreeLight.prepend(() => ({})),
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     showDeleteAssignmentsToast,
   ],

@@ -46,7 +46,7 @@
         @onEdit="(val) => loadModalToEdit(val)"
         @showTasks="(val) => loadModal(val)"
         @create="(val) => createTagFromTree(val)"
-        @onRemove="val => $emit('onRemove', val)"
+        @onRemove="val => handleOnRemove(val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -74,6 +74,7 @@ import { loadModalToEdit } from '@/pages/tags/parts/modals/tag-edition/tag-editi
 import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
 import { createTagFromTree } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 import { sortTreeLeaves } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -159,6 +160,7 @@ export default Vue.extend({
       const obj = {}
       if (this.$props.node.element_type === 'study_year')
         Object.assign(obj, { subject_id: this.$props.node.study_year.subject_id })
+      this.setDataForTree()
       this.$emit('onRightClick', {
         data: { id: this.$props.nodeId, ...obj },
         event,
@@ -167,6 +169,18 @@ export default Vue.extend({
     },
     showTasks() {
       this.$emit('tasks', this.$props.node.olympiad_tag.id)
+    },
+    handleOnRemove(val: number[]) {
+      this.$emit('onRemove', val)
+      this.setDataForTree()
+    },
+    setDataForTree() {
+      if (this.node.olympiad_tag) {
+        setDataToUpdateTree({
+          subject: this.node.olympiad_tag.subject_id,
+          study_year: this.node.olympiad_tag.study_year_id,
+        })
+      }
     },
   },
   mounted() {

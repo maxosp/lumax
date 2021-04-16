@@ -7,6 +7,8 @@ export type Tag = {
   study_year: StudyYear | null
   subject: Subject | null
   assignments_count: number
+  study_year_id: number
+  subject_id: number
 }
 
 export type CreateTagType = {
@@ -36,23 +38,6 @@ export type CreateLabelType = CreateTagType & {
 export type Label = Tag & {
   theme: Theme
   assignments_count: number
-}
-
-export type GetTagsTreeQueryParams = {
-  sort?: string
-  subject?: number
-  study_year?: number
-  search?: string
-  search_area?: string
-}
-
-export type GetLabelsTreeQueryParams = {
-  sort?: string
-  subject?: string
-  study_year?: number
-  theme?: number
-  search?: string
-  search_area?: string
 }
 
 export type GetTypesResponse = {
@@ -180,6 +165,9 @@ export type BaseAssignment = {
   duplicate_count: number
   audios_ids: number[]
   example_answer: string
+  theme?: number
+  subject?: number
+  study_year?: number
 }
 
 export type TestAssignment = {

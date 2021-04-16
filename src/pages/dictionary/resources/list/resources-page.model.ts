@@ -1,12 +1,18 @@
-import { attach, createEffect, createEvent, createStore, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, guard, restore, sample } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
-import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
 import { deleteResourcesFx } from '@/features/api/media/delete-resources'
 import { getResourcesTreeLightFx } from '@/features/api/media/get-resources-tree-light'
 import { mergeTreeData } from '@/features/lib'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { getResourcesInfoFx } from '@/features/api/media/get-resources-tree-info'
+import { FiltersParams } from '@/pages/common/types'
+import { every } from 'patronum'
+import {
+  $dataToUpdateTree,
+  resetDataToUpdateTree,
+} from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 const getResourcesTree = attach({
   effect: getResourcesTreeFx,
@@ -14,6 +20,14 @@ const getResourcesTree = attach({
 
 const getResourcesTreeLight = attach({
   effect: getResourcesTreeLightFx,
+})
+
+export const getFilteredTree = attach({
+  effect: getResourcesTreeFx,
+})
+
+const getResourcesTreeInfo = attach({
+  effect: getResourcesInfoFx,
 })
 
 export const deleteResources = createEffect({
@@ -27,9 +41,11 @@ export const deleteResources = createEffect({
 })
 
 export const loadTreeLight = createEvent<void>()
-export const loadTree = createEvent<GetThemesTreeQueryParams>()
+export const loadTree = createEvent<FiltersParams>()
+export const loadFilteredTree = createEvent<FiltersParams>()
+const rewriteResourcesTree = createEvent<TreeData[] | null>()
 export const setResourcesTree = createEvent<TreeData[] | null>()
-export const $resourcesTree = createStore<TreeData[] | null>(null).on(
+export const $resourcesTree = restore<TreeData[] | null>(rewriteResourcesTree, null).on(
   setResourcesTree,
   (state, data) => {
     if (state === null) return data
@@ -37,33 +53,55 @@ export const $resourcesTree = createStore<TreeData[] | null>(null).on(
     return mergeTreeData(state, data!)
   }
 )
+
 export const setResourcesTreeTotal = createEvent<number>()
 export const $resourcesTreeTotal = restore<number>(setResourcesTreeTotal, 0)
 
 forward({
   from: loadTreeLight,
-  to: getResourcesTreeLight,
+  to: [getResourcesTreeLight, getResourcesTreeInfo],
 })
 
 forward({
   from: loadTree,
-  to: getResourcesTree,
+  to: [getResourcesTree, getResourcesTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: loadFilteredTree,
+  to: [getFilteredTree, getResourcesTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: getResourcesTreeInfo.doneData.map((res) => res.body.total_amount),
+  to: setResourcesTreeTotal,
 })
 
 forward({
   from: getResourcesTree.doneData,
-  to: [
-    setResourcesTree.prepend((res) => res.body.data),
-    setResourcesTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: [setResourcesTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({
   from: getResourcesTreeLight.doneData,
-  to: [
-    setResourcesTree.prepend((res) => res.body.data),
-    setResourcesTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: rewriteResourcesTree.prepend((res) => res.body.data),
+})
+
+const $canUpdateTree = every({
+  stores: [$dataToUpdateTree],
+  predicate: (value) => !!Object.entries(value).length,
+})
+
+sample({
+  clock: guard({ source: getResourcesTreeLight.doneData, filter: $canUpdateTree }),
+  source: $dataToUpdateTree,
+  fn: (obj) => ({ subject: obj.subject, study_year: obj.study_year, theme: obj.theme }),
+  target: loadTree,
+})
+
+forward({
+  from: getFilteredTree.doneData,
+  to: rewriteResourcesTree.prepend((res) => res.body.data),
 })
 
 forward({

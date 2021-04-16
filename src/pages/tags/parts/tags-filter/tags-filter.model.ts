@@ -1,6 +1,6 @@
 import { createEvent, forward, restore, sample } from 'effector-root'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { loadTree, loadTreeLight } from '@/pages/tags/tags-page.model'
+import { loadFilteredTree, loadTreeLight } from '@/pages/tags/tags-page.model'
 import { dropdownModules } from '@/pages/tags/parts/tags-filter/parts/dropdown-modules'
 
 export const tagsFilters = createFiltersModel(
@@ -23,5 +23,5 @@ forward({
 sample({
   clock: tagsFilters.methods.applyFilters,
   source: tagsFilters.store.$filterParams,
-  target: loadTree,
+  target: loadFilteredTree,
 })
