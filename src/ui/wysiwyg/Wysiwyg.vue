@@ -72,6 +72,14 @@ export default Vue.extend({
           data.url = parsedResponse.file
         }
       })
+      editor.on('paste', (event) => {
+        const checkString = event.editor.container.$.innerText
+          .split('\n')
+          .splice(0, 10)
+          .filter((el) => !!el.trim().length)
+        const incomingString = event.data.dataValue.split(' ')
+        if (incomingString.some((el) => checkString.includes(el))) event.cancel()
+      })
       this.$emit('instance-ready', editor)
       if (editor.dataProcessor.dataFilter) {
         editor.dataProcessor.dataFilter.addRules({

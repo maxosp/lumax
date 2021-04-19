@@ -3,6 +3,7 @@ import { config } from '@/config'
 export const url = 'https://cdn.ckeditor.com/4.16.0/full-all/ckeditor.js'
 
 export const wysiwygConfig = {
+  title: false,
   language: 'ru',
   extraPlugins: 'uploadimage, divarea',
   removePlugins: 'easyimage, cloudservices, exportpdf',
