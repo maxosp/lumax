@@ -27,7 +27,7 @@
         />
       </div>
       <div
-        v-else
+        v-else-if="$correctAnswerInputs.length > 1"
         class="icon-btn transparent"
         @click="removeInput({ id: input.id })"
       >
@@ -71,8 +71,10 @@ export default Vue.extend({
       setCorrectAnswerInputs([...this.$correctAnswerInputs, { id: getRandomId(), value: '' }])
     },
     removeInput({ id }) {
-      const inputs = this.$correctAnswerInputs.filter((input) => input.id !== id)
-      setCorrectAnswerInputs(inputs)
+      if ($correctAnswerInputs.length > 1) {
+        const inputs = this.$correctAnswerInputs.filter((input) => input.id !== id)
+        setCorrectAnswerInputs(inputs)
+      }
     },
   },
 })
