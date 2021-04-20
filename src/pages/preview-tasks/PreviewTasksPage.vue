@@ -66,7 +66,10 @@ import {
   loadLessonTask,
 } from '@/pages/preview-tasks/preview-tasks-page.model'
 import { goBack, navigatePush } from '@/features/navigation/index'
-import { loadModalToSendForCheck } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
+import {
+  loadModalToSendForCheck,
+  $canRefreshAfterSendingForModeration,
+} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 
 type IframeData = {
@@ -96,6 +99,7 @@ export default Vue.extend({
   }),
   effector: {
     $isPreview,
+    $canRefreshAfterSendingForModeration,
   },
   computed: {
     activeTask() {
@@ -156,6 +160,9 @@ export default Vue.extend({
         }
       }
     },
+    $canRefreshAfterSendingForModeration(value) {
+      if (value) this.$router.go(0)
+    },
   },
   methods: {
     toEditPage() {
@@ -189,7 +196,7 @@ export default Vue.extend({
       if (this.activeApplication) loadModal([this.activeApplication])
     },
     showComments() {
-      if (this.activeTask) loadCommentModal(parseInt(this.activeTask, 10))
+      if (this.activeTask) loadCommentModal(parseInt(`${this.activeApplication}`, 10))
     },
     sendToModeration() {
       if (this.activeTask) loadModalToSendForCheck([parseInt(this.activeTask, 10)])

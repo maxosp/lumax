@@ -38,7 +38,7 @@
         @onAccept="$emit('onAccept')"
         @onSendForModeration="$emit('onSendForModeration')"
         @onSeeComments="$emit('onSeeComments')"
-        @onRevision="$emit('onReview')"
+        @onReview="$emit('onReview')"
       />
     </div>
   </Card>
