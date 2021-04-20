@@ -1,13 +1,13 @@
 import { createStore, attach, createEvent, forward, restore } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { getFolderTreeFx } from '@/features/api/assignment/folder/get-folder-tree'
-import { GetFolderTreeListResponse } from '@/features/api/types'
+import { TreeDataLight } from '@/features/api/types'
+import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 
 export const foldersDropdownModule = createFilter()
 
 const getFolders = attach({
-  effect: getFolderTreeFx,
+  effect: getLessonAssignmentTreeLightFx,
 })
 
 export const loadFolders = createEvent<void>()
@@ -21,7 +21,7 @@ forward({
   to: getFolders.prepend(() => ({})),
 })
 
-function formatData(data: GetFolderTreeListResponse[]): any {
+function formatData(data: TreeDataLight[]): any {
   return data.map((elem: any) => ({
     name: `${elem[elem.element_type].id}`,
     title: elem[elem.element_type].name,
@@ -32,6 +32,6 @@ function formatData(data: GetFolderTreeListResponse[]): any {
 }
 
 forward({
-  from: getFolderTreeFx.doneData.map((res) => formatData(res.body.data)),
+  from: getLessonAssignmentTreeLightFx.doneData.map((data) => formatData(data.body.data)),
   to: $folders,
 })

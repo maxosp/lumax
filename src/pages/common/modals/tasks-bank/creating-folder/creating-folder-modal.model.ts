@@ -9,7 +9,7 @@ import {
   $selectedFolder,
   foldersDropdownModule,
   setSelectedFolder,
-} from '@/pages/common/dropdowns/bank/position-dropdown/position-dropdown.model'
+} from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/position-dropdown.model'
 import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 

@@ -71,7 +71,7 @@ import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-type
 import {
   $selectedFolder,
   foldersDropdownModule,
-} from '@/pages/common/dropdowns/bank/position-dropdown/position-dropdown.model'
+} from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/position-dropdown.model'
 import { condition } from 'patronum'
 
 const createLessonAssignment = attach({

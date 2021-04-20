@@ -22,7 +22,7 @@
         />
       </div>
       <div class='right'>
-        <p class="text"> Количество </p>
+        <p class="text"> Количество</p>
         <div class="wrapper">
           <NumericInput :value="+$count" @input="setCount" />
           <BaseButton
@@ -56,7 +56,7 @@
 
 <script>
 import Vue from 'vue'
-import PositionDropdown from '@/pages/common/dropdowns/bank/position-dropdown/PositionDropdown.vue'
+import PositionDropdown from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/PositionDropdown.vue'
 import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown/TaskTypesDropdown.vue'
 import LanguagesDropdown from '@/pages/bank/lesson-tasks/edit/parts/languages-dropdown/LanguagesDropdown.vue'
 import NumericInput from '@/ui/input/NumericInput.vue'

@@ -59,7 +59,7 @@ import {
   checkIfFolderCanBeSend,
   $positionErrorModule,
 } from '@/pages/common/modals/tasks-bank/creating-folder/creating-folder-modal.model'
-import PositionDropdown from '@/pages/common/dropdowns/bank/position-dropdown/PositionDropdown.vue'
+import PositionDropdown from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/PositionDropdown.vue'
 
 export default Vue.extend({
   name: 'CreatingFolderModal',

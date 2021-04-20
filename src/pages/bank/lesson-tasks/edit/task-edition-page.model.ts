@@ -84,7 +84,7 @@ import {
   $selectedFolder,
   foldersDropdownModule,
   setSelectedFolder,
-} from '@/pages/common/dropdowns/bank/position-dropdown/position-dropdown.model'
+} from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/position-dropdown.model'
 import { getLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment'
 import { updateLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'

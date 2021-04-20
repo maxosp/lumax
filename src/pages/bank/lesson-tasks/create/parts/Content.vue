@@ -29,10 +29,10 @@
         >
           <p>Дублировать</p>
         </BaseSwitch>
-        <NumericInput 
-          :value="+$count" 
+        <NumericInput
+          :value="+$count"
           label="Количество"
-          @input="setCount" 
+          @input="setCount"
         />
       </div>
     </div>
@@ -41,7 +41,7 @@
 
 <script>
 import Vue from 'vue'
-import PositionDropdown from '@/pages/common/dropdowns/bank/position-dropdown/PositionDropdown.vue'
+import PositionDropdown from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/PositionDropdown.vue'
 import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown/TaskTypesDropdown.vue'
 import LanguagesDropdown from '@/pages/bank/lesson-tasks/create/parts/languages-dropdown/LanguagesDropdown.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'

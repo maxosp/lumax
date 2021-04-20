@@ -19,7 +19,7 @@ import {
   foldersDropdownModule,
   loadFolders,
   setSelectedFolder,
-} from '@/pages/common/dropdowns/bank/position-dropdown/position-dropdown.model'
+} from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/position-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
 export default Vue.extend({
