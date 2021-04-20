@@ -52,6 +52,10 @@ import {
   $labels,
   $selectedLabels,
   setSelectedLabels,
+  $currentLabelsIDs,
+  loadCurrentLabelsIDs,
+  loadCurrentLabels,
+  $currentLabel,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -64,6 +68,22 @@ export default Vue.extend({
   effector: {
     $labels,
     $selectedLabels,
+    $currentLabelsIDs,
+    $currentLabel,
+  },
+  watch: {
+    $currentLabelsIDs: {
+      immediate: false,
+      handler() {
+        this.$currentLabelsIDs.map((l) => loadCurrentLabels(l))
+      },
+    },
+    $currentLabel: {
+      immediate: false,
+      handler() {
+        setSelectedLabels([...this.$selectedLabels, this.$currentLabel])
+      },
+    },
   },
   methods: {
     loadLabels,
@@ -89,8 +109,9 @@ export default Vue.extend({
       // clear handle
     },
   },
-  mounted() {
+  beforeMount() {
     loadLabels()
+    loadCurrentLabelsIDs(+this.$route.params.id)
   },
 })
 </script>
