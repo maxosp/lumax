@@ -83,6 +83,7 @@
     </div>
     <div :class="{ invisible: !$treeView }">
       <LessonsTree
+        @loadTree="val => loadTree(val)"
         @onRightClick="handleRightClick"
         @onRemove="onRemoveTask"
       />
@@ -132,6 +133,7 @@ import {
   deleteAssignments,
   requestDeleteAssignments,
   lessonTaskPageParams,
+  loadTreeLight,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -247,6 +249,7 @@ export default (Vue as VueConstructor<
     changePage: lessonTaskPageParams.methods.changePage,
     queryToParams: lessonTaskPageParams.methods.queryToParams,
     toggleVisibility,
+    loadTree,
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems
@@ -348,7 +351,7 @@ export default (Vue as VueConstructor<
     },
   },
   mounted() {
-    loadTree({})
+    loadTreeLight()
   },
   created() {
     // Authorization request

@@ -11,6 +11,7 @@ export type TreeElementType =
   | 'study_resource'
   | 'label'
   | 'olympiad_tag'
+  | 'folder'
 
 export type VirtualFolder = {
   name: string

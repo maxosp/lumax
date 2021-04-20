@@ -1,10 +1,7 @@
-import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
+import { attach, createEffect, createEvent, forward, guard, restore, sample } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { TreeData, TreeDataLight } from '@/features/api/types'
-import {
-  GetAssignmentTreeQueryParams,
-  RequestDeleteAssignmentsParams,
-} from '@/features/api/assignment/types'
+import { TreeData } from '@/features/api/types'
+import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
 import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 import {
@@ -12,15 +9,30 @@ import {
   requestDeleteLessonAssignmentsFx,
 } from '@/features/api/assignment/lesson-assignment/delete-lesson-assignment'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
-import { condition } from 'patronum'
+import { condition, every } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import { FiltersParams } from '@/pages/common/types'
+import { mergeTreeData } from '@/features/lib'
+import { getLessonInfoFx } from '@/features/api/assignment/lesson-assignment/get-tree-info'
+import {
+  $dataToUpdateTree,
+  resetDataToUpdateTree,
+} from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
 })
 const getLessonsTreeLight = attach({
   effect: getLessonAssignmentTreeLightFx,
+})
+
+export const getFilteredTree = attach({
+  effect: getLessonAssignmentTreeFx,
+})
+
+const getLessonTreeInfo = attach({
+  effect: getLessonInfoFx,
 })
 
 export const deleteAssignments = createEffect({
@@ -45,10 +57,15 @@ export const requestDeleteAssignments = attach({
 
 export const lessonTaskPageParams = createPageParamsModel()
 
-export const loadTree = createEvent<GetAssignmentTreeQueryParams>()
-export const loadTreeLight = createEvent<GetAssignmentTreeQueryParams>()
-export const setLessonsTree = createEvent<TreeDataLight[] | TreeData[] | null>()
-export const $lessonsTree = restore<TreeDataLight[] | TreeData[] | null>(setLessonsTree, null)
+export const loadTree = createEvent<FiltersParams>()
+export const loadTreeLight = createEvent<void>()
+export const loadFilteredTree = createEvent<FiltersParams>()
+const rewriteTree = createEvent<TreeData[] | null>()
+export const setLessonsTree = createEvent<TreeData[] | null>()
+export const $lessonsTree = restore<TreeData[] | null>(rewriteTree, null).on(
+  setLessonsTree,
+  (state, data) => mergeTreeData(state!, data!)
+)
 export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 
@@ -56,32 +73,55 @@ const showDeleteAssignmentsToast = createEvent<number[]>()
 
 forward({
   from: loadTreeLight,
-  to: getLessonsTreeLight,
+  to: [getLessonsTreeLight, getLessonTreeInfo],
 })
 
 forward({
   from: loadTree,
-  to: getLessonsTree,
+  to: [getLessonsTree, getLessonTreeInfo.prepend(() => ({}))],
 })
+
+forward({
+  from: loadFilteredTree,
+  to: [getFilteredTree, getLessonTreeInfo.prepend(() => ({}))],
+})
+
+forward({
+  from: getLessonInfoFx.doneData.map((res) => res.body.total_amount),
+  to: setLessonsTreeTotal,
+})
+
 forward({
   from: getLessonsTreeLight.doneData,
-  to: [
-    setLessonsTree.prepend((res) => res.body.data),
-    setLessonsTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: rewriteTree.prepend((res) => res.body.data),
 })
+
+const $canUpdateTree = every({
+  stores: [$dataToUpdateTree],
+  predicate: (value) => !!Object.entries(value).length,
+})
+
+sample({
+  clock: guard({ source: getLessonsTreeLight.doneData, filter: $canUpdateTree }),
+  source: $dataToUpdateTree,
+  fn: (obj) => ({ folder: obj.folder }),
+  target: loadTree,
+})
+
+forward({
+  from: getFilteredTree.doneData,
+  to: rewriteTree.prepend((res) => res.body.data),
+})
+
 forward({
   from: getLessonsTree.doneData,
-  to: [
-    setLessonsTree.prepend((res) => res.body.data),
-    setLessonsTreeTotal.prepend((res) => res.body.total),
-  ],
+  to: [setLessonsTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({
   from: deleteAssignments.doneData,
   to: [
-    loadTree.prepend(() => ({})),
+    loadTreeLight.prepend(() => ({})),
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     showDeleteAssignmentsToast,
   ],

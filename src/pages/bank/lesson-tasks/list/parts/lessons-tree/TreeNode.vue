@@ -56,7 +56,7 @@
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         class="action"
-        @onRemove="(val) => $emit('onRemove', val)"
+        @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
       />
     </div>
@@ -67,6 +67,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
+        @loadTree="val => $emit('loadTree', val)"
         @onRightClick="$emit('onRightClick', $event)"
         @onRemove="(val) => $emit('onRemove', val)"
         @onPreview="(val) => $emit('onPreview', val)"
@@ -84,6 +85,7 @@ import { TreeData } from '@/features/api/types'
 import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { removeHtmlTags } from '@/features/lib'
+import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -146,12 +148,19 @@ export default Vue.extend({
   },
   methods: {
     toggle(evt: any) {
-      if (evt.target.closest('.action')) return
-      // @ts-ignore
-      if (this.node.leaves && this.node.leaves.length) {
-        // @ts-ignore
-        this.opened = !this.opened
+      if (evt.target.closest('.action') || this.node.element_type === 'assignment') return
+      if (!this.node.leaves.length && this.node.element_type === 'folder') {
+        const { id } = this.node[this.node.element_type]!
+        this.$emit('loadTree', {
+          folder: id,
+          is_prerequisite: this.prerequisiteFolder ? true : undefined,
+        })
       }
+      this.opened = !this.opened
+    },
+    handleRemove(val: number[]) {
+      this.setDataForTree()
+      this.$emit('onRemove', val)
     },
     handleRightClick(event: any) {
       event.preventDefault()
@@ -164,16 +173,24 @@ export default Vue.extend({
           type = 'prerequisite_general'
         }
       }
+      this.setDataForTree()
       this.$emit('onRightClick', {
         data: {
           id: this.$props.nodeId,
           isTheme: this.$props.node.element_type === 'theme',
-          // subject: this.$props.node.subject.id,
-          // studyYear: this.$props.node.study_year.id,
         },
         event,
         type,
       })
+    },
+    setDataForTree() {
+      // @ts-ignore
+      const { assignment } = this.node
+      if (assignment) {
+        setDataToUpdateTree({
+          folder: assignment.folder,
+        })
+      }
     },
   },
   mounted() {

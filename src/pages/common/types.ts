@@ -70,6 +70,7 @@ export type FiltersParams = {
   theme?: number
   search?: string
   search_area?: string
+  folder?: number
 }
 
 export type PageParams = {
