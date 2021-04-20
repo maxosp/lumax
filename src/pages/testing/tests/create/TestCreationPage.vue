@@ -28,6 +28,8 @@ import {
   clearFields,
 } from '@/pages/testing/tests/create/test-create-page.model'
 
+import { toggleIsPageLoaded } from '@/pages/common/parts/tests/automatic-generation/parts/themes-dropdown/themes-dropdown.model'
+
 export default Vue.extend({
   name: 'TaskCreationPage',
   components: {
@@ -44,7 +46,11 @@ export default Vue.extend({
       if (isRedirect) setRedirectAfterSave(true)
     },
   },
+  mounted() {
+    toggleIsPageLoaded(true)
+  },
   beforeDestroy() {
+    toggleIsPageLoaded(false)
     clearFields()
   },
 })

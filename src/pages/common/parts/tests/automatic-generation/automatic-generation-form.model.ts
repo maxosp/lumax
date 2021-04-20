@@ -28,12 +28,12 @@ export const $form = combine(
     prerequisites,
     auto_items: themes.map((theme) => ({
       theme: {
-        name: theme.name,
+        name: theme.title,
         study_year: theme.study_year,
         subject: theme.subject,
       },
-      order_number: theme.id!,
-      theme_id: theme.author!,
+      order_number: theme.id,
+      theme_id: theme.name,
     })),
   })
 ).reset(clearFields)

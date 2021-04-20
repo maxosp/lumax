@@ -21,10 +21,14 @@ import { createTestAutoItemFx } from '@/features/api/test/create-test-auto-item'
 import { createTestFinalTextFx } from '@/features/api/test/create-test-final-text'
 
 import { typeDropdownModule } from '@/pages/common/dropdowns/testing/type-dropdown/type-dropdown.model'
-import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import {
+  classesDropdownModule,
+  setSelectedClass,
+} from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { condition } from 'patronum'
 import { navigatePush } from '@/features/navigation'
+import { DropdownItem } from '@/pages/common/types'
 
 const createTest = attach({
   effect: createTestFx,
@@ -34,7 +38,7 @@ const createTestAutoItem = attach({
   effect: createTestAutoItemFx,
 })
 
-const createTestAutoItemList = createEffect<any>((data: any) => {
+const createTestAutoItemList = createEffect<any>((data: CreateTestAutoItemFxParams[]) => {
   data.forEach((item: CreateTestAutoItemFxParams) => createTestAutoItem(item))
 })
 
@@ -42,7 +46,7 @@ const createTestFinalText = attach({
   effect: createTestFinalTextFx,
 })
 
-const createTestFinalTextList = createEffect<any>((data: any) => {
+const createTestFinalTextList = createEffect<any>((data: CreateTestFinalTextFxParams[]) => {
   data.forEach((item: CreateTestFinalTextFxParams) => createTestFinalText(item))
 })
 
@@ -62,10 +66,10 @@ export const $filterByStudyYear = restore(toggleFilterByStudyYear, true).reset(c
 export const toggleArchive = createEvent<boolean>()
 export const $archive = restore(toggleArchive, false).reset(clearFields)
 
-export const setStudyYear = createEvent<number>()
+export const setStudyYear = createEvent<DropdownItem | null>()
 export const $studyYear = restore(setStudyYear, null).reset(clearFields)
 
-export const setSubject = createEvent<number | null | undefined>()
+export const setSubject = createEvent<DropdownItem>()
 export const $subject = restore(setSubject, null).reset(clearFields)
 
 export const setWording = createEvent<string>()
@@ -89,6 +93,15 @@ export const $timeLimit = restore(toggleTimeLimit, false).reset(clearFields)
 export const setMaxTime = createEvent<number>()
 export const $maxTime = restore(setMaxTime, null).reset(clearFields)
 
+forward({
+  from: toggleFilterByStudyYear,
+  to: [
+    setStudyYear.prepend(() => null),
+    setSelectedClass.prepend(() => null),
+    classesDropdownModule.methods.resetDropdown,
+  ],
+})
+
 const $baseForm = combine(
   $subject,
   $formAutomaticGeneration,
@@ -100,7 +113,7 @@ const $baseForm = combine(
   $maxTime,
   $studyYear,
   (
-    subject_id,
+    selectedSubject,
     formAutomaticGeneration,
     testType,
     filterByStudyYear,
@@ -108,7 +121,7 @@ const $baseForm = combine(
     containing,
     cmsComment,
     maxTime,
-    studyYear
+    selectedClass
   ): CreateTestFxParams => ({
     name: wording,
     instruction: containing,
@@ -117,8 +130,8 @@ const $baseForm = combine(
     difficulty: formAutomaticGeneration.difficulty,
     duration_min: maxTime,
     filter_by_year: filterByStudyYear,
-    subject_id,
-    study_year_id: studyYear,
+    study_year_id: selectedClass ? +selectedClass : null,
+    subject_id: +selectedSubject!,
   })
 )
 

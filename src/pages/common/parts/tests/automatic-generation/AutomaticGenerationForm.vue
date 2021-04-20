@@ -10,7 +10,7 @@
     </BaseSwitch>
     <ThemesDropdown 
       class="type-dropdown"
-      :disabled="!$subject || !$studyYear"
+      :disabled="!themesDropdownDisabled"
     />
   </div>
 </template>
@@ -28,7 +28,11 @@ import {
   $difficulty,
 } from '@/pages/common/parts/tests/automatic-generation/automatic-generation-form.model'
 
-import { $subject, $studyYear } from '@/pages/testing/tests/create/test-create-page.model'
+import {
+  $subject,
+  $studyYear,
+  $filterByStudyYear,
+} from '@/pages/testing/tests/create/test-create-page.model'
 
 export default Vue.extend({
   name: 'AutomaticGenerationForm',
@@ -42,6 +46,12 @@ export default Vue.extend({
     $difficulty,
     $subject,
     $studyYear,
+    $filterByStudyYear,
+  },
+  computed: {
+    themesDropdownDisabled() {
+      return (this.$subject && this.$studyYear) || (this.$subject && !this.$filterByStudyYear)
+    },
   },
   methods: {
     changeDifficulty,

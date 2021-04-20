@@ -48,7 +48,7 @@
           <StartToEndDatetime
             class="datetime-picker"
             label="Дата"
-            @input="val => setDatetime({group_id: index, datetime_id: idx, datetime: val})"
+            @input="val => onSetDatetime(index, idx, val)"
           />
           <Icon
             type='close'
@@ -89,6 +89,7 @@ import {
   $datetimes,
 } from '@/pages/common/parts/tests/parts/groups-dropdown/groups-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import { Datetime } from '@/features/api/test/types'
 
 export default Vue.extend({
   name: 'GroupsDropdown',
@@ -116,11 +117,27 @@ export default Vue.extend({
     loadGroups,
     setDatetime,
     ...groupsDropdownModule.methods,
-    onAddDatetime() {
-      setDatetime(...this.$datetimes, {
-        start: '',
-        end: '',
-      })
+    onSetDateTime(group_id: number, datetime_id: number, datetime: Datetime) {
+      setDatetime.prepend(() => [
+        ...this.$datetimes,
+        {
+          id: datetime_id,
+          start: datetime.start,
+          end: datetime.end,
+          group_id,
+        },
+      ])
+    },
+    onAddDatetime(group_id: number) {
+      setDatetime.prepend(() => [
+        ...this.$datetimes,
+        {
+          id: this.$datetimes.length + 1,
+          start: null,
+          end: null,
+          group_id,
+        },
+      ])
     },
     onSelectItem(item: DropdownItem, cb: any) {
       const existedItem = this.$selectedGroups.find(

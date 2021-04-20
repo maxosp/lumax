@@ -2,13 +2,7 @@ import { createEvent, createStore, forward, attach, restore } from 'effector-roo
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
-
-export type Datetime = {
-  group_id: number
-  datetime_id: number
-  start: number | null
-  end: number | null
-}
+import { Datetime } from '@/features/api/test/types'
 
 export const groupsDropdownModule = createFilter()
 
@@ -22,12 +16,14 @@ export const $groups = createStore<DropdownItem[]>([])
 export const setSelectedGroups = createEvent<any[]>()
 export const $selectedGroups = restore(setSelectedGroups, [])
 
-export const setDatetime = createEvent<any>()
-export const $datetimes = restore(setDatetime, [])
-
-$selectedGroups.on(setDatetime, (state, params) => {
-  state[params.group_id].datetimes[params.datetime_id] = params.datetime
-})
+export const setDatetime = createEvent<Datetime[]>()
+export const $datetimes = restore(setDatetime, [
+  {
+    id: 0,
+    start: null,
+    end: null,
+  },
+])
 
 forward({
   from: loadGroups,
@@ -43,8 +39,8 @@ forward({
       datetimes: [
         {
           id: 0,
-          start: '',
-          end: '',
+          start: null,
+          end: null,
         },
       ],
     }))

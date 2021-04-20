@@ -11,19 +11,15 @@
     >
       <template #default="{closeMenu}">
         <div v-if="$itemsDropdown.length">
-          <SelectItem            
+          <SelectItemRecursive
             v-for="item in $itemsDropdown"
-            :key="item.name"
-            class="select-item"
+            :key="item.author"
+            :item="item"
+            :depth="0"
+            :selected-item-id="+$item"
             :placeholder="item.title"
-            @click="onSelectItem(item, closeMenu)"
-          >
-            <BaseCheckbox
-              :value="$selectedThemes.includes(item)" 
-              @click="onSelectItem(item, closeMenu)"
-            />
-            {{ item.title }}
-          </SelectItem>
+            :handle-click="(val) => onSelectItem(val, closeMenu)"
+          />
         </div>
         <div v-else>
           <SelectItem @click="closeMenu">Нет созданных меток</SelectItem>
@@ -69,12 +65,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import BaseCheckbox from '@/ui/checkbox/BaseCheckbox.vue'
 import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import Draggable from 'vuedraggable'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
+import SelectItemRecursive from '@/ui/select/parts/SelectItemRecursive.vue'
 import {
-  loadThemes,
   $selectedThemes,
   setSelectedThemes,
   themesDropdownModule,
@@ -84,10 +79,10 @@ import { DropdownItem } from '@/pages/common/types'
 export default Vue.extend({
   components: {
     Icon,
-    BaseCheckbox,
     BaseDropdown,
     Draggable,
     SelectItem,
+    SelectItemRecursive,
   },
   props: {
     disabled: { type: Boolean as PropType<boolean> },
@@ -104,24 +99,25 @@ export default Vue.extend({
     },
   },
   methods: {
-    loadThemes,
     ...themesDropdownModule.methods,
-    onSelectItem(item: DropdownItem, postAction: any) {
+    itemsReorder(items: DropdownItem[]) {
+      return items.map((item, index) => ({
+        ...item,
+        id: index,
+      }))
+    },
+    onSelectItem(item: DropdownItem, postAction: () => void) {
       const existedItem = this.$selectedThemes.find(
         (label: DropdownItem) => label.name === item.name
       )
       if (existedItem) {
-        const themes = this.$selectedThemes.filter(
-          (label: DropdownItem) => label.name !== item.name
-        )
+        let themes = this.$selectedThemes.filter((label: DropdownItem) => label.name !== item.name)
+        themes = this.itemsReorder(themes)
         setSelectedThemes(themes)
       } else {
-        setSelectedThemes([...this.$selectedThemes, item])
+        const themes = this.itemsReorder([...this.$selectedThemes, item])
+        setSelectedThemes(themes)
       }
-      this.$emit(
-        'setThemes',
-        this.$selectedThemes.map((theme) => theme.name)
-      )
       postAction()
     },
     onRemoveItem(item: DropdownItem) {
@@ -129,15 +125,13 @@ export default Vue.extend({
       setSelectedThemes(themes)
     },
     handlerEnd() {
-      this.$selectedThemes.map((theme, id) => (theme.id = id))
+      const themes = this.$selectedThemes.map((theme, id) => ({ ...theme, id }))
+      setSelectedThemes(themes)
     },
     clear() {
       this.resetItem()
       this.resetSearchString()
     },
-  },
-  mounted() {
-    loadThemes()
   },
 })
 </script>

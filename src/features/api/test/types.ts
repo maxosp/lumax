@@ -33,7 +33,7 @@ export type CreateTestFxParams = {
   study_year?: StudyYear
   created_by?: User
   updated_by?: User
-  subject_id?: number | null
+  subject_id: number
   study_year_id: number | null
 }
 
@@ -63,6 +63,20 @@ export type AutoItem = {
 export type AutoItemTheme = {
   id?: number
   name: string
+}
+
+export type Datetime = {
+  id?: number
+  start: number | null
+  end: number | null
+  group_id?: number
+}
+
+export type GroupItem = {
+  id?: number
+  datetimes: Datetime[]
+  name: string
+  title: string
 }
 
 export type ManualItem = {
