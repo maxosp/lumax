@@ -164,11 +164,10 @@ forward({
 sample({
   source: $finalTextFormValid,
   clock: checkFinalTextFormValid,
-  fn: (res) => {
-    if (res) {
-      save()
-    }
-  },
+  target: condition({
+    if: (res: boolean) => res,
+    then: save,
+  }),
 })
 
 sample({

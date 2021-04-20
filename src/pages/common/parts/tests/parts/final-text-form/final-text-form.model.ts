@@ -1,6 +1,7 @@
-import { errorToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, Toast } from '@/features/toasts/toasts.model'
 import { createEvent, restore, sample } from 'effector'
 import { FinalTextRelated } from '@/features/api/test/types'
+import { condition } from 'patronum'
 
 export const clearFields = createEvent<void>()
 
@@ -22,31 +23,41 @@ export const $finalTextFormValid = restore(toggleFinalTextFormValid, false)
 sample({
   source: $finalTextDropdowns,
   clock: checkFinalTextFormValid,
-  fn: (form) => {
+  fn: (form): Toast => {
     let valid = true
     let fullRange = 0
+    let message = ''
     form.forEach((range) => {
       if (range.score_min === null || range.score_max === null || !range.text) {
-        errorToastEvent('Добавьте итоговый текст')
+        message = 'Добавьте итоговый текст'
         valid = false
         return
       }
       if (range.score_min! >= range.score_max!) {
-        errorToastEvent('Диапазон для итогового текста задан неверно')
+        message = 'Диапазон для итогового текста задан неверно'
         valid = false
         return
       }
       fullRange += range.score_max! - range.score_min!
     })
     if (fullRange > 100 && valid) {
-      errorToastEvent('Диапазон для итогового текста задан неверно')
+      message = 'Диапазон для итогового текста задан неверно'
       valid = false
     }
     if (fullRange < 100 && valid) {
-      errorToastEvent('Итоговый текст указан не для всех возможных результатов')
+      message = 'Итоговый текст указан не для всех возможных результатов'
       valid = false
     }
 
     toggleFinalTextFormValid(valid)
+
+    return {
+      type: 'error',
+      message,
+    }
   },
+  target: condition({
+    if: (payload) => payload.message !== '',
+    then: addToast,
+  }),
 })
