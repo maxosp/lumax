@@ -149,7 +149,7 @@ export default Vue.extend({
   methods: {
     toggle(evt: any) {
       if (evt.target.closest('.action') || this.node.element_type === 'assignment') return
-      if (!this.node.leaves.length && this.node.element_type === 'folder') {
+      if (!this.opened && this.node.element_type === 'folder') {
         const { id } = this.node[this.node.element_type]!
         this.$emit('loadTree', {
           folder: id,

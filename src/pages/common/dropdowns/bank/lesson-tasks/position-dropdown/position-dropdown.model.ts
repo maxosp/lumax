@@ -1,7 +1,7 @@
 import { createStore, attach, createEvent, forward, restore } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { TreeDataLight } from '@/features/api/types'
+import { TreeData } from '@/features/api/types'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 
 export const foldersDropdownModule = createFilter()
@@ -21,7 +21,7 @@ forward({
   to: getFolders.prepend(() => ({})),
 })
 
-function formatData(data: TreeDataLight[]): any {
+function formatData(data: TreeData[]): any {
   return data.map((elem: any) => ({
     name: `${elem[elem.element_type].id}`,
     title: elem[elem.element_type].name,
