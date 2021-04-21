@@ -156,10 +156,11 @@ export type BaseAssignment = {
   updated_by: Partial<User>
   verified_by: Partial<User>
   text: string
+  template_text: string
   interface_language: string
   course: string
-  question_data: any
-  correct_answer: any
+  question_data: any // multiple-list-text-answer has another question_data structure
+  correct_answer: any // multiple-choice-one-answer has another correct_answer structure
   common_list_answer_choices: any
   audios: AssignmentAudioFile[]
   duplicate_count: number

@@ -97,7 +97,7 @@ export const $form = combine(
     text: containing,
     question_data: questionsAnswers.map(({ question }) => question),
     correct_answer: questionsAnswers.map(({ question, answer }) => ({ [question]: answer })),
-    common_list_text_answer: answersOptions.map(({ title }) => title),
+    common_list_answer_choices: answersOptions.map(({ title }) => title),
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       ...(isLimited ? { audio_limit_count: limit } : {}),

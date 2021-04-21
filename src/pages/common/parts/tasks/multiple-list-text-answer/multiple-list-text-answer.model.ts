@@ -2,7 +2,7 @@ import { createEvent, forward, restore, attach, createEffect, combine, sample } 
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, MultipleListTextAnswer } from '@/pages/common/parts/tasks/types'
+import { AudioFile, MultipleListTextAnswer, QuestionData } from '@/pages/common/parts/tasks/types'
 import { TestAssignment } from '@/features/api/assignment/types'
 
 export const uploadMedia = attach({
@@ -120,9 +120,9 @@ forward({
     setWording.prepend((data) => data.wording || ''),
     setContaining.prepend((data) => data.text || ''),
     setAnswerExample.prepend((data) => data.example_answer || ''),
-    setTextTemplate.prepend((data) => data.common_list_answer_choices),
+    setTextTemplate.prepend((data) => data.template_text),
     setAnswersList.prepend((data) =>
-      data.question_data.variants.map((variant: any, idx: number) => ({
+      data.question_data.variants.map((variant: QuestionData, idx: number) => ({
         id: idx + 1,
         answers: variant.options.map((value: string, index: number) => {
           let isCorrect = false

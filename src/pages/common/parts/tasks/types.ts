@@ -34,6 +34,11 @@ export type CommonListStringQuestion = {
   answer: string
 }
 
+export type QuestionData = {
+  options: string[]
+  disable_shuffle: boolean
+}
+
 export type AnswerOption = {
   id: number
 } & DropdownItem

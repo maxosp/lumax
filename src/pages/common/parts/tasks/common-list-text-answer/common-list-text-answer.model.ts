@@ -98,13 +98,26 @@ export const $form = combine(
   $answersOptions,
   $textTemplate,
   $audioFiles,
-  (wording, example_answer, containing, correctAnswers, answersOptions, text_template, audio) => ({
+  $reorderEnabled,
+  (
+    wording,
+    example_answer,
+    containing,
+    correctAnswers,
+    answersOptions,
+    text_template,
+    audio,
+    reorderEnabled
+  ) => ({
     wording,
     example_answer,
     text: containing,
-    question_data: answersOptions.map(({ title }) => title),
+    question_data: {
+      options: answersOptions.map(({ title }) => title),
+      disable_shuffle: reorderEnabled,
+    },
     correct_answer: correctAnswers,
-    common_list_answer_choices: text_template,
+    text_template,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       ...(isLimited ? { audio_limit_count: limit } : {}),
@@ -121,7 +134,7 @@ forward({
     setContaining.prepend((data) => data.text || ''),
     setAnswerExample.prepend((data) => data.example_answer || ''),
     setAnswersOptions.prepend((data) =>
-      data.question_data.map((value: string, idx: number) => ({
+      data.question_data.options.map((value: string, idx: number) => ({
         id: idx + 1,
         name: value,
         title: value,
@@ -130,9 +143,10 @@ forward({
     setCorrectAnswers.prepend((data) =>
       data.correct_answer.map((value: string, index: number) => ({
         id: index + 1,
-        title: data.question_data[+value],
+        title: data.question_data.options[+value],
       }))
     ),
-    setTextTemplate.prepend((data) => data.common_list_answer_choices),
+    setTextTemplate.prepend((data) => data.template_text),
+    toggleReorderEnabling.prepend((data) => data.question_data.disable_shuffle),
   ],
 })

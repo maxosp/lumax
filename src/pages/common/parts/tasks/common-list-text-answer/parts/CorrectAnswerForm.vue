@@ -184,18 +184,31 @@ export default Vue.extend({
       const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
       setTextTemplate(newTextTemplate)
     },
+    clearCorrectAnswers(changedOption) {
+      const correctAnswers = this.$correctAnswers.map((answer) =>
+        answer.title === changedOption.title ? { ...answer, name: '', title: '' } : answer
+      )
+      setCorrectAnswers(correctAnswers)
+    },
     handleAnswerOptionChange({ id, value }) {
+      let changedOption = this.$answersOptions.find((option) => option.id === id)
+      changedOption = this.$answersOptions.filter((option) => option.name === changedOption.name)
       const answersOptions = this.$answersOptions.map((option) =>
         option.id === id ? { ...option, name: value, title: value } : option
       )
       setAnswersOptions(answersOptions)
+      if (changedOption.length === 1) {
+        this.clearCorrectAnswers(changedOption[0])
+      }
     },
     addAnswerOption() {
       setAnswersOptions([...this.$answersOptions, { id: getRandomId(), name: '', title: '' }])
     },
     removeAnswerOption({ id }) {
+      const deletedOption = this.$answersOptions.find((option) => option.id === id)
       const answersOptions = this.$answersOptions.filter((option) => option.id !== id)
       setAnswersOptions(answersOptions)
+      this.clearCorrectAnswers(deletedOption)
     },
     addList() {
       const id = `input-${getRandomId()}`

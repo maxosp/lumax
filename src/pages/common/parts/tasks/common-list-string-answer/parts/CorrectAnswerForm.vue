@@ -121,18 +121,31 @@ export default Vue.extend({
     $questionsAnswers,
   },
   methods: {
+    clearQuestionAnswers(changedOption) {
+      const questionAnswers = this.$questionsAnswers.map((answer) =>
+        answer.answer === changedOption.title ? { ...answer, answer: '' } : answer
+      )
+      setQuestionsAnswers(questionAnswers)
+    },
     handleAnswerOptionChange({ id, value }) {
+      let changedOption = this.$answersOptions.find((option) => option.id === id)
+      changedOption = this.$answersOptions.filter((option) => option.title === changedOption.title)
       const answersOptions = this.$answersOptions.map((option) =>
         option.id === id ? { ...option, name: value, title: value } : option
       )
       setAnswersOptions(answersOptions)
+      if (changedOption.length === 1) {
+        this.clearQuestionAnswers(changedOption[0])
+      }
     },
     addAnswerOption() {
       setAnswersOptions([...this.$answersOptions, { id: getRandomId(), name: '', title: '' }])
     },
     removeAnswerOption({ id }) {
+      const deletedOption = this.$answersOptions.find((option) => option.id === id)
       const answersOptions = this.$answersOptions.filter((option) => option.id !== id)
       setAnswersOptions(answersOptions)
+      this.clearQuestionAnswers(deletedOption)
     },
     handleQuestionChange({ id, question }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
