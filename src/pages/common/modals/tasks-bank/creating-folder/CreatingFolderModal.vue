@@ -15,7 +15,7 @@
         />
       </div>
     </div>
-    <PositionDropdown :class="{'--error': positionError}" />
+    <PositionDropdown />
     <FormInput
       class="form-input"
       :class="{'--error': titleError}"
@@ -57,7 +57,6 @@ import {
   $folderTitle,
   folderTitleChanged,
   checkIfFolderCanBeSend,
-  $positionErrorModule,
 } from '@/pages/common/modals/tasks-bank/creating-folder/creating-folder-modal.model'
 import PositionDropdown from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/PositionDropdown.vue'
 
@@ -72,7 +71,6 @@ export default Vue.extend({
   },
   effector: {
     $modalVisibility,
-    positionError: $positionErrorModule.store.$error,
     titleError: $titleErrorModule.store.$error,
     $folderTitle,
   },
