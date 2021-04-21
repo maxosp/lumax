@@ -71,7 +71,7 @@ export default Vue.extend({
       setCorrectAnswerInputs([...this.$correctAnswerInputs, { id: getRandomId(), value: '' }])
     },
     removeInput({ id }) {
-      if ($correctAnswerInputs.length > 1) {
+      if (this.$correctAnswerInputs.length > 1) {
         const inputs = this.$correctAnswerInputs.filter((input) => input.id !== id)
         setCorrectAnswerInputs(inputs)
       }
