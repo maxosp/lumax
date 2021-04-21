@@ -235,7 +235,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
@@ -253,7 +253,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedThemes(ids: number[]) {
       await deleteThemes(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     async sendRequestDeleteTheme(comment: string, ids: number[]) {

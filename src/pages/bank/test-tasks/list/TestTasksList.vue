@@ -260,12 +260,12 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshAfterSendingForModeration: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $pageParams: {
@@ -340,7 +340,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onRemoveTask(ids: number[]) {
       this.showDeleteModalType = 'task'
@@ -358,7 +358,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedTask(ids: number[]) {
       await deleteAssignments(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {
@@ -383,7 +383,7 @@ export default (Vue as VueConstructor<
     },
     async publishAssignments(ids: number | number[]) {
       await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     sendToModerationAssignments(ids: number | number[]) {
       const data = typeof ids === 'number' ? [ids] : ids

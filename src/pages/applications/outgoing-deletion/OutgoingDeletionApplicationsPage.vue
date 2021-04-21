@@ -188,7 +188,7 @@ export default (Vue as VueConstructor<
     canRefreshAfterCancel: {
       handler(newVal) {
         if (newVal) {
-          this.$refs.vuetable.refresh()
+          this.$refs.vuetable.reload()
           this.resetHeaderActions()
         }
       },
@@ -235,7 +235,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       reset() // search string and field
       this.resetFilters()
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total

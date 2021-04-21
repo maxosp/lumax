@@ -199,30 +199,30 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshAfterSendingForModeration: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshAfterDuplicate: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.$refs.vuetable.selectedTo = []
         this.clearCheckboxes()
       },
     },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.clearCheckboxes()
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.clearCheckboxes()
       },
     },
@@ -260,7 +260,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedTask(ids: number[]) {
       await deleteTests(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.clearCheckboxes()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {
@@ -279,7 +279,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total

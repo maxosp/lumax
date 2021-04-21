@@ -192,7 +192,7 @@ export default (Vue as VueConstructor<
     $canRefreshTable: {
       handler(newVal) {
         if (newVal === true) {
-          this.$refs.vuetable.refresh()
+          this.$refs.vuetable.reload()
           canRefreshTableChanged(false)
         }
       },
@@ -272,7 +272,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       reset() // search string and field
       this.resetFilters()
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total

@@ -234,29 +234,29 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshAfterSendingForModeration: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshAfterDuplicate: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.removeSelection()
       },
     },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.removeSelection()
       },
     },
     $canRefreshTableAfterDeletion: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
         this.removeSelection()
       },
     },
@@ -321,7 +321,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedTask(ids: number[]) {
       await deleteAssignments(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {
@@ -350,7 +350,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total

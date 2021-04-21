@@ -208,12 +208,12 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshTable: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $canRefreshTableAfterCreation: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $pageParams: {
@@ -253,7 +253,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       reset() // search string and field
       this.resetFilters()
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
@@ -292,7 +292,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedTags(ids: number[]) {
       await deleteTags(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     removeSelection() {

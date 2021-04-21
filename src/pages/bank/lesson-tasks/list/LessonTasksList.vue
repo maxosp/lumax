@@ -230,7 +230,7 @@ export default (Vue as VueConstructor<
   watch: {
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
-        if (newVal) this.$refs.vuetable.refresh()
+        if (newVal) this.$refs.vuetable.reload()
       },
     },
     $pageParams: {
@@ -301,7 +301,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     editTask(id: number) {
       navigatePush({ name: 'lesson-tasks-edit', params: { id: `${id}` } })
@@ -313,7 +313,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedTask(ids: number[]) {
       await deleteAssignments(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     async sendRequestDeleteTask(comment: string, ids: number[]) {

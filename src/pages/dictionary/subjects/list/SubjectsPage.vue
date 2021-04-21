@@ -165,7 +165,7 @@ export default (Vue as VueConstructor<
   },
   watch: {
     $triggerToRefreshTable() {
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
   },
   methods: {
@@ -187,7 +187,7 @@ export default (Vue as VueConstructor<
     onFilterReset() {
       this.resetFilters()
       reset() // search string and field
-      Vue.nextTick(() => this.$refs.vuetable.refresh())
+      Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     // TODO like removeSelected
     updateTypeSubject(ids: number | number[], isMondatory: boolean) {
@@ -204,7 +204,7 @@ export default (Vue as VueConstructor<
     },
     async removeSelectedSubject(ids: number[]) {
       await deleteSubjects(ids)
-      await Vue.nextTick(() => this.$refs.vuetable.refresh())
+      await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
     async sendRequestDeleteSubject(comment: string, ids: number[]) {
