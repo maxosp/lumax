@@ -85,22 +85,25 @@ forward({
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getThemesTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getThemesTreeInfo.doneData.map((res) => res.body.total_amount),
+  from: getThemesTreeInfo.doneData.map(({ body }) => body.total_amount),
   to: setThemesTreeTotal,
 })
 
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteThemesTree.prepend((res) => res.body.data),
+  to: [
+    rewriteThemesTree.prepend(({ body }) => body.data),
+    setThemesTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({
   from: getThemesTree.doneData,
-  to: [setThemesTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
+  to: [setThemesTree.prepend(({ body }) => body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 const $canUpdateTree = every({
@@ -117,7 +120,7 @@ sample({
 
 forward({
   from: getThemesLightTree.doneData,
-  to: rewriteThemesTree.prepend((res) => res.body.data),
+  to: rewriteThemesTree.prepend(({ body }) => body.data),
 })
 
 forward({

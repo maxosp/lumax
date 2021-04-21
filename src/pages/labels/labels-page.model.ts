@@ -64,17 +64,17 @@ forward({
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getLabelsTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getLabelsInfoFx.doneData.map((res) => res.body.total_amount),
+  from: getLabelsInfoFx.doneData.map(({ body }) => body.total_amount),
   to: setLabelsTreeTotal,
 })
 
 forward({
   from: getLabelsTreeLight.doneData,
-  to: rewriteLabelsTree.prepend((res) => res.body.data),
+  to: rewriteLabelsTree.prepend(({ body }) => body.data),
 })
 
 const $canUpdateTree = every({
@@ -91,12 +91,15 @@ sample({
 
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteLabelsTree.prepend((res) => res.body.data),
+  to: [
+    rewriteLabelsTree.prepend(({ body }) => body.data),
+    setLabelsTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({
   from: getLabelsTree.doneData,
-  to: [setLabelsTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
+  to: [setLabelsTree.prepend(({ body }) => body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({

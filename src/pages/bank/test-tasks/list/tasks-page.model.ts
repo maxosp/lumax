@@ -96,17 +96,17 @@ forward({
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getAssignmentTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getAssignmentTreeInfo.doneData.map((res) => res.body.total_amount),
+  from: getAssignmentTreeInfo.doneData.map(({ body }) => body.total_amount),
   to: setTasksTreeTotal,
 })
 
 forward({
   from: getTasksTreeLight.doneData,
-  to: rewriteTasksTree.prepend((res) => res.body.data),
+  to: rewriteTasksTree.prepend(({ body }) => body.data),
 })
 
 const $canUpdateTree = every({
@@ -123,12 +123,15 @@ sample({
 
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteTasksTree.prepend((res) => res.body.data),
+  to: [
+    rewriteTasksTree.prepend(({ body }) => body.data),
+    setTasksTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({
   from: getTasksTree.doneData,
-  to: [setTasksTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
+  to: [setTasksTree.prepend(({ body }) => body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({
@@ -156,6 +159,6 @@ forward({
 })
 
 forward({
-  from: sendAssignmentsPublish.failData.map((res) => res.body),
+  from: sendAssignmentsPublish.failData.map(({ body }) => body),
   to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
 })

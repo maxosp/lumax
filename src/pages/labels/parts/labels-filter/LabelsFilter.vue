@@ -136,5 +136,8 @@ export default Vue.extend({
   @mixin flex-row-central;
   justify-content: flex-start;
   margin-top: 20px;
+  .btn:not(:last-child) {
+    margin-right: 20px;
+  }
 }
 </style>

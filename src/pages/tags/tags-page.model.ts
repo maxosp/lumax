@@ -63,39 +63,42 @@ const showDeleteAssignmentsToast = createEvent<number[]>()
 
 forward({
   from: loadTree,
-  to: [getTagsTree, getTagsInfoFx.prepend(() => ({}))],
+  to: [getTagsTree, getTagsTreeInfo.prepend(() => ({}))],
 })
 
 forward({
   from: loadTreeLight,
-  to: [getTagsTreeLight, getTagsInfoFx],
+  to: [getTagsTreeLight, getTagsTreeInfo],
 })
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getTagsTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getTagsInfoFx.doneData.map((res) => res.body.total_amount),
+  from: getTagsInfoFx.doneData.map(({ body }) => body.total_amount),
   to: setTagsTreeTotal,
 })
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteTagsTree.prepend((res) => res.body.data),
+  to: [
+    rewriteTagsTree.prepend(({ body }) => body.data),
+    setTagsTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({
   from: getTagsTreeLight.doneData,
   to: [
-    rewriteTagsTree.prepend((res) => res.body.data),
+    rewriteTagsTree.prepend(({ body }) => body.data),
     canrefreshTableAfterDeletionChanged.prepend(() => false),
   ],
 })
 forward({
   from: getTagsTree.doneData,
   to: [
-    setTagsTree.prepend((res) => res.body.data),
+    setTagsTree.prepend(({ body }) => body.data),
     canrefreshTableAfterDeletionChanged.prepend(() => false),
     resetDataToUpdateTree.prepend(() => ({})),
   ],

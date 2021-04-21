@@ -69,22 +69,25 @@ forward({
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getResourcesTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getResourcesTreeInfo.doneData.map((res) => res.body.total_amount),
+  from: getResourcesTreeInfo.doneData.map(({ body }) => body.total_amount),
   to: setResourcesTreeTotal,
 })
 
 forward({
   from: getResourcesTree.doneData,
-  to: [setResourcesTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
+  to: [
+    setResourcesTree.prepend(({ body }) => body.data),
+    resetDataToUpdateTree.prepend(() => ({})),
+  ],
 })
 
 forward({
   from: getResourcesTreeLight.doneData,
-  to: rewriteResourcesTree.prepend((res) => res.body.data),
+  to: rewriteResourcesTree.prepend(({ body }) => body.data),
 })
 
 const $canUpdateTree = every({
@@ -101,7 +104,10 @@ sample({
 
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteResourcesTree.prepend((res) => res.body.data),
+  to: [
+    rewriteResourcesTree.prepend(({ body }) => body.data),
+    setResourcesTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({

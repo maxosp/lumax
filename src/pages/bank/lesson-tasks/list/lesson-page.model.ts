@@ -83,17 +83,17 @@ forward({
 
 forward({
   from: loadFilteredTree,
-  to: [getFilteredTree, getLessonTreeInfo.prepend(() => ({}))],
+  to: getFilteredTree,
 })
 
 forward({
-  from: getLessonInfoFx.doneData.map((res) => res.body.total_amount),
+  from: getLessonInfoFx.doneData.map(({ body }) => body.total_amount),
   to: setLessonsTreeTotal,
 })
 
 forward({
   from: getLessonsTreeLight.doneData,
-  to: rewriteTree.prepend((res) => res.body.data),
+  to: rewriteTree.prepend(({ body }) => body.data),
 })
 
 const $canUpdateTree = every({
@@ -110,12 +110,15 @@ sample({
 
 forward({
   from: getFilteredTree.doneData,
-  to: rewriteTree.prepend((res) => res.body.data),
+  to: [
+    rewriteTree.prepend(({ body }) => body.data),
+    setLessonsTreeTotal.prepend(({ body }) => body.total),
+  ],
 })
 
 forward({
   from: getLessonsTree.doneData,
-  to: [setLessonsTree.prepend((res) => res.body.data), resetDataToUpdateTree.prepend(() => ({}))],
+  to: [setLessonsTree.prepend(({ body }) => body.data), resetDataToUpdateTree.prepend(() => ({}))],
 })
 
 forward({
