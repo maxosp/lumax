@@ -1,4 +1,4 @@
-import { TreeData } from '@/features/api/types'
+import { TreeData, GetThemeTreeFilterListResponse } from '@/features/api/types'
 import { Dictionary } from 'vue-router/types/router'
 import { PageParams } from '@/pages/common/types'
 
@@ -113,6 +113,15 @@ export const cropString = (str: string, len: number) => {
     return `${removeHtmlTags(str).slice(0, len)}...`
   }
   return str
+}
+
+export function formatData(data: GetThemeTreeFilterListResponse[]): any {
+  return data.map((elem: any) => ({
+    name: `${elem.theme.id}`,
+    title: elem.theme.name,
+    id: elem.theme.id,
+    leaves: elem.leaves.length ? formatData(elem.leaves) : elem.leaves,
+  }))
 }
 
 export const computeSortParam = (sortParam: string) => {

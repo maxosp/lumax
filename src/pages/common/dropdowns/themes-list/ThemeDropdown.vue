@@ -3,9 +3,10 @@
     label="Тема"
     placeholder="Выберите тему"
     :methods="themesDropdownMethods"
-    :data="$themes"
+    :data="$positions"
     :store="{ $item, $itemsDropdown, $searchString }"
     :disabled="isDisabled"
+    is-recursive
     @item-changed="onSelectItem"
   />
 </template>
@@ -15,7 +16,7 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $themes,
+  $positions,
   themesDropdownModule,
   setSelectedTheme,
   loadThemes,
@@ -31,7 +32,7 @@ export default Vue.extend({
     isPreload: { type: Boolean, default: false },
   },
   effector: {
-    $themes,
+    $positions,
     ...themesDropdownModule.store,
   },
   data() {
