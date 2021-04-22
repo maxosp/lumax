@@ -113,6 +113,9 @@ export default Vue.extend({
     loadLabels()
     loadCurrentLabelsIDs(+this.$route.params.id)
   },
+  beforeDestroy() {
+    setSelectedLabels([])
+  },
 })
 </script>
 
