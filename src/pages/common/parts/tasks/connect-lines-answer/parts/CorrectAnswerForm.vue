@@ -123,6 +123,7 @@ export default Vue.extend({
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  width: 50%;
 
   & + .match {
     margin-left: 20px;

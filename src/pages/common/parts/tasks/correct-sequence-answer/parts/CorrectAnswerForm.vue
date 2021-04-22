@@ -34,6 +34,7 @@
         <Wysiwyg
           :key="question.id"
           :value="question.question"
+          class="wysiwyg"
           @input="value => handleQuestionChange({ id: question.id, question: value })"
         />
         <div class="handle">
@@ -149,6 +150,10 @@ export default Vue.extend({
   align-items: center;
   flex-grow: 1;
   margin-bottom: 10px;
+}
+
+.wysiwyg {
+  width: 100%;
 }
 
 .handle,
