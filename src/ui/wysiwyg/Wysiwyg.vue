@@ -5,7 +5,6 @@
       :value="value"
       :config="editorConfig"
       :editor-url="editorUrl"
-      :placeholder="placeholder"
       class="editor"
       @ready="onEditorReady"
       @input="$emit('input', $event)"
@@ -38,7 +37,7 @@ export default Vue.extend({
   data() {
     return {
       editorUrl: url,
-      editorConfig: { ...wysiwygConfig, editorplaceholder: this.placeholder },
+      editorConfig: { ...wysiwygConfig, editorplaceholder: this.value ? '' : this.placeholder },
       editorName: '',
     }
   },
