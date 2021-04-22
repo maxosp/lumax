@@ -30,7 +30,7 @@ export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
 export const setQuestionsAnswers = createEvent<MultipleShortClosedQuestion[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', answer: [{ id: getRandomId(), value: '', mark: '' }] },
+  { id: getRandomId(), question: '', answers: [{ id: getRandomId(), value: '', mark: '' }] },
 ]).reset(clearFields)
 
 export const toggleMarksEnabling = createEvent<boolean>()
@@ -80,7 +80,7 @@ export const $isFilled = combine(
   (wording, questionsAnswers) =>
     wording &&
     questionsAnswers.length &&
-    questionsAnswers.every((qa) => qa.question && qa.answer.every((answer) => answer.value))
+    questionsAnswers.every((qa) => qa.question && qa.answers.every((answer) => answer.value))
 )
 
 export const $form = combine(
@@ -95,9 +95,9 @@ export const $form = combine(
     example_answer,
     text: containing,
     question_data: null,
-    correct_answer: questionsAnswers.map(({ question, answer }) => ({
+    correct_answer: questionsAnswers.map(({ question, answers }) => ({
       question,
-      answers: answer.map(({ value, mark }) => ({
+      answers: answers.map(({ value, mark }) => ({
         answer: value,
         ...(marks ? { score: mark } : {}),
       })),
@@ -124,7 +124,7 @@ forward({
       data.correct_answer.map((questionAnswer: MultipleShortClosedQuestion, idx: number) => ({
         id: idx + 1,
         question: questionAnswer.question,
-        answers: questionAnswer.answer.map((value: MultipleShortClosedAnswer, index: number) => ({
+        answers: questionAnswer.answers.map((value: MultipleShortClosedAnswer, index: number) => ({
           id: index + 1,
           value,
         })),

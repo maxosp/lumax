@@ -18,7 +18,7 @@ export type MultipleShortClosedAnswer = {
 export type MultipleShortClosedQuestion = {
   id: number
   question: string
-  answer: MultipleShortClosedAnswer[]
+  answers: MultipleShortClosedAnswer[]
 }
 
 export type MultipleChoiceOneOrManyQuestion = {
