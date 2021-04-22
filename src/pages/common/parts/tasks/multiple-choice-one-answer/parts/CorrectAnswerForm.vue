@@ -1,13 +1,6 @@
 <template>
   <div class="question-answers-form">
     <div class="left-border" />
-    <BaseSwitch
-      class="switch toggler"
-      :checked="$marksEnabled"
-      @change="toggleMarksEnabling"
-    >
-      <p>Указать количество баллов за каждый верный ответ</p>
-    </BaseSwitch>
     <div
       v-for="(qa, idx) in $questionsAnswers"
       :key="qa.id"
@@ -29,25 +22,6 @@
           @change="handleIsCorrectChange({ questionId: qa.id })"
         />
       </div>
-      <FormInput
-        v-if="$marksEnabled"
-        :label="idx === 0 ? 'Баллы' : ''"
-        :value="qa.mark"
-        placeholder="Баллов"
-        class="answer-mark"
-        @input="(mark) => handleMarkChange({ questionId: qa.id, mark })"
-      />
-      <div
-        v-if="$questionsAnswers.length > 1"
-        :class="{ transparent: true, 'icon-btn': true, 'first-icon': idx === 0 }"
-        @click="removeQuestion({ questionId: qa.id })"
-      >
-        <Icon
-          class="icon-close"
-          type="close"
-          size="8"
-        />
-      </div>
     </div>
     <div class="add-question">
       <BaseButton @click="addQuestion">Добавить вариант ответа</BaseButton>
@@ -57,14 +31,10 @@
 
 <script>
 import Vue from 'vue'
-import Icon from '@/ui/icon/Icon.vue'
 import FormInput from '@/ui/input/FormInput.vue'
-import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import RadioButton from '@/ui/radio/RadioButton.vue'
 import {
-  $marksEnabled,
-  toggleMarksEnabling,
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/common/parts/tasks/multiple-choice-one-answer/multiple-choice-one-answer.model'
@@ -73,18 +43,14 @@ import { getRandomId } from '@/pages/common/parts/tasks/utils'
 export default Vue.extend({
   name: 'CorrectAnswerForm',
   components: {
-    Icon,
     FormInput,
-    BaseSwitch,
     BaseButton,
     RadioButton,
   },
   effector: {
     $questionsAnswers,
-    $marksEnabled,
   },
   methods: {
-    toggleMarksEnabling,
     handleQuestionChange({ id, question }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
         qa.id === id ? { ...qa, question } : qa
@@ -103,16 +69,10 @@ export default Vue.extend({
       })
       setQuestionsAnswers(questionsAnswers)
     },
-    handleMarkChange({ questionId, mark }) {
-      const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === questionId ? { ...qa, mark } : qa
-      )
-      setQuestionsAnswers(questionsAnswers)
-    },
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: false },
+        { id: getRandomId(), question: '', answer: '', isCorrect: false },
       ])
     },
     removeQuestion({ questionId }) {
@@ -170,47 +130,12 @@ export default Vue.extend({
   margin-top: 2px;
 }
 
-.toggler {
-  margin-top: 0px;
-  margin-bottom: 20px;
-}
-
 .question-input {
   flex-grow: 1;
 }
 
-.answer-mark {
-  max-width: 150px;
-  margin-left: 10px;
-}
-
-.icon-btn {
-  margin-top: 5px;
-  max-width: 150px;
-  margin-left: 10px;
-  cursor: pointer;
-  width: 46px;
-  height: 46px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 7px;
-  background-color: var(--base-text-primary);
-}
-
-.first-icon {
-  margin-top: 19px;
-}
-
 .transparent {
   background-color: transparent;
-}
-
-.icon-plus {
-  fill: #fff;
-}
-.icon-close {
-  fill: var(--c-grey-3);
 }
 
 .add-question {
