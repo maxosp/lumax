@@ -20,10 +20,13 @@
     <TableHeader
       v-if=" !$isLoading"
       :total="$treeView ? $tasksTreeTotal : total"
-      :selected-rows="selectedRows"
+      :selected-rows="selectedRows"      
+      @onCheck="sendToModerationAssignments"
+      @onDuplicate="duplicateTask"
       @onEdit="handleEditTask"
-      @showPreview="showPreview"
-      @onRemove="onRemoveTask"
+      @onPublish="publishAssignments"
+      @onPreview="showPreview"
+      @onRemove="onRemoveTask"      
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
@@ -154,6 +157,8 @@ import {
   requestDeleteAssignments,
   sendAssignmentsPublish,
   testTaskPageParams,
+  duplicateAssignment,
+  $canRefreshAfterDuplicate,
   $isLoading,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
@@ -234,6 +239,7 @@ export default (Vue as VueConstructor<
     $session,
     $isLoading,
     $filterParams: testTasksFilters.store.$filterParams,
+    $canRefreshAfterDuplicate,
     $canRefreshAfterMultiChanges,
     $canRefreshAfterSendingForModeration,
     $pageParams: testTaskPageParams.store.$pageParams,
@@ -264,6 +270,12 @@ export default (Vue as VueConstructor<
     },
   },
   watch: {
+    $canRefreshAfterDuplicate: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.reload()
+        this.removeSelection()
+      },
+    },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
@@ -281,6 +293,11 @@ export default (Vue as VueConstructor<
         }
       },
     },
+    $treeView: {
+      handler(newVal) {
+        if (newVal) this.removeSelection()
+      },
+    },
   },
   methods: {
     changeFilter: testTasksFilters.methods.changeFilter,
@@ -291,6 +308,9 @@ export default (Vue as VueConstructor<
     queryToParams: testTaskPageParams.methods.queryToParams,
     loadTree,
     toggleVisibility,
+    duplicateTask(id: number) {
+      duplicateAssignment({ assignments: [id] })
+    },
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems
@@ -334,6 +354,7 @@ export default (Vue as VueConstructor<
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
       this.$refs.pagination.setPaginationData(paginationData)
+      this.removeSelection()
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)

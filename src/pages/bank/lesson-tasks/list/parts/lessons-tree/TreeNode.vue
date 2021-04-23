@@ -50,11 +50,9 @@
       />
       <Actions
         v-if="showActions"
-        :id="node.assignment && node.assignment.id || node.theme.id"
-        light
-        :is-theme="node.element_type === 'theme'"
+        :id="node.assignment && node.assignment.id || node.ordering_number"
+        is-folder
         :selected="[]"
-        :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         class="action"
         @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
@@ -143,7 +141,7 @@ export default Vue.extend({
     showActions() {
       // @ts-ignore
       const { element_type } = this.$props.node
-      return element_type === 'assignment' || element_type === 'theme'
+      return element_type === 'assignment' || element_type === 'folder'
     },
   },
   methods: {

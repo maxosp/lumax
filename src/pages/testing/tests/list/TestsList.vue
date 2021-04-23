@@ -290,6 +290,7 @@ export default (Vue as VueConstructor<
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
       this.$refs.pagination.setPaginationData(paginationData)
+      this.clearCheckboxes()
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)

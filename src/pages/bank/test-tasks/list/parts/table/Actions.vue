@@ -62,6 +62,7 @@ export default Vue.extend({
     selected: { type: Array as PropType<number[]>, required: true },
     light: { type: Boolean, default: false },
     isTheme: { type: Boolean },
+    isTableHeader: { type: Boolean },
     subject: { type: [Number, null] as PropType<number | null> },
     studyYear: { type: [Number, null] as PropType<number | null> },
   },
@@ -84,6 +85,11 @@ export default Vue.extend({
           { name: 'edit-task', title: 'Редактировать' },
           { name: 'preview', title: 'Предпросмотр' },
           { name: 'delete-task', title: 'Удалить' },
+        ]
+      if (this.isTableHeader)
+        return [
+          { name: 'duplicate', title: 'Дублировать' },
+          { name: 'double_n_task', title: 'Дублировать n раз' },
         ]
       return this.$props.selected.length ? contextMethodsManyTasks : contextMethodsOneTask
     },
@@ -112,6 +118,12 @@ export default Vue.extend({
       switch (item.name) {
         case 'edit':
           navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } })
+          break
+        case 'duplicate':
+          this.$emit('duplicate', ids[0])
+          break
+        case 'duplicate-n-times':
+          // TO DO add copy method
           break
         case 'delete-theme':
           this.$emit('onRemoveTheme', ids)

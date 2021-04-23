@@ -60,6 +60,7 @@ export default Vue.extend({
   props: {
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
+    isFolder: { type: Boolean },
   },
   data: () => ({
     isOpen: false,
@@ -68,6 +69,14 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
+      if (this.isFolder) {
+        return [
+          { name: 'create-folder', title: 'Создать папку' },
+          { name: 'create-task', title: 'Создать задание' },
+          { name: 'edit-theme', title: 'Редактировать' },
+          { name: 'delete-theme', title: 'Удалить' },
+        ]
+      }
       return this.$props.selected.length > 1 ? contextMethodsManyLessons : contextMethodsOneLesson
     },
   },

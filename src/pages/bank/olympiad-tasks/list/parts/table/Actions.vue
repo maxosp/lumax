@@ -87,7 +87,6 @@ export default Vue.extend({
         { name: 'edit', title: 'Редактировать' },
         { name: 'duplicate', title: 'Дублировать задание' },
         { name: 'duplicate-n-times', title: 'Дублировать задание n раз' },
-        { name: 'send-for-check', title: 'Отправить на проверку' },
         { name: 'preview', title: 'Предпросмотр' },
         { name: 'delete', title: 'Удалить задание' },
       ]
@@ -123,9 +122,6 @@ export default Vue.extend({
           break
         case 'duplicate-n-times':
           // TO DO add copy method
-          break
-        case 'send-for-check':
-          this.$emit('sendForCheck', ids[0])
           break
         case 'delete-all':
           this.$emit('onRemove', ids)

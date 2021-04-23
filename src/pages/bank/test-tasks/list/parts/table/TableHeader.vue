@@ -18,9 +18,23 @@
       <span
         v-if="selectedRows.length"
         class="--red"
-        @click="handleRemove"
+        @click="$emit('onRemove', selectedRows)"
       >
         Удалить
+      </span>
+      <span
+        v-if="selectedRows.length"
+        class="--basic"
+        @click="$emit('onCheck', selectedRows)"
+      >
+        На проверку
+      </span>
+      <span
+        v-if="selectedRows.length"
+        class="--basic"
+        @click="$emit('onPublish', selectedRows)"
+      >
+        Опубликовать
       </span>
       <span
         v-if="selectedRows.length"
@@ -29,6 +43,14 @@
       >
         Предпросмотр
       </span>
+      <Actions
+        v-if="selectedRows && selectedRows.length === 1"
+        :id="selectedRows[0]"
+        :selected="selectedRows"
+        :is-table-header="true"
+        class="actions"
+        @duplicate="$emit('onDuplicate', selectedRows[0])"        
+      />
     </div>
     <div class="right">
       <BaseSwitch
@@ -49,6 +71,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import { testTaskPageParams } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import Divider from '@/ui/divider/Divider.vue'
@@ -58,6 +81,7 @@ import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-ba
 export default Vue.extend({
   name: 'TableHeader',
   components: {
+    Actions,
     BaseSwitch,
     Divider,
     Icon,
@@ -77,9 +101,6 @@ export default Vue.extend({
   methods: {
     toggleTreeView: testTaskPageParams.methods.toggleTreeView,
     modalTasksTypesVisibilityChanged,
-    handleRemove() {
-      this.$emit('onRemove', this.selectedRows)
-    },
   },
 })
 </script>
@@ -87,7 +108,7 @@ export default Vue.extend({
 <style scoped>
 .header {
   width: 100%;
-  height: 44px;
+  height: 53px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -120,8 +141,8 @@ export default Vue.extend({
   span.--basic {
     margin-right: 25px;
   }
-  span.--basic:last-of-type {
-    margin-right: 0;
+  .actions {
+    margin-top: 3px;
   }
   span.--red {
     color: var(--c-red-1);

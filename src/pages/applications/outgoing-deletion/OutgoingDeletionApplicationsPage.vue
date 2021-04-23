@@ -246,6 +246,7 @@ export default (Vue as VueConstructor<
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
       this.$refs.pagination.setPaginationData(paginationData)
+      this.resetHeaderActions()
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)

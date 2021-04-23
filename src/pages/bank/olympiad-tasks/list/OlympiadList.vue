@@ -73,7 +73,6 @@
             @onRemove="onRemoveTask"
             @onEdit="editTask"
             @showPreview="showPreview"
-            @sendForCheck="sendForCheck"
             @duplicate="duplicateTask"
           />
         </template>
@@ -103,7 +102,6 @@
       @onRemove="onRemoveTask"
       @onEdit="editTask"
       @showPreview="showPreview"
-      @sendForCheck="sendForCheck"
       @duplicate="duplicateTask"
     />
     <TasksTypesModal />
@@ -152,10 +150,7 @@ import {
   $visibility,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import {
-  loadModalToSendForCheck,
-  $canRefreshAfterSendingForModeration,
-} from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
+import { $canRefreshAfterSendingForModeration } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
@@ -298,9 +293,6 @@ export default (Vue as VueConstructor<
     getCorrectDescriptionType(type: string) {
       return mapTaskTypeTo[type].description
     },
-    sendForCheck(id: number) {
-      loadModalToSendForCheck([id])
-    },
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems
@@ -361,6 +353,7 @@ export default (Vue as VueConstructor<
     onPaginationData(paginationData: any) {
       this.total = paginationData.total
       this.$refs.pagination.setPaginationData(paginationData)
+      this.removeSelection()
     },
     onChangePage(page: any) {
       this.$refs.vuetable.changePage(page)

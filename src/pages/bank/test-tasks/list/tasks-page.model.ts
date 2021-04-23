@@ -17,6 +17,7 @@ import { getTestAssignmentTreeLightFx } from '@/features/api/assignment/test-ass
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import {
+  DuplicateAssignmentType,
   GetAssignmentTreeQueryParams,
   RequestDeleteAssignmentsParams,
   UpdateAssignmentsBulkParams,
@@ -36,6 +37,10 @@ import {
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
 
+const getTasksList = attach({
+  effect: getTestAssignmentListFx,
+})
+
 const getTasksTree = attach({
   effect: getTestAssignmentTreeFx,
 })
@@ -48,6 +53,13 @@ const getTasksTreeLight = attach({
 
 const getAssignmentTreeInfo = attach({
   effect: getAssignmentInfoFx,
+})
+
+export const loadList = createEvent<GetAssignmentTreeQueryParams>()
+
+forward({
+  from: loadList,
+  to: getTasksList,
 })
 
 export const deleteAssignments = createEffect({
@@ -70,7 +82,15 @@ export const requestDeleteAssignments = attach({
   },
 })
 
+export const duplicateAssignment = attach({
+  effect: updateTestAssignmentBulkFx,
+  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
+})
+
 export const testTaskPageParams = createPageParamsModel()
+
+export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
+export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)
 
 export const sendAssignmentsPublish = attach({
   effect: updateTestAssignmentBulkFx,
@@ -158,6 +178,20 @@ forward({
     loadTreeLight.prepend(() => ({})),
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     showDeleteAssignmentsToast,
+  ],
+})
+
+forward({
+  from: duplicateAssignment,
+  to: canRefreshAfterDuplicateChanged.prepend(() => false),
+})
+
+forward({
+  from: duplicateAssignment.doneData,
+  to: [
+    successToastEvent('Задание было успешно дублировано!'),
+    loadList.prepend(() => ({})),
+    canRefreshAfterDuplicateChanged.prepend(() => true),
   ],
 })
 
