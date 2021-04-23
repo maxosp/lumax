@@ -90,7 +90,7 @@ export const $form = combine(
     question_data: {
       variants: questionsAnswers.map(({ question }) => question),
     },
-    correct_answer: questionsAnswers.find((qa) => qa.isCorrect)?.id,
+    correct_answer: questionsAnswers.findIndex((qa) => qa.isCorrect),
     common_list_text_answer: null,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
