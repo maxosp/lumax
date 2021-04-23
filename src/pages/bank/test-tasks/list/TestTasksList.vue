@@ -16,14 +16,16 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if=" !$isLoading"
       :total="$treeView ? $tasksTreeTotal : total"
       :selected-rows="selectedRows"
       @onEdit="handleEditTask"
       @showPreview="showPreview"
       @onRemove="onRemoveTask"
     />
-    <div :class="{ 'table-container': true, invisible: $treeView }">
+    <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -85,7 +87,7 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView }">
+    <div :class="{ invisible: !$treeView || $isLoading }">
       <TasksTree
         @onRightClick="handleRightClick"
         @onRemoveTask="onRemoveTask"
@@ -152,6 +154,7 @@ import {
   requestDeleteAssignments,
   sendAssignmentsPublish,
   testTaskPageParams,
+  $isLoading,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
   toggleVisibility,
@@ -188,6 +191,7 @@ import {
   isQueryParamsEquelToPage,
   removeHtmlTags,
 } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -221,12 +225,14 @@ export default (Vue as VueConstructor<
     ConfirmDeleteModal,
     RequestDeleteModal,
     ModeratorSelectModal,
+    LoaderBig,
   },
   effector: {
     $token,
     $visibility,
     $tasksTreeTotal,
     $session,
+    $isLoading,
     $filterParams: testTasksFilters.store.$filterParams,
     $canRefreshAfterMultiChanges,
     $canRefreshAfterSendingForModeration,

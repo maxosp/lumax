@@ -1,5 +1,12 @@
 <template>
-  <div class="tree-wrapper">
+  <NoDataContent
+    v-if="$resourcesTree && !$resourcesTree.length"
+    @resetFilters="$emmit('resetFilters')"
+  />
+  <div
+    v-else
+    class="tree-wrapper"
+  >
     <TreeHeader :total="correctTotal" />
     <div class="resources-tree">
       <TreeNode
@@ -25,6 +32,7 @@ import {
   $resourcesTreeTotal,
 } from '@/pages/dictionary/resources/list/resources-page.model'
 import TreeHeader from '@/pages/common/parts/tree/TreeHeader.vue'
+import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { formatResourcesTitle } from '@/features/lib'
 
 export default Vue.extend({
@@ -32,6 +40,7 @@ export default Vue.extend({
   components: {
     TreeNode,
     TreeHeader,
+    NoDataContent,
   },
   effector: { $resourcesTree, $resourcesTreeTotal },
   computed: {

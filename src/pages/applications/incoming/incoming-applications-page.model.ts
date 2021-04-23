@@ -1,4 +1,4 @@
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore } from 'effector-root'
 import { getTicketsListFx } from '@/features/api/ticket/moderation/get-tickets-list'
 import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
@@ -24,6 +24,8 @@ export const acceptApplicationsFx = attach({
 })
 
 export const incomingApplicationsPageParams = createPageParamsModel()
+
+export const $isLoading = combine(getTicketsListFx.pending, (list) => list)
 
 export const loadList = createEvent<getTicketsListQueryParams>()
 

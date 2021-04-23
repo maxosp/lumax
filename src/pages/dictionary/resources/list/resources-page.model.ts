@@ -1,4 +1,13 @@
-import { attach, createEffect, createEvent, forward, guard, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
@@ -56,6 +65,13 @@ export const $resourcesTree = restore<TreeData[] | null>(rewriteResourcesTree, n
 
 export const setResourcesTreeTotal = createEvent<number>()
 export const $resourcesTreeTotal = restore<number>(setResourcesTreeTotal, 0)
+
+export const $isLoading = combine(
+  getResourcesTreeFx.pending,
+  getResourcesTreeLightFx.pending,
+  getResourcesInfoFx.pending,
+  (tree, light, info) => tree || light || info
+)
 
 forward({
   from: loadTreeLight,

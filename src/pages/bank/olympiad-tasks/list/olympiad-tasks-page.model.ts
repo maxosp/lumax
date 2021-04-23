@@ -1,4 +1,4 @@
-import { attach, createEffect, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEffect, createEvent, forward, restore } from 'effector-root'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
 import {
   DuplicateAssignmentType,
@@ -58,6 +58,8 @@ export const $canRefreshTableAfterDeletion = restore<boolean>(
 )
 
 const showDeleteAssignmentsToast = createEvent<number[]>()
+
+export const $isLoading = combine(getOlympiadTasksListFx.pending, (list) => list)
 
 export const loadList = createEvent<GetListQueryParams>()
 

@@ -20,7 +20,9 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
       :show-actions="showTableHeaderActions"
@@ -31,7 +33,7 @@
       @onAssignToModerator="assignToModerator"
     />
 
-    <div :class="{ 'table-container': true, hideHeader: !total }">
+    <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -117,6 +119,7 @@ import {
   $canRefreshTable,
   incomingApplicationsPageParams,
   canRefreshTableChanged,
+  $isLoading,
 } from '@/pages/applications/incoming/incoming-applications-page.model'
 import {
   toggleVisibility,
@@ -140,6 +143,7 @@ import {
   cropString,
   isQueryParamsEquelToPage,
 } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -159,6 +163,7 @@ export default (Vue as VueConstructor<
     VuetablePagination,
     SendForModerationModal,
     SetToModeratorModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
@@ -168,6 +173,7 @@ export default (Vue as VueConstructor<
     $filterParams: incomingApplicationsFilters.store.$filterParams,
     $pageParams: incomingApplicationsPageParams.store.$pageParams,
     $currentPage: incomingApplicationsPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

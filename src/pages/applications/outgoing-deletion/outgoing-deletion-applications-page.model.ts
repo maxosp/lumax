@@ -1,4 +1,4 @@
-import { attach, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore } from 'effector-root'
 import {
   getTicketsDeletionListQueryParams,
   UpdateTicketBulkType,
@@ -26,6 +26,8 @@ export const cancelApplicationFx = attach({
 export const loadList = createEvent<getTicketsDeletionListQueryParams>()
 
 export const outgoingDeletionPageParams = createPageParamsModel()
+
+export const $isLoading = combine(getTicketsDeletionListFx.pending, (list) => list)
 
 const canRefreshTableChanged = createEvent<boolean>()
 export const $canRefreshTable = restore(canRefreshTableChanged, false)

@@ -16,7 +16,9 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
       :show-actions="showTableHeaderActions"
@@ -26,7 +28,7 @@
       @onSeeComments="showComments"
     />
 
-    <div :class="{ 'table-container': true, hideHeader: !total }">
+    <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -107,6 +109,7 @@ import {
   loadList,
   $canUpdateTable,
   outgoingApplicationsPageParams,
+  $isLoading,
 } from '@/pages/applications/outgoing/outgoing-applications-page.model'
 import {
   toggleVisibility,
@@ -125,6 +128,7 @@ import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown
 import { Ticket } from '@/features/api/ticket/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -144,6 +148,7 @@ export default (Vue as VueConstructor<
     VuetablePagination,
     CancelModal,
     OutgoingModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
@@ -153,6 +158,7 @@ export default (Vue as VueConstructor<
     $filterParams: outgoingApplicationsFilters.store.$filterParams,
     $pageParams: outgoingApplicationsPageParams.store.$pageParams,
     $currentPage: outgoingApplicationsPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

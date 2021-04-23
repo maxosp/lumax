@@ -1,4 +1,4 @@
-import { attach, createEffect, createEvent, forward } from 'effector'
+import { attach, combine, createEffect, createEvent, forward } from 'effector'
 import { GetTestsListQueryParams, RequestDeleteTestsParams } from '@/features/api/test/types'
 import { getTestsListFx } from '@/features/api/test/get-tests-list'
 import { deleteTestFx, requestDeleteTestsFx } from '@/features/api/test/delete-test'
@@ -34,3 +34,5 @@ forward({
   from: loadList,
   to: getTestsList,
 })
+
+export const $isLoading = combine(getTestsListFx.pending, (list) => list)

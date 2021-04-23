@@ -16,7 +16,9 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-rows="selectedRows"
       @onEdit="editTask"
@@ -25,7 +27,7 @@
       @showPreview="showPreview"
     />
 
-    <div :class="{ 'table-container': true, hideHeader: !total }">
+    <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -142,6 +144,7 @@ import {
   deleteAssignments,
   requestDeleteAssignments,
   olympiadTaskPageParams,
+  $isLoading,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
   olympiadTasksFilters,
@@ -174,6 +177,7 @@ import {
 } from '@/features/lib'
 import { OlympiadAssignment } from '@/features/api/assignment/types'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -198,6 +202,7 @@ export default (Vue as VueConstructor<
     ModeratorSelectModal,
     ConfirmDeleteModal,
     RequestDeleteModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
@@ -210,6 +215,7 @@ export default (Vue as VueConstructor<
     $filterParams: olympiadTasksFilters.store.$filterParams,
     $pageParams: olympiadTaskPageParams.store.$pageParams,
     $currentPage: olympiadTaskPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

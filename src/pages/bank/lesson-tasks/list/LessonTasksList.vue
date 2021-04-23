@@ -16,13 +16,15 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-rows="selectedRows"
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
     />
-    <div :class="{ 'table-container': true, invisible: $treeView }">
+    <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -81,7 +83,7 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView }">
+    <div :class="{ invisible: !$treeView || $isLoading }">
       <LessonsTree
         @loadTree="val => loadTree(val)"
         @onRightClick="handleRightClick"
@@ -134,6 +136,7 @@ import {
   requestDeleteAssignments,
   lessonTaskPageParams,
   loadTreeLight,
+  $isLoading,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -166,6 +169,7 @@ import {
 } from '@/features/lib'
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { LessonAssignment } from '@/features/api/assignment/types'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -197,6 +201,7 @@ export default (Vue as VueConstructor<
     ConfirmDeleteModal,
     RequestDeleteModal,
     CreatingFolderModal,
+    LoaderBig,
   },
   effector: {
     $token,
@@ -208,6 +213,7 @@ export default (Vue as VueConstructor<
     $pageParams: lessonTaskPageParams.store.$pageParams,
     $treeView: lessonTaskPageParams.store.treeView,
     $currentPage: lessonTaskPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

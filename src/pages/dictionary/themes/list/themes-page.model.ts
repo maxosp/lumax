@@ -1,4 +1,13 @@
-import { attach, createEffect, createEvent, forward, restore, sample, guard } from 'effector-root'
+import {
+  attach,
+  createEffect,
+  createEvent,
+  forward,
+  restore,
+  sample,
+  guard,
+  combine,
+} from 'effector-root'
 import { gethThemesTreeLightFx, getThemesTreeFx } from '@/features/api/subject/get-themes-tree'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
@@ -17,6 +26,7 @@ import {
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { loadTreeLight as loadTasksTreeLight } from '@/pages/bank/test-tasks/list/tasks-page.model'
+import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -72,6 +82,14 @@ export const setThemesTreeTotal = createEvent<number>()
 export const $themesTreeTotal = restore<number>(setThemesTreeTotal, 0)
 
 const showDeleteThemesToast = createEvent<number[]>()
+
+export const $isLoading = combine(
+  getThemesTreeFx.pending,
+  gethThemesTreeLightFx.pending,
+  getThemesListFx.pending,
+  getThemesInfoFx.pending,
+  (tree, light, list, info) => tree || light || list || info
+)
 
 forward({
   from: loadTree,

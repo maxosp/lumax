@@ -1,4 +1,13 @@
-import { attach, createEffect, createEvent, forward, restore, sample, guard } from 'effector-root'
+import {
+  attach,
+  createEffect,
+  createEvent,
+  forward,
+  restore,
+  sample,
+  guard,
+  combine,
+} from 'effector-root'
 // TODO: correctly define WHICH type of assignment
 import {
   deleteTestAssignmentsFx,
@@ -25,6 +34,7 @@ import {
   $dataToUpdateTree,
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
 
 const getTasksTree = attach({
   effect: getTestAssignmentTreeFx,
@@ -83,6 +93,14 @@ export const setTasksTreeTotal = createEvent<number>()
 export const $tasksTreeTotal = restore<number>(setTasksTreeTotal, 0)
 
 const showDeleteAssignmentsToast = createEvent<number[]>()
+
+export const $isLoading = combine(
+  getTestAssignmentTreeFx.pending,
+  getTestAssignmentTreeLightFx.pending,
+  getAssignmentInfoFx.pending,
+  getTestAssignmentListFx.pending,
+  (tree, light, info, list) => tree || light || info || list
+)
 
 forward({
   from: loadTreeLight,

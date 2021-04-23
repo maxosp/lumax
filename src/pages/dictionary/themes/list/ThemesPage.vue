@@ -17,12 +17,14 @@
       </template>
     </GeneralFilter>
     <TableHeader
+      v-if="!$isLoading"
       :total="$treeView ? $themesTreeTotal : total"
       :selected-rows="selectedRows"
       @onEdit="handleEditTheme"
       @onRemove="onRemoveThemes"
     />
-    <div :class="{ 'table-container': true, invisible: $treeView }">
+    <LoaderBig v-if="$isLoading" />
+    <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -65,7 +67,7 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView }">
+    <div :class="{ invisible: !$treeView || $isLoading }">
       <ThemesTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
@@ -117,6 +119,7 @@ import {
   deleteThemes,
   requestDeleteThemes,
   themesPageParams,
+  $isLoading,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -136,6 +139,7 @@ import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDele
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -166,6 +170,7 @@ export default (Vue as VueConstructor<
     NoDataContent,
     ConfirmDeleteModal,
     RequestDeleteModal,
+    LoaderBig,
   },
   effector: {
     $token,
@@ -176,6 +181,7 @@ export default (Vue as VueConstructor<
     $pageParams: themesPageParams.store.$pageParams,
     $treeView: themesPageParams.store.treeView,
     $currentPage: themesPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

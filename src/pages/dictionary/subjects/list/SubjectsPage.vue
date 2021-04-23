@@ -14,6 +14,7 @@
       @resetFilter="onFilterReset"
       @changeFilter="changeFilter"
     />
+    <LoaderBig v-if="$isLoading" />
     <div class="table-container">
       <Vuetable
         ref="vuetable"
@@ -97,6 +98,7 @@ import {
   subjectsFilters,
   deleteSubjects,
   requestDeleteSubjects,
+  $isLoading,
 } from '@/pages/dictionary/subjects/list/subjects-page.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
@@ -109,6 +111,7 @@ import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDele
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { $session } from '@/features/session'
 import { computeSortParam } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -136,12 +139,14 @@ export default (Vue as VueConstructor<
     NoDataContent,
     ConfirmDeleteModal,
     RequestDeleteModal,
+    LoaderBig,
   },
   effector: {
     $token,
     $triggerToRefreshTable,
     $filterParams: subjectsFilters.store.$filterParams,
     $session,
+    $isLoading,
   },
   data() {
     return {

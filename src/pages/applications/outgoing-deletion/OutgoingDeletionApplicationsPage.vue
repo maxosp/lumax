@@ -16,7 +16,9 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
       :show-actions="showTableHeaderActions"
@@ -25,7 +27,7 @@
       @onCancel="cancelApplications"
     />
 
-    <div :class="{ 'table-container': true, hideHeader: !total }">
+    <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -121,6 +123,7 @@ import {
   cancelApplicationFx,
   $canRefreshTable,
   outgoingDeletionPageParams,
+  $isLoading,
 } from '@/pages/applications/outgoing-deletion/outgoing-deletion-applications-page.model'
 import {
   toggleVisibility,
@@ -138,6 +141,7 @@ import { navigatePush } from '@/features/navigation'
 import { mapApplicationTypeToRoute } from '@/pages/applications/constants'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -158,6 +162,7 @@ export default (Vue as VueConstructor<
     VuetablePagination,
     CancelModal,
     CommentModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
@@ -167,6 +172,7 @@ export default (Vue as VueConstructor<
     $filterParams: outgoingDeletionFilters.store.$filterParams,
     $pageParams: outgoingDeletionPageParams.store.$pageParams,
     $currentPage: outgoingDeletionPageParams.store.currentPage,
+    $isLoading,
   },
   data() {
     return {

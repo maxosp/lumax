@@ -24,7 +24,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import TreeNode from '@/pages/tags/parts/tree/TreeNode.vue'
-import { $tagsTree } from '@/pages/tags/tags-page.model'
+import { $tagsTree, $isLoading } from '@/pages/tags/tags-page.model'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 
 export default Vue.extend({
@@ -33,7 +33,7 @@ export default Vue.extend({
     NoDataContent,
     TreeNode,
   },
-  effector: { $tagsTree },
+  effector: { $tagsTree, $isLoading },
 })
 </script>
 

@@ -5,7 +5,16 @@ import { getLabelsInfoFx } from '@/features/api/assignment/labels/get-labels-inf
 import { TreeData } from '@/features/api/types'
 import { mergeTreeData } from '@/features/lib'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { attach, createEffect, createEvent, forward, restore, guard, sample } from 'effector-root'
+import {
+  attach,
+  createEffect,
+  createEvent,
+  forward,
+  restore,
+  guard,
+  sample,
+  combine,
+} from 'effector-root'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { FiltersParams } from '@/pages/common/types'
 import { every } from 'patronum'
@@ -66,6 +75,13 @@ forward({
   from: loadFilteredTree,
   to: getFilteredTree,
 })
+
+export const $isLoading = combine(
+  getLabelsTreeFx.pending,
+  getLabelsTreeLightFx.pending,
+  getLabelsInfoFx.pending,
+  (tree, light, info) => tree || light || info
+)
 
 forward({
   from: getLabelsInfoFx.doneData.map(({ body }) => body.total_amount),

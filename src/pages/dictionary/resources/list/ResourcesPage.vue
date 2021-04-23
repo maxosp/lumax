@@ -16,7 +16,9 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <ResourcesTree
+      v-if="!$isLoading"
       @onRightClick="handleRightClick"
       @loadTree="val => loadTree(val)"
       @onRemove="onRemoveResource"
@@ -52,6 +54,7 @@ import {
   loadTreeLight,
   $resourcesTreeTotal,
   deleteResources,
+  $isLoading,
 } from '@/pages/dictionary/resources/list/resources-page.model'
 import {
   toggleVisibility,
@@ -64,6 +67,7 @@ import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
 import { RefsType } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
 
@@ -86,10 +90,12 @@ export default (Vue as VueConstructor<
     ContextMenu,
     ResourcesTree,
     ConfirmDeleteModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
     $resourcesTreeTotal,
+    $isLoading,
   },
   data() {
     return {

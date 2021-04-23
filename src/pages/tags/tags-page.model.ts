@@ -1,4 +1,13 @@
-import { attach, createEffect, createEvent, forward, guard, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { getTagsTreeFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree'
 import { deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag'
 import { successToastEvent } from '@/features/toasts/toasts.model'
@@ -14,6 +23,7 @@ import {
   $dataToUpdateTree,
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -60,6 +70,14 @@ export const setTagsTreeTotal = createEvent<number>()
 export const $tagsTreeTotal = restore<number>(setTagsTreeTotal, 0)
 
 const showDeleteAssignmentsToast = createEvent<number[]>()
+
+export const $isLoading = combine(
+  getTagsTreeFx.pending,
+  getTagsTreeLightFx.pending,
+  getTagsListFx.pending,
+  getTagsInfoFx.pending,
+  (tree, light, list, info) => tree || light || list || info
+)
 
 forward({
   from: loadTree,

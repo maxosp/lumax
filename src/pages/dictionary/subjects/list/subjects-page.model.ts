@@ -18,6 +18,7 @@ import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
 
 export const subjectsFilters = createFiltersModel(
   {
@@ -66,6 +67,8 @@ const changeSubject = createEvent<any>()
 const $subject = restore(changeSubject, null)
 
 const showDeleteThemesToast = createEvent<number[]>()
+
+export const $isLoading = combine(getSubjectsListFx.pending, (list) => list)
 
 sample({
   clock: changeIdSubject,

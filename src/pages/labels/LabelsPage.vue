@@ -16,8 +16,10 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <div>
       <LabelsTree
+        v-if="!$isLoading"
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
         @resetFilter="onFilterReset"
@@ -66,7 +68,7 @@ import {
   labelsFilters,
   toggleVisibility,
 } from '@/pages/labels/parts/labels-filter/labels-filter.model'
-import { deleteLabels, loadTree, loadTreeLight } from '@/pages/labels/labels-page.model'
+import { deleteLabels, loadTree, loadTreeLight, $isLoading } from '@/pages/labels/labels-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/labels/constants'
 import { RightClickParams } from '@/pages/labels/types'
@@ -75,6 +77,7 @@ import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 export default Vue.extend({
   components: {
@@ -87,9 +90,11 @@ export default Vue.extend({
     LabelEditionModal,
     TasksModal,
     ConfirmDeleteModal,
+    LoaderBig,
   },
   effector: {
     $visibility,
+    $isLoading,
   },
   data() {
     return {

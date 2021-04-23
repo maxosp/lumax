@@ -17,13 +17,15 @@
       </template>
     </GeneralFilter>
     <TableHeader
+      v-if="!$isLoading"
       :total="$treeView ? $tagsTreeTotal : total"
       :selected-rows="selectedRows"
       @onEdit="editTag"
       @onRemove="onRemoveTags"
       @showTasks="showTasks"
     />
-    <div :class="{ 'table-container': true, invisible: $treeView, hideHeader: !total }">
+    <LoaderBig v-if="$isLoading" />
+    <div :class="{ 'table-container': true, invisible: $treeView || $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -69,7 +71,7 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView }">
+    <div :class="{ invisible: !$treeView || $isLoading }">
       <TagsTree
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
@@ -122,6 +124,7 @@ import {
   $tagsTreeTotal,
   deleteTags,
   tagsPageParams,
+  $isLoading,
 } from '@/pages/tags/tags-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import PageHeader from '@/pages/tags/parts/header/PageHeader.vue'
@@ -150,6 +153,7 @@ import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/con
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -174,8 +178,10 @@ export default (Vue as VueConstructor<
     VuetablePagination,
     ConfirmDeleteModal,
     NoDataContent,
+    LoaderBig,
   },
   effector: {
+    $isLoading,
     $visibility,
     $tagsTreeTotal,
     $token,

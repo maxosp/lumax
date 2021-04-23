@@ -16,14 +16,16 @@
         />
       </template>
     </GeneralFilter>
+    <LoaderBig v-if="$isLoading" />
     <TableHeader
+      v-if="!$isLoading"
       :total="total"
       :selected-rows="selectedRows"
       @onEdit="editTask"
       @onRemove="onRemoveTask"
       @onClearCheckboxes="clearCheckboxes"
     />
-    <div :class="{ 'table-container': true, hideHeader: !total }">
+    <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">
       <Vuetable
         ref="vuetable"
         class="table"
@@ -71,7 +73,7 @@
         </template>
       </Vuetable>
       <NoDataContent
-        v-if="!total"
+        v-if="!total || !$isLoading"
         @resetFilters="onFilterReset"
       />
       <div class="vuetable-pagination ui basic segment grid">
@@ -128,6 +130,7 @@ import {
   loadList,
   deleteTests,
   requestDeleteTests,
+  $isLoading,
 } from '@/pages/testing/tests/list/tests-page.model'
 import {
   toggleVisibility,
@@ -147,6 +150,7 @@ import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/con
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { computeSortParam, removeHtmlTags } from '@/features/lib'
+import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -168,8 +172,10 @@ export default (Vue as VueConstructor<
     ConfirmDeleteModal,
     RequestDeleteModal,
     NoDataContent,
+    LoaderBig,
   },
   effector: {
+    $isLoading,
     $visibility,
     $token,
     $canRefreshAfterSendingForModeration,

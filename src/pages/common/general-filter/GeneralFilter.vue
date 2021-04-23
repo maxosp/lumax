@@ -76,15 +76,23 @@ export default Vue.extend({
     searchFields: { type: Array as PropType<DropdownItem[]>, required: true },
     isShowFilter: { type: Boolean, default: true },
   },
+  data: () => ({
+    debounceId: undefined as ReturnType<typeof setTimeout> | undefined,
+  }),
   methods: {
     searchStringChanged,
     searchFieldChanged,
     handleSearchString(value: string) {
-      searchStringChanged(value)
-      this.$emit('changeFilter', {
-        search: value,
-      })
-      this.$emit('setFilter')
+      if (this.debounceId !== undefined) {
+        clearTimeout(this.debounceId)
+      }
+      this.debounceId = setTimeout(() => {
+        searchStringChanged(value)
+        this.$emit('changeFilter', {
+          search: value,
+        })
+        this.$emit('setFilter')
+      }, 600)
     },
     handleSearchFieldClick(item: DropdownItem, cb: any) {
       searchFieldChanged(item)

@@ -1,4 +1,13 @@
-import { attach, createEffect, createEvent, forward, guard, restore, sample } from 'effector-root'
+import {
+  attach,
+  combine,
+  createEffect,
+  createEvent,
+  forward,
+  guard,
+  restore,
+  sample,
+} from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
@@ -19,6 +28,7 @@ import {
   $dataToUpdateTree,
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { getLessonAssignmentListFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-list'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
@@ -70,6 +80,14 @@ export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 
 const showDeleteAssignmentsToast = createEvent<number[]>()
+
+export const $isLoading = combine(
+  getLessonAssignmentTreeFx.pending,
+  getLessonAssignmentTreeLightFx.pending,
+  getLessonInfoFx.pending,
+  getLessonAssignmentListFx.pending,
+  (tree, light, info, list) => tree || light || info || list
+)
 
 forward({
   from: loadTreeLight,
