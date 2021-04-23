@@ -1,7 +1,7 @@
 <template>
   <NoDataContent
     v-if="$resourcesTree && !$resourcesTree.length"
-    @resetFilters="$emmit('resetFilters')"
+    @resetFilters="$emit('resetFilter')"
   />
   <div
     v-else

@@ -25,6 +25,7 @@
         :http-fetch="myFetch"
         :append-params="$filterParams"
         pagination-path=""
+        :per-page="25"
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
@@ -103,7 +104,7 @@ import {
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { subjectsTableFields, searchFieldsData } from '@/pages/dictionary/subjects/list/constants'
 import { ContextMenuType } from '@/pages/dictionary/subjects/list/types'
-import { RefsType } from '@/pages/common/types'
+import { HttpOptionsType, RefsType } from '@/pages/common/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
@@ -177,9 +178,9 @@ export default (Vue as VueConstructor<
     changeFilter: subjectsFilters.methods.changeFilter,
     resetFilters: subjectsFilters.methods.resetFilters,
     applyFilters: subjectsFilters.methods.applyFilters,
-    myFetch(apiUrl: string, httpOptions: any) {
+    myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
       return axios.get(apiUrl, {
-        params: { sort: computeSortParam(httpOptions.params.sort) },
+        params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
     },
     onPaginationData(paginationData: any) {

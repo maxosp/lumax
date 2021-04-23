@@ -14,7 +14,7 @@
       </BaseSwitch>
     </div>
     <div class="section">
-      <TypeDropdown @setItem="val => setItem({'type': val})" />
+      <TypeDropdown @setItem="val => setItem({'resource_type': val})" />
       <ThemeDropdown is-preload @setItem="val => setItem({'theme': val})" />
     </div>
     <div class="section">

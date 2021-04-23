@@ -13,7 +13,6 @@ export const resourcesFilters = createFiltersModel(
   },
   dropdownModules
 )
-
 export const reset = createEvent<void>()
 
 export const toggleVisibility = createEvent<boolean>()

@@ -125,7 +125,6 @@ export default Vue.extend({
   border-radius: 7px;
   margin-bottom: 20px;
 }
-
 .input {
   width: 100%;
   & /deep/ .wrap {
@@ -140,7 +139,6 @@ export default Vue.extend({
   & /deep/ .icon-wrap {
     height: 100%;
   }
-
   & /deep/ .inner-input {
     border: none;
     height: 100%;
@@ -148,7 +146,6 @@ export default Vue.extend({
     background: transparent;
   }
 }
-
 .right-section {
   display: flex;
   align-items: center;
@@ -178,7 +175,6 @@ export default Vue.extend({
     fill: #fff;
   }
 }
-
 .filter-wrapper {
   @mixin flex-row-central;
   margin: 0 20px;

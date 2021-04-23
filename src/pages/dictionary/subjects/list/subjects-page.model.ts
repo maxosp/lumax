@@ -60,8 +60,11 @@ export const $isMondatory = restore(changeIsMondatory, false)
 export const changeIdSubject = createEvent<number>()
 export const $idSubject = restore(changeIdSubject, -1)
 
-export const $triggerToRefreshTable = createStore(false)
-$triggerToRefreshTable.on(updateSubjectDataFx.doneData, (state) => !state)
+export const triggerToRefreshTableChanged = createEvent<boolean>()
+export const $triggerToRefreshTable = createStore(false).on(
+  triggerToRefreshTableChanged,
+  (state, payload) => payload
+)
 
 const changeSubject = createEvent<any>()
 const $subject = restore(changeSubject, null)
@@ -88,6 +91,13 @@ sample({
   target: updateSubjectDataFx,
 })
 
+sample({
+  clock: updateSubjectDataFx.doneData,
+  source: $triggerToRefreshTable,
+  fn: (triggerValue) => !triggerValue,
+  target: triggerToRefreshTableChanged,
+})
+
 forward({
   from: deleteSubjects.doneData,
   to: [confirmDeleteModalVisibilityChanged.prepend(() => false), showDeleteThemesToast],
@@ -111,4 +121,15 @@ forward({
 forward({
   from: updateSubjectDataFx.doneData,
   to: successToastEvent('Предмет был успешно изменен!'),
+})
+
+sample({
+  clock: subjectsFilters.methods.applyFilters,
+  source: subjectsFilters.store.$filterParams,
+  target: getSubjectsListFx,
+})
+
+forward({
+  from: getSubjectsListFx.doneData,
+  to: triggerToRefreshTableChanged.prepend(() => true),
 })
