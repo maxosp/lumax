@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { Subject, StudyYear } from '@/features/api/subject/types'
+import { StudyYear, Subject } from '@/features/api/subject/types'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { DropdownItem } from '@/pages/common/types'
 import { User } from '@/features/api/user/types'
@@ -106,12 +106,3 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'study_year', title: 'Класс' },
   { name: 'subject', title: 'Предмет' },
 ]
-
-export const mapTaskStatus = {
-  new: 'Новое',
-  reserve: 'Резерв',
-  moderation: 'На проверке',
-  revision: 'На доработке',
-  published: 'Опубликовано',
-  archive: 'Архив',
-}

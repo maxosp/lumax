@@ -14,7 +14,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="navigatePush({ name: 'lesson-tasks-edit', params: { id: selectedRows[0] } })"
+        @click="$emit('onEdit', selectedRows[0])"
       >
         Редактировать
       </span>

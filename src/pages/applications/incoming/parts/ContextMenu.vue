@@ -49,8 +49,8 @@ export default Vue.extend({
     SelectItem,
   },
   props: {
-    applicationId: { type: Number, required: true },
-    taskId: { type: Number, required: true },
+    applicationId: { type: Number as PropType<number>, required: true },
+    taskId: { type: Number as PropType<number>, required: true },
     selectedApplications: { type: Array as PropType<ApplicationType[]>, required: true },
   },
   computed: {
@@ -77,7 +77,7 @@ export default Vue.extend({
           this.$emit('showPreview', selectedApplicationsIds, selectedTasksIds)
           break
         case 'edit':
-          this.$emit('onEdit', selectedTasksIds)
+          this.$emit('onEdit', selectedApplicationsIds, selectedTasksIds)
           break
         case 'accept':
           this.$emit('onAccept', selectedApplicationsIds)

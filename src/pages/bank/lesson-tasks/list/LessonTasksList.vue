@@ -23,6 +23,7 @@
       :selected-rows="selectedRows"
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
+      @onEdit="editTask"
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
@@ -69,6 +70,7 @@
             :selected="selectedRows"
             @onRemove="onRemoveTask"
             @onPreview="showPreview"
+            @onEdit="editTask"
           />
         </template>
       </Vuetable>
@@ -100,6 +102,7 @@
       @onOutsideClick="hideContextMenu"
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
+      @onEdit="editTask"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
@@ -274,7 +277,12 @@ export default (Vue as VueConstructor<
       }
       this.$router.push({
         name: 'preview-task',
-        query: { questions: idArr.join(','), type: 'lesson-assignment', token: this.$token },
+        query: {
+          questions: idArr.join(','),
+          taskType: 'lesson-assignment',
+          token: this.$token,
+          fromPage: 'tasks',
+        },
       })
     },
     clearWording(str: string) {
@@ -316,7 +324,13 @@ export default (Vue as VueConstructor<
       Vue.nextTick(() => this.$refs.vuetable.reload())
     },
     editTask(id: number) {
-      navigatePush({ name: 'lesson-tasks-edit', params: { id: `${id}` } })
+      navigatePush({
+        name: 'lesson-tasks-edit',
+        query: {
+          fromPage: 'tasks',
+        },
+        params: { id: `${id}` },
+      })
     },
     onRemoveTask(ids: number[]) {
       this.$session?.permissions?.assignments_assignment?.delete

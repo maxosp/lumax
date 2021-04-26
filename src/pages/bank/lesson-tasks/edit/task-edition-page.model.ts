@@ -88,7 +88,7 @@ import {
 import { getLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment'
 import { updateLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
-import { condition } from 'patronum'
+import { $correctStatus, setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 const updateAssignment = attach({
   effect: updateLessonAssignmentFx,
@@ -122,15 +122,6 @@ export const $audioIds = restore(setAudioIds, [])
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
 
-export const setStatus = createEvent<string | null>()
-export const $status = restore(setStatus, null)
-
-export const setIsArchive = createEvent<boolean>()
-export const $isArchive = restore(setIsArchive, false)
-
-export const setIsPublished = createEvent<boolean>()
-export const $isPublished = restore(setIsPublished, false)
-
 export const save = createEvent<void>()
 export const clearFields = createEvent<void>()
 
@@ -141,18 +132,6 @@ export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 export const duplicateAssignment = createEvent<void>()
-
-condition({
-  source: setIsArchive,
-  if: (payload: boolean) => payload,
-  then: setIsPublished.prepend((data) => !data),
-})
-
-condition({
-  source: setIsPublished,
-  if: (payload: boolean) => payload,
-  then: setIsArchive.prepend((data) => !data),
-})
 
 forward({
   from: loadTask,
@@ -248,17 +227,6 @@ const $taskform = combine({
   ShortClosedAnswer: $formShortClosed,
 })
 
-const $correctStatus = combine(
-  $status,
-  $isArchive,
-  $isPublished,
-  (status, isArchive, isPublished) => {
-    let res = status
-    if (isArchive) res = 'archive'
-    if (isPublished) res = 'published'
-    return res
-  }
-)
 const $baseForm = combine(
   $correctStatus,
   $selectedFolder,

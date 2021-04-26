@@ -41,7 +41,6 @@ import Vue, { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
-import { navigatePush } from '@/features/navigation'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 import {
@@ -103,7 +102,7 @@ export default Vue.extend({
       const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'edit':
-          navigatePush({ name: 'lesson-tasks-edit', params: { id: this.$props.id } })
+          this.$emit('onEdit', this.$props.id)
           break
         case 'delete':
           this.$emit('onRemove', ids)

@@ -4,7 +4,7 @@
       title="Редактирование урочного задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
-      :status="$status"
+      :from-page="fromPage"
       class="header"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
@@ -29,13 +29,13 @@ import {
   $canSave,
   clearFields,
   loadTask,
-  $status,
   $taskId,
   setRedirectAfterSave,
   $isPreview,
   toggleIsPreview,
 } from '@/pages/bank/lesson-tasks/edit/task-edition-page.model'
 import { $token } from '@/features/api/common/request'
+import { navigateReplace } from '@/features/navigation'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -46,22 +46,26 @@ export default Vue.extend({
   },
   effector: {
     $canSave,
-    $status,
     $taskId,
     $token,
     $isPreview,
+  },
+  data() {
+    return {
+      fromPage: '',
+    }
   },
   watch: {
     $isPreview: {
       handler(newVal) {
         if (newVal) {
-          this.$router.push({
+          navigateReplace({
             name: 'preview-task',
             query: {
               questions: `${this.$taskId}`,
-              type: 'lesson-assignment',
+              taskType: 'lesson-assignment',
               token: this.$token,
-              application: 'true',
+              fromPage: this.fromPage,
             },
           })
         }
@@ -76,6 +80,10 @@ export default Vue.extend({
     },
   },
   created() {
+    const { fromPage } = this.$route.query
+    if (fromPage && typeof fromPage === 'string') {
+      this.fromPage = fromPage
+    }
     loadTask(+this.$route.params.id)
   },
   beforeDestroy() {

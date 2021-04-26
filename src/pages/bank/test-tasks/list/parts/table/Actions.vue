@@ -117,7 +117,7 @@ export default Vue.extend({
       const ids = this.selected.length ? this.selected : [this.id]
       switch (item.name) {
         case 'edit':
-          navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } })
+          this.$emit('onEdit', this.$props.id)
           break
         case 'duplicate':
           this.$emit('duplicate', ids[0])
@@ -156,7 +156,7 @@ export default Vue.extend({
           navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
           break
         case 'edit-task':
-          navigatePush({ name: 'test-tasks-edit', params: { id: `${this.$props.id}` } })
+          this.$emit('onEdit', this.$props.id)
           break
         case 'create-theme':
           navigatePush({

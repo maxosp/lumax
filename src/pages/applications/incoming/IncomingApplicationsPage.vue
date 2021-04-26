@@ -144,6 +144,7 @@ import {
   isQueryParamsEquelToPage,
 } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -177,8 +178,8 @@ export default (Vue as VueConstructor<
   },
   data() {
     return {
-      clickedRowApplicationId: 0,
-      clickedRowTaskId: 0,
+      clickedRowApplicationId: DEFAULT_ID,
+      clickedRowTaskId: DEFAULT_ID,
       searchFields: searchFieldsData,
       total: 1,
       fields: incomingApplicationsDataFields,
@@ -234,19 +235,26 @@ export default (Vue as VueConstructor<
           }))
         changeTasks(filteredList)
       }
-      this.$router.push({
+      navigatePush({
         name: 'preview-task',
         query: {
           questions: taskIds.join(','),
-          type: 'test-assignment',
-          application: 'true',
+          taskType: 'test-assignment',
           applications: applicationIds.join(','),
           token: this.$token,
+          fromPage: 'applications',
         },
       })
     },
-    editApplications(ids: number[]) {
-      navigatePush({ name: 'test-tasks-edit', params: { id: `${ids[0]}` } })
+    editApplications(applicationIds: number[], taskIds: number[]) {
+      navigatePush({
+        name: 'test-tasks-edit',
+        query: {
+          applications: applicationIds.join(',')[0],
+          fromPage: 'applications',
+        },
+        params: { id: `${taskIds[0]}` },
+      })
     },
     acceptApplications(ids: number[]) {
       acceptApplicationsFx({ tickets: ids })

@@ -69,6 +69,7 @@
         @onRemoveTheme="(val) => handleRemove('theme', val)"
         @onPreview="(val) => $emit('onPreview', val)"
         @loadTree="val => $emit('loadTree', val)"
+        @onEdit="val => $emit('onEdit', val)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -83,6 +84,7 @@
         @onRemoveTheme="val => $emit('onRemoveTheme', val)"
         @onPreview="val => $emit('onPreview', val)"
         @loadTree="val => $emit('loadTree', val)"
+        @onEdit="val => $emit('onEdit', val)"
       />
     </div>
   </div>
@@ -94,10 +96,10 @@ import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
-import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
 
 export default Vue.extend({
   name: 'TreeNode',

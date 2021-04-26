@@ -1,8 +1,8 @@
 <template>
   <div class="preview-tasks-page">
     <Controller
-      :is-tasks="!isApplications"
-      :is-test-tasks="type && type === 'test-assignment'"
+      :from-page="fromPage"
+      :task-type="taskType"
       @onAccept="acceptApplications"
       @onSendForModeration="sendForModeration"
       @onSeeComments="showComments"
@@ -64,8 +64,9 @@ import {
   loadTestTask,
   loadOlympiadTask,
   loadLessonTask,
+  loadApplication,
 } from '@/pages/preview-tasks/preview-tasks-page.model'
-import { goBack, navigatePush } from '@/features/navigation/index'
+import { goBack, navigateReplace } from '@/features/navigation/index'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
@@ -75,7 +76,7 @@ import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/Mo
 type IframeData = {
   activeTask: string | null
   token: string | null
-  type: string | null
+  taskType: string | null
 }
 export default Vue.extend({
   name: 'PreviewTasksPage',
@@ -91,11 +92,11 @@ export default Vue.extend({
   data: () => ({
     questions: [] as string[],
     token: null as null | string,
-    type: null as null | string,
+    taskType: null as null | string,
     applications: [] as number[],
     heightIframe: 0,
     currentIndex: null as null | number,
-    isApplications: false,
+    fromPage: '',
   }),
   effector: {
     $isPreview,
@@ -113,39 +114,61 @@ export default Vue.extend({
         : null
     },
     iframeLink() {
-      const { activeTask, token, type }: IframeData = this
-      return activeTask && token && type
-        ? `${config.PREVIEW_URL}/question?questionId=${activeTask}&type=${type}&token=${token}`
+      const { activeTask, token, taskType }: IframeData = this
+      return activeTask && token && taskType
+        ? `${config.PREVIEW_URL}/question?questionId=${activeTask}&type=${taskType}&token=${token}`
         : ''
     },
   },
   watch: {
     $isPreview(value) {
       if (!value) {
-        switch (this.type) {
+        switch (this.taskType) {
           case 'test-assignment':
-            navigatePush({
+            navigateReplace({
               name: 'test-tasks-edit',
+              query: {
+                questions: this.questions.join(','),
+                fromPage: this.fromPage,
+                applications: this.applications.join(','),
+              },
               params: { id: this.activeTask || '1' },
-              query: { questions: this.questions.join(', ') },
             })
             break
           case 'olympiad-assignment':
-            navigatePush({ name: 'olympiad-tasks-edit', params: { id: this.activeTask || '1' } })
+            navigateReplace({
+              name: 'olympiad-tasks-edit',
+              query: {
+                fromPage: this.fromPage,
+              },
+              params: { id: this.activeTask || '1' },
+            })
             break
           case 'lesson-assignment':
-            navigatePush({ name: 'lesson-tasks-edit', params: { id: this.activeTask || '1' } })
+            navigateReplace({
+              name: 'lesson-tasks-edit',
+              query: {
+                fromPage: this.fromPage,
+              },
+              params: { id: this.activeTask || '1' },
+            })
             break
           default:
-            navigatePush({ name: 'test-tasks-edit', params: { id: this.activeTask || '1' } })
+            navigateReplace({
+              name: 'test-tasks-edit',
+              query: {
+                fromPage: this.fromPage,
+              },
+              params: { id: this.activeTask || '1' },
+            })
         }
       } else {
         goBack()
       }
     },
     activeTask(value) {
-      if (this.type) {
-        switch (this.type) {
+      if (this.taskType) {
+        switch (this.taskType) {
           case 'test-assignment':
             loadTestTask(value)
             break
@@ -160,6 +183,9 @@ export default Vue.extend({
         }
       }
     },
+    activeApplication(value) {
+      loadApplication(value)
+    },
     $canRefreshAfterSendingForModeration(value) {
       if (value) this.$router.go(0)
     },
@@ -167,8 +193,8 @@ export default Vue.extend({
   methods: {
     toEditPage() {
       let nameRoute = 'test-tasks-edit'
-      if (this.type === 'olympiad-assignment') nameRoute = 'olympiad-tasks-edit'
-      if (this.type === 'lesson-tasks-edit') nameRoute = 'lesson-tasks-edit'
+      if (this.taskType === 'olympiad-assignment') nameRoute = 'olympiad-tasks-edit'
+      if (this.taskType === 'lesson-tasks-edit') nameRoute = 'lesson-tasks-edit'
       this.$router.push({ name: nameRoute, params: { id: `${this.activeTask}` } })
     },
     nextTask() {
@@ -203,21 +229,21 @@ export default Vue.extend({
     },
   },
   created() {
-    const { questions, token, type, application, applications } = this.$route.query
+    const { questions, token, taskType, applications, fromPage } = this.$route.query
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
       this.currentIndex = 0
       if (questions.length > 1) initDropDown()
     }
     if (token && typeof token === 'string') this.token = token
-    if (type && typeof type === 'string') this.type = type
-    if (application && typeof application === 'string' && application === 'true') {
-      this.isApplications = true
-    }
+    if (taskType && typeof taskType === 'string') this.taskType = taskType
     if (applications && typeof applications === 'string') {
       this.applications = applications.split(',').map((appId) => Number(appId))
     }
-    if (!this.questions || !this.token || !this.type || !this.applications) goBack()
+    if (fromPage && typeof fromPage === 'string') {
+      this.fromPage = fromPage
+    }
+    if (!this.questions || !this.token || !this.taskType || !this.fromPage) goBack()
   },
   mounted() {
     // костыль для получения высоты контента внутри iframe

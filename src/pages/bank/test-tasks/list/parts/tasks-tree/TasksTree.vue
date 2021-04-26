@@ -20,6 +20,7 @@
         @onRemoveTheme="val => $emit('onRemoveTheme', val)"
         @onPreview="val => $emit('onPreview', val)"
         @loadTree="val => $emit('loadTree', val)"
+        @onEdit="val => $emit('onEdit', val)"
       />
     </div>
   </div>

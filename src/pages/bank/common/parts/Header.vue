@@ -5,7 +5,7 @@
         <BaseButton
           class="back-btn"
           yellow
-          @click="goBack(getWishedRouter)"
+          @click="goBack(getWishedRoute)"
         >
           <Icon
             type='back'
@@ -42,42 +42,26 @@
       </div>
     </div>
     <Divider />
-    <div class="bottom">
-      <div class="status">
-        <span class="--bold"> Статус задания: </span> {{ correctStatus }}
-      </div>
-      <div class="buttons">
-        <BaseButton
-          v-if="status === 'revision'"
-          class="btn --grey"
-          @click="$emit('onSeeComments')"
-        >
-          <Icon
-            type="comment"
-            size="20"
-            class="icon"
-          />
-        </BaseButton>
-        <BaseButton
-          v-if="[ 'revision', 'new', 'archive' ].includes(status)"
-          class="btn"
-          @click="$emit('onReview')"
-        >
-          На проверку
-        </BaseButton>
-      </div>
-    </div>
+    <StatusController
+      :from-page="fromPage"
+      :is-preview="isPreview"
+      :task-type="taskType"
+      @onAccept="$emit('onAccept')"
+      @onSendForModeration="$emit('onSendForModeration')"
+      @onSeeComments="$emit('onSeeComments')"
+      @onReview="$emit('onReview')"
+    />
   </div>
 </template>
 
-<script>
-import Vue from 'vue'
+<script lang="ts">
+import Vue, { PropType } from 'vue'
 import { goBack } from '@/features/navigation'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import Divider from '@/ui/divider/Divider.vue'
-import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
+import StatusController from '@/pages/common/parts/status-controller/StatusContoller.vue'
 
 export default Vue.extend({
   name: 'TaskHeader',
@@ -86,15 +70,17 @@ export default Vue.extend({
     BaseButton,
     BaseSwitch,
     Divider,
+    StatusController,
   },
   props: {
-    title: { type: String, default: '' },
-    disabled: { type: Boolean, default: true },
-    isPreview: { type: Boolean },
-    status: { type: String },
+    title: { type: String as PropType<string>, default: '' },
+    disabled: { type: Boolean as PropType<boolean>, default: true },
+    isPreview: { type: Boolean as PropType<boolean> },
+    fromPage: { type: String as PropType<string>, required: true },
+    taskType: { type: String as PropType<string> },
   },
   computed: {
-    getWishedRouter() {
+    getWishedRoute() {
       switch (this.$route.name) {
         case 'test-tasks-edit':
           return { name: 'test-tasks-list' }
@@ -105,9 +91,6 @@ export default Vue.extend({
         default:
           return { name: 'test-tasks-list' }
       }
-    },
-    correctStatus() {
-      return this.status ? mapTaskStatus[this.status] : ''
     },
   },
   methods: {
@@ -120,23 +103,15 @@ export default Vue.extend({
 .header {
   @mixin flex-column-central;
   justify-content: space-between;
-  padding: 8px 20px;
   background-color: #fff;
   border-radius: 3px;
   margin-bottom: 20px;
 }
-.top,
-.bottom {
+.top {
   @mixin flex-row-central;
   justify-content: space-between;
   width: 100%;
-}
-.top {
-  margin-bottom: 9px;
-}
-.bottom {
-  margin-top: 9px;
-  min-height: 40px;
+  padding: 10px 20px;
 }
 .title {
   display: flex;
@@ -162,13 +137,6 @@ export default Vue.extend({
 .switcher {
   @mixin flex-center;
   margin-right: 20px;
-}
-.icon {
-  fill: transparent;
-  stroke: #fff;
-}
-.btn.--grey {
-  background-color: var(--c-grey-17);
 }
 .status .--bold {
   font-weight: 600;

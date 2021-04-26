@@ -1,9 +1,9 @@
 import { TableField } from '@/pages/applications/types'
 import { DropdownItem } from '@/pages/common/types'
 import dayjs from 'dayjs'
-import { mapApplicationsStatus } from '@/pages/applications/constants'
 import { TestAssignment } from '@/features/api/assignment/types'
 import { TicketCommentType } from '@/features/api/ticket/types'
+import { mapApplicationsStatus } from '@/pages/common/parts/status-controller/constants'
 
 export const incomingApplicationsDataFields: TableField[] = [
   {

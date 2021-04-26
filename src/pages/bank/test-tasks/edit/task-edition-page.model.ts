@@ -107,7 +107,14 @@ import {
   subjectsDropdownModule,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
-import { condition } from 'patronum'
+import {
+  $correctStatus,
+  setApplicationStatus,
+  setIsArchive,
+  setIsPublished,
+  setStatus,
+} from '@/pages/common/parts/status-controller/status.model'
+import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -119,6 +126,10 @@ export const duplicateTestAssignment = attach({
 
 export const loadAssignment = attach({
   effect: getTestAssignmentFx,
+})
+
+export const getIncomingApplication = attach({
+  effect: getTicketFx,
 })
 
 export const loadTask = createEvent<number>()
@@ -148,15 +159,6 @@ export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
-export const setStatus = createEvent<string | null>()
-export const $status = restore(setStatus, null)
-
-export const setIsArchive = createEvent<boolean>()
-export const $isArchive = restore(setIsArchive, false)
-
-export const setIsPublished = createEvent<boolean>()
-export const $isPublished = restore(setIsPublished, false)
-
 export const duplicateAssignment = createEvent<void>()
 
 export const save = createEvent<void>()
@@ -168,17 +170,7 @@ const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearField
 export const toggleIsPreview = createEvent<boolean>()
 export const $isPreview = restore(toggleIsPreview, false)
 
-condition({
-  source: setIsArchive,
-  if: (payload: boolean) => payload,
-  then: setIsPublished.prepend((data) => !data),
-})
-
-condition({
-  source: setIsPublished,
-  if: (payload: boolean) => payload,
-  then: setIsArchive.prepend((data) => !data),
-})
+export const loadApplication = createEvent<number>()
 
 forward({
   from: clearFields,
@@ -300,17 +292,6 @@ const $taskform = combine({
   MovingImagesOnTextInputAnswer: $formMovingOnText,
 })
 
-const $correctStatus = combine(
-  $status,
-  $isArchive,
-  $isPublished,
-  (status, isArchive, isPublished) => {
-    let res = status
-    if (isArchive) res = 'archive'
-    if (isPublished) res = 'published'
-    return res
-  }
-)
 const $baseForm = combine(
   $correctStatus,
   $subject,
@@ -426,4 +407,14 @@ sample({
 forward({
   from: duplicateTestAssignment.doneData,
   to: [successToastEvent('Задание было успешно продублировано!'), setCount.prepend(() => 0)],
+})
+
+forward({
+  from: loadApplication,
+  to: getIncomingApplication,
+})
+
+forward({
+  from: getIncomingApplication.doneData,
+  to: [setApplicationStatus.prepend(({ body }) => body.status)],
 })

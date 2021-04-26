@@ -1,7 +1,8 @@
 import { TableField } from '@/pages/applications/types'
 import { DropdownItem } from '@/pages/common/types'
 import dayjs from 'dayjs'
-import { mapApplicationsDeletionStatus, mapObjectType } from '@/pages/applications/constants'
+import { mapObjectType } from '@/pages/applications/constants'
+import { mapApplicationsStatus } from '@/pages/common/parts/status-controller/constants'
 
 export const incomingDeletionApplicationsDataFields: TableField[] = [
   {
@@ -50,7 +51,7 @@ export const incomingDeletionApplicationsDataFields: TableField[] = [
     title: 'Статус',
     width: '180px',
     formatter(status: any) {
-      return mapApplicationsDeletionStatus[status] || '-'
+      return mapApplicationsStatus[status] || '-'
     },
   },
   {

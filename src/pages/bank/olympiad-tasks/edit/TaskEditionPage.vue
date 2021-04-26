@@ -4,7 +4,7 @@
       title="Редактирование олимпиадного задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
-      :status="$status"
+      :from-page="fromPage"
       class="header"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
@@ -33,9 +33,9 @@ import {
   $isPreview,
   toggleIsPreview,
   $taskId,
-  $status,
 } from '@/pages/bank/olympiad-tasks/edit/task-edition-page.model'
 import { $token } from '@/features/api/common/request'
+import { navigateReplace } from '@/features/navigation'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -48,20 +48,24 @@ export default Vue.extend({
     $canSave,
     $isPreview,
     $taskId,
-    $status,
     $token,
+  },
+  data() {
+    return {
+      fromPage: '',
+    }
   },
   watch: {
     $isPreview: {
       handler(newVal) {
         if (newVal) {
-          this.$router.push({
+          navigateReplace({
             name: 'preview-task',
             query: {
               questions: `${this.$taskId}`,
               type: 'olympiad-assignment',
               token: this.$token,
-              application: 'true',
+              fromPage: this.fromPage,
             },
           })
         }
@@ -76,6 +80,10 @@ export default Vue.extend({
     },
   },
   created() {
+    const { fromPage } = this.$route.query
+    if (fromPage && typeof fromPage === 'string') {
+      this.fromPage = fromPage
+    }
     loadTask(+this.$route.params.id)
   },
   beforeDestroy() {

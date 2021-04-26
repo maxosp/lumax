@@ -19,6 +19,7 @@ import {
   sample,
 } from 'effector-root'
 import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
+import { setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -160,6 +161,7 @@ forward({
     successToastEvent('Задание(я) были успешно отправлены на доработку!'),
     clearFields,
     canRefreshTableChanged.prepend(() => true),
+    setStatus.prepend(() => 'revision'),
   ],
 })
 

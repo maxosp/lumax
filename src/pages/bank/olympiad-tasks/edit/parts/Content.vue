@@ -79,14 +79,16 @@ import {
   showSolutionEnabledChanged,
   $solutionText,
   setSolutionText,
-  $status,
-  $isArchive,
-  setIsArchive,
-  $isPublished,
-  setIsPublished,
 } from '@/pages/bank/olympiad-tasks/edit/task-edition-page.model'
 import * as tasks from '@/pages/common/parts/tasks/'
 import { mapTaskTypeTo } from '@/pages/common/constants'
+import {
+  $isArchive,
+  $isPublished,
+  $status,
+  setIsArchive,
+  setIsPublished,
+} from '@/pages/common/parts/status-controller/status.model'
 
 export default Vue.extend({
   name: 'TaskContent',

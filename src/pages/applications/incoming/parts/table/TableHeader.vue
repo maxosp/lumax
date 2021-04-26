@@ -21,7 +21,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onEdit', selectedTasksIds)"
+        @click="$emit('onEdit', selectedApplicationsIds, selectedTasksIds)"
       >
         Редактировать
       </span>

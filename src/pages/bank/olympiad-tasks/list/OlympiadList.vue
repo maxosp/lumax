@@ -106,7 +106,6 @@
     />
     <TasksTypesModal />
     <TasksUpdateModal />
-    <ModeratorSelectModal type="olympiad" />
     <ConfirmDeleteModal
       type="task"
       @confirmDelete="removeSelectedTask"
@@ -150,7 +149,6 @@ import {
   $visibility,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { $canRefreshAfterSendingForModeration } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
 import { RefsType } from '@/pages/common/types'
@@ -158,7 +156,6 @@ import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vu
 import { navigatePush } from '@/features/navigation'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
 import TasksUpdateModal from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
-import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
@@ -194,7 +191,6 @@ export default (Vue as VueConstructor<
     VuetablePagination,
     TasksTypesModal,
     TasksUpdateModal,
-    ModeratorSelectModal,
     ConfirmDeleteModal,
     RequestDeleteModal,
     LoaderBig,
@@ -202,7 +198,6 @@ export default (Vue as VueConstructor<
   effector: {
     $visibility,
     $token,
-    $canRefreshAfterSendingForModeration,
     $canRefreshTableAfterDeletion,
     $session,
     $canRefreshAfterMultiChanges,
@@ -234,11 +229,6 @@ export default (Vue as VueConstructor<
   },
   watch: {
     $canRefreshTable: {
-      handler(newVal) {
-        if (newVal) this.$refs.vuetable.reload()
-      },
-    },
-    $canRefreshAfterSendingForModeration: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
       },
@@ -306,11 +296,22 @@ export default (Vue as VueConstructor<
       }
       this.$router.push({
         name: 'preview-task',
-        query: { questions: idArr.join(','), type: 'olympiad-assignment', token: this.$token },
+        query: {
+          questions: idArr.join(','),
+          taskType: 'olympiad-assignment',
+          token: this.$token,
+          fromPage: 'tasks',
+        },
       })
     },
     editTask(id: number) {
-      navigatePush({ name: 'olympiad-tasks-edit', params: { id: `${id}` } })
+      navigatePush({
+        name: 'olympiad-tasks-edit',
+        query: {
+          fromPage: 'tasks',
+        },
+        params: { id: `${id}` },
+      })
     },
     onRemoveTask(ids: number[]) {
       this.$session?.permissions?.assignments_assignment?.delete

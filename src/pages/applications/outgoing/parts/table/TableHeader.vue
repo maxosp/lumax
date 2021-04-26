@@ -14,14 +14,14 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('showPreview', selectedTasksIds)"
+        @click="$emit('showPreview', selectedApplicationsIds, selectedTasksIds )"
       >
         Предпросмотр
       </span>
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onEdit', selectedTasksIds)"
+        @click="$emit('onEdit', selectedApplicationsIds, selectedTasksIds )"
       >
         Редактировать
       </span>

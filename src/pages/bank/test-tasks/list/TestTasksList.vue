@@ -76,6 +76,7 @@
             @onCheck="sendToModerationAssignments"
             @onPublish="publishAssignments"
             @onPreview="showPreview"
+            @onEdit="handleEditTask"
           />
         </template>
       </Vuetable>
@@ -96,6 +97,7 @@
         @onRemoveTask="onRemoveTask"
         @onRemoveTheme="onRemoveTheme"
         @onPreview="showPreview"
+        @onEdit="handleEditTask"
         @loadTree="val => loadTree(val)"
       />
     </div>
@@ -326,8 +328,9 @@ export default (Vue as VueConstructor<
         name: 'preview-task',
         query: {
           questions: idArr.join(','),
-          type: 'test-assignment',
+          taskType: 'test-assignment',
           token: this.$token,
+          fromPage: 'tasks',
         },
       })
     },
@@ -406,7 +409,13 @@ export default (Vue as VueConstructor<
       await deleteThemes(ids)
     },
     handleEditTask(id: number) {
-      navigatePush({ name: 'test-tasks-edit', params: { id: `${id}` } })
+      navigatePush({
+        name: 'test-tasks-edit',
+        query: {
+          fromPage: 'tasks',
+        },
+        params: { id: `${id}` },
+      })
     },
     async publishAssignments(ids: number | number[]) {
       await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })

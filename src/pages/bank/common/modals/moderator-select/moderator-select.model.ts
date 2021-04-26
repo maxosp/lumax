@@ -10,29 +10,12 @@ import { createError } from '@/lib/effector/error-generator'
 import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
 import { loadTreeLight } from '@/pages/bank/test-tasks/list//tasks-page.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
-import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
-import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 import { TaskType } from '@/pages/bank/common/modals/moderator-select/constants'
+import { setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 export const sendTestAssignmentsToModeration = attach({
   effect: updateTestAssignmentBulkFx,
   mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'moderation' }),
-})
-
-export const sendOlympiadAssignmentForModaration = attach({
-  effect: updateOlympiadAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({
-    ...params,
-    status: 'moderation',
-  }),
-})
-
-export const sendLessonAssignmentForModaration = attach({
-  effect: updateLessonAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({
-    ...params,
-    status: 'moderation',
-  }),
 })
 
 export const loadModalToSendForCheck = createEvent<number[]>()
@@ -76,19 +59,7 @@ sample({
   clock: checkIfTaskCanBeSend,
   fn: (obj) => {
     if (obj.form.moderator_id !== DEFAULT_ID && obj.form.assignments) {
-      switch (obj.type) {
-        case 'test':
-          sendTestAssignmentsToModeration(obj.form)
-          break
-        case 'olympiad':
-          sendOlympiadAssignmentForModaration(obj.form)
-          break
-        case 'lesson':
-          sendLessonAssignmentForModaration(obj.form)
-          break
-        default:
-          break
-      }
+      sendTestAssignmentsToModeration(obj.form)
     } else {
       if (obj.form.moderator_id === DEFAULT_ID) $moderatorErrorModule.methods.setError(true)
       errorToastEvent('Необходимо заполнить все обязательные поля')
@@ -114,14 +85,7 @@ forward({
     modalVisibilityChanged.prepend(() => false),
     successToastEvent('Задание было успешно отправлено на проверку'),
     canRefreshAfterSendingForModerationChanged.prepend(() => true),
-  ],
-})
-forward({
-  from: [sendOlympiadAssignmentForModaration.doneData, sendLessonAssignmentForModaration.doneData],
-  to: [
-    modalVisibilityChanged.prepend(() => false),
-    successToastEvent('Задание было успешно отправлено на проверку'),
-    canRefreshAfterSendingForModerationChanged.prepend(() => true),
+    setStatus.prepend(() => 'moderation'),
   ],
 })
 
@@ -131,11 +95,7 @@ forward({
 })
 
 forward({
-  from: [
-    sendTestAssignmentsToModeration.failData.map((res) => res.body),
-    sendOlympiadAssignmentForModaration.failData.map((res) => res.body),
-    sendLessonAssignmentForModaration.failData.map((res) => res.body),
-  ],
+  from: sendTestAssignmentsToModeration.failData.map((res) => res.body),
   to: [
     addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
     modalVisibilityChanged.prepend(() => false),

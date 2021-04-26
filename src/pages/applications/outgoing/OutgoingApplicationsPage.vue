@@ -47,7 +47,8 @@
       >
         <template id="one" #actions="props">
           <Actions
-            :id="props.rowData.id"
+            :application-id="props.rowData.id"
+            :task-id="props.rowData.test_assignment.id"
             :selected-applications="selectedApplications"
             @showPreview="showPreview"
             @onEdit="editApplications"
@@ -69,8 +70,9 @@
     </div>
     <ContextMenu
       v-if="showContextMenu"
-      :id="clickedRowId"
-      :key="clickedRowId"
+      :key="clickedRowApplicationId"
+      :application-id="clickedRowApplicationId"
+      :task-id="clickedRowTaskId"
       :selected-applications="selectedApplications"
       :style="contextMenuStyles"
       class="context-menu"
@@ -127,8 +129,14 @@ import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/o
 import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import {
+  combineRouteQueries,
+  computeSortParam,
+  cropString,
+  isQueryParamsEquelToPage,
+} from '@/features/lib'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (Vue as VueConstructor<
@@ -162,7 +170,8 @@ export default (Vue as VueConstructor<
   },
   data() {
     return {
-      clickedRowId: 0,
+      clickedRowApplicationId: DEFAULT_ID,
+      clickedRowTaskId: DEFAULT_ID,
       searchFields: searchFieldsData,
       total: 1,
       fields: outgoingApplicationsDataFields,
@@ -204,31 +213,40 @@ export default (Vue as VueConstructor<
     toggleVisibility,
     loadList,
     reset,
-    showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
+    showPreview(applicationIds: number[], taskIds: number[]) {
+      if (applicationIds.length > 1) {
         const filteredList = this.localItems
-          .filter(
-            (item) => idArr.filter((itemArr) => itemArr === item.test_assignment.id).length > 0
-          )
+          .filter((item) => taskIds.filter((id) => id === item.test_assignment.id).length > 0)
           .map((item) => ({
             id: item.test_assignment.id,
             name: `${item.test_assignment.id}`,
-            title: item.test_assignment.theme.name,
+            title: `[id${item.test_assignment.id}] - ${cropString(
+              item.test_assignment.wording,
+              34
+            )}`,
           }))
         changeTasks(filteredList)
       }
-      this.$router.push({
+      navigatePush({
         name: 'preview-task',
         query: {
-          questions: idArr.join(','),
-          type: 'test-assignment',
+          questions: taskIds.join(','),
+          taskType: 'test-assignment',
+          applications: applicationIds.join(','),
           token: this.$token,
-          application: 'true',
+          fromPage: 'applications',
         },
       })
     },
-    editApplications(ids: number[]) {
-      navigatePush({ name: 'test-tasks-edit', params: { id: `${ids[0]}` } })
+    editApplications(applicationIds: number[], taskIds: number[]) {
+      navigatePush({
+        name: 'test-tasks-edit',
+        query: {
+          applications: applicationIds.join(',')[0],
+          fromPage: 'applications',
+        },
+        params: { id: `${taskIds[0]}` },
+      })
     },
     cancelApplications(ids: number[]) {
       loadModal(ids)
@@ -275,7 +293,8 @@ export default (Vue as VueConstructor<
     },
     handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
-      this.clickedRowId = data.id
+      this.clickedRowApplicationId = data.id
+      this.clickedRowTaskId = data.test_assignment.id
       this.showContextMenu = true
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()

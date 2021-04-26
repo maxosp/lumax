@@ -108,7 +108,7 @@ export default Vue.extend({
           this.$emit('showPreview', selectedApplicationsIds, selectedTasksIds)
           break
         case 'edit':
-          this.$emit('onEdit', selectedTasksIds)
+          this.$emit('onEdit', selectedApplicationsIds, selectedTasksIds)
           break
         case 'accept':
           this.$emit('onAccept', selectedApplicationsIds)

@@ -4,11 +4,15 @@
       title="Редактирование тестового задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
-      :status="$status"
+      :from-page="fromPage"
+      task-type="test-assignment"
       @onReview="sendToModerationAssignments"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
+      @onAccept="acceptApplications"
+      @onSendForModeration="sendForModeration"
+      @onSeeComments="showComments"
     />
     <SelectTaskBlock @onLoadTask="val => loadTask(val)" />
     <TaskContent />
@@ -18,6 +22,8 @@
       @saveAndBackToList="saveTask(true)"
     />
     <ModeratorSelectModal type="test" />
+    <SendForModerationModal />
+    <OutgoingModal />
   </div>
 </template>
 
@@ -37,13 +43,20 @@ import {
   $isPreview,
   toggleIsPreview,
   $taskId,
-  $status,
+  loadApplication,
 } from '@/pages/bank/test-tasks/edit/task-edition-page.model'
 import { $token } from '@/features/api/common/request'
 import {
   loadModalToSendForCheck,
   $canRefreshAfterSendingForModeration,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
+import { $status } from '@/pages/common/parts/status-controller/status.model'
+import { navigateReplace } from '@/features/navigation'
+import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
+import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
+import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
+import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
+import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -53,6 +66,8 @@ export default Vue.extend({
     TaskFooter,
     SelectTaskBlock,
     ModeratorSelectModal,
+    SendForModerationModal,
+    OutgoingModal,
   },
   effector: {
     $canSave,
@@ -64,18 +79,21 @@ export default Vue.extend({
   },
   data: () => ({
     questions: [] as string[],
+    fromPage: '',
+    applications: [] as number[],
   }),
   watch: {
     $isPreview: {
       handler(newVal) {
         if (newVal) {
-          this.$router.push({
+          navigateReplace({
             name: 'preview-task',
             query: {
               questions: this.questions.length ? this.questions.join(',') : `${this.$taskId}`,
-              type: 'test-assignment',
+              taskType: 'test-assignment',
               token: this.$token,
-              application: 'true',
+              fromPage: this.fromPage,
+              applications: this.applications.join(','),
             },
           })
         }
@@ -99,6 +117,15 @@ export default Vue.extend({
         setRedirectAfterSave(true)
       }
     },
+    acceptApplications() {
+      acceptApplicationsFx({ tickets: [this.applications[0]] })
+    },
+    sendForModeration() {
+      loadModal([this.applications[0]])
+    },
+    showComments() {
+      loadCommentModal(this.$taskId)
+    },
   },
   mounted() {
     const { questions } = this.$route.query
@@ -111,6 +138,15 @@ export default Vue.extend({
     toggleIsPreview(false)
   },
   created() {
+    const { applications, fromPage } = this.$route.query
+    if (applications && typeof applications === 'string') {
+      this.applications = applications.split(',').map((appId) => Number(appId))
+      loadApplication(this.applications[0])
+    }
+    if (fromPage && typeof fromPage === 'string') {
+      this.fromPage = fromPage
+    }
+    /* todo: https://trello.com/c/xtZZirJi */
     loadTask(+this.$route.params.id)
   },
 })

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
-import { mapTaskStatus } from '@/pages/dictionary/themes/list/constants'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { DropdownItem } from '@/pages/common/types'
+import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
 
 export const themesTableFields: TableField[] = [
   {

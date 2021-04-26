@@ -94,6 +94,12 @@ import { updateOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-a
 import { getOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-assignment'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { resetHintsList } from '@/pages/common/parts/tasks/parts/add-hints-block/add-hints-block.model'
+import {
+  $correctStatus,
+  setIsArchive,
+  setIsPublished,
+  setStatus,
+} from '@/pages/common/parts/status-controller/status.model'
 
 const updateAssignment = attach({
   effect: updateOlympiadAssignmentFx,
@@ -122,15 +128,6 @@ export const $language = restore(setLanguage, LANGUAGE_DATA[0])
 
 export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
-
-export const setStatus = createEvent<string | null>()
-export const $status = restore(setStatus, null)
-
-export const setIsArchive = createEvent<boolean>()
-export const $isArchive = restore(setIsArchive, false)
-
-export const setIsPublished = createEvent<boolean>()
-export const $isPublished = restore(setIsPublished, false)
 
 export const showSolutionEnabledChanged = createEvent<boolean>()
 export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false)
@@ -278,18 +275,6 @@ const $taskform = combine({
   MultipleShortClosedAnswer: $formMultipleShortClosed,
   ShortClosedAnswer: $formShortClosed,
 })
-
-const $correctStatus = combine(
-  $status,
-  $isArchive,
-  $isPublished,
-  (status, isArchive, isPublished) => {
-    let res = status
-    if (isArchive) res = 'archive'
-    if (isPublished) res = 'published'
-    return res
-  }
-)
 
 const $baseForm = combine(
   $correctStatus,
