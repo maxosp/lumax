@@ -132,7 +132,15 @@ export const lessonsTableFields: TableField[] = [
   },
 ]
 
-export const searchFieldsData: DropdownItem[] = [] // TODO add elements to array
+export const searchFieldsData: DropdownItem[] = [
+  { name: 'all', title: 'Искать везде' },
+  { name: 'id', title: 'id Задания' },
+  { name: 'wording', title: 'Формулировка' },
+  { name: 'score', title: 'Баллы' },
+  { name: 'created_by', title: 'Создатель' },
+  { name: 'search_course', title: 'Курс' },
+  { name: 'search_folder', title: 'Расположение' },
+]
 
 export const contextMethodsOneLesson = [
   { name: 'edit', title: 'Редактирование' },
