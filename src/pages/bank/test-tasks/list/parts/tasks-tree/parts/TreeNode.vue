@@ -54,6 +54,7 @@
         :item="resources.tasks"
         icon="copy"
       />
+      <Chip :item="resources.resources" icon="text" />
       <Actions
         v-if="showActions"
         :id="node.assignment && node.assignment.id || node.theme.id"
@@ -137,11 +138,11 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          count: this.node.leaves.filter((el) => el.element_type === 'assignment').length,
+          count: (this.node.theme && this.node.theme.assignments_amount) || 0,
           description: 'Количество заданий в теме',
         },
         resources: {
-          count: this.node.text_resource_count,
+          count: (this.node.theme && this.node.theme.study_resource_amount) || 0,
           description: 'Количество обучающих ресурсов в теме',
         },
       }

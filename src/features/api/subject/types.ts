@@ -91,6 +91,8 @@ export type Theme = {
   updated_by: User
   parent_theme: ParentTheme
   parent_theme_id: number
+  assignments_amount: number
+  study_resource_amount: number
 }
 
 export type CreateThemeType = {
