@@ -18,11 +18,11 @@ export const themesTableFields: TableField[] = [
     width: '130px',
   },
   {
-    name: 'theme',
+    name: 'subject',
     title: 'Предмет',
     width: '130px',
     formatter: (data) => {
-      return data && data.subject && data.subject.name ? data.subject.name : '–'
+      return data.name || '–'
     },
   },
   {
@@ -35,11 +35,11 @@ export const themesTableFields: TableField[] = [
     },
   },
   {
-    name: 'theme',
+    name: 'study_year',
     title: 'Класс',
     width: '130px',
     formatter: (data) => {
-      return data && data.study_year && data.study_year.name ? data.study_year.name : '–'
+      return data.name || '–'
     },
   },
   {

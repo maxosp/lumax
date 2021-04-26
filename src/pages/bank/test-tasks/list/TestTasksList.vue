@@ -58,6 +58,13 @@
             @onRightClick="handleRightClick"
           />
         </template>
+        <template #theme="props">
+          <TooltipCell
+            :title="props.rowData.theme.name || ''"
+            :row-id="props.rowData.id"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template #type="props">
           <TooltipCell
             :icon-type="getCorrectIconType(props.rowData.type)"
