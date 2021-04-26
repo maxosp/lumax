@@ -161,7 +161,7 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'all', title: 'Искать везде' },
   { name: 'id', title: 'ID теста' },
   { name: 'name', title: 'Название' },
-  { name: 'study_year_id', title: 'Класс' },
+  { name: 'study_year', title: 'Класс' },
   { name: 'subject_id', title: 'Предмет' },
   { name: 'groups_names', title: 'Группа' },
 ]

@@ -26,11 +26,11 @@ export const lessonsTableFields: TableField[] = [
     },
   },
   {
-    name: 'id',
+    name: 'folder',
     title: 'Расположение',
     width: '130px',
-    formatter(data: string) {
-      return data || '–'
+    formatter(data: { name: string; id: number }) {
+      return data.name || '–'
     },
   },
   {

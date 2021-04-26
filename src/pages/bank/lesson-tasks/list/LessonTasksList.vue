@@ -49,6 +49,13 @@
             @onRightClick="handleRightClick"
           />
         </template>
+        <template #folder="props">
+          <TooltipCell
+            :title="props.rowData.folder && props.rowData.folder.name || ''"
+            :row-id="props.rowData.id"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template #wording="props">
           <TooltipCell
             :title="clearWording(props.rowData.wording) || ''"
