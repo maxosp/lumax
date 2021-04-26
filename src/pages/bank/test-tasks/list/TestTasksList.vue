@@ -20,13 +20,13 @@
     <TableHeader
       v-if=" !$isLoading"
       :total="$treeView ? $tasksTreeTotal : total"
-      :selected-rows="selectedRows"      
+      :selected-rows="selectedRows"
       @onCheck="sendToModerationAssignments"
       @onDuplicate="duplicateTask"
       @onEdit="handleEditTask"
       @onPublish="publishAssignments"
       @onPreview="showPreview"
-      @onRemove="onRemoveTask"      
+      @onRemove="onRemoveTask"
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
@@ -100,6 +100,7 @@
     </div>
     <div :class="{ invisible: !$treeView || $isLoading }">
       <TasksTree
+        @resetFilters="onFilterReset"
         @onRightClick="handleRightClick"
         @onRemoveTask="onRemoveTask"
         @onRemoveTheme="onRemoveTheme"

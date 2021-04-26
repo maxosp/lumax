@@ -115,11 +115,10 @@ export const $tasksTreeTotal = restore<number>(setTasksTreeTotal, 0)
 const showDeleteAssignmentsToast = createEvent<number[]>()
 
 export const $isLoading = combine(
-  getTestAssignmentTreeFx.pending,
+  getFilteredTree.pending,
   getTestAssignmentTreeLightFx.pending,
-  getAssignmentInfoFx.pending,
   getTestAssignmentListFx.pending,
-  (tree, light, info, list) => tree || light || info || list
+  (tree, light, list) => tree || light || list
 )
 
 forward({

@@ -94,6 +94,7 @@
     </div>
     <div :class="{ invisible: !$treeView || $isLoading }">
       <LessonsTree
+        @resetFilters="onFilterReset"
         @loadTree="val => loadTree(val)"
         @onRightClick="handleRightClick"
         @onRemove="onRemoveTask"

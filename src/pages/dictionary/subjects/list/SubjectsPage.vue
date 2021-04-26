@@ -15,7 +15,7 @@
       @changeFilter="changeFilter"
     />
     <LoaderBig v-if="$isLoading" />
-    <div class="table-container">
+    <div :class="{ 'table-container': true, invisible: $isLoading }">
       <Vuetable
         ref="vuetable"
         class="table"

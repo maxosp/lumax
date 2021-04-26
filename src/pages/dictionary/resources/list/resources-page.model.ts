@@ -67,10 +67,9 @@ export const setResourcesTreeTotal = createEvent<number>()
 export const $resourcesTreeTotal = restore<number>(setResourcesTreeTotal, 0)
 
 export const $isLoading = combine(
-  getResourcesTreeFx.pending,
+  getFilteredTree.pending,
   getResourcesTreeLightFx.pending,
-  getResourcesInfoFx.pending,
-  (tree, light, info) => tree || light || info
+  (tree, light) => tree || light
 )
 
 forward({

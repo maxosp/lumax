@@ -19,6 +19,7 @@
     <LoaderBig v-if="$isLoading" />
     <ResourcesTree
       v-if="!$isLoading"
+      @resetFilter="onFilterReset"
       @onRightClick="handleRightClick"
       @loadTree="val => loadTree(val)"
       @onRemove="onRemoveResource"

@@ -82,11 +82,10 @@ export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 const showDeleteAssignmentsToast = createEvent<number[]>()
 
 export const $isLoading = combine(
-  getLessonAssignmentTreeFx.pending,
+  getFilteredTree.pending,
   getLessonAssignmentTreeLightFx.pending,
-  getLessonInfoFx.pending,
   getLessonAssignmentListFx.pending,
-  (tree, light, info, list) => tree || light || info || list
+  (tree, light, list) => tree || light || list
 )
 
 forward({

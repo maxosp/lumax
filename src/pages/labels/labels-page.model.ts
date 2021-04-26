@@ -77,10 +77,9 @@ forward({
 })
 
 export const $isLoading = combine(
-  getLabelsTreeFx.pending,
+  getFilteredTree.pending,
   getLabelsTreeLightFx.pending,
-  getLabelsInfoFx.pending,
-  (tree, light, info) => tree || light || info
+  (tree, light) => tree || light
 )
 
 forward({

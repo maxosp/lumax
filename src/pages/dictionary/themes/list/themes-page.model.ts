@@ -84,11 +84,10 @@ export const $themesTreeTotal = restore<number>(setThemesTreeTotal, 0)
 const showDeleteThemesToast = createEvent<number[]>()
 
 export const $isLoading = combine(
-  getThemesTreeFx.pending,
+  getFilteredTree.pending,
   gethThemesTreeLightFx.pending,
   getThemesListFx.pending,
-  getThemesInfoFx.pending,
-  (tree, light, list, info) => tree || light || list || info
+  (tree, light, list) => tree || light || list
 )
 
 forward({

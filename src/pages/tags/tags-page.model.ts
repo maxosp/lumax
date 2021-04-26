@@ -72,11 +72,10 @@ export const $tagsTreeTotal = restore<number>(setTagsTreeTotal, 0)
 const showDeleteAssignmentsToast = createEvent<number[]>()
 
 export const $isLoading = combine(
-  getTagsTreeFx.pending,
+  getFilteredTree.pending,
   getTagsTreeLightFx.pending,
   getTagsListFx.pending,
-  getTagsInfoFx.pending,
-  (tree, light, list, info) => tree || light || list || info
+  (tree, light, list) => tree || light || list
 )
 
 forward({
