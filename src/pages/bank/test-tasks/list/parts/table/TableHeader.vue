@@ -39,7 +39,7 @@
       <span
         v-if="selectedRows.length"
         class="--basic"
-        @click="$emit('showPreview', selectedRows)"
+        @click="$emit('onPreview', selectedRows)"
       >
         Предпросмотр
       </span>
