@@ -94,10 +94,14 @@ export default Vue.extend({
   }),
   computed: {
     title() {
-      const entity = this.node[this.node.element_type]
-      let fullName = entity ? entity.name : ''
-      if (fullName.length > 100) {
-        fullName = `${fullName.slice(0, 100)}...`
+      const type = this.node.element_type
+      let fullName = ''
+      if (type !== 'assignment' && type !== 'study_resource') {
+        const entity = this.node[type]
+        fullName = entity ? entity.name : ''
+        if (fullName.length > 100) {
+          fullName = `${fullName.slice(0, 100)}...`
+        }
       }
       return fullName
     },
@@ -114,11 +118,11 @@ export default Vue.extend({
       }
     },
     showActions() {
-      const { element_type } = this.$props.node
+      const { element_type } = this.node
       return ['label', 'theme'].includes(element_type)
     },
     dataToCreateLabel() {
-      const { theme } = this.$props.node
+      const { theme } = this.node
       if (theme)
         return {
           class_id: theme.study_year_id,
@@ -149,17 +153,19 @@ export default Vue.extend({
     },
     handleRightClick(event: any) {
       event.preventDefault()
-      const type = this.$props.node.element_type
+      const type = this.node.element_type
       const obj = {}
       this.setDataForTree()
-      if (this.node.theme)
+      if (this.node.theme && type === 'theme') {
+        const entity = this.node[type]!
         Object.assign(obj, {
-          class_id: this.node[this.node.element_type].study_year_id,
-          subject_id: this.node[this.node.element_type].subject_id,
+          class_id: entity.study_year_id,
+          subject_id: entity.subject_id,
         })
+      }
       this.$emit('onRightClick', {
         data: {
-          id: this.$props.nodeId,
+          id: this.nodeId,
           ...obj,
         },
         event,
@@ -181,13 +187,13 @@ export default Vue.extend({
   },
   mounted() {
     if (['theme', 'label'].includes(this.node.element_type)) {
-      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+      const nodeElement = document.querySelector(`#node-${this.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
     if (['theme', 'label'].includes(this.node.element_type)) {
-      const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
+      const nodeElement = document.querySelector(`#node-${this.nodeId}`)
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },

@@ -26,8 +26,8 @@ export type CreateFolderType = {
 
 export type FolderType = {
   id?: number
-  name?: string
-  parent_id?: number
+  name: string
+  parent_id: number
   owner?: number
 }
 

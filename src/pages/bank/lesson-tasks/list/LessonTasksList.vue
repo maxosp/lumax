@@ -122,6 +122,7 @@
       @confirmRequestDelete="sendRequestDeleteTask"
     />
     <CreatingFolderModal />
+    <EditingFolderModal />
   </div>
 </template>
 
@@ -171,6 +172,7 @@ import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/req
 import { $session } from '@/features/session'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import CreatingFolderModal from '@/pages/common/modals/tasks-bank/creating-folder/CreatingFolderModal.vue'
+import EditingFolderModal from '@/pages/common/modals/tasks-bank/editing-folder/EditingFolderModal.vue'
 import {
   combineRouteQueries,
   computeSortParam,
@@ -212,6 +214,7 @@ export default (Vue as VueConstructor<
     ConfirmDeleteModal,
     RequestDeleteModal,
     CreatingFolderModal,
+    EditingFolderModal,
     LoaderBig,
   },
   effector: {

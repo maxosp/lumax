@@ -59,7 +59,7 @@ export default Vue.extend({
   props: {
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
-    isFolder: { type: Boolean },
+    isFolder: { type: Boolean, default: false },
   },
   data: () => ({
     isOpen: false,
@@ -72,8 +72,8 @@ export default Vue.extend({
         return [
           { name: 'create-folder', title: 'Создать папку' },
           { name: 'create-task', title: 'Создать задание' },
-          { name: 'edit-theme', title: 'Редактировать' },
-          { name: 'delete-theme', title: 'Удалить' },
+          { name: 'edit-folder', title: 'Редактировать' },
+          { name: 'delete-folder', title: 'Удалить' },
         ]
       }
       return this.$props.selected.length > 1 ? contextMethodsManyLessons : contextMethodsOneLesson
@@ -118,6 +118,18 @@ export default Vue.extend({
           break
         case 'preview':
           this.$emit('onPreview', ids)
+          break
+        case 'create-folder':
+          this.$emit('onCreateFolder')
+          break
+        case 'create-task':
+          this.$emit('onCreateTask')
+          break
+        case 'edit-folder':
+          this.$emit('onEditFolder')
+          break
+        case 'delete-folder':
+          this.$emit('onDeleteFolder')
           break
         default:
           break

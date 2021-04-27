@@ -49,9 +49,13 @@ export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
   const res = oldData.map((el) => {
     const nData = newData[0]
     if (nData === undefined) return el
-    if (el[el.element_type].id === nData[nData.element_type].id) {
-      if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
-      else el.leaves = nData.leaves
+    const oldType = el.element_type
+    const newType = nData.element_type
+    if (oldType !== 'virtual_folder' && newType !== 'virtual_folder') {
+      if (el[oldType]?.id === nData[newType]?.id) {
+        if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
+        else el.leaves = nData.leaves
+      }
     }
     return el
   })

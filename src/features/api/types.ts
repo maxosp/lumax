@@ -1,5 +1,5 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
-import { Label, Tag } from '@/features/api/assignment/types'
+import { BaseAssignment, FolderType, Label, Tag } from '@/features/api/assignment/types'
 import { ResourceType } from '@/features/api/media/types'
 
 export type TreeElementType =
@@ -39,6 +39,7 @@ export type TableDataResponse<T> = {
 
 export type TreeData = {
   element_type: TreeElementType
+  folder: FolderType | null
   leaves: TreeData[]
   subject: Subject | null
   study_year: StudyYear | null
@@ -48,7 +49,7 @@ export type TreeData = {
   study_resource: ResourceType | null
   virtual_folder: VirtualFolder | null
   ordering_number: number
-  // assignment: TestAssignment | null
+  assignment: BaseAssignment | null
 }
 
 export type GetThemeTreeFilterListResponse = {

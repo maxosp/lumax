@@ -94,10 +94,14 @@ export default Vue.extend({
   }),
   computed: {
     title() {
-      const entity = this.node[this.node.element_type]
-      let fullName = entity ? entity.name : ''
-      if (fullName.length > 100) {
-        fullName = `${fullName.slice(0, 100)}...`
+      const type = this.node.element_type
+      let fullName = ''
+      if (type !== 'assignment' && type !== 'study_resource') {
+        const entity = this.node[type]
+        fullName = entity ? entity.name : ''
+        if (fullName.length > 100) {
+          fullName = `${fullName.slice(0, 100)}...`
+        }
       }
       return fullName
     },

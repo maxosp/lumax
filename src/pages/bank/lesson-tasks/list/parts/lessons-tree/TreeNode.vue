@@ -49,13 +49,15 @@
         icon="copy"
       />
       <Actions
-        v-if="showActions"
         :id="node.assignment && node.assignment.id || node.ordering_number"
-        is-folder
+        :is-folder="showActions"
         :selected="[]"
         class="action"
         @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
+        @onCreateFolder="createFolder($props.nodeId)"
+        @onCreateTask="createTask($props.nodeId)"
+        @onEditFolder="editFolder($props.nodeId)"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -82,6 +84,14 @@ import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { removeHtmlTags } from '@/features/lib'
+import {
+  modalVisibilityChanged as createFolderModal,
+  loadFolder,
+} from '@/pages/common/modals/tasks-bank/creating-folder/creating-folder-modal.model'
+import {
+  modalVisibilityChanged as editFolderModal,
+  loadFolder as loadParentFolder,
+} from '@/pages/common/modals/tasks-bank/editing-folder/editing-folder-modal.model'
 import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
@@ -103,16 +113,18 @@ export default Vue.extend({
   }),
   computed: {
     title() {
-      const entity = this.node[this.node.element_type]
+      const type = this.node.element_type
       let fullName = ''
-      if (this.node.element_type !== 'assignment') {
-        fullName = entity ? entity.name : ''
+      if (type !== 'assignment' && type !== 'study_resource') {
+        const entity = this.node[type]
+        fullName = entity && entity.name ? entity.name : ''
         if (fullName.length > 100) {
           fullName = `${fullName.slice(0, 100)}...`
         }
-      } else {
+      } else if (type !== 'study_resource') {
+        const entity = this.node[type]
         fullName = entity ? entity.wording : ''
-        if (!entity.wording) return ''
+        if (!entity?.wording) return ''
         fullName = removeHtmlTags(fullName)
         fullName = `${fullName.slice(0, 30)}...`
       }
@@ -122,29 +134,23 @@ export default Vue.extend({
       return {
         tasks: {
           count: this.node.leaves.filter((el) => el.element_type === 'assignment').length,
-          description: 'Количество заданий в теме',
-        },
-        resources: {
-          count: this.node.theme && this.node.theme.text_resource_count,
-          description: 'Количество обучающих ресурсов в теме',
+          description: 'Количество заданий в папке',
         },
       }
     },
     taskIcon() {
-      // @ts-ignore
-      return mapTaskTypeTo[this.node.assignment.type].icon
+      return mapTaskTypeTo[this.node.assignment!.type].icon
     },
     correctStatus() {
-      // @ts-ignore
-      return mapTaskStatus[this.node.assignment.status]
+      return mapTaskStatus[this.node.assignment!.status]
     },
     showActions() {
-      // @ts-ignore
       const { element_type } = this.$props.node
-      return element_type === 'assignment' || element_type === 'folder'
+      return element_type === 'folder'
     },
   },
   methods: {
+    createFolderModal,
     toggle(evt: any) {
       if (evt.target.closest('.action') || this.node.element_type === 'assignment') return
       if (!this.opened && this.node.element_type === 'folder') {
@@ -182,32 +188,37 @@ export default Vue.extend({
       })
     },
     setDataForTree() {
-      // @ts-ignore
-      const { assignment } = this.node
-      if (assignment) {
+      const { folder } = this.node
+      if (folder) {
         setDataToUpdateTree({
-          folder: assignment.folder,
+          folder: folder.id,
         })
       }
     },
+    createFolder(id: number) {
+      loadFolder(id)
+      createFolderModal(true)
+    },
+    editFolder(id: number) {
+      loadParentFolder(id)
+      editFolderModal(true)
+    },
+    createTask(id: number) {
+      loadFolder(id)
+      this.$router.push({ name: 'lesson-tasks-creation' })
+    },
   },
   mounted() {
-    // @ts-ignore
     const { element_type } = this.$props.node
-    if (element_type === 'theme' || element_type === 'assignment') {
-      // @ts-ignore
+    if (element_type === 'assignment') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
-    // @ts-ignore
     const { element_type } = this.$props.node
-    if (element_type === 'theme' || element_type === 'assignment') {
-      // @ts-ignore
+    if (element_type === 'assignment') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
-      // @ts-ignore
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
   },
