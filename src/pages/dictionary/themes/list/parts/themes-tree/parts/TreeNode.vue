@@ -79,19 +79,19 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          count: this.node.leaves.filter((el) => el.element_type === 'theme').length,
+          count: this.node.theme && this.node.theme.assignments_count,
           description: 'Количество заданий',
         },
         videos: {
-          count: this.node.media_resource_count,
+          count: this.node.theme && this.node.theme.media_resource_count,
           description: 'Количество ресурсов типа "Видео"',
         },
         texts: {
-          count: this.node.text_resource_count,
+          count: this.node.theme && this.node.theme.text_resource_count,
           description: 'Количество ресурсов типа "Текст"',
         },
         links: {
-          count: this.node.link_resource_count,
+          count: this.node.theme && this.node.theme.link_resource_count,
           description: 'Количество ресурсов типа "Ссылка"',
         },
       }

@@ -140,11 +140,11 @@ export default Vue.extend({
     resources() {
       return {
         tasks: {
-          count: (this.node.theme && this.node.theme.assignments_amount) || 0,
+          count: this.node.theme && this.node.theme.assignments_amount,
           description: 'Количество заданий в теме',
         },
         resources: {
-          count: (this.node.theme && this.node.theme.study_resource_amount) || 0,
+          count: this.node.theme && this.node.theme.study_resource_amount,
           description: 'Количество обучающих ресурсов в теме',
         },
       }

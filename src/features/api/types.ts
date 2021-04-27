@@ -47,9 +47,6 @@ export type TreeData = {
   olympiad_tag: Tag | null
   study_resource: ResourceType | null
   virtual_folder: VirtualFolder | null
-  text_resource_count: string
-  link_resource_count: string
-  media_resource_count: string
   ordering_number: number
   // assignment: TestAssignment | null
 }

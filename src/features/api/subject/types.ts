@@ -93,6 +93,10 @@ export type Theme = {
   parent_theme_id: number
   assignments_amount: number
   study_resource_amount: number
+  assignments_count: number
+  text_resource_count: number
+  link_resource_count: number
+  media_resource_count: number
 }
 
 export type CreateThemeType = {

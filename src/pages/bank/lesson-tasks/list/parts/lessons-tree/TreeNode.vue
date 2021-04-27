@@ -125,7 +125,7 @@ export default Vue.extend({
           description: 'Количество заданий в теме',
         },
         resources: {
-          count: this.node.text_resource_count,
+          count: this.node.theme && this.node.theme.text_resource_count,
           description: 'Количество обучающих ресурсов в теме',
         },
       }
