@@ -12,6 +12,10 @@
       <p>Созданные мной</p>
     </BaseSwitch>
     <div class="row">
+      <PositionDropdown class="half-second" @setItem="val => setItem({'folder': val})" />
+      <CourseDropdown class="half-third" @setItem="val => setItem({'course': val})" />
+    </div>
+    <div class="row">
       <TypeDropdown class="half-second" @setItem="val => setItem({'type': val})" />
       <StatusDropdown class="half-third" @setItem="val => setItem({'status': val})" />
     </div>
@@ -69,6 +73,8 @@ export default Vue.extend({
     BaseSwitch,
     StatusDropdown: dropdownComponents.StatusDropdown,
     TypeDropdown: dropdownComponents.TypeDropdown,
+    CourseDropdown: dropdownComponents.CourseDropdown,
+    PositionDropdown: dropdownComponents.PositionDropdown,
   },
   effector: {
     $filterParams: lessonTasksFilters.store.$filterParams,
