@@ -19,6 +19,7 @@ export const themesTableFields: TableField[] = [
   },
   {
     name: 'subject',
+    sortField: 'theme__subject',
     title: 'Предмет',
     width: '130px',
     formatter: (data) => {
@@ -36,6 +37,7 @@ export const themesTableFields: TableField[] = [
   },
   {
     name: 'study_year',
+    sortField: 'theme__study_year',
     title: 'Класс',
     width: '130px',
     formatter: (data) => {
@@ -44,6 +46,7 @@ export const themesTableFields: TableField[] = [
   },
   {
     name: 'theme',
+    sortField: 'theme',
     title: 'Тема',
     width: '150px',
     formatter: (data) => {
