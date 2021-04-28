@@ -14,7 +14,9 @@
       @onSendForModeration="sendForModeration"
       @onSeeComments="showComments"
     />
-    <SelectTaskBlock @onLoadTask="val => loadTask(val)" />
+    <SelectTask
+      :questions="questions"
+    />
     <TaskContent />
     <TaskFooter
       :disabled="!$canSave"
@@ -32,7 +34,6 @@ import Vue from 'vue'
 import TaskHeader from '@/pages/bank/common/parts/Header.vue'
 import TaskContent from '@/pages/bank/test-tasks/edit/parts/Content.vue'
 import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
-import SelectTaskBlock from '@/pages/bank/common/parts/SelectTaskBlock.vue'
 import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import {
   save,
@@ -57,6 +58,12 @@ import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-
 import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
+import SelectTask from '@/pages/preview-tasks/parts/select-task/SelectTask.vue'
+import {
+  $currentIndex,
+  $currentQuestion,
+} from '@/pages/preview-tasks/parts/select-task/select-task.model'
+import { combineRouteQueries } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -64,7 +71,7 @@ export default Vue.extend({
     TaskHeader,
     TaskContent,
     TaskFooter,
-    SelectTaskBlock,
+    SelectTask,
     ModeratorSelectModal,
     SendForModerationModal,
     OutgoingModal,
@@ -76,6 +83,8 @@ export default Vue.extend({
     $token,
     $status,
     $canRefreshAfterSendingForModeration,
+    $currentIndex,
+    $currentQuestion,
   },
   data: () => ({
     questions: [] as string[],
@@ -94,6 +103,7 @@ export default Vue.extend({
               token: this.$token,
               fromPage: this.fromPage,
               applications: this.applications.join(','),
+              currentQuestion: String(this.$currentQuestion),
             },
           })
         }
@@ -103,6 +113,16 @@ export default Vue.extend({
       handler(newVal) {
         if (newVal) loadTask(+this.$route.params.id)
       },
+    },
+    $currentIndex: {
+      handler(newVal) {
+        loadTask(+this.questions[newVal])
+      },
+    },
+    $currentQuestion(value) {
+      if (value !== $currentQuestion) {
+        this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
+      }
     },
   },
   methods: {
@@ -127,18 +147,16 @@ export default Vue.extend({
       loadCommentModal(this.$taskId)
     },
   },
-  mounted() {
-    const { questions } = this.$route.query
-    if (questions && typeof questions === 'string') {
-      this.questions = questions.split(',')
-    }
-  },
   beforeDestroy() {
     clearFields()
     toggleIsPreview(false)
   },
   created() {
-    const { applications, fromPage } = this.$route.query
+    const { questions, applications, fromPage, currentQuestion } = this.$route.query
+
+    if (questions && typeof questions === 'string') {
+      this.questions = questions.split(',')
+    }
     if (applications && typeof applications === 'string') {
       this.applications = applications.split(',').map((appId) => Number(appId))
       loadApplication(this.applications[0])
@@ -146,8 +164,11 @@ export default Vue.extend({
     if (fromPage && typeof fromPage === 'string') {
       this.fromPage = fromPage
     }
-    /* todo: https://trello.com/c/xtZZirJi */
-    loadTask(+this.$route.params.id)
+    if (currentQuestion && typeof +currentQuestion === 'number') {
+      loadTask(+currentQuestion)
+    } else {
+      loadTask(+this.$route.params.id)
+    }
   },
 })
 </script>

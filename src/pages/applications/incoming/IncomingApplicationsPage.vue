@@ -135,7 +135,7 @@ import { RefsType, HttpOptionsType } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { Ticket } from '@/features/api/ticket/types'
 import {
   combineRouteQueries,

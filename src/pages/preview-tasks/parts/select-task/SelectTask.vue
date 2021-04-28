@@ -1,18 +1,18 @@
 <template>
   <Card v-if="questions.length > 1" class="toggler-tasks">
-    <TasksDropdown @setItem="val => changeIndexTask(val)" />
+    <TasksDropdown @setItem="val => onSelectTask(val)" />
     <div class="counter-tasks">
-      <span>{{ currentIndex + 1 }}</span>
+      <span>{{ $currentQuestion }}</span>
       <span>/</span>
-      <span>{{ questions.length }}</span>
+      <span>{{ $questionAmount }}</span>
     </div>
-    <div class="btn" @click="prevTask">
+    <div class="btn" @click="prev">
       <Icon
         type="arrow-left"
         size="16"
       />
     </div>
-    <div class="btn" @click="nextTask">
+    <div class="btn" @click="next">
       <Icon
         type="arrow-right"
         size="16"
@@ -24,48 +24,64 @@
 <script lang="ts">
 import Vue from 'vue'
 import Card from '@/ui/card/Card.vue'
-import TasksDropdown from '@/pages/preview-tasks/tasks-dropdown/TasksDropdown.vue'
+import TasksDropdown from '@/pages/preview-tasks/parts/tasks-dropdown/TasksDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
-import { initDropDown } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import {
+  $currentIndex,
+  $currentQuestion,
+  $questionAmount,
+  setCurrentIndex,
+  prev,
+  next,
+  setQuestionsAmount,
+  setCurrentQuestion,
+} from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { goBack } from '@/features/navigation'
 
 export default Vue.extend({
-  name: 'SelecteTaskBlock',
+  name: 'SelectTask',
   components: {
     Card,
     TasksDropdown,
     Icon,
   },
-  data: () => ({
-    questions: [] as string[],
-    currentIndex: null as null | number,
-  }),
+  data() {
+    return {
+      questions: [] as string[],
+    }
+  },
+  effector: {
+    $currentIndex,
+    $currentQuestion,
+    $questionAmount,
+  },
   methods: {
-    changeIndexTask(val: string) {
+    onSelectTask(val: string) {
       const index = this.questions.findIndex((item) => item === val)
-      if (index !== -1) this.currentIndex = index
+      if (index !== -1) setCurrentIndex(index)
     },
-    nextTask() {
-      if (typeof this.currentIndex === 'number') {
-        if (this.currentIndex === this.questions.length - 1) this.currentIndex = 0
-        else this.currentIndex += 1
-        this.$emit('onLoadTask', this.questions[this.currentIndex])
-      }
-    },
-    prevTask() {
-      if (typeof this.currentIndex === 'number') {
-        if (this.currentIndex === 0) this.currentIndex = this.questions.length - 1
-        else this.currentIndex -= 1
-        this.$emit('onLoadTask', this.questions[this.currentIndex])
-      }
-    },
+    prev,
+    next,
   },
   created() {
-    const { questions } = this.$route.query
+    const { questions, currentQuestion } = this.$route.query
+
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
-      this.currentIndex = 0
-      if (questions.length > 1) initDropDown()
+
+      if (this.questions.length > 1) {
+        setQuestionsAmount(this.questions.length)
+      }
+    }
+
+    if (
+      currentQuestion &&
+      typeof currentQuestion === 'string' &&
+      typeof +currentQuestion === 'number'
+    ) {
+      setCurrentQuestion(+currentQuestion)
+    } else {
+      setCurrentQuestion(1)
     }
     if (!this.questions) goBack()
   },
@@ -94,6 +110,13 @@ export default Vue.extend({
 .toggler-tasks /deep/ .label {
   margin-bottom: 0;
 }
+.counter-tasks {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 15px;
+}
 .btn {
   display: flex;
   align-items: center;
@@ -104,12 +127,5 @@ export default Vue.extend({
   border-radius: 7px;
   margin-left: 10px;
   cursor: pointer;
-}
-.counter-tasks {
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  font-size: 14px;
-  margin-left: 15px;
 }
 </style>

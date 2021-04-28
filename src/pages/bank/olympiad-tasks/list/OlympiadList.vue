@@ -168,7 +168,7 @@ import {
   removeHtmlTags,
 } from '@/features/lib'
 import { OlympiadAssignment } from '@/features/api/assignment/types'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)

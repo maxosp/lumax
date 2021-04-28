@@ -15,8 +15,9 @@ import {
   tasksDropdownModule,
   $tasks,
   setSelectedTasks,
-} from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+} from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import { $currentIndex } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 
 export default Vue.extend({
   components: {
@@ -24,12 +25,8 @@ export default Vue.extend({
   },
   effector: {
     $tasks,
+    $currentIndex,
     ...tasksDropdownModule.store,
-  },
-  data() {
-    return {
-      themeMethods: tasksDropdownModule.methods,
-    }
   },
   methods: {
     ...tasksDropdownModule.methods,
@@ -37,6 +34,9 @@ export default Vue.extend({
       setSelectedTasks(item)
       this.$emit('setItem', item ? item.name : null)
     },
+  },
+  mounted() {
+    tasksDropdownModule.methods.itemChanged(this.$tasks[this.$currentIndex].name)
   },
 })
 </script>

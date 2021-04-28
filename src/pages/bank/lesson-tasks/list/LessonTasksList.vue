@@ -180,7 +180,7 @@ import {
   isQueryParamsEquelToPage,
   removeHtmlTags,
 } from '@/features/lib'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { LessonAssignment } from '@/features/api/assignment/types'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 

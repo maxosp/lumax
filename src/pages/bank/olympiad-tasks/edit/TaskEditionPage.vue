@@ -10,6 +10,9 @@
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
     />
+    <SelectTask
+      :questions="questions"
+    />
     <TaskContent />
     <TaskFooter
       :disabled="!$canSave"
@@ -36,6 +39,12 @@ import {
 } from '@/pages/bank/olympiad-tasks/edit/task-edition-page.model'
 import { $token } from '@/features/api/common/request'
 import { navigateReplace } from '@/features/navigation'
+import SelectTask from '@/pages/preview-tasks/parts/select-task/SelectTask.vue'
+import {
+  $currentIndex,
+  $currentQuestion,
+} from '@/pages/preview-tasks/parts/select-task/select-task.model'
+import { combineRouteQueries } from '@/features/lib'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -43,15 +52,19 @@ export default Vue.extend({
     TaskHeader,
     TaskContent,
     TaskFooter,
+    SelectTask,
   },
   effector: {
     $canSave,
     $isPreview,
     $taskId,
     $token,
+    $currentIndex,
+    $currentQuestion,
   },
   data() {
     return {
+      questions: [] as string[],
       fromPage: '',
     }
   },
@@ -62,14 +75,25 @@ export default Vue.extend({
           navigateReplace({
             name: 'preview-task',
             query: {
-              questions: `${this.$taskId}`,
-              type: 'olympiad-assignment',
+              questions: this.questions.length ? this.questions.join(',') : `${this.$taskId}`,
+              taskType: 'olympiad-assignment',
               token: this.$token,
               fromPage: this.fromPage,
+              currentQuestion: String(this.$currentQuestion),
             },
           })
         }
       },
+    },
+    $currentIndex: {
+      handler(newVal) {
+        loadTask(+this.questions[newVal])
+      },
+    },
+    $currentQuestion(value) {
+      if (value !== $currentQuestion) {
+        this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
+      }
     },
   },
   methods: {
@@ -80,11 +104,19 @@ export default Vue.extend({
     },
   },
   created() {
-    const { fromPage } = this.$route.query
+    const { questions, fromPage, currentQuestion } = this.$route.query
+
+    if (questions && typeof questions === 'string') {
+      this.questions = questions.split(',')
+    }
     if (fromPage && typeof fromPage === 'string') {
       this.fromPage = fromPage
     }
-    loadTask(+this.$route.params.id)
+    if (currentQuestion && typeof +currentQuestion === 'number') {
+      loadTask(+currentQuestion)
+    } else {
+      loadTask(+this.$route.params.id)
+    }
   },
   beforeDestroy() {
     clearFields()

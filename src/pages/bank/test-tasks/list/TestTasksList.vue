@@ -191,7 +191,7 @@ import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksT
 import TasksUpdateModal from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
-import { changeTasks } from '@/pages/preview-tasks/tasks-dropdown/tasks-dropdown.model'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import {
   $canRefreshAfterSendingForModeration,
