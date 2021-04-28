@@ -4,7 +4,6 @@ import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
-import { setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsListFx,
@@ -43,6 +42,5 @@ forward({
   to: [
     successToastEvent('Задание(я) были успешно приняты'),
     canRefreshTableChanged.prepend(() => true),
-    setStatus.prepend(() => 'reserve'),
   ],
 })

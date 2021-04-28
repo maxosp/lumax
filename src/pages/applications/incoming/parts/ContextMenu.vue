@@ -83,7 +83,7 @@ export default Vue.extend({
           this.$emit('onAccept', selectedApplicationsIds)
           break
         case 'send-for-moderation':
-          this.$emit('onSendForModeration', selectedApplicationsIds)
+          this.$emit('onSendToRevision', selectedApplicationsIds)
           break
         case 'assign-to-moderator':
           this.$emit('onAssignToModerator', selectedApplicationsIds)

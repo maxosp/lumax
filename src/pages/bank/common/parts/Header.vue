@@ -47,9 +47,9 @@
       :is-preview="isPreview"
       :task-type="taskType"
       @onAccept="$emit('onAccept')"
-      @onSendForModeration="$emit('onSendForModeration')"
+      @onSendToRevision="$emit('onSendToRevision')"
       @onSeeComments="$emit('onSeeComments')"
-      @onReview="$emit('onReview')"
+      @onSendToReview="$emit('onSendToReview')"
     />
   </div>
 </template>

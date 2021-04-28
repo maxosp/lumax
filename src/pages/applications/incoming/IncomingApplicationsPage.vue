@@ -29,7 +29,7 @@
       @showPreview="showPreview"
       @onEdit="editApplications"
       @onAccept="acceptApplications"
-      @onSendForModeration="sendForModeration"
+      @onSendToRevision="sendToRevision"
       @onAssignToModerator="assignToModerator"
     />
 
@@ -58,7 +58,7 @@
             @showPreview="showPreview"
             @onEdit="editApplications"
             @onAccept="acceptApplications"
-            @onSendForModeration="sendForModeration"
+            @onSendToRevision="sendToRevision"
             @onAssignToModerator="assignToModerator"
           />
         </template>
@@ -86,7 +86,7 @@
       @showPreview="showPreview"
       @onEdit="editApplications"
       @onAccept="acceptApplications"
-      @onSendForModeration="sendForModeration"
+      @onSendToRevision="sendToRevision"
       @onAssignToModerator="assignToModerator"
     />
     <SendForModerationModal />
@@ -222,19 +222,7 @@ export default (Vue as VueConstructor<
     loadList,
     reset,
     showPreview(applicationIds: number[], taskIds: number[]) {
-      if (applicationIds.length > 1) {
-        const filteredList = this.localItems
-          .filter((item) => taskIds.filter((id) => id === item.test_assignment.id).length > 0)
-          .map((item) => ({
-            id: item.test_assignment.id,
-            name: `${item.test_assignment.id}`,
-            title: `[id${item.test_assignment.id}] - ${cropString(
-              item.test_assignment.wording,
-              34
-            )}`,
-          }))
-        changeTasks(filteredList)
-      }
+      this.transferSelectedApps(applicationIds)
       navigatePush({
         name: 'preview-task',
         query: {
@@ -247,20 +235,37 @@ export default (Vue as VueConstructor<
       })
     },
     editApplications(applicationIds: number[], taskIds: number[]) {
+      this.transferSelectedApps(applicationIds)
       navigatePush({
         name: 'test-tasks-edit',
         query: {
-          applications: applicationIds.join(',')[0],
+          questions: taskIds.join(','),
+          applications: applicationIds.join(','),
           fromPage: 'applications',
         },
         params: { id: `${taskIds[0]}` },
       })
     },
+    transferSelectedApps(applicationIds: number[]) {
+      if (applicationIds.length > 1) {
+        const filteredList = this.localItems
+          .filter((item) => applicationIds.includes(item.id))
+          .map((item) => ({
+            id: item.test_assignment.id,
+            name: `${item.test_assignment.id}`,
+            title: `[id${item.test_assignment.id}] - ${cropString(
+              item.test_assignment.wording,
+              34
+            )}`,
+          }))
+        changeTasks(filteredList)
+      }
+    },
     acceptApplications(ids: number[]) {
       acceptApplicationsFx({ tickets: ids })
       this.removeSelection()
     },
-    sendForModeration(ids: number[]) {
+    sendToRevision(ids: number[]) {
       loadModal(ids)
       this.removeSelection()
     },

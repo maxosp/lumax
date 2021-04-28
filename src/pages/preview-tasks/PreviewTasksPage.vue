@@ -4,10 +4,10 @@
       :from-page="fromPage"
       :task-type="taskType"
       @onAccept="acceptApplications"
-      @onSendForModeration="sendForModeration"
+      @onSendToRevision="sendToRevision"
       @onSeeComments="showComments"
       @toEditPage="toEditPage"
-      @onReview="sendToModeration"
+      @onSendToReview="sendToReview"
     />
     <SelectTask
       :questions="questions"
@@ -33,7 +33,10 @@ import Card from '@/ui/card/Card.vue'
 import { config } from '@/config'
 import { $isPreview, toggleIsPreview } from '@/pages/preview-tasks/controller.model'
 import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
-import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
+import {
+  $canRefreshAfterSendingToRevision,
+  loadModal,
+} from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
@@ -46,7 +49,7 @@ import {
 import { goBack, navigateReplace } from '@/features/navigation/index'
 import {
   loadModalToSendForCheck,
-  $canRefreshAfterSendingForModeration,
+  $canRefreshAfterSendingToReview,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import ModeratorSelectModal from '@/pages/bank/common/modals/moderator-select/ModeratorSelectModal.vue'
 import SelectTask from '@/pages/preview-tasks/parts/select-task/SelectTask.vue'
@@ -82,7 +85,8 @@ export default Vue.extend({
   }),
   effector: {
     $isPreview,
-    $canRefreshAfterSendingForModeration,
+    $canRefreshAfterSendingToReview,
+    $canRefreshAfterSendingToRevision,
     $currentIndex,
     $currentQuestion,
   },
@@ -157,6 +161,54 @@ export default Vue.extend({
       }
     },
     activeTask(value) {
+      this.loadSpecificTask(value)
+    },
+    activeApplication(value) {
+      loadApplication(value)
+    },
+    $canRefreshAfterSendingToReview(newValue) {
+      if (newValue) {
+        this.refreshPage()
+      }
+    },
+    $canRefreshAfterSendingToRevision(newValue) {
+      if (newValue) {
+        this.refreshPage()
+      }
+    },
+    $currentQuestion(value) {
+      if (value !== $currentQuestion) {
+        this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
+      }
+    },
+  },
+  methods: {
+    toEditPage() {
+      let nameRoute = 'test-tasks-edit'
+      if (this.taskType === 'olympiad-assignment') nameRoute = 'olympiad-tasks-edit'
+      if (this.taskType === 'lesson-tasks-edit') nameRoute = 'lesson-tasks-edit'
+      this.$router.push({ name: nameRoute, params: { id: `${this.activeTask}` } })
+    },
+    async acceptApplications() {
+      if (this.activeApplication) {
+        await acceptApplicationsFx({ tickets: [this.activeApplication] })
+        this.refreshPage()
+      }
+    },
+    sendToRevision() {
+      if (this.activeApplication) loadModal([this.activeApplication])
+    },
+    showComments() {
+      if (this.activeTask) loadCommentModal(parseInt(`${this.activeApplication}`, 10))
+    },
+    sendToReview() {
+      if (this.activeTask) loadModalToSendForCheck([parseInt(this.activeTask, 10)])
+    },
+    refreshPage() {
+      if (this.activeTask) this.loadSpecificTask(+this.activeTask)
+      if (this.activeApplication) loadApplication(this.activeApplication)
+    },
+    loadSpecificTask(value: number) {
       if (this.taskType) {
         switch (this.taskType) {
           case 'test-assignment':
@@ -172,37 +224,6 @@ export default Vue.extend({
             loadLessonTask(value)
         }
       }
-    },
-    activeApplication(value) {
-      loadApplication(value)
-    },
-    $canRefreshAfterSendingForModeration(value) {
-      if (value) this.$router.go(0)
-    },
-    $currentQuestion(value) {
-      if (value !== $currentQuestion) {
-        this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
-      }
-    },
-  },
-  methods: {
-    toEditPage() {
-      let nameRoute = 'test-tasks-edit'
-      if (this.taskType === 'olympiad-assignment') nameRoute = 'olympiad-tasks-edit'
-      if (this.taskType === 'lesson-tasks-edit') nameRoute = 'lesson-tasks-edit'
-      this.$router.push({ name: nameRoute, params: { id: `${this.activeTask}` } })
-    },
-    acceptApplications() {
-      if (this.activeApplication) acceptApplicationsFx({ tickets: [this.activeApplication] })
-    },
-    sendForModeration() {
-      if (this.activeApplication) loadModal([this.activeApplication])
-    },
-    showComments() {
-      if (this.activeTask) loadCommentModal(parseInt(`${this.activeApplication}`, 10))
-    },
-    sendToModeration() {
-      if (this.activeTask) loadModalToSendForCheck([parseInt(this.activeTask, 10)])
     },
   },
   created() {

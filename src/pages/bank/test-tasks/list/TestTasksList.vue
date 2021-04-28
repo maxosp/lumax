@@ -21,7 +21,7 @@
       v-if=" !$isLoading"
       :total="$treeView ? $tasksTreeTotal : total"
       :selected-rows="selectedRows"
-      @onCheck="sendToModerationAssignments"
+      @onSendToReview="sendToReview"
       @onDuplicate="duplicateTask"
       @onEdit="handleEditTask"
       @onPublish="publishAssignments"
@@ -80,7 +80,7 @@
             :subject="subject"
             :study-year="studyYear"
             @onRemove="onRemoveTask"
-            @onCheck="sendToModerationAssignments"
+            @onSendToReview="sendToReview"
             @onPublish="publishAssignments"
             @onPreview="showPreview"
             @onEdit="handleEditTask"
@@ -123,7 +123,7 @@
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="onRemoveTask"
-      @onCheck="sendToModerationAssignments"
+      @onSendToReview="sendToReview"
       @onPublish="publishAssignments"
       @onRemoveTask="onRemoveTask"
       @onRemoveTheme="onRemoveTheme"
@@ -194,7 +194,7 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import {
-  $canRefreshAfterSendingForModeration,
+  $canRefreshAfterSendingToReview,
   loadModalToSendForCheck,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { TestAssignment } from '@/features/api/assignment/types'
@@ -251,7 +251,7 @@ export default (Vue as VueConstructor<
     $filterParams: testTasksFilters.store.$filterParams,
     $canRefreshAfterDuplicate,
     $canRefreshAfterMultiChanges,
-    $canRefreshAfterSendingForModeration,
+    $canRefreshAfterSendingToReview,
     $pageParams: testTaskPageParams.store.$pageParams,
     $treeView: testTaskPageParams.store.treeView,
     $currentPage: testTaskPageParams.store.currentPage,
@@ -291,7 +291,7 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.reload()
       },
     },
-    $canRefreshAfterSendingForModeration: {
+    $canRefreshAfterSendingToReview: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
       },
@@ -324,7 +324,7 @@ export default (Vue as VueConstructor<
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems
-          .filter((item) => idArr.filter((itemArr) => itemArr === item.id).length > 0)
+          .filter((item) => idArr.includes(item.id))
           .map((item) => ({
             id: item.id,
             name: `${item.id}`,
@@ -429,7 +429,7 @@ export default (Vue as VueConstructor<
       await sendAssignmentsPublish({ assignments: typeof ids === 'number' ? [ids] : ids })
       await Vue.nextTick(() => this.$refs.vuetable.reload())
     },
-    sendToModerationAssignments(ids: number | number[]) {
+    sendToReview(ids: number | number[]) {
       const data = typeof ids === 'number' ? [ids] : ids
       loadModalToSendForCheck(data)
     },

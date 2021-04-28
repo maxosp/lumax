@@ -25,7 +25,7 @@
       <span
         v-if="selectedRows.length"
         class="--basic"
-        @click="$emit('onCheck', selectedRows)"
+        @click="$emit('onSendToReview', selectedRows)"
       >
         На проверку
       </span>
@@ -49,7 +49,7 @@
         :selected="selectedRows"
         :is-table-header="true"
         class="actions"
-        @duplicate="$emit('onDuplicate', selectedRows[0])"        
+        @duplicate="$emit('onDuplicate', selectedRows[0])"
       />
     </div>
     <div class="right">

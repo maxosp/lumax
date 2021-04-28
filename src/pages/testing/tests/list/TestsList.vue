@@ -140,7 +140,7 @@ import {
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import {
   loadModalToSendForCheck,
-  $canRefreshAfterSendingForModeration,
+  $canRefreshAfterSendingToReview,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import { $session } from '@/features/session'
@@ -178,7 +178,7 @@ export default (Vue as VueConstructor<
     $isLoading,
     $visibility,
     $token,
-    $canRefreshAfterSendingForModeration,
+    $canRefreshAfterSendingToReview,
     $session,
     $canRefreshAfterMultiChanges,
     $filterParams: testsFilters.store.$filterParams,
@@ -208,7 +208,7 @@ export default (Vue as VueConstructor<
         if (newVal) this.$refs.vuetable.reload()
       },
     },
-    $canRefreshAfterSendingForModeration: {
+    $canRefreshAfterSendingToReview: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
       },

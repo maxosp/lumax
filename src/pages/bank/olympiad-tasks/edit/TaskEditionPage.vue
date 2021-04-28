@@ -113,7 +113,7 @@ export default Vue.extend({
       this.fromPage = fromPage
     }
     if (currentQuestion && typeof +currentQuestion === 'number') {
-      loadTask(+currentQuestion)
+      loadTask(+this.questions[this.$currentIndex])
     } else {
       loadTask(+this.$route.params.id)
     }

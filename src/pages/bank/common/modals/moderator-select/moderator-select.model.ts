@@ -11,7 +11,6 @@ import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
 import { loadTreeLight } from '@/pages/bank/test-tasks/list//tasks-page.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import { TaskType } from '@/pages/bank/common/modals/moderator-select/constants'
-import { setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 export const sendTestAssignmentsToModeration = attach({
   effect: updateTestAssignmentBulkFx,
@@ -20,9 +19,9 @@ export const sendTestAssignmentsToModeration = attach({
 
 export const loadModalToSendForCheck = createEvent<number[]>()
 
-export const canRefreshAfterSendingForModerationChanged = createEvent<boolean>()
-export const $canRefreshAfterSendingForModeration = restore<boolean>(
-  canRefreshAfterSendingForModerationChanged,
+export const canRefreshAfterSendingToReview = createEvent<boolean>()
+export const $canRefreshAfterSendingToReview = restore<boolean>(
+  canRefreshAfterSendingToReview,
   false
 )
 
@@ -45,7 +44,7 @@ forward({
   from: loadModalToSendForCheck,
   to: [
     modalVisibilityChanged.prepend(() => true),
-    canRefreshAfterSendingForModerationChanged.prepend(() => false),
+    canRefreshAfterSendingToReview.prepend(() => false),
   ],
 })
 
@@ -84,8 +83,7 @@ forward({
     loadTreeLight.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),
     successToastEvent('Задание было успешно отправлено на проверку'),
-    canRefreshAfterSendingForModerationChanged.prepend(() => true),
-    setStatus.prepend(() => 'moderation'),
+    canRefreshAfterSendingToReview.prepend(() => true),
   ],
 })
 

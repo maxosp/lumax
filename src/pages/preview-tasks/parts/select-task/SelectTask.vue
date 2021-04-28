@@ -94,7 +94,7 @@ export default Vue.extend({
   align-items: center;
   width: 100%;
   padding: 0;
-  margin: 20px 0;
+  margin-bottom: 20px;
   background-color: rgba(0, 0, 0, 0);
 }
 .toggler-tasks /deep/ .content {

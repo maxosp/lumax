@@ -27,9 +27,9 @@
       :task-type="taskType"
       :is-preview="$isPreview"
       @onAccept="$emit('onAccept')"
-      @onSendForModeration="$emit('onSendForModeration')"
+      @onSendToRevision="$emit('onSendToRevision')"
       @onSeeComments="$emit('onSeeComments')"
-      @onReview="$emit('onReview')"
+      @onSendToReview="$emit('onSendToReview')"
     />
   </Card>
 </template>
@@ -68,6 +68,7 @@ export default Vue.extend({
 <style scoped>
 .controller {
   padding: 0;
+  margin-bottom: 20px;
 }
 .top {
   display: flex;

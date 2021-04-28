@@ -35,7 +35,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onSendForModeration', selectedApplicationsIds)"
+        @click="$emit('onSendToRevision', selectedApplicationsIds)"
       >
         На доработку
       </span>

@@ -9,7 +9,7 @@
       <BaseButton
         v-if="isReviewButtonVisible"
         class="btn"
-        @click="$emit('onReview')"
+        @click="$emit('onSendToReview')"
       >
         На проверку
       </BaseButton>
@@ -34,7 +34,7 @@
       <BaseButton
         v-if="isAcceptAndRevisionVisible"
         class="btn red"
-        @click="$emit('onSendForModeration')"
+        @click="$emit('onSendToRevision')"
       >
         На доработку
       </BaseButton>

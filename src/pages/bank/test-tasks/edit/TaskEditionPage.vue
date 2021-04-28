@@ -6,12 +6,12 @@
       :is-preview="$isPreview"
       :from-page="fromPage"
       task-type="test-assignment"
-      @onReview="sendToModerationAssignments"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
       @onAccept="acceptApplications"
-      @onSendForModeration="sendForModeration"
+      @onSendToReview="sendToReview"
+      @onsendToRevision="sendToRevision"
       @onSeeComments="showComments"
     />
     <SelectTask
@@ -49,12 +49,15 @@ import {
 import { $token } from '@/features/api/common/request'
 import {
   loadModalToSendForCheck,
-  $canRefreshAfterSendingForModeration,
+  $canRefreshAfterSendingToReview,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
 import { $status } from '@/pages/common/parts/status-controller/status.model'
 import { navigateReplace } from '@/features/navigation'
 import { acceptApplicationsFx } from '@/pages/applications/incoming/incoming-applications-page.model'
-import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
+import {
+  $canRefreshAfterSendingToRevision,
+  loadModal,
+} from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import SendForModerationModal from '@/pages/applications/modals/send-for-moderation/SendForModerationModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import OutgoingModal from '@/pages/applications/modals/outgoing-comment/OutgoingComment.vue'
@@ -82,7 +85,8 @@ export default Vue.extend({
     $taskId,
     $token,
     $status,
-    $canRefreshAfterSendingForModeration,
+    $canRefreshAfterSendingToReview,
+    $canRefreshAfterSendingToRevision,
     $currentIndex,
     $currentQuestion,
   },
@@ -109,26 +113,31 @@ export default Vue.extend({
         }
       },
     },
-    $canRefreshAfterSendingForModeration: {
-      handler(newVal) {
-        if (newVal) loadTask(+this.$route.params.id)
-      },
-    },
-    $currentIndex: {
-      handler(newVal) {
-        loadTask(+this.questions[newVal])
-      },
+    $currentIndex(value) {
+      if (value !== $currentIndex) {
+        this.refreshPage()
+      }
     },
     $currentQuestion(value) {
       if (value !== $currentQuestion) {
         this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
       }
     },
+    $canRefreshAfterSendingToReview(value) {
+      if (value) {
+        this.refreshPage()
+      }
+    },
+    $canRefreshAfterSendingToRevision(value) {
+      if (value) {
+        this.refreshPage()
+      }
+    },
   },
   methods: {
     loadTask,
     toggleIsPreview,
-    sendToModerationAssignments() {
+    sendToReview() {
       loadModalToSendForCheck([this.$taskId])
     },
     saveTask(isRedirect: boolean) {
@@ -137,11 +146,16 @@ export default Vue.extend({
         setRedirectAfterSave(true)
       }
     },
-    acceptApplications() {
-      acceptApplicationsFx({ tickets: [this.applications[0]] })
+    async acceptApplications() {
+      await acceptApplicationsFx({ tickets: [this.applications[this.$currentIndex]] })
+      this.refreshPage()
     },
-    sendForModeration() {
-      loadModal([this.applications[0]])
+    sendToRevision() {
+      loadModal([this.applications[this.$currentIndex]])
+    },
+    refreshPage() {
+      loadTask(+this.questions[this.$currentIndex])
+      if (this.applications.length) loadApplication(this.applications[this.$currentIndex])
     },
     showComments() {
       loadCommentModal(this.$taskId)
@@ -159,13 +173,13 @@ export default Vue.extend({
     }
     if (applications && typeof applications === 'string') {
       this.applications = applications.split(',').map((appId) => Number(appId))
-      loadApplication(this.applications[0])
+      loadApplication(this.applications[this.$currentIndex])
     }
     if (fromPage && typeof fromPage === 'string') {
       this.fromPage = fromPage
     }
     if (currentQuestion && typeof +currentQuestion === 'number') {
-      loadTask(+currentQuestion)
+      loadTask(+this.questions[this.$currentIndex])
     } else {
       loadTask(+this.$route.params.id)
     }

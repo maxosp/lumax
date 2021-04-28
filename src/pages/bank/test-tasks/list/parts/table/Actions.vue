@@ -138,10 +138,10 @@ export default Vue.extend({
           this.$emit('onRemove', ids)
           break
         case 'send_to_check':
-          this.$emit('onCheck', ids[0])
+          this.$emit('onSendToReview', ids[0])
           break
         case 'send_to_check_all':
-          this.$emit('onCheck', ids)
+          this.$emit('onSendToReview', ids)
           break
         case 'public':
           this.$emit('onPublish', ids)

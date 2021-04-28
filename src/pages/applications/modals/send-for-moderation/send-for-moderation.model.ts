@@ -19,7 +19,6 @@ import {
   sample,
 } from 'effector-root'
 import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
-import { setStatus } from '@/pages/common/parts/status-controller/status.model'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -57,9 +56,19 @@ export const $commentErrorModule = createError()
 
 export const checkIfFormCanBeSend = createEvent<void>()
 
+export const canRefreshAfterSendingToRevision = createEvent<boolean>()
+export const $canRefreshAfterSendingToRevision = restore<boolean>(
+  canRefreshAfterSendingToRevision,
+  false
+)
+
 forward({
   from: loadModal,
-  to: [modalVisibilityChanged.prepend(() => true), canRefreshTableChanged.prepend(() => false)],
+  to: [
+    modalVisibilityChanged.prepend(() => true),
+    canRefreshTableChanged.prepend(() => false),
+    canRefreshAfterSendingToRevision.prepend(() => false),
+  ],
 })
 
 export const fileDataChanged = createEvent<Partial<File> | null>()
@@ -161,7 +170,7 @@ forward({
     successToastEvent('Задание(я) были успешно отправлены на доработку!'),
     clearFields,
     canRefreshTableChanged.prepend(() => true),
-    setStatus.prepend(() => 'revision'),
+    canRefreshAfterSendingToRevision.prepend(() => true),
   ],
 })
 

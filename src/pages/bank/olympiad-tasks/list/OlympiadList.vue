@@ -286,7 +286,7 @@ export default (Vue as VueConstructor<
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems
-          .filter((item) => idArr.filter((itemArr) => itemArr === item.id).length > 0)
+          .filter((item) => idArr.includes(item.id))
           .map((item) => ({
             id: item.id,
             name: `${item.id}`,
