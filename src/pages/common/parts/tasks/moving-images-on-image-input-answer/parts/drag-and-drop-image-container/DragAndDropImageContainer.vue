@@ -5,6 +5,7 @@
       <FormLabel>Фоновое изображение</FormLabel>
       <div class="actions">
         <template v-if="!$hideDragAndDropControls">
+          <BaseButton class="button" @click="triggerInputFile">Заменить фон</BaseButton>
           <BaseButton class="add-image button" @click="setNextResizerToImage">+ изображение</BaseButton>
           <BaseButton class="button" @click="setNextResizerToText">+ текст</BaseButton>
         </template>
@@ -13,7 +14,7 @@
     <div class="drag-and-drop-image">
       <Spinner v-if="$mainImageUploading" full />
       <FilePicker
-        v-if="$hideDragAndDropControls"
+        v-show="$hideDragAndDropControls"
         accept="image/*"
         @change="uploadMainImage"
       >
@@ -21,21 +22,36 @@
           Загрузите фоновое изображение
         </div>
       </FilePicker>
-      <div v-if="!$hideDragAndDropControls" class="background-image-wrapper">
+      <div v-show="!$hideDragAndDropControls" class="background-image-wrapper">
         <ResizableCreator
           :disabled="!$canCreateResizableBlock"
           :scale="$scale"
           @created="createResizableBlock"
           @unfocused="resetNextResizableBlock"
         />
-        <DraggableInputs />
-        <DraggableImages />
+        <div v-show="!$mainImageUploading">
+          <DraggableInputs />
+          <DraggableImages />
+        </div>
         <img
           :src="$mainImage"
           class="background-image"
           :style="scaledSizes"
         >
       </div>
+    </div>
+    <div class="background-image-picker">
+      <ImageMatchItem
+        v-if="$mainImage"
+        :image="{
+          size: $mainImageSize,
+          image: $mainImage,
+          value: 0,
+        }"
+        :droppable-images="[]"
+        is-background-image
+        @remove="removeMainImage"
+      />
     </div>
   </div>
 </template>
@@ -59,12 +75,14 @@ import {
   setNextResizerToText,
   setNextResizerToImage,
   setNextResizableBlockType,
+  removeMainImage,
 } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import FilePicker from '@/ui/file-picker/FilePicker.vue'
 import Spinner from '@/ui/spinner/Spinner.vue'
 import DraggableInputs from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableInputs.vue'
 import DraggableImages from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableImages.vue'
 import ResizableCreator from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/resizable/ResizableCreator.vue'
+import ImageMatchItem from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/correct-images-match-picker/ImageMatchItem.vue'
 import ImageContextMenu from './ImageContextMenu.vue'
 
 export default Vue.extend({
@@ -84,6 +102,7 @@ export default Vue.extend({
     Spinner,
     FilePicker,
     ImageContextMenu,
+    ImageMatchItem,
     FormLabel,
     BaseButton,
   },
@@ -114,6 +133,11 @@ export default Vue.extend({
     },
     addInput,
     addDroppableImage,
+    triggerInputFile() {
+      const filePicker = document.getElementById('file-picker')
+      filePicker!.click()
+    },
+    removeMainImage,
   },
   mounted() {
     window.addEventListener('resize', this.saveContainerWidth)
@@ -172,7 +196,6 @@ export default Vue.extend({
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
 }
 
 .background-image-wrapper {
@@ -184,5 +207,9 @@ export default Vue.extend({
   width: auto;
   max-width: 100%;
   height: auto;
+}
+
+.background-image-picker {
+  margin: 20px auto;
 }
 </style>

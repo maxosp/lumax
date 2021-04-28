@@ -1,6 +1,7 @@
 <template>
   <label class="file-picker" @click.stop="">
     <input
+      id="file-picker"
       ref="uploader"
       type="file"
       :accept="accept"

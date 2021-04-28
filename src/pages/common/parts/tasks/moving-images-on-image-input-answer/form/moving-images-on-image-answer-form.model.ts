@@ -196,11 +196,11 @@ $draggableImages.on(removeDroppableImage, (draggableImage, droppable) => {
   }))
 })
 
+export const removeMainImage = createEvent<void>()
 export const setMainImage = createEvent<string | null>()
-export const $mainImage = restore(setMainImage, '').on(
-  setupMovingOnImageAnswerDataFx.doneData,
-  (_, payload) => payload.mainImage
-)
+export const $mainImage = restore(setMainImage, '')
+  .on(setupMovingOnImageAnswerDataFx.doneData, (_, payload) => payload.mainImage)
+  .reset(removeMainImage)
 
 export const setMainImageSize = createEvent<Size | null>()
 export const $mainImageSize = restore(setMainImageSize, null).on(
@@ -255,7 +255,7 @@ forward({
   from: setNextResizerToImage,
   to: [
     setNextResizableBlockType.prepend(() => 'image'),
-    successToastEvent('Выделяйте области на картинке для создания изображений'),
+    successToastEvent('Выделите область на картинке для создания изображения'),
   ],
 })
 
@@ -274,8 +274,22 @@ export const $hideDragAndDropControls = combine(
   $mainImage,
   $mainImageSize,
   $containerWidth,
-  (mainImageUploading, mainImage, mainImageSize, containerWidth) =>
-    mainImageUploading || !mainImage || !mainImageSize || !containerWidth
+  $droppableImages,
+  $draggableImages,
+  $draggableText,
+  $inputs,
+  (
+    mainImageUploading,
+    mainImage,
+    mainImageSize,
+    containerWidth,
+    droppableImages,
+    draggableImages,
+    droppableText,
+    inputs
+  ) =>
+    (mainImageUploading || !mainImage || !mainImageSize || !containerWidth) &&
+    !(droppableImages.length || draggableImages.length || droppableText.length || inputs.length)
 )
 
 export const $scale = combine($containerWidth, $mainImageSize, (containerWidth, mainImageSizes) => {

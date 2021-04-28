@@ -7,11 +7,11 @@
       </div>
     </div>
     <div class="actions">
-      <div v-if="!droppableImages.length">
+      <div v-if="!droppableImages.length && !isBackgroundImage">
         Добавьте изображения выше
       </div>
       <BaseDropdown
-        v-else
+        v-else-if="droppableImages.length"
         class="dropdown"
         placeholder="Нет соответсвий"
         :value="image.value ? `A${image.value}` : null"
@@ -30,6 +30,7 @@
         </template>
       </BaseDropdown>
       <SizeInput
+        v-if="image.size"
         class="change-size"
         :size="image.size"
         @change="$emit('change', {
@@ -76,6 +77,7 @@ export default Vue.extend({
       type: Object as PropType<DraggableImage>,
       required: true,
     },
+    isBackgroundImage: { type: Boolean, default: false },
   },
   methods: {
     pickValue(droppable: DroppableImage, image: DraggableImage) {
