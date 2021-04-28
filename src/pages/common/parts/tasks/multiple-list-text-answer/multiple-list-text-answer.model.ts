@@ -117,10 +117,10 @@ export const initAssignment = createEvent<TestAssignment>()
 forward({
   from: initAssignment,
   to: [
-    setWording.prepend((data) => data.wording || ''),
-    setContaining.prepend((data) => data.text || ''),
-    setAnswerExample.prepend((data) => data.example_answer || ''),
-    setTextTemplate.prepend((data) => data.template_text),
+    setWording.prepend(({ wording }) => wording || ''),
+    setContaining.prepend(({ template_text }) => template_text || ''),
+    setAnswerExample.prepend(({ example_answer }) => example_answer || ''),
+    setTextTemplate.prepend(({ text }) => text || ''),
     setAnswersList.prepend((data) =>
       data.question_data.variants.map((variant: QuestionData, idx: number) => ({
         id: idx + 1,
