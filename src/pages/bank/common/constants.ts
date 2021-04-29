@@ -1,6 +1,6 @@
 export const LANGUAGE_DATA = [
-  { name: 'russian', title: 'Русский' },
-  { name: 'english', title: 'Английский' },
+  { name: 'russian', title: 'русский' },
+  { name: 'english', title: 'английский' },
 ]
 
 export const TASK_TYPES_DATA = [

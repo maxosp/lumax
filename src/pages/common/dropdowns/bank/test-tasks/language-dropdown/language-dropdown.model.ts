@@ -19,7 +19,7 @@ forward({
 
 forward({
   from: getLanguages.doneData.map((res) =>
-    res.body.map((item) => ({ name: `${item.code}`, title: item.name }))
+    res.body.map((item) => ({ name: item.name, title: item.name }))
   ),
   to: $languages,
 })
