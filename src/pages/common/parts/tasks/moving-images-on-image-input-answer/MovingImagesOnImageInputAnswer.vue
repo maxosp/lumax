@@ -44,6 +44,7 @@ import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import AudioFiles from '@/pages/common/parts/audio-files/AudioFiles.vue'
 import MovingImagesOnImageInputAnswerForm from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/MovingImagesOnImageInputAnswerForm.vue'
+import { clearFields as clearAnswerForm } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import {
   $wording,
   setWording,
@@ -81,6 +82,7 @@ export default Vue.extend({
     setAnswerExample,
   },
   beforeDestroy() {
+    clearAnswerForm()
     clearFields()
   },
 })
