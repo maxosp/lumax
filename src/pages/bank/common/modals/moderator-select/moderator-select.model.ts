@@ -11,6 +11,7 @@ import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
 import { loadTreeLight } from '@/pages/bank/test-tasks/list//tasks-page.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import { TaskType } from '@/pages/bank/common/modals/moderator-select/constants'
+import { updateApplicationsCounters } from '@/pages/common/navigation/navigation.model'
 
 export const sendTestAssignmentsToModeration = attach({
   effect: updateTestAssignmentBulkFx,
@@ -84,6 +85,7 @@ forward({
     modalVisibilityChanged.prepend(() => false),
     successToastEvent('Задание было успешно отправлено на проверку'),
     canRefreshAfterSendingToReview.prepend(() => true),
+    updateApplicationsCounters,
   ],
 })
 

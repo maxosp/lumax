@@ -96,3 +96,9 @@ export type TreeDataResponse = {
 export type TreeDataInfoResponse = {
   total_amount: number
 }
+
+export type GetApplicationsCountersResponse = {
+  deletion: number
+  moderation: number
+  total_count: number
+}

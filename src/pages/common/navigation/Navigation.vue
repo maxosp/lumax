@@ -16,7 +16,11 @@
 import Vue from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
 import NavItem from '@/pages/common/navigation/parts/NavItem.vue'
-import { $isOpened, changeNavState } from '@/pages/common/navigation/navigation.model'
+import {
+  $isOpened,
+  changeNavState,
+  updateApplicationsCounters,
+} from '@/pages/common/navigation/navigation.model'
 import { data as navItems } from '@/pages/common/navigation/data'
 
 export default Vue.extend({
@@ -34,6 +38,9 @@ export default Vue.extend({
         changeNavState(true)
       }
     },
+  },
+  beforeCreate() {
+    updateApplicationsCounters()
   },
 })
 </script>

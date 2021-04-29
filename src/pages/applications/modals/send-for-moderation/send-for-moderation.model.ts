@@ -19,6 +19,7 @@ import {
   sample,
 } from 'effector-root'
 import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
+import { updateApplicationsCounters } from '@/pages/common/navigation/navigation.model'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -171,6 +172,7 @@ forward({
     clearFields,
     canRefreshTableChanged.prepend(() => true),
     canRefreshAfterSendingToRevision.prepend(() => true),
+    updateApplicationsCounters,
   ],
 })
 

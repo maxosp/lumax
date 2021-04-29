@@ -5,10 +5,15 @@ export const data: NavItem[] = [
     id: 'requests',
     title: 'Заявки',
     icon: 'success',
+    type: 'applications',
     children: [
-      { title: 'Входящие заявки', link: 'incoming-list' },
+      { title: 'Входящие заявки', link: 'incoming-list', type: 'incoming-applications' },
       { title: 'Исходящие заявки', link: 'outgoing-list' },
-      { title: 'Входящие заявки на удаление', link: 'incoming-deletion-list' },
+      {
+        title: 'Входящие заявки на удаление',
+        link: 'incoming-deletion-list',
+        type: 'incoming-deletion-applications',
+      },
       { title: 'Исходящие заявки на удаление', link: 'outgoing-deletion-list' },
     ],
   },
