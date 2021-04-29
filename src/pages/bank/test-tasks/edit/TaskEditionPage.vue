@@ -11,7 +11,7 @@
       @saveAndBackToList="saveTask(true)"
       @onAccept="acceptApplications"
       @onSendToReview="sendToReview"
-      @onsendToRevision="sendToRevision"
+      @onSendToRevision="sendToRevision"
       @onSeeComments="showComments"
     />
     <SelectTask
