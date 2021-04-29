@@ -1,5 +1,10 @@
 <template>
-  <label class="file-picker" @click.stop="">
+  <label
+    class="file-picker"
+    @dragover="preventDefault"
+    @dragenter="preventDefault"
+    @drop="dropHandle"
+  >
     <input
       id="file-picker"
       ref="uploader"
@@ -29,9 +34,14 @@ export default Vue.extend({
     },
   },
   methods: {
-    change(event: HTMLInputElement) {
+    change(event: HTMLInputElement | FileList) {
       const uploader = this.$refs.uploader as HTMLInputElement
-      const files = uploader.files as ArrayLike<File>
+      let files = null
+      if (event instanceof FileList) {
+        files = event
+      } else {
+        files = uploader.files as ArrayLike<File>
+      }
       const filesArray = Array.from(files)
 
       this.$emit('change', {
@@ -54,6 +64,13 @@ export default Vue.extend({
 
       uploader.value = ''
     },
+    dropHandle(event: DragEvent) {
+      this.change(event.dataTransfer!.files)
+      event.preventDefault()
+    },
+    preventDefault(event: MouseEvent) {
+      event.preventDefault()
+    },
   },
 })
 </script>
@@ -62,6 +79,7 @@ export default Vue.extend({
 .file-picker {
   position: relative;
   width: 100%;
+  text-align: center;
 }
 .file-picker-input {
   position: absolute;

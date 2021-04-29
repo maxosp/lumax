@@ -15,7 +15,7 @@ import {
   enableDocumentSelection,
 } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/resizable/document-selection'
 
-const minimumSize = 10
+const minimumSize = 100
 
 const defaultSizes = {
   top: 0,
@@ -133,8 +133,8 @@ export default Vue.extend({
               y: this.sizes.top / this.scale,
             },
             size: {
-              width: this.sizes.width / this.scale,
-              height: this.sizes.height / this.scale,
+              width: this.sizes.width / this.scale || 100,
+              height: this.sizes.height / this.scale || 100,
             },
           })
 
@@ -163,11 +163,16 @@ export default Vue.extend({
         }
 
         parentEl.addEventListener('mousedown', start)
+        parentEl.addEventListener('click', this.stopPropagation)
       }
 
       if (this.$el.parentNode) {
         createResizer(this.$el.parentNode as HTMLElement)
       }
+    },
+    stopPropagation(e: MouseEvent) {
+      e.stopPropagation()
+      e.preventDefault()
     },
   },
   mounted() {

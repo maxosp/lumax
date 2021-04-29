@@ -248,6 +248,9 @@ export const createResizableBlockSplit = split({
   },
 })
 
+addDroppableImage.watch(() => setNextResizableBlockType(null))
+addInput.watch(() => setNextResizableBlockType(null))
+
 export const setNextResizerToImage = createEvent()
 export const setNextResizerToText = createEvent()
 
@@ -263,7 +266,7 @@ forward({
   from: setNextResizerToText,
   to: [
     setNextResizableBlockType.prepend(() => 'text'),
-    successToastEvent('Выделяйте области на картинке для создания текстовых блоков'),
+    successToastEvent('Выделите область на картинке для создания текстового блока'),
   ],
 })
 

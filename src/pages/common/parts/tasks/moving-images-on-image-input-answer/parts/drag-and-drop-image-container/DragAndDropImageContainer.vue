@@ -14,31 +14,49 @@
     <div class="drag-and-drop-image">
       <Spinner v-if="$mainImageUploading" full />
       <FilePicker
-        v-show="$hideDragAndDropControls"
+        :style="$hideDragAndDropControls ? { height: 'auto' } : scaledSizes"
         accept="image/*"
         @change="uploadMainImage"
       >
-        <div class="placeholder">
+        <div v-show="$hideDragAndDropControls" class="placeholder">
           Загрузите фоновое изображение
         </div>
-      </FilePicker>
-      <div v-show="!$hideDragAndDropControls" class="background-image-wrapper">
-        <ResizableCreator
-          :disabled="!$canCreateResizableBlock"
-          :scale="$scale"
-          @created="createResizableBlock"
-          @unfocused="resetNextResizableBlock"
-        />
-        <div v-show="!$mainImageUploading">
-          <DraggableInputs />
-          <DraggableImages />
+        <div
+          v-if="!$hideDragAndDropControls"
+          class="background-image-wrapper"
+          :style="scaledSizes"
+        >
+          <ResizableCreator
+            :disabled="!$canCreateResizableBlock"
+            :scale="$scale"
+            @created="createResizableBlock"
+            @unfocused="resetNextResizableBlock"
+          />
+          <div v-show="!$mainImageUploading">
+            <DraggableInputs />
+            <DraggableImages />
+          </div>
         </div>
         <img
+          v-show="!$hideDragAndDropControls && $mainImage"
           :src="$mainImage"
           class="background-image"
           :style="scaledSizes"
         >
-      </div>
+      </FilePicker>
+    </div>
+    <div class="background-image-picker">
+      <ImageMatchItem
+        v-if="$mainImage"
+        :image="{
+          size: $mainImageSize,
+          image: $mainImage,
+          value: 0,
+        }"
+        :droppable-images="[]"
+        is-background-image
+        @remove="removeMainImage"
+      />
     </div>
     <div class="background-image-picker">
       <ImageMatchItem
@@ -199,14 +217,22 @@ export default Vue.extend({
 }
 
 .background-image-wrapper {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 .background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
   background: #eee;
-  width: auto;
-  max-width: 100%;
-  height: auto;
+}
+
+.background-image-picker {
+  margin: 20px auto;
 }
 
 .background-image-picker {

@@ -3,7 +3,7 @@
     <FormLabel class="label">Перемещаемые изображения</FormLabel>
     <FileInput
       accept="image/*"
-      placeholder="Перетащите изображение в поле или выберите из файлов"
+      placeholder="Перетащите изображение в поле или выберите из"
       @change="uploadDraggableImage"
     />
   </div>
