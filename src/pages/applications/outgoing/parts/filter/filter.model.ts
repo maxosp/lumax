@@ -6,6 +6,7 @@ import { loadList } from '@/pages/applications/outgoing/outgoing-applications-pa
 export const outgoingApplicationsFilters = createFiltersModel(
   {
     search_area: 'search_all',
+    created_by_me: true,
   },
   dropdownModules
 )
