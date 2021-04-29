@@ -23,7 +23,7 @@ export const themesTableFields: TableField[] = [
     title: 'Предмет',
     width: '130px',
     formatter: (data) => {
-      return data.name || '–'
+      return (data && data.name) || '–'
     },
   },
   {
@@ -41,7 +41,7 @@ export const themesTableFields: TableField[] = [
     title: 'Класс',
     width: '130px',
     formatter: (data) => {
-      return data.name || '–'
+      return (data && data.name) || '–'
     },
   },
   {
