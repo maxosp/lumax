@@ -19,7 +19,7 @@
         @change="uploadMainImage"
       >
         <div v-show="$hideDragAndDropControls" class="placeholder">
-          Загрузите фоновое изображение
+          Загрузите фоновое изображение или перетащите в поле
         </div>
         <div
           v-if="!$hideDragAndDropControls"
@@ -44,19 +44,6 @@
           :style="scaledSizes"
         >
       </FilePicker>
-    </div>
-    <div class="background-image-picker">
-      <ImageMatchItem
-        v-if="$mainImage"
-        :image="{
-          size: $mainImageSize,
-          image: $mainImage,
-          value: 0,
-        }"
-        :droppable-images="[]"
-        is-background-image
-        @remove="removeMainImage"
-      />
     </div>
     <div class="background-image-picker">
       <ImageMatchItem
@@ -229,10 +216,6 @@ export default Vue.extend({
   left: 0;
   z-index: 1;
   background: #eee;
-}
-
-.background-image-picker {
-  margin: 20px auto;
 }
 
 .background-image-picker {
