@@ -6,6 +6,7 @@ import { loadList } from '@/pages/applications/outgoing-deletion/outgoing-deleti
 export const outgoingDeletionFilters = createFiltersModel(
   {
     search_area: 'search_all',
+    created_by_me: true,
   },
   dropdownModules
 )
