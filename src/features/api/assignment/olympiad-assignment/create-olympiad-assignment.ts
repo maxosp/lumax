@@ -10,7 +10,7 @@ export const createOlympiadAssignmentFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/assignment/olympiad-assignment/',
+    url: '/api/assignment-app/olympiad-assignment/',
     body,
   }),
 })

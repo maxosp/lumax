@@ -5,7 +5,7 @@ export const createCommentFx = createApiEffect<TicketCommentRequestType, TicketC
   {
     requestMapper: (body) => ({
       method: 'POST',
-      url: '/api/ticket/comment/',
+      url: '/api/ticket-app/comment/',
       body,
     }),
   }

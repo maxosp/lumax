@@ -5,7 +5,7 @@ import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types'
 export const getAssignmentTreeFx = createApiEffect<GetAssignmentTreeQueryParams, TreeDataResponse>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/assignment/tree/',
+    url: '/api/assignment-app/assignment/tree/',
     query,
   }),
 })
@@ -16,7 +16,7 @@ export const getAssignmentTreeLightFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/assignment/tree/light/',
+    url: '/api/assignment-app/assignment/tree/light/',
     query,
   }),
 })

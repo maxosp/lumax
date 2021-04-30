@@ -4,7 +4,7 @@ import { ResourceType } from '@/features/api/media/types'
 export const updateResourceFx = createApiEffect<ResourceType, ResourceType>({
   requestMapper: (params) => ({
     method: 'PATCH',
-    url: `/api/media/study-resource/${params.id}/`,
+    url: `/api/media-app/study-resource/${params.id}/`,
     body: params,
   }),
 })

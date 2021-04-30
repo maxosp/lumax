@@ -4,7 +4,7 @@ import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
 export const deleteSubjectsFx = createApiEffect<number[], void>({
   requestMapper: (subjects) => ({
     method: 'PATCH',
-    url: '/api/subject/subjects/bulk-delete/',
+    url: '/api/subject-app/subjects/bulk-delete/',
     body: { subjects },
   }),
 })
@@ -15,7 +15,7 @@ export const requestDeleteSubjectsFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/subject/subjects/bulk-delete/',
+    url: '/api/subject-app/subjects/bulk-delete/',
     body,
   }),
 })

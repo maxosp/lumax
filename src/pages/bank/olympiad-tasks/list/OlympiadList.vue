@@ -224,7 +224,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/olympiad-assignment/list/`
+      return `${config.BACKEND_URL}/api/assignment-app/olympiad-assignment/list/`
     },
   },
   watch: {

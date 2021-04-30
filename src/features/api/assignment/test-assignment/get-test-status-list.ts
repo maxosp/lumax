@@ -4,6 +4,6 @@ import { ListType } from '@/features/api/assignment/types'
 export const getTestStatusListFx = createApiEffect<void, ListType[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/test-assignment/filter/statuses/',
+    url: '/api/assignment-app/test-assignment/filter/statuses/',
   }),
 })

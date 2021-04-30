@@ -276,7 +276,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/assignment/test-assignment/list/`
+      return `${config.BACKEND_URL}/api/assignment-app/test-assignment/list/`
     },
   },
   watch: {

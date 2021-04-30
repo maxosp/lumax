@@ -211,7 +211,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/ticket/deletion-ticket/list/?is_active=true`
+      return `${config.BACKEND_URL}/api/ticket-app/deletion-ticket/list/?is_active=true`
     },
     showDeleteModal(): boolean {
       return !!this.currentFailed

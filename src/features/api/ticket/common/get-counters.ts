@@ -4,6 +4,6 @@ import { GetApplicationsCountersResponse } from '@/features/api/types'
 export const getApplicationsCountersFx = createApiEffect<void, GetApplicationsCountersResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/ticket/deletion-moderation-tickets-count/get/',
+    url: '/api/ticket-app/deletion-moderation-tickets-count/get/',
   }),
 })

@@ -5,7 +5,7 @@ export const createTestAssignmentFx = createApiEffect<CreateTestAssignmentFxPara
   {
     requestMapper: (body) => ({
       method: 'POST',
-      url: '/api/assignment/test-assignment/',
+      url: '/api/assignment-app/test-assignment/',
       body,
     }),
   }

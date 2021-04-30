@@ -4,7 +4,7 @@ import { CreateThemeType, Theme } from '@/features/api/subject/types'
 export const updateThemeFx = createApiEffect<Partial<CreateThemeType>, Theme>({
   requestMapper: (params) => ({
     method: 'PATCH',
-    url: `/api/subject/themes/${params.id}/`,
+    url: `/api/subject-app/themes/${params.id}/`,
     body: params,
   }),
 })

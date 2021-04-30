@@ -4,6 +4,6 @@ import { TreeDataResponse } from '@/features/api/types'
 export const getLabelsTreeLightFx = createApiEffect<void, TreeDataResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/labels/tree/light/',
+    url: '/api/assignment-app/labels/tree/light/',
   }),
 })

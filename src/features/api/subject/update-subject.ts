@@ -4,7 +4,7 @@ import { CreateSubjectType, Subject } from '@/features/api/subject/types'
 export const updateSubjectFx = createApiEffect<Partial<CreateSubjectType>, Subject>({
   requestMapper: (params) => ({
     method: 'PUT',
-    url: `/api/subject/subjects/${params.id}/`,
+    url: `/api/subject-app/subjects/${params.id}/`,
     body: params,
   }),
 })

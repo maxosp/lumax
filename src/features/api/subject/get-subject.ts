@@ -4,6 +4,6 @@ import { Subject } from '@/features/api/subject/types'
 export const getSubjectFx = createApiEffect<number, Subject>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/subject/subjects/${id}/`,
+    url: `/api/subject-app/subjects/${id}/`,
   }),
 })

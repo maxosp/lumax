@@ -8,7 +8,7 @@ export const getTestAssignmentTreeFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/test-assignment/tree/',
+    url: '/api/assignment-app/test-assignment/tree/',
     query,
   }),
 })

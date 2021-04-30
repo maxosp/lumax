@@ -4,6 +4,6 @@ import { CheckBeforeDeletionResponseType } from '@/features/api/ticket/types'
 export const checkBeforeDeletionFx = createApiEffect<number, CheckBeforeDeletionResponseType>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/ticket/deletion-ticket/${id}/check/`,
+    url: `/api/ticket-app/deletion-ticket/${id}/check/`,
   }),
 })

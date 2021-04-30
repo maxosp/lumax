@@ -4,6 +4,6 @@ import { FolderType } from '@/features/api/assignment/types'
 export const getFolderFx = createApiEffect<number, FolderType>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/assignment/folder/${id}/`,
+    url: `/api/assignment-app/folder/${id}/`,
   }),
 })

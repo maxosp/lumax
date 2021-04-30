@@ -5,7 +5,7 @@ import { GetThemesTreeQueryParams } from '@/features/api/subject/types'
 export const getThemesTreeFx = createApiEffect<GetThemesTreeQueryParams, TreeDataResponse>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/themes/tree/',
+    url: '/api/subject-app/themes/tree/',
     query,
   }),
 })
@@ -13,6 +13,6 @@ export const getThemesTreeFx = createApiEffect<GetThemesTreeQueryParams, TreeDat
 export const gethThemesTreeLightFx = createApiEffect<void, TreeDataResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/subject/themes/tree/light/',
+    url: '/api/subject-app/themes/tree/light/',
   }),
 })

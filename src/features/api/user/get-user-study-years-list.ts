@@ -8,7 +8,7 @@ export const getUserStudyYearsListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/user/study-year/list/',
+    url: '/api/user-app/study-year/list/',
     query,
   }),
 })

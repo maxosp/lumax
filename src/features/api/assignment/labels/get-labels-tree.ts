@@ -5,7 +5,7 @@ import { FiltersParams } from '@/pages/common/types'
 export const getLabelsTreeFx = createApiEffect<FiltersParams, TreeDataResponse>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/labels/tree/',
+    url: '/api/assignment-app/labels/tree/',
     query,
   }),
 })

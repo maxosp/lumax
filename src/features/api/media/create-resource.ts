@@ -4,7 +4,7 @@ import { CreateResourceType, ResourceType } from '@/features/api/media/types'
 export const createResourceFx = createApiEffect<CreateResourceType, ResourceType>({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/media/study-resource/',
+    url: '/api/media-app/study-resource/',
     body,
   }),
 })

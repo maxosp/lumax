@@ -4,6 +4,6 @@ import { ListType } from '@/features/api/assignment/types'
 export const getLessonLanguageListFx = createApiEffect<void, ListType[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: `/api/assignment/lesson-assignments/filter/language/`,
+    url: `/api/assignment-app/lesson-assignments/filter/language/`,
   }),
 })

@@ -8,7 +8,7 @@ export const getOlympiadTasksListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/olympiad-assignment/list/',
+    url: '/api/assignment-app/olympiad-assignment/list/',
     query,
   }),
 })

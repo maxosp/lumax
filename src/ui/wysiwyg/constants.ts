@@ -7,7 +7,7 @@ export const wysiwygConfig = {
   language: 'ru',
   extraPlugins: 'uploadimage, divarea',
   removePlugins: 'easyimage, cloudservices, exportpdf',
-  uploadUrl: `${config.BACKEND_URL}/api/media/media/upload/`,
+  uploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   allowedContent: true,
   toolbar: [
     [

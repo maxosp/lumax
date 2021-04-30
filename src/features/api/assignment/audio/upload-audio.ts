@@ -4,7 +4,7 @@ import { AssignmentAudioFile } from '@/features/api/assignment/types'
 export const uploadAudioFx = createApiEffect<AssignmentAudioFile, AssignmentAudioFile>({
   requestMapper: (params) => ({
     method: 'POST',
-    url: '/api/assignment/assignment-audio/',
+    url: '/api/assignment-app/assignment-audio/',
     body: params,
   }),
 })

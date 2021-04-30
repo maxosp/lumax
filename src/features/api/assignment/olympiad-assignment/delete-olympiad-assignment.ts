@@ -4,7 +4,7 @@ import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
 export const deleteOlympiadAssignmentsFx = createApiEffect<number[], void>({
   requestMapper: (assignments) => ({
     method: 'PATCH',
-    url: '/api/assignment/olympiad-assignment/bulk-delete/',
+    url: '/api/assignment-app/olympiad-assignment/bulk-delete/',
     body: { assignments },
   }),
 })
@@ -15,7 +15,7 @@ export const requestDeleteOlympiadAssignmentsFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/assignment/olympiad-assignment/bulk-delete/',
+    url: '/api/assignment-app/olympiad-assignment/bulk-delete/',
     body,
   }),
 })

@@ -5,7 +5,7 @@ import { Ticket, UpdateTicketBulkType } from '@/features/api/ticket/types'
 export const updateTicketBulkFx = createApiEffect<UpdateTicketBulkType, Ticket>({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/ticket/deletion-ticket/list/bulk-action/',
+    url: '/api/ticket-app/deletion-ticket/list/bulk-action/',
     body,
   }),
 })

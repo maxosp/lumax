@@ -8,7 +8,7 @@ export const getTestsListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/test/test/list/',
+    url: '/api/test-app/test/list/',
     query,
   }),
 })

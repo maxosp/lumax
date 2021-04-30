@@ -4,7 +4,7 @@ import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
 export const deleteTestAssignmentsFx = createApiEffect<number[], void>({
   requestMapper: (assignments) => ({
     method: 'PATCH',
-    url: '/api/assignment/test-assignment/bulk-delete/',
+    url: '/api/assignment-app/test-assignment/bulk-delete/',
     body: { assignments },
   }),
 })
@@ -15,7 +15,7 @@ export const requestDeleteTestAssignmentsFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/assignment/test-assignment/bulk-delete/',
+    url: '/api/assignment-app/test-assignment/bulk-delete/',
     body,
   }),
 })

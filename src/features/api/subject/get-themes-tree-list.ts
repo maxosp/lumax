@@ -7,7 +7,7 @@ export const getThemesTreeListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/themes/filter-tree/',
+    url: '/api/subject-app/themes/filter-tree/',
     query,
   }),
 })

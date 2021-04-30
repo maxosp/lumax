@@ -4,7 +4,7 @@ import { CreateLabelType, Label } from '@/features/api/assignment/types'
 export const createLabelFx = createApiEffect<CreateLabelType, Label>({
   requestMapper: (params) => ({
     method: 'POST',
-    url: '/api/assignment/labels/',
+    url: '/api/assignment-app/labels/',
     body: params,
   }),
 })

@@ -7,7 +7,7 @@ export const updateLessonAssignmentBulkFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/assignment/lesson-assignment/bulk-patch/',
+    url: '/api/assignment-app/lesson-assignment/bulk-patch/',
     body,
   }),
 })

@@ -5,7 +5,7 @@ import { Label } from '@/features/api/assignment/types'
 export const getLabelsListFx = createApiEffect<GetListQueryParams, TableDataResponse<Label[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/labels/list/',
+    url: '/api/assignment-app/labels/list/',
     query,
   }),
 })

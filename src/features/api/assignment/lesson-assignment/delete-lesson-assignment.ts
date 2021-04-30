@@ -4,7 +4,7 @@ import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
 export const deleteLessonAssignmentsFx = createApiEffect<number[], void>({
   requestMapper: (assignments) => ({
     method: 'PATCH',
-    url: '/api/assignment/lesson-assignment/bulk-delete/',
+    url: '/api/assignment-app/lesson-assignment/bulk-delete/',
     body: { assignments },
   }),
 })
@@ -15,7 +15,7 @@ export const requestDeleteLessonAssignmentsFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/assignment/lesson-assignment/bulk-delete/',
+    url: '/api/assignment-app/lesson-assignment/bulk-delete/',
     body,
   }),
 })

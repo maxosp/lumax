@@ -5,7 +5,7 @@ import { GetUsersListQueryParams, User } from '@/features/api/user/types'
 export const getUsersListFx = createApiEffect<GetUsersListQueryParams, TableDataResponse<User[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/user/user/list/',
+    url: '/api/user-app/user/list/',
     query,
   }),
 })

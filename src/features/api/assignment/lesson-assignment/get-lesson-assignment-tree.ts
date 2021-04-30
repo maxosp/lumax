@@ -5,7 +5,7 @@ import { FiltersParams } from '@/pages/common/types'
 export const getLessonAssignmentTreeFx = createApiEffect<FiltersParams, TreeDataResponse>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/assignment/lesson-assignment/tree/',
+    url: '/api/assignment-app/lesson-assignment/tree/',
     query,
   }),
 })

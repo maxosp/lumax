@@ -5,7 +5,7 @@ import { Icon } from '@/features/api/subject/types'
 export const getColorsListFx = createApiEffect<GetListQueryParams, TableDataResponse<Icon[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/subject-colors/',
+    url: '/api/subject-app/subject-colors/',
     query,
   }),
 })

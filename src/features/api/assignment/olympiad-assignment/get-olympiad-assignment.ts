@@ -4,6 +4,6 @@ import { OlympiadAssignment } from '@/features/api/assignment/types'
 export const getOlympiadAssignmentFx = createApiEffect<number, OlympiadAssignment>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/assignment/olympiad-assignment/${id}/`,
+    url: `/api/assignment-app/olympiad-assignment/${id}/`,
   }),
 })

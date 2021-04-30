@@ -4,6 +4,6 @@ import { Ticket } from '@/features/api/ticket/types'
 export const getTicketFx = createApiEffect<number, Ticket>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/ticket/moderation-ticket/${id}/`,
+    url: `/api/ticket-app/moderation-ticket/${id}/`,
   }),
 })

@@ -4,6 +4,6 @@ import { TestAssignment } from '@/features/api/assignment/types'
 export const getTestAssignmentFx = createApiEffect<number, TestAssignment>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/assignment/test-assignment/${id}/`,
+    url: `/api/assignment-app/test-assignment/${id}/`,
   }),
 })

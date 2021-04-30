@@ -4,7 +4,7 @@ import { RequestDeleteThemesParams } from '@/features/api/assignment/types'
 export const deleteThemesFx = createApiEffect<number[], void>({
   requestMapper: (themes) => ({
     method: 'PATCH',
-    url: '/api/subject/themes/bulk-delete/',
+    url: '/api/subject-app/themes/bulk-delete/',
     body: { themes },
   }),
 })
@@ -15,7 +15,7 @@ export const requestDeleteThemesFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/subject/themes/bulk-delete/',
+    url: '/api/subject-app/themes/bulk-delete/',
     body,
   }),
 })

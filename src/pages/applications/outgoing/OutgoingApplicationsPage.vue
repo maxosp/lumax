@@ -184,7 +184,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/ticket/moderation-ticket/list/`
+      return `${config.BACKEND_URL}/api/ticket-app/moderation-ticket/list/`
     },
   },
   watch: {

@@ -4,6 +4,6 @@ import { ListType } from '@/features/api/test/types'
 export const getTestGeneratorTypesListFx = createApiEffect<void, ListType[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/test/test/filter/generator/',
+    url: '/api/test-app/test/filter/generator/',
   }),
 })

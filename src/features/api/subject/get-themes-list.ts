@@ -5,7 +5,7 @@ import { Theme } from '@/features/api/subject/types'
 export const getThemesListFx = createApiEffect<GetListQueryParams, TableDataResponse<Theme[]>>({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/themes/list/',
+    url: '/api/subject-app/themes/list/',
     query,
   }),
 })

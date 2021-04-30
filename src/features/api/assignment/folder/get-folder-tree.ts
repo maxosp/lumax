@@ -7,6 +7,6 @@ export const getFolderTreeFx = createApiEffect<
 >({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/folder/tree/',
+    url: '/api/assignment-app/folder/tree/',
   }),
 })

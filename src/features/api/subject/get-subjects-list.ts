@@ -8,7 +8,7 @@ export const getSubjectsListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/subject/subjects/list/',
+    url: '/api/subject-app/subjects/list/',
     query,
   }),
 })

@@ -4,7 +4,7 @@ import { AutoItem, CreateTestAutoItemFxParams } from './types'
 export const createTestAutoItemFx = createApiEffect<CreateTestAutoItemFxParams, AutoItem>({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/test/auto-item/',
+    url: '/api/test-app/auto-item/',
     body,
   }),
 })

@@ -4,7 +4,7 @@ import { CreateSubjectType, Subject } from '@/features/api/subject/types'
 export const createSubjectFx = createApiEffect<Partial<CreateSubjectType>, Subject>({
   requestMapper: (params) => ({
     method: 'POST',
-    url: '/api/subject/subjects/',
+    url: '/api/subject-app/subjects/',
     body: params,
   }),
 })

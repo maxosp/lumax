@@ -8,7 +8,7 @@ export const getTicketsDeletionListFx = createApiEffect<
 >({
   requestMapper: (query) => ({
     method: 'GET',
-    url: '/api/ticket/deletion-ticket/list/',
+    url: '/api/ticket-app/deletion-ticket/list/',
     query,
   }),
 })

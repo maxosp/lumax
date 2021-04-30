@@ -4,6 +4,6 @@ import { GetTypesResponse } from '@/features/api/ticket/types'
 export const getElementModerationStatusListFx = createApiEffect<void, GetTypesResponse[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/ticket/moderation-ticket/filter/statuses/',
+    url: '/api/ticket-app/moderation-ticket/filter/statuses/',
   }),
 })

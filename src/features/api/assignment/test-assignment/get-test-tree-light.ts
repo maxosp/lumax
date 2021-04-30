@@ -4,6 +4,6 @@ import { TreeDataResponse } from '@/features/api/types'
 export const getTestAssignmentTreeLightFx = createApiEffect<void, TreeDataResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/test-assignment/tree/light/',
+    url: '/api/assignment-app/test-assignment/tree/light/',
   }),
 })

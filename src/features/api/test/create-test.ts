@@ -4,7 +4,7 @@ import { CreateTestFxParams, Test } from './types'
 export const createTestFx = createApiEffect<CreateTestFxParams, Test>({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/test/test/',
+    url: '/api/test-app/test/',
     body,
   }),
 })

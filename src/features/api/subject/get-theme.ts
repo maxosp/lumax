@@ -4,6 +4,6 @@ import { Theme } from '@/features/api/subject/types'
 export const getThemeFx = createApiEffect<number, Theme>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/subject/themes/${id}/`,
+    url: `/api/subject-app/themes/${id}/`,
   }),
 })

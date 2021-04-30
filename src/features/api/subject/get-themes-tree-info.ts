@@ -4,6 +4,6 @@ import { TreeDataInfoResponse } from '@/features/api/types'
 export const getThemesInfoFx = createApiEffect<void, TreeDataInfoResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/subject/themes/tree/info/',
+    url: '/api/subject-app/themes/tree/info/',
   }),
 })

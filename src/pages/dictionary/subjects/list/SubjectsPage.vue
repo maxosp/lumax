@@ -162,7 +162,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/subject/subjects/list/`
+      return `${config.BACKEND_URL}/api/subject-app/subjects/list/`
     },
     selectedRows(): number[] {
       if (!this.$refs.vuetable) return []

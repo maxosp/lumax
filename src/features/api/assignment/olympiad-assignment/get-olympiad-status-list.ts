@@ -4,6 +4,6 @@ import { ListType } from '@/features/api/assignment/types'
 export const getOlympiadStatusListFx = createApiEffect<void, ListType[]>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/olympiad-assignment/filter/statuses/',
+    url: '/api/assignment-app/olympiad-assignment/filter/statuses/',
   }),
 })

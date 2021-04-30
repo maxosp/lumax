@@ -7,7 +7,7 @@ export const updateOlympiadAssignmentBulkFx = createApiEffect<
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: '/api/assignment/olympiad-assignment/bulk-patch/',
+    url: '/api/assignment-app/olympiad-assignment/bulk-patch/',
     body,
   }),
 })

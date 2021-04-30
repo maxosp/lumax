@@ -4,6 +4,6 @@ import { TreeDataInfoResponse } from '@/features/api/types'
 export const getTagsInfoFx = createApiEffect<void, TreeDataInfoResponse>({
   requestMapper: () => ({
     method: 'GET',
-    url: '/api/assignment/olympiad-tags/tree/info/',
+    url: '/api/assignment-app/olympiad-tags/tree/info/',
   }),
 })

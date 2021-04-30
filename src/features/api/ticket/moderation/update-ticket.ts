@@ -4,7 +4,7 @@ import { Ticket, UpdateTicketType } from '@/features/api/ticket/types'
 export const updateTicketFx = createApiEffect<UpdateTicketType, Ticket>({
   requestMapper: (body) => ({
     method: 'PATCH',
-    url: `/api/ticket/moderation-ticket/${body.id}`,
+    url: `/api/ticket-app/moderation-ticket/${body.id}`,
     body,
   }),
 })

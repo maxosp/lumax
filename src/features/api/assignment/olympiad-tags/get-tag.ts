@@ -4,6 +4,6 @@ import { Tag } from '@/features/api/assignment/types'
 export const getTagFx = createApiEffect<number, Tag>({
   requestMapper: (id) => ({
     method: 'GET',
-    url: `/api/assignment/olympiad-tags/${id}/`,
+    url: `/api/assignment-app/olympiad-tags/${id}/`,
   }),
 })

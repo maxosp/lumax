@@ -199,7 +199,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     apiUrl(): string {
-      return `${config.BACKEND_URL}/api/test/test/list/`
+      return `${config.BACKEND_URL}/api/test-app/test/list/`
     },
   },
   watch: {

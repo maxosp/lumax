@@ -4,7 +4,7 @@ import { FinalText, CreateTestFinalTextFxParams } from '@/features/api/test/type
 export const createTestFinalTextFx = createApiEffect<CreateTestFinalTextFxParams, FinalText>({
   requestMapper: (body) => ({
     method: 'POST',
-    url: '/api/test/final-text/',
+    url: '/api/test-app/final-text/',
     body,
   }),
 })
