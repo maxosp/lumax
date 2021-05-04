@@ -5,6 +5,7 @@
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
       @setFilter="onFilterSet"
+      @resetFilter="onFilterReset"
       @changeFilter="changeFilter"
     >
       <template #filter>

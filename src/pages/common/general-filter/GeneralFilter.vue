@@ -103,7 +103,7 @@ export default Vue.extend({
       cb()
     },
     clear() {
-      this.handleSearchString('')
+      this.$emit('resetFilter')
     },
   },
   mounted() {

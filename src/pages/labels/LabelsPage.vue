@@ -4,6 +4,7 @@
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
+      @resetFilter="onFilterReset"
       @setFilter="onFilterSet"
       @changeFilter="changeFilter"
     >
