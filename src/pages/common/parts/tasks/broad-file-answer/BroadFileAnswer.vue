@@ -68,10 +68,6 @@ import {
   setWording,
   $containing,
   setContaining,
-  $isAudioUploadLoading,
-  $audioFiles,
-  setAudioFiles,
-  uploadAudioFiles,
   $answerExample,
   setAnswerExample,
   $disableBroadAnswer,
@@ -80,6 +76,12 @@ import {
   toggleFileAttachmentDisabling,
   clearFields,
 } from '@/pages/common/parts/tasks/broad-file-answer/broad-file-answer.model'
+import {
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+} from '@/pages/common/parts/audio-files/audio-files.model'
 
 export default Vue.extend({
   name: 'BroadFileAnswer',

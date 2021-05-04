@@ -53,14 +53,16 @@ import {
   setWording,
   $containing,
   setContaining,
-  $isAudioUploadLoading,
-  $audioFiles,
-  setAudioFiles,
-  uploadAudioFiles,
   $answerExample,
   setAnswerExample,
   clearFields,
 } from '@/pages/common/parts/tasks/short-closed-answer/short-closed-answer.model'
+import {
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+} from '@/pages/common/parts/audio-files/audio-files.model'
 
 export default Vue.extend({
   name: 'ShortClosedAnswer',

@@ -1,10 +1,9 @@
-import { createEvent, forward, restore, attach, createEffect, combine, sample } from 'effector-root'
+import { createEvent, forward, restore, attach, combine } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
-import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { getRandomId } from '@/pages/common/parts/tasks/utils'
-import { UploadMediaResponse } from '@/features/api/media/types'
-import { AudioFile, MultipleChoiceOneOrManyQuestion } from '@/pages/common/parts/tasks/types'
+import { MultipleChoiceOneOrManyQuestion } from '@/pages/common/parts/tasks/types'
 import { TestAssignment } from '@/features/api/assignment/types'
+import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -18,9 +17,6 @@ export const $wording = restore(setWording, '').reset(clearFields)
 export const setContaining = createEvent<string>()
 export const $containing = restore(setContaining, '').reset(clearFields)
 
-export const setAudioFiles = createEvent<AudioFile[]>()
-export const $audioFiles = restore(setAudioFiles, []).reset(clearFields)
-
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
@@ -28,44 +24,6 @@ export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyQuestion[]
 export const $questionsAnswers = restore(setQuestionsAnswers, [
   { id: getRandomId(), question: '', isCorrect: true },
 ]).reset(clearFields)
-
-export const uploadAudioFiles = createEvent<FileList>()
-
-const uploadAudioFilesFx = createEffect({
-  handler: (files: FileList | null): Promise<UploadMediaResponse[]> =>
-    Promise.all(
-      Array.from(files || []).map(
-        (file) =>
-          new Promise<UploadMediaResponse>((resolve) => {
-            const formData = new FormData()
-            formData.append('file', file)
-            formData.append('file_type', 'audio')
-            const res = uploadMedia(formData).then((r) => r.body)
-            resolve(res)
-          })
-      )
-    ),
-})
-
-forward({
-  from: uploadAudioFiles,
-  to: [
-    uploadAudioFilesFx,
-    addToast.prepend(() => ({ type: 'loading', message: 'Идет загрузка файла(ов)' })),
-  ],
-})
-
-sample({
-  source: $audioFiles,
-  clock: uploadAudioFilesFx.doneData,
-  fn: (existFiles: AudioFile[], newFiles: UploadMediaResponse[]) => {
-    successToastEvent('Загрузка завершена')
-    return [...existFiles, ...newFiles.map((file) => ({ ...file, isLimited: false, limit: 1 }))]
-  },
-  target: setAudioFiles,
-})
-
-export const $isAudioUploadLoading = uploadAudioFilesFx.pending
 
 export const $isFilled = combine(
   $wording,
@@ -94,7 +52,8 @@ export const $form = combine(
     common_list_text_answer: null,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
-      ...(isLimited ? { audio_limit_count: limit } : {}),
+      isLimited,
+      limit,
     })),
   })
 )
@@ -114,5 +73,6 @@ forward({
         isCorrect: data.correct_answer === idx,
       }))
     ),
+    getAudioFilesFx.prepend(({ audios }) => audios),
   ],
 })

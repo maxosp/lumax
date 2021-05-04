@@ -64,6 +64,7 @@ import Icon from '@/ui/icon/Icon.vue'
 import BaseInput from '@/ui/input/BaseInput.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import AudioFileInput from '@/ui/audio-file-input/AudioFileInput.vue'
+import { clearFields } from '@/pages/common/parts/audio-files/audio-files.model'
 import { getReadableDuration } from '@/pages/common/parts/audio-files/utils'
 
 export default Vue.extend({
@@ -108,6 +109,9 @@ export default Vue.extend({
       const newFiles = this.$props.audioFiles.filter((file) => file.id !== id)
       this.$emit('change-files', newFiles)
     },
+  },
+  beforeDestroy() {
+    clearFields()
   },
 })
 </script>

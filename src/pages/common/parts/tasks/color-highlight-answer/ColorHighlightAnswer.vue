@@ -52,14 +52,16 @@ import {
   setWording,
   $containing,
   setContaining,
-  $isAudioUploadLoading,
-  $audioFiles,
-  setAudioFiles,
-  uploadAudioFiles,
   $answerExample,
   setAnswerExample,
   clearFields,
 } from '@/pages/common/parts/tasks/color-highlight-answer/color-highlight-answer.model'
+import {
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+} from '@/pages/common/parts/audio-files/audio-files.model'
 
 export default Vue.extend({
   name: 'ColorHighlightAnswer',

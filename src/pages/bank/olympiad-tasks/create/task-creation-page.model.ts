@@ -1,5 +1,4 @@
-import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
-import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 
 import {
   $isFilled as $isFilledBroadFile,
@@ -67,7 +66,6 @@ import {
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
@@ -82,9 +80,14 @@ import {
   resetHintsList,
 } from '@/pages/common/parts/tasks/parts/add-hints-block/add-hints-block.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
+import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const createOlympiadAssignment = attach({
   effect: createOlympiadAssignmentFx,
+})
+
+const uploadAudioFilesFx = attach({
+  effect: uploadAudioFiles,
 })
 
 export const setSubject = createEvent<number | null>()
@@ -216,22 +219,6 @@ export const $baseForm = combine(
   })
 )
 
-const uploadAudioFilesFx = createEffect({
-  handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>
-    Promise.all(
-      audioFiles.map(
-        (file) =>
-          new Promise<AssignmentAudioFile>((resolve) => {
-            const res = uploadAudioFx({
-              media: file.id,
-              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
-            }).then((r) => r.body)
-            resolve(res)
-          })
-      )
-    ),
-})
-
 const $generalForm = combine($baseForm, $taskType, $taskform, (baseForm, taskType, taskform) => {
   const form = taskType ? taskform[mapTaskTypeTo[taskType].componentName] : {}
   return {
@@ -255,7 +242,7 @@ sample({
     const { audio, ...pureForm } = form
     return {
       ...pureForm,
-      audios_ids: audioFiles.map(({ media }) => media),
+      audios_ids: audioFiles.map(({ id }) => id),
     }
   },
   target: createOlympiadAssignment,

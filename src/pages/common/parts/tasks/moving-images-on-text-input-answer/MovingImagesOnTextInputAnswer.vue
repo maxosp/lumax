@@ -43,21 +43,23 @@ import Vue from 'vue'
 import BaseTextarea from '@/ui/input/BaseTextarea.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import AudioFiles from '@/pages/common/parts/audio-files/AudioFiles.vue'
-import MovingImagesOnTextInputAnswerForm from './form/MovingImagesOnTextInputAnswerForm.vue'
+import MovingImagesOnTextInputAnswerForm from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/form/MovingImagesOnTextInputAnswerForm.vue'
 
 import {
   $wording,
   setWording,
   $containing,
   setContaining,
+  $answerExample,
+  setAnswerExample,
+  clearFields,
+} from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
+import {
   $isAudioUploadLoading,
   $audioFiles,
   setAudioFiles,
   uploadAudioFiles,
-  $answerExample,
-  setAnswerExample,
-  clearFields,
-} from './moving-images-on-text-input-answer.model'
+} from '@/pages/common/parts/audio-files/audio-files.model'
 
 export default Vue.extend({
   name: 'MovingImagesOnTextInputAnswer',

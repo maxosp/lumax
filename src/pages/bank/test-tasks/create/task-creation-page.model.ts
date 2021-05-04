@@ -1,6 +1,5 @@
-import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { createTestAssignmentFx } from '@/features/api/assignment/test-assignment/create-test-assignment'
-import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
 import {
   $themes,
   themesDropdownModule,
@@ -64,7 +63,6 @@ import {
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { navigatePush } from '@/features/navigation'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { DropdownItem } from '@/pages/common/types'
@@ -74,9 +72,14 @@ import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dr
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
+import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
+})
+
+const uploadAudioFilesFx = attach({
+  effect: uploadAudioFiles,
 })
 
 export const setSubject = createEvent<number | null>()
@@ -207,22 +210,6 @@ const $baseForm = combine(
   })
 )
 
-const uploadAudioFilesFx = createEffect({
-  handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>
-    Promise.all(
-      audioFiles.map(
-        (file) =>
-          new Promise<AssignmentAudioFile>((resolve) => {
-            const res = uploadAudioFx({
-              media: file.id,
-              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
-            }).then((r) => r.body)
-            resolve(res)
-          })
-      )
-    ),
-})
-
 const $generalForm = combine($baseForm, $taskType, $taskform, (baseForm, taskType, taskform) => {
   const form = taskType ? taskform[mapTaskTypeTo[taskType].componentName] : {}
   return {
@@ -246,7 +233,7 @@ sample({
     const { audio, ...pureForm } = form
     return {
       ...pureForm,
-      audios_ids: audioFiles.map(({ media }) => media),
+      audios_ids: audioFiles.map(({ id }) => id),
     }
   },
   target: createTestAssignment,

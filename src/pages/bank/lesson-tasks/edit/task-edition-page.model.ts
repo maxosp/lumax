@@ -1,14 +1,4 @@
-import {
-  attach,
-  combine,
-  createEffect,
-  createEvent,
-  forward,
-  guard,
-  restore,
-  sample,
-} from 'effector-root'
-import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
+import { attach, combine, createEvent, forward, guard, restore, sample } from 'effector-root'
 
 import {
   $isFilled as $isFilledBroadFile,
@@ -74,7 +64,6 @@ import {
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
@@ -89,6 +78,7 @@ import { getLessonAssignmentFx } from '@/features/api/assignment/lesson-assignme
 import { updateLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 import { $correctStatus, setStatus } from '@/pages/common/parts/status-controller/status.model'
+import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateLessonAssignmentFx,
@@ -99,6 +89,10 @@ export const loadAssignment = attach({
 
 export const duplicateLessonAssignment = attach({
   effect: updateLessonAssignmentBulkFx,
+})
+
+const uploadAudioFilesFx = attach({
+  effect: uploadAudioFiles,
 })
 
 export const loadTask = createEvent<number>()
@@ -243,22 +237,6 @@ const $baseForm = combine(
     interface_language: language.title,
   })
 )
-
-const uploadAudioFilesFx = createEffect({
-  handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>
-    Promise.all(
-      audioFiles.map(
-        (file) =>
-          new Promise<AssignmentAudioFile>((resolve) => {
-            const res = uploadAudioFx({
-              media: file.id,
-              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
-            }).then((r) => r.body)
-            resolve(res)
-          })
-      )
-    ),
-})
 
 const $generalForm = combine(
   $taskId,

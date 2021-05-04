@@ -13,7 +13,6 @@ import { dropdownModules } from '@/pages/bank/test-tasks/list/parts/test-tasks-f
 export const testTasksFilters = createFiltersModel(
   {
     search_area: 'search_all',
-    is_prerequisite: false,
   },
   dropdownModules
 )

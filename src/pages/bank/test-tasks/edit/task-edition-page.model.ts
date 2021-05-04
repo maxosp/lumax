@@ -1,16 +1,6 @@
-import {
-  attach,
-  combine,
-  createEffect,
-  createEvent,
-  forward,
-  guard,
-  restore,
-  sample,
-} from 'effector-root'
+import { attach, combine, createEvent, forward, guard, restore, sample } from 'effector-root'
 import { updateTestAssignmentFx } from '@/features/api/assignment/test-assignment/update-test-assignment'
 import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
-import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
 
 import {
   $isFilled as $isFilledBroadFile,
@@ -94,7 +84,6 @@ import { $selectedLabels } from '@/pages/bank/test-tasks/edit/parts/labels-dropd
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { mapTaskTypeToComponent } from '@/pages/common/dropdowns/bank/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types'
-import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { navigatePush } from '@/features/navigation'
@@ -115,6 +104,7 @@ import {
   setStatus,
 } from '@/pages/common/parts/status-controller/status.model'
 import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
+import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -130,6 +120,10 @@ export const loadAssignment = attach({
 
 export const getIncomingApplication = attach({
   effect: getTicketFx,
+})
+
+const uploadAudioFilesFx = attach({
+  effect: uploadAudioFiles,
 })
 
 export const loadTask = createEvent<number>()
@@ -325,22 +319,6 @@ const $baseForm = combine(
     interface_language: language.title,
   })
 )
-
-const uploadAudioFilesFx = createEffect({
-  handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>
-    Promise.all(
-      audioFiles.map(
-        (file) =>
-          new Promise<AssignmentAudioFile>((resolve) => {
-            const res = uploadAudioFx({
-              media: file.id,
-              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
-            }).then((r: any) => r.body)
-            resolve(res)
-          })
-      )
-    ),
-})
 
 const $generalForm = combine(
   $taskId,

@@ -50,14 +50,16 @@ import {
   setWording,
   $containing,
   setContaining,
-  $isAudioUploadLoading,
-  $audioFiles,
-  setAudioFiles,
-  uploadAudioFiles,
   $answerExample,
   setAnswerExample,
   clearFields,
 } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
+import {
+  $isAudioUploadLoading,
+  $audioFiles,
+  setAudioFiles,
+  uploadAudioFiles,
+} from '@/pages/common/parts/audio-files/audio-files.model'
 
 export default Vue.extend({
   name: 'MovingImagesOnImageInputAnswer',
