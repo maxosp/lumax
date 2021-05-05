@@ -18,26 +18,14 @@
     <div class="text">
       {{ $comment }}
     </div>
-    <Swiper ref="swiper" :options="swiperOptions">
-      <SwiperSlide
-        v-for="(img, i) in $images"
-        :key="img.id"
-        class="slide"
-      >
-        <div
-          :data-index="i"
-          :style="{backgroundImage: `url('${img.file}')`}"
-          class="slide image"
-          @click="setFullSizeCarousel"
-        />
-      </SwiperSlide>
-      <div class="swiper-button-prev" />
-      <div class="swiper-button-next" />
-    </Swiper>
-    <FullsizeCarousel
-      v-if="showDialog"
+    <MainSlider
       :current-slide="currentSlide"
-      :slides="$images"
+      @onSlideClick="openFullSizeSlider"
+    />
+    <FullSizeSlider
+      :is-visible="fullSizeSliderIsVisible"
+      :current-slide="currentSlide"
+      @onCloseFullSizeSlider="closeFullSizeSlider"
     />
     <BaseButton
       small
@@ -54,17 +42,18 @@ import Vue from 'vue'
 import Modal from '@/ui/modal/Modal.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import FullsizeCarousel from '@/pages/applications/modals/outgoing-comment/parts/FullsizeCarousel.vue'
+import FullSizeSlider from '@/pages/applications/modals/outgoing-comment/parts/FullsizeSlider.vue'
 import {
   $modalVisibility,
   $selectedId,
   modalVisibilityChanged,
   $comment,
-  $images,
 } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
-
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import SwiperCore, { Navigation } from 'swiper'
 import 'swiper/swiper-bundle.css'
+import MainSlider from '@/pages/applications/modals/outgoing-comment/parts/MainSlider.vue'
+
+SwiperCore.use([Navigation])
 
 export default Vue.extend({
   name: 'CommentModal',
@@ -72,37 +61,27 @@ export default Vue.extend({
     Modal,
     Icon,
     BaseButton,
-    FullsizeCarousel,
-    Swiper,
-    SwiperSlide,
+    FullSizeSlider,
+    MainSlider,
   },
   effector: {
     $modalVisibility,
     $selectedId,
     $comment,
-    $images,
   },
   data: () => ({
-    showDialog: false,
     currentSlide: 0,
+    fullSizeSliderIsVisible: false,
   }),
-  computed: {
-    swiperOptions() {
-      return {
-        slidesPerView: 3,
-        spaceBetween: 20,
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-      }
-    },
-  },
   methods: {
     modalVisibilityChanged,
-    setFullSizeCarousel(e: any) {
-      this.currentSlide = +e.target.getAttribute('data-index') + 1
-      this.showDialog = true
+    openFullSizeSlider(clickedSlideIndex: number) {
+      this.currentSlide = clickedSlideIndex
+      this.fullSizeSliderIsVisible = true
+    },
+    closeFullSizeSlider(slideIndex: number) {
+      this.currentSlide = slideIndex
+      this.fullSizeSliderIsVisible = false
     },
   },
 })
@@ -110,7 +89,8 @@ export default Vue.extend({
 
 <style scoped>
 .dialog ::v-deep .modal-body {
-  width: 420px;
+  position: relative;
+  width: 480px;
   padding: 20px;
 }
 .top {
@@ -132,15 +112,6 @@ export default Vue.extend({
   line-height: 24px;
   margin-top: 20px;
   margin-bottom: 20px;
-}
-.carousel {
-  margin-bottom: 30px;
-}
-.slide.image {
-  width: 69px;
-  height: 80px;
-  background-size: cover;
-  background-position: center;
 }
 .btn {
   margin: 30px auto 0;

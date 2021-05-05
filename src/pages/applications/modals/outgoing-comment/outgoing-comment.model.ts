@@ -18,8 +18,8 @@ export const $selectedId = restore<number>(loadCommentModal, DEFAULT_ID)
 const setComment = createEvent<string>()
 export const $comment = restore(setComment, '')
 
-const setImages = createEvent<UploadMediaResponse | null>()
-export const $images = restore<UploadMediaResponse | null>(setImages, null)
+const setImages = createEvent<UploadMediaResponse[] | null>()
+export const $images = restore<UploadMediaResponse[] | null>(setImages, null)
 
 forward({
   from: loadCommentModal,
