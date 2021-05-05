@@ -46,8 +46,8 @@ export const getAudioFilesFx = createEffect({
             const res = getMedia(media!).then((r) => {
               return {
                 ...r.body,
-                isLimited: audio_limit_count! === null,
-                limit: audio_limit_count || 0,
+                isLimited: audio_limit_count! !== null,
+                limit: audio_limit_count || 1,
               }
             })
             resolve(res)

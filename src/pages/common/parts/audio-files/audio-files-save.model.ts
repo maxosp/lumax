@@ -11,7 +11,7 @@ export const uploadAudioFiles = createEffect({
           new Promise<AssignmentAudioFile>((resolve) => {
             const res = uploadAudioFx({
               media: file.id,
-              ...(!file.isLimited ? { audio_limit_count: file.limit } : {}),
+              ...(file.isLimited ? { audio_limit_count: file.limit } : {}),
             }).then((r) => r.body)
             resolve(res)
           })
