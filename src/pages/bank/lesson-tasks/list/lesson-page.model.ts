@@ -10,13 +10,20 @@ import {
 } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
-import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types'
+import {
+  RequestDeleteAssignmentsParams,
+  RequestDeleteFolderParams,
+} from '@/features/api/assignment/types'
 import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 import {
   deleteLessonAssignmentsFx,
   requestDeleteLessonAssignmentsFx,
 } from '@/features/api/assignment/lesson-assignment/delete-lesson-assignment'
+import {
+  deleteFolderFx,
+  requestDeleteFolderFx,
+} from '@/features/api/assignment/folder/delete-folder'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition, every } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
@@ -65,6 +72,26 @@ export const requestDeleteAssignments = attach({
   },
 })
 
+export const deleteFolder = createEffect({
+  handler: (id: number): Promise<number> => {
+    return new Promise((resolve) => {
+      deleteFolderFx(id).then(() => {
+        resolve(id)
+      })
+    })
+  },
+})
+
+export const requestDeleteFolder = attach({
+  effect: requestDeleteFolderFx,
+  mapParams: (payload: RequestDeleteFolderParams): RequestDeleteFolderParams => {
+    return {
+      assignment_folders: payload.assignment_folders,
+      ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
+    }
+  },
+})
+
 export const lessonTaskPageParams = createPageParamsModel()
 
 export const loadTree = createEvent<FiltersParams>()
@@ -80,6 +107,7 @@ export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 
 const showDeleteAssignmentsToast = createEvent<number[]>()
+const showDeleteFolderToast = createEvent<number>()
 
 export const $isLoading = combine(
   getFilteredTree.pending,
@@ -155,7 +183,21 @@ condition({
 })
 
 forward({
-  from: requestDeleteAssignments.doneData,
+  from: deleteFolder.doneData,
+  to: [
+    loadTreeLight.prepend(() => ({})),
+    confirmDeleteModalVisibilityChanged.prepend(() => false),
+    showDeleteFolderToast,
+  ],
+})
+
+forward({
+  from: showDeleteFolderToast,
+  to: successToastEvent('Папка была успешно удалена!'),
+})
+
+forward({
+  from: [requestDeleteAssignments.doneData, requestDeleteFolder.doneData],
   to: [
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),

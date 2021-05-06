@@ -231,3 +231,8 @@ export type RequestDeleteSubjectsParams = {
   subjects: number[]
   ticket_comment?: string
 }
+
+export type RequestDeleteFolderParams = {
+  assignment_folders: number[]
+  ticket_comment?: string
+}

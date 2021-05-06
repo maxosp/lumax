@@ -347,8 +347,7 @@ sample({
   source: $generalForm,
   clock: handleUpdateAudioFiles.doneData,
   fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
-    // eslint-disable-next-line
-    const { audio, ...pureForm } = form
+    const { ...pureForm } = form
     return {
       id: pureForm.id,
       body: {
