@@ -30,7 +30,7 @@
             :checked="audio.isLimited"
             @change="(value) => handleIsLimitedChange({ id: audio.id, value })"
           >
-            <p>{{ audio.isLimited ? 'Ограничить' : 'Не ограничивать' }}</p>
+            <p>Ограничить</p>
           </BaseSwitch>
           <BaseInput
             v-tooltip.right="tooltipOptions"

@@ -93,7 +93,7 @@ export type AssignmentStatus =
 export type AssignmentAudioFile = {
   id?: number
   media?: number
-  audio_limit_count?: number
+  audio_limit_count: number | null
 }
 
 export type DifficultyType = 0 | 1 | 2

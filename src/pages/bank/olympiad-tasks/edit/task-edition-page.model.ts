@@ -89,7 +89,7 @@ import {
   setIsPublished,
   setStatus,
 } from '@/pages/common/parts/status-controller/status.model'
-import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateOlympiadAssignmentFx,
@@ -98,8 +98,8 @@ export const loadAssignment = attach({
   effect: getOlympiadAssignmentFx,
 })
 
-const uploadAudioFilesFx = attach({
-  effect: uploadAudioFiles,
+export const handleUpdateAudioFiles = attach({
+  effect: handleUpdateAudioFilesFx,
 })
 
 export const loadTask = createEvent<number>()
@@ -201,6 +201,7 @@ forward({
     setSelectedTagsIds.prepend((data) => data.tags),
     setSolutionText.prepend((data) => data.answer_text),
     setStatus.prepend((data) => data.status),
+    setAudioIds.prepend((data) => data.audios),
     // setHint.prepend((data) => data.clue.map((hint) => ({ text: hint.name, price: hint.price. }))),
   ],
 })
@@ -305,15 +306,15 @@ const $generalForm = combine(
 )
 
 sample({
-  source: $generalForm,
+  source: [$generalForm, $audioIds],
   clock: save,
-  fn: ({ audio }) => audio,
-  target: uploadAudioFilesFx,
+  fn: ([form, audioFiles]) => ({ audioAssignments: form.audio, audioFiles }),
+  target: handleUpdateAudioFiles,
 })
 
 sample({
   source: $generalForm,
-  clock: uploadAudioFilesFx.doneData,
+  clock: handleUpdateAudioFiles.doneData,
   fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
     // eslint-disable-next-line
     const { audio, ...pureForm } = form
@@ -321,7 +322,7 @@ sample({
       id: pureForm.id,
       body: {
         ...pureForm,
-        audios_ids: audioFiles.map(({ media }) => media),
+        audios_ids: audioFiles.map(({ id }) => id),
       },
     }
   },

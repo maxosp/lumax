@@ -104,7 +104,7 @@ import {
   setStatus,
 } from '@/pages/common/parts/status-controller/status.model'
 import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
-import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -122,8 +122,8 @@ export const getIncomingApplication = attach({
   effect: getTicketFx,
 })
 
-const uploadAudioFilesFx = attach({
-  effect: uploadAudioFiles,
+export const handleUpdateAudioFiles = attach({
+  effect: handleUpdateAudioFilesFx,
 })
 
 export const loadTask = createEvent<number>()
@@ -211,6 +211,7 @@ forward({
       title: data.interface_language,
     })),
     setStatus.prepend((data) => data.status),
+    setAudioIds.prepend((data) => data.audios),
   ],
 })
 
@@ -336,15 +337,15 @@ const $generalForm = combine(
 )
 
 sample({
-  source: $generalForm,
+  source: [$generalForm, $audioIds],
   clock: save,
-  fn: ({ audio }) => audio,
-  target: uploadAudioFilesFx,
+  fn: ([form, audioFiles]) => ({ audioAssignments: form.audio, audioFiles }),
+  target: handleUpdateAudioFiles,
 })
 
 sample({
   source: $generalForm,
-  clock: uploadAudioFilesFx.doneData,
+  clock: handleUpdateAudioFiles.doneData,
   fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
     // eslint-disable-next-line
     const { audio, ...pureForm } = form
@@ -352,7 +353,7 @@ sample({
       id: pureForm.id,
       body: {
         ...pureForm,
-        audio_ids: audioFiles.map(({ media }) => media),
+        audios_ids: audioFiles.map(({ id }) => id),
       },
     }
   },
