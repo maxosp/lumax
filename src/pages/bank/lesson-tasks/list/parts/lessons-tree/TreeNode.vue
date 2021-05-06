@@ -242,7 +242,7 @@ export default Vue.extend({
     },
     deleteFolder() {
       setDeleteType('folder')
-      this.$session?.permissions?.assignments_folder?.delete
+      this.$session?.permissions?.assignments_assignment?.delete
         ? loadConfirmDeleteModal([this.nodeId])
         : loadRequestDeleteModal([this.nodeId])
     },
