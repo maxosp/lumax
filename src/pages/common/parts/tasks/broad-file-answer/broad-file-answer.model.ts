@@ -64,8 +64,8 @@ forward({
     setWording.prepend((data) => data.wording || ''),
     setContaining.prepend((data) => data.text || ''),
     setAnswerExample.prepend((data) => data.example_answer || ''),
-    toggleBroadAnswerDisabling.prepend((data) => data.question_data.disable_field === 'true'),
-    toggleFileAttachmentDisabling.prepend((data) => data.question_data.disable_attach === 'true'),
+    toggleBroadAnswerDisabling.prepend((data) => data.question_data.disable_field),
+    toggleFileAttachmentDisabling.prepend((data) => data.question_data.disable_attach),
     getAudioFilesFx.prepend(({ audios }) => audios),
   ],
 })

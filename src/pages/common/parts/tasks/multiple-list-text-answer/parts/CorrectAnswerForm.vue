@@ -103,6 +103,7 @@ import {
   toggleReorderEnabling,
   $textTemplate,
   setTextTemplate,
+  clearFields,
 } from '@/pages/common/parts/tasks/multiple-list-text-answer/multiple-list-text-answer.model'
 import {
   getRandomId,
@@ -236,6 +237,9 @@ export default Vue.extend({
       const editor = document.querySelector('#common-list-wysiwyg')
       editor && editor.dispatchEvent(event)
     },
+  },
+  beforeDestroy() {
+    clearFields()
   },
 })
 </script>

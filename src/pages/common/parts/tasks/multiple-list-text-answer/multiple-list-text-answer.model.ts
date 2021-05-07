@@ -54,15 +54,13 @@ export const $form = combine(
     example_answer,
     text: containing,
     question_data: {
-      variant: answersList.map((list, idx) => ({
+      variants: answersList.map((list, idx) => ({
         number: idx + 1,
         options: list.answers.map(({ value }) => value),
       })),
     },
-    correct_answer: answersList.map(
-      (list) => list.answers.findIndex(({ isCorrect }) => isCorrect) + 1
-    ),
-    common_list_answer_choices: text_template,
+    correct_answer: answersList.map((list) => list.answers.findIndex(({ isCorrect }) => isCorrect)),
+    template_text: text_template,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       isLimited,
@@ -77,15 +75,15 @@ forward({
   from: initAssignment,
   to: [
     setWording.prepend(({ wording }) => wording || ''),
-    setContaining.prepend(({ template_text }) => template_text || ''),
+    setTextTemplate.prepend(({ template_text }) => template_text || ''),
     setAnswerExample.prepend(({ example_answer }) => example_answer || ''),
-    setTextTemplate.prepend(({ text }) => text || ''),
+    setContaining.prepend(({ text }) => text || ''),
     setAnswersList.prepend((data) =>
       data.question_data.variants.map((variant: QuestionData, idx: number) => ({
         id: idx + 1,
         answers: variant.options.map((value: string, index: number) => {
           let isCorrect = false
-          if (data.correct_answer[idx] === `${index}`) {
+          if (data.correct_answer[idx] === index) {
             isCorrect = true
           }
           return {
