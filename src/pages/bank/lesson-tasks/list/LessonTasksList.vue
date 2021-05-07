@@ -116,11 +116,11 @@
     <TasksTypesModal />
     <TasksUpdateModal />
     <ConfirmDeleteModal
-      type="task"
-      @confirmDelete="removeSelectedTask"
+      :type="$deleteType"
+      @confirmDelete="removeSelected"
     />
     <RequestDeleteModal
-      @confirmRequestDelete="sendRequestDeleteTask"
+      @confirmRequestDelete="sendRequestDelete"
     />
     <CreatingFolderModal />
     <EditingFolderModal />
@@ -147,9 +147,11 @@ import {
   $lessonsTreeTotal,
   deleteAssignments,
   requestDeleteAssignments,
+  deleteFolder,
   lessonTaskPageParams,
   loadTreeLight,
   $isLoading,
+  requestDeleteFolder,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -159,16 +161,19 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
-import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, RightClickParams } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
 import TasksUpdateModal from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
-import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import {
+  loadConfirmDeleteModal,
+  $deleteType,
+  setDeleteType,
+} from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { $session } from '@/features/session'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
@@ -187,11 +192,7 @@ import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-type RightClickParams = {
-  data: any
-  event: any
-  type?: ContextMenuType
-}
+
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType
@@ -229,6 +230,7 @@ export default (Vue as VueConstructor<
     $treeView: lessonTaskPageParams.store.treeView,
     $currentPage: lessonTaskPageParams.store.currentPage,
     $isLoading,
+    $deleteType,
   },
   data() {
     return {
@@ -345,17 +347,26 @@ export default (Vue as VueConstructor<
       })
     },
     onRemoveTask(ids: number[]) {
+      setDeleteType('task')
       this.$session?.permissions?.assignments_assignment?.delete
         ? loadConfirmDeleteModal(ids)
         : loadRequestDeleteModal(ids)
     },
-    async removeSelectedTask(ids: number[]) {
-      await deleteAssignments(ids)
+    async removeSelected(ids: number[]) {
+      if (this.$deleteType === 'folder') {
+        await deleteFolder(ids[0])
+      } else {
+        await deleteAssignments(ids)
+      }
       await Vue.nextTick(() => this.$refs.vuetable.reload())
       this.removeSelection()
     },
-    async sendRequestDeleteTask(comment: string, ids: number[]) {
-      await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+    async sendRequestDelete(comment: string, ids: number[]) {
+      if (this.$deleteType === 'folder') {
+        await requestDeleteFolder({ assignment_folders: ids, ticket_comment: comment })
+      } else {
+        await requestDeleteAssignments({ assignments: ids, ticket_comment: comment })
+      }
       this.removeSelection()
     },
     removeSelection() {

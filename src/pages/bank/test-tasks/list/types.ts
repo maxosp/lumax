@@ -13,4 +13,4 @@ export type ResourceChip = {
   description: string
 }
 
-export type ContextMenuType = 'table_tasks' | 'task'
+export type ContextMenuType = 'table_tasks' | 'task' | 'table_lessons' | 'assignment'

@@ -15,7 +15,7 @@
           v-if="$taskType"
           class="field"
         >
-          <AddHintsBlock />
+          <Clues />
         </div>
         <div
           v-if="$taskType"
@@ -64,7 +64,7 @@ import ClassDropdown from '@/pages/common/dropdowns/class/ClassesDropdown.vue'
 import ScoreDropdown from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/ScoreDropdown.vue'
 import TaskTypesDropdown from '@/pages/common/dropdowns/bank/task-types-dropdown/TaskTypesDropdown.vue'
 import TagsDropdown from '@/pages/bank/olympiad-tasks/edit/parts/tags-dropdown/TagsDropdown.vue'
-import AddHintsBlock from '@/pages/common/parts/tasks/parts/add-hints-block/AddHintsBlock.vue'
+import Clues from '@/pages/common/parts/tasks/parts/clues/Clues.vue'
 import ShowAnswerBlock from '@/pages/common/parts/tasks/parts/show-answer-block/ShowAnswerBlock.vue'
 import LanguagesDropdown from '@/pages/bank/olympiad-tasks/edit/parts/languages-dropdown/LanguagesDropdown.vue'
 import {
@@ -99,7 +99,7 @@ export default Vue.extend({
     ScoreDropdown,
     TaskTypesDropdown,
     TagsDropdown,
-    AddHintsBlock,
+    Clues,
     ShowAnswerBlock,
     LanguagesDropdown,
   },

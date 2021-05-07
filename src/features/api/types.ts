@@ -1,6 +1,6 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 import { BaseAssignment, FolderType, Label, Tag } from '@/features/api/assignment/types'
-import { ResourceType } from '@/features/api/media/types'
+import { ResourceType, UploadMediaResponse } from '@/features/api/media/types'
 
 export type TreeElementType =
   | 'subject'
@@ -12,6 +12,7 @@ export type TreeElementType =
   | 'label'
   | 'olympiad_tag'
   | 'folder'
+  | 'media'
 
 export type VirtualFolder = {
   name: string
@@ -49,6 +50,7 @@ export type TreeData = {
   study_resource: ResourceType | null
   virtual_folder: VirtualFolder | null
   ordering_number: number
+  media: UploadMediaResponse
   assignment: BaseAssignment | null
 }
 

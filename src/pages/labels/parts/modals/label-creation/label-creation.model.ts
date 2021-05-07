@@ -18,7 +18,6 @@ import {
 import { condition, debounce, every } from 'patronum'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { createLabelFx } from '@/features/api/assignment/labels/create-label'
-import { CreateLabelType } from '@/features/api/assignment/types'
 import { getLabelsTreeLight } from '@/pages/labels/labels-page.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { createError } from '@/lib/effector/error-generator'
@@ -26,7 +25,6 @@ import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tr
 
 export const createLabel = attach({
   effect: createLabelFx,
-  mapParams: (params: CreateLabelType) => params,
 })
 
 export const createLabelFromTree = createEvent<{

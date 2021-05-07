@@ -78,7 +78,7 @@ import { getLessonAssignmentFx } from '@/features/api/assignment/lesson-assignme
 import { updateLessonAssignmentFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 import { $correctStatus, setStatus } from '@/pages/common/parts/status-controller/status.model'
-import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateLessonAssignmentFx,
@@ -91,8 +91,8 @@ export const duplicateLessonAssignment = attach({
   effect: updateLessonAssignmentBulkFx,
 })
 
-const uploadAudioFilesFx = attach({
-  effect: uploadAudioFiles,
+export const handleUpdateAudioFiles = attach({
+  effect: handleUpdateAudioFilesFx,
 })
 
 export const loadTask = createEvent<number>()
@@ -154,6 +154,7 @@ forward({
     })),
     setSelectedFolder.prepend((data) => ({ title: `${data.folder.id}`, name: data.folder.name })),
     setStatus.prepend((data) => data.status),
+    setAudioIds.prepend((data) => data.audios),
   ],
 })
 
@@ -254,23 +255,22 @@ const $generalForm = combine(
 )
 
 sample({
-  source: $generalForm,
+  source: [$generalForm, $audioIds],
   clock: save,
-  fn: ({ audio }) => audio,
-  target: uploadAudioFilesFx,
+  fn: ([form, audioFiles]) => ({ audioAssignments: form.audio, audioFiles }),
+  target: handleUpdateAudioFiles,
 })
 
 sample({
   source: $generalForm,
-  clock: uploadAudioFilesFx.doneData,
+  clock: handleUpdateAudioFiles.doneData,
   fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
-    // eslint-disable-next-line
-    const { audio, ...pureForm } = form
+    const { ...pureForm } = form
     return {
       id: pureForm.id,
       body: {
         ...pureForm,
-        audios_ids: audioFiles.map(({ media }) => media),
+        audios_ids: audioFiles.map(({ id }) => id),
       },
     }
   },

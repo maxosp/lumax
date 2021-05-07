@@ -1,7 +1,7 @@
 import { combine, forward, attach, sample, createEvent, restore } from 'effector-root'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
-import { CreateSubjectType, Subject } from '@/features/api/subject/types'
+import { Subject } from '@/features/api/subject/types'
 import {
   $formToSend,
   clearFields,
@@ -20,7 +20,6 @@ import { navigatePush } from '@/features/navigation'
 
 const updateSubjectDataFx = attach({
   effect: updateSubjectFx,
-  mapParams: (params: CreateSubjectType) => params,
 })
 const getSubjectToUpdate = attach({
   effect: getSubjectFx,

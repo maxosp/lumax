@@ -100,7 +100,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { RightClickParams } from '@/pages/bank/olympiad-tasks/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import {
   searchFieldsData,
@@ -132,7 +131,7 @@ import SendForModerationModal from '@/pages/applications/modals/send-for-moderat
 import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import SetToModeratorModal from '@/pages/applications/modals/set-to-moderator/SetToModeratorModal.vue'
 import { loadModeratorModal } from '@/pages/applications/modals/set-to-moderator/set-to-moderator.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType, HttpOptionsType, RightClickParams } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'

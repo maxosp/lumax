@@ -12,7 +12,6 @@ import { successToastEvent } from '@/features/toasts/toasts.model'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { deleteSubjectsFx, requestDeleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
-import { CreateSubjectType } from '@/features/api/subject/types'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
@@ -48,7 +47,6 @@ export const requestDeleteSubjects = attach({
 
 const updateSubjectDataFx = attach({
   effect: updateSubjectFx,
-  mapParams: (params: CreateSubjectType) => params,
 })
 const getSubjectToUpdate = attach({
   effect: getSubjectFx,

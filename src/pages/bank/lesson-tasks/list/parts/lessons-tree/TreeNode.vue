@@ -55,9 +55,10 @@
         class="action"
         @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
-        @onCreateFolder="createFolder($props.nodeId)"
-        @onCreateTask="createTask($props.nodeId)"
-        @onEditFolder="editFolder($props.nodeId)"
+        @onCreateFolder="createFolder"
+        @onCreateTask="createTask"
+        @onEditFolder="editFolder"
+        @onDeleteFolder="deleteFolder"
       />
     </div>
     <div v-if="opened" class="leaf">
@@ -68,11 +69,24 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
         @loadTree="val => $emit('loadTree', val)"
-        @onRightClick="$emit('onRightClick', $event)"
+        @onRightClick="handleRightClick"
         @onRemove="(val) => $emit('onRemove', val)"
         @onPreview="(val) => $emit('onPreview', val)"
       />
     </div>
+    <ContextMenu
+      v-if="showContextMenu"
+      :id="$props.nodeId"
+      :selected="[]"
+      :style="contextMenuStyles"
+      type='folder'
+      class="context-menu"
+      @onOutsideClick="showContextMenu = false"
+      @onCreateFolder="createFolder"
+      @onCreateTask="createTask"
+      @onEditFolder="editFolder"
+      @onDeleteFolder="deleteFolder"
+    />
   </div>
 </template>
 
@@ -94,6 +108,13 @@ import {
 } from '@/pages/common/modals/tasks-bank/editing-folder/editing-folder-modal.model'
 import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import {
+  setDeleteType,
+  loadConfirmDeleteModal,
+} from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { $session } from '@/features/session'
+import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
+import ContextMenu from '@/pages/bank/lesson-tasks/list/parts/table/ContextMenu.vue'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -101,27 +122,33 @@ export default Vue.extend({
     Icon,
     Chip,
     Actions,
+    ContextMenu,
+  },
+  effector: {
+    $session,
   },
   props: {
     node: { type: Object as PropType<TreeData> },
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
-    nodeId: { type: [Number, String] },
+    nodeId: { type: Number },
   },
   data: () => ({
     opened: false,
+    showContextMenu: false,
+    contextMenuStyles: { top: '0', left: '0' },
   }),
   computed: {
-    title() {
+    title(): string {
       const type = this.node.element_type
       let fullName = ''
-      if (type !== 'assignment' && type !== 'study_resource') {
+      if (type !== 'assignment' && type !== 'study_resource' && type !== 'media') {
         const entity = this.node[type]
         fullName = entity && entity.name ? entity.name : ''
         if (fullName.length > 100) {
           fullName = `${fullName.slice(0, 100)}...`
         }
-      } else if (type !== 'study_resource') {
+      } else if (type !== 'study_resource' && type !== 'media') {
         const entity = this.node[type]
         fullName = entity ? entity.wording : ''
         if (!entity?.wording) return ''
@@ -130,7 +157,7 @@ export default Vue.extend({
       }
       return fullName
     },
-    resources() {
+    resources(): Record<string, { count: number; description: string }> {
       return {
         tasks: {
           count: this.node.leaves.filter((el) => el.element_type === 'assignment').length,
@@ -138,13 +165,13 @@ export default Vue.extend({
         },
       }
     },
-    taskIcon() {
+    taskIcon(): string {
       return mapTaskTypeTo[this.node.assignment!.type].icon
     },
-    correctStatus() {
+    correctStatus(): string {
       return mapTaskStatus[this.node.assignment!.status]
     },
-    showActions() {
+    showActions(): boolean {
       const { element_type } = this.$props.node
       return element_type === 'folder'
     },
@@ -167,8 +194,18 @@ export default Vue.extend({
       this.$emit('onRemove', val)
     },
     handleRightClick(event: any) {
-      event.preventDefault()
+      if (event instanceof MouseEvent) event.preventDefault()
       let type = this.$props.node.element_type
+
+      if (type === 'folder' && event instanceof MouseEvent) {
+        this.showContextMenu = true
+        return
+      }
+
+      if (type === 'folder' && event instanceof Object) {
+        this.$emit('onRightClick', event)
+        return
+      }
 
       if (this.$props.node[type].is_prerequisite) {
         if (this.$props.prerequisiteFolder) {
@@ -195,29 +232,35 @@ export default Vue.extend({
         })
       }
     },
-    createFolder(id: number) {
-      loadFolder(id)
+    createFolder() {
+      loadFolder(this.nodeId)
       createFolderModal(true)
     },
-    editFolder(id: number) {
-      loadParentFolder(id)
+    editFolder() {
+      loadParentFolder(this.nodeId)
       editFolderModal(true)
     },
-    createTask(id: number) {
-      loadFolder(id)
+    deleteFolder() {
+      setDeleteType('folder')
+      this.$session?.permissions?.assignments_assignment?.delete
+        ? loadConfirmDeleteModal([this.nodeId])
+        : loadRequestDeleteModal([this.nodeId])
+    },
+    createTask() {
+      loadFolder(this.nodeId)
       this.$router.push({ name: 'lesson-tasks-creation' })
     },
   },
   mounted() {
     const { element_type } = this.$props.node
-    if (element_type === 'assignment') {
+    if (element_type === 'assignment' || element_type === 'folder') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
     }
   },
   beforeDestroy() {
     const { element_type } = this.$props.node
-    if (element_type === 'assignment') {
+    if (element_type === 'assignment' || element_type === 'folder') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.removeEventListener('contextmenu', this.handleRightClick)
     }
@@ -227,6 +270,7 @@ export default Vue.extend({
 
 <style scoped>
 .tree-node {
+  position: relative;
   padding-top: 20px;
 }
 .folder-icon {
@@ -323,5 +367,10 @@ export default Vue.extend({
 }
 .action {
   margin-left: 10px;
+}
+.context-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

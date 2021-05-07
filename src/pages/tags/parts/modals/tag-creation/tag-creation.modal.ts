@@ -17,12 +17,10 @@ import {
 } from '@/pages/tags/parts/modals/tag-creation/parts/subject/subject-dropdown.model'
 import { canRefreshTableChanged } from '@/pages/tags/parts/modals/tag-edition/tag-edition.modal'
 import { getTagsTreeLight } from '@/pages/tags/tags-page.model'
-import { CreateTagType } from '@/features/api/assignment/types'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
 export const createTag = attach({
   effect: createTagFx,
-  mapParams: (params: CreateTagType) => params,
 })
 
 export const canRefreshAfterCreationChange = createEvent<boolean>()

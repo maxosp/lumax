@@ -65,19 +65,12 @@ import {
 } from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/dictionary/resources/list/constants'
-import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, RightClickParams } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.use(VueEvents)
-
-type RightClickParams = {
-  data: any
-  event: any
-  type?: ContextMenuType
-}
 
 export default (Vue as VueConstructor<
   Vue & {

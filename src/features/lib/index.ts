@@ -40,21 +40,40 @@ export const formatTagsTitle = formatTitleDecorator(['тег', 'тега', 'те
 export const formatTestsTitle = formatTitleDecorator(['тест', 'теста', 'тестов'])
 export const formatLabelsTitle = formatTitleDecorator(['метка', 'метки', 'меток'])
 export const formatResourcesTitle = formatTitleDecorator(['ресурс', 'ресурса', 'ресурсов'])
+export const formatFilesTitle = formatTitleDecorator(['файл', 'файла', 'файлов'])
 
 export const sortTreeLeaves = (leaves: TreeData[]) => {
   return leaves.sort((a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number)
 }
 
+const checkChildren = (oldData: TreeData, newData?: TreeData) => {
+  if (newData) {
+    return oldData.leaves.some((odl) =>
+      newData.leaves.some((ndl) => ndl.element_type === odl.element_type)
+    )
+  }
+  return false
+}
+
 export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
   const res = oldData.map((el) => {
-    const nData = newData[0]
+    const nData = newData.find(
+      (nd) => (nd[nd.element_type] as any).id === (el[el.element_type] as any).id
+    )
     if (nData === undefined) return el
     const oldType = el.element_type
     const newType = nData.element_type
-    if (oldType !== 'virtual_folder' && newType !== 'virtual_folder') {
-      if (el[oldType]?.id === nData[newType]?.id) {
+    if (!checkChildren(el, nData)) {
+      nData.leaves.forEach((ndl) => el.leaves.push(ndl))
+    } else if (checkChildren(el, nData)) {
+      if (
+        (oldType === newType && (el[oldType] as any))?.id === (nData[newType] as any)?.id ||
+        (oldType === 'virtual_folder' && newType === 'virtual_folder')
+      ) {
         if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
-        else el.leaves = nData.leaves
+        else {
+          el.leaves = nData.leaves
+        }
       }
     }
     return el

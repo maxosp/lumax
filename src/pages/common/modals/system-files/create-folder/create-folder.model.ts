@@ -2,23 +2,24 @@ import { attach, combine, createEvent, forward, restore, sample } from 'effector
 import { condition } from 'patronum'
 import { createError } from '@/lib/effector/error-generator'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
-import { createFolderFx } from '@/features/api/assignment/folder/create-folder'
 import {
   $folders,
   $selectedFolder,
   foldersDropdownModule,
   setSelectedFolder,
-} from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/position-dropdown.model'
-import { loadTreeLight } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
-import { getFolderFx } from '@/features/api/assignment/folder/get-folder'
+} from '@/pages/common/dropdowns/system-files/position-dropdown/position-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import { getMediaFolderFx } from '@/features/api/media/folder/get-media-folder'
+import { createMediaFolderFx } from '@/features/api/media/folder/create-media-folder'
+import { loadTreeLight } from '@/pages/dictionary/files/system-files-page.model'
+import { findItem } from '@/pages/common/filter-dropdown/lib'
 
 export const createFolder = attach({
-  effect: createFolderFx,
+  effect: createMediaFolderFx,
 })
 
 export const getFolder = attach({
-  effect: getFolderFx,
+  effect: getMediaFolderFx,
 })
 
 export const loadFolder = createEvent<number>()
@@ -36,7 +37,7 @@ export const $titleErrorModule = createError()
 
 const $form = combine({
   name: $folderTitle,
-  parent_id: $selectedFolder.map((data) => (data && data.id ? +data.id : null)),
+  parent_id: $selectedFolder.map((data) => (data && data.name ? +data.name : null)),
 })
 
 sample({
@@ -57,47 +58,20 @@ forward({
   to: [getFolder, modalVisibilityChanged.prepend(() => true)],
 })
 
-const searchParentFolder = function (id: number, folders: any) {
-  let res = null
-  folders.forEach((folder: any) => {
-    if (folder.id === id) {
-      res = folder
-      return res
-    }
-    if (folder.leaves) {
-      const fold = searchParentFolder(id, folder.leaves)
-      if (fold) {
-        res = fold
-        return res
-      }
-    }
-    return null
-  })
-  return res
-}
-
 sample({
   source: $folders,
   clock: getFolder.doneData.map(({ body }) => body),
-  fn: (folders, data): DropdownItem | null => {
-    let res = null
-    folders.forEach((folder) => {
-      if (folder.id === data.id) {
-        res = folder
-        return res
-      }
-      if (folder.leaves?.length) {
-        const fold = searchParentFolder(data.id!, folder.leaves)
-        if (fold) {
-          res = fold
-          return res
-        }
-      }
-      return null
-    })
-    return res
+  fn: (folders, data) => {
+    const elem = findItem(`${data.id}`, folders)
+    return elem!
   },
-  target: setSelectedFolder,
+  target: [
+    setSelectedFolder.prepend((data: DropdownItem | null) => ({
+      name: `${data!.id}`,
+      title: data!.name,
+    })),
+    foldersDropdownModule.methods.itemChanged.prepend((data: DropdownItem | null) => data!.name),
+  ],
 })
 
 forward({
@@ -121,7 +95,7 @@ forward({
 })
 
 forward({
-  from: createFolderFx.doneData,
+  from: createMediaFolderFx.doneData,
   to: [
     loadTreeLight.prepend(() => ({})),
     modalVisibilityChanged.prepend(() => false),

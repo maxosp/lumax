@@ -180,13 +180,12 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
-import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { $session } from '@/features/session'
 import { deleteThemes } from '@/pages/dictionary/themes/list/themes-page.model'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType, HttpOptionsType, RightClickParams } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
 import TasksUpdateModal from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
@@ -211,12 +210,6 @@ import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-
-type RightClickParams = {
-  data: any
-  event: any
-  type?: ContextMenuType
-}
 
 export default (Vue as VueConstructor<
   Vue & {

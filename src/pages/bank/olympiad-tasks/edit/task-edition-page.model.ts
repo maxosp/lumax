@@ -75,21 +75,27 @@ import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { condition, debounce } from 'patronum'
+import { combineEvents, condition, debounce } from 'patronum'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { scoreDropdownModule } from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/score-dropdown.model'
 import { updateOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-assignment'
 import { getOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-assignment'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
-import { resetHintsList } from '@/pages/common/parts/tasks/parts/add-hints-block/add-hints-block.model'
+import {
+  $clues,
+  $cluesIds,
+  handleUpdateCluesFx,
+  resetCluesList,
+  setCluesEvent,
+} from '@/pages/common/parts/tasks/parts/clues/clues.model'
 import {
   $correctStatus,
   setIsArchive,
   setIsPublished,
   setStatus,
 } from '@/pages/common/parts/status-controller/status.model'
-import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const updateAssignment = attach({
   effect: updateOlympiadAssignmentFx,
@@ -98,8 +104,8 @@ export const loadAssignment = attach({
   effect: getOlympiadAssignmentFx,
 })
 
-const uploadAudioFilesFx = attach({
-  effect: uploadAudioFiles,
+export const handleUpdateAudioFiles = attach({
+  effect: handleUpdateAudioFilesFx,
 })
 
 export const loadTask = createEvent<number>()
@@ -125,7 +131,7 @@ export const $audioIds = restore(setAudioIds, [])
 
 export const showSolutionEnabledChanged = createEvent<boolean>()
 export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false)
-// TO DO add to form
+
 export const setSolutionText = createEvent<string>()
 export const $solutionText = restore(setSolutionText, '')
 
@@ -173,7 +179,7 @@ forward({
     scoreDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
-    resetHintsList,
+    resetCluesList,
     resetSelectedTags,
   ],
 })
@@ -199,9 +205,11 @@ forward({
       title: data.interface_language,
     })),
     setSelectedTagsIds.prepend((data) => data.tags),
+    showSolutionEnabledChanged.prepend((data) => !!data.answer_text),
     setSolutionText.prepend((data) => data.answer_text),
     setStatus.prepend((data) => data.status),
-    // setHint.prepend((data) => data.clue.map((hint) => ({ text: hint.name, price: hint.price. }))),
+    setAudioIds.prepend((data) => data.audios),
+    setCluesEvent.prepend((data) => data.clues),
   ],
 })
 
@@ -278,7 +286,8 @@ const $baseForm = combine(
   $taskType,
   $selectedTags,
   $language,
-  (correctStatus, subject_id, study_year_id, score, taskType, tags, language) => ({
+  $solutionText,
+  (correctStatus, subject_id, study_year_id, score, taskType, tags, language, solutionText) => ({
     status: correctStatus,
     type: taskType,
     subject_id,
@@ -286,6 +295,7 @@ const $baseForm = combine(
     score,
     tags: tags.map(({ name }) => name),
     interface_language: language.title,
+    answer_text: solutionText,
   })
 )
 
@@ -305,23 +315,34 @@ const $generalForm = combine(
 )
 
 sample({
-  source: $generalForm,
+  source: [$generalForm, $audioIds],
   clock: save,
-  fn: ({ audio }) => audio,
-  target: uploadAudioFilesFx,
+  fn: ([form, audioFiles]) => ({ audioAssignments: form.audio, audioFiles }),
+  target: handleUpdateAudioFiles,
+})
+
+sample({
+  source: [$clues, $cluesIds],
+  clock: save,
+  fn: ([clues, cluesIds]) => ({ clues, cluesIds }),
+  target: handleUpdateCluesFx,
+})
+
+const uploadEvent = combineEvents({
+  events: [handleUpdateAudioFiles.doneData, handleUpdateCluesFx.doneData],
 })
 
 sample({
   source: $generalForm,
-  clock: uploadAudioFilesFx.doneData,
-  fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
-    // eslint-disable-next-line
-    const { audio, ...pureForm } = form
+  clock: uploadEvent,
+  fn: (form: any, [audios, clues]) => {
+    const { ...pureForm } = form
     return {
       id: pureForm.id,
       body: {
         ...pureForm,
-        audios_ids: audioFiles.map(({ media }) => media),
+        audios_ids: audios.map(({ id }) => id),
+        clues: clues.map(({ id }) => id),
       },
     }
   },

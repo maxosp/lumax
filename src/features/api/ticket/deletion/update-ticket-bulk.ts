@@ -1,4 +1,3 @@
-// /ticket/deletion-ticket/list/bulk-action/
 import { createApiEffect } from '@/features/api/common/create-api-effect'
 import { Ticket, UpdateTicketBulkType } from '@/features/api/ticket/types'
 

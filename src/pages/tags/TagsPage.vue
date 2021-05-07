@@ -111,7 +111,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { RightClickParams } from '@/pages/tags/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import { searchFieldsData, tagsDataFields } from '@/pages/tags/constants'
 import {
@@ -149,7 +148,7 @@ import {
   $canRefreshTableAfterCreation,
   createTagFromTree,
 } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
-import { RefsType, HttpOptionsType } from '@/pages/common/types'
+import { RefsType, HttpOptionsType, RightClickParams } from '@/pages/common/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'

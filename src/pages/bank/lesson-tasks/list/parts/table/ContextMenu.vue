@@ -36,12 +36,12 @@ import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import ClickOutside from '@/features/directives/click-outside'
-import { DropdownItem } from '@/pages/common/types'
-import { ContextMenuType } from '@/pages/bank/test-tasks/list/types'
+import { ContextMenuType, DropdownItem } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import {
   contextMethodsOneLesson,
   contextMethodsManyLessons,
+  contextMethodsFolder,
 } from '@/pages/bank/lesson-tasks/list/constants'
 
 Vue.directive('click-outside', ClickOutside)
@@ -60,9 +60,10 @@ export default Vue.extend({
   },
   computed: {
     items(): DropdownItem[] {
-      return this.$props.type === 'table_lessons' && this.$props.selected.length > 1
-        ? contextMethodsManyLessons
-        : contextMethodsOneLesson
+      if (this.type === 'table_lessons' || this.type === 'assignment') {
+        return this.selected.length > 1 ? contextMethodsManyLessons : contextMethodsOneLesson
+      }
+      return contextMethodsFolder
     },
   },
   methods: {
@@ -89,6 +90,18 @@ export default Vue.extend({
           break
         case 'preview':
           this.$emit('onPreview', ids)
+          break
+        case 'create-folder':
+          this.$emit('onCreateFolder')
+          break
+        case 'create-task':
+          this.$emit('onCreateTask')
+          break
+        case 'edit-folder':
+          this.$emit('onEditFolder')
+          break
+        case 'delete-folder':
+          this.$emit('onDeleteFolder')
           break
         default:
           break

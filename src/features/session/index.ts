@@ -11,7 +11,6 @@ export const loadSession = createEvent()
 
 export const loadSessionFx = attach({
   effect: getSelfUserFx,
-  mapParams: (params) => params,
 })
 
 export const setSession = createEvent<null | User>()

@@ -11,6 +11,8 @@ import ThemeEditionPage from '@/pages/dictionary/themes/edit/ThemeEditionPage.vu
 import ResourcesPage from '@/pages/dictionary/resources/list/ResourcesPage.vue'
 import ResourceCreationPage from '@/pages/dictionary/resources/create/ResourceCreationPage.vue'
 import ResourceEditionPage from '@/pages/dictionary/resources/edit/ResourceEditionPage.vue'
+// system-files
+import SystemFilesPage from '@/pages/dictionary/files/SystemFilesPage.vue'
 
 export default [
   {
@@ -121,6 +123,21 @@ export default [
             meta: {
               title: 'Редактирование ресурса - Школа Летово',
             },
+          },
+        ],
+      },
+      {
+        name: 'system-files',
+        path: 'system-files',
+        meta: 'Системные файлы - Школа Летово',
+        redirect: { name: 'files-list' },
+        component: DefaultLayout,
+        children: [
+          {
+            name: 'files-list',
+            path: 'list',
+            component: SystemFilesPage,
+            meta: 'Системные файлы - Школа Летово',
           },
         ],
       },

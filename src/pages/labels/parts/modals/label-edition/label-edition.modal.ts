@@ -18,15 +18,14 @@ import {
 } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
-import { CreateLabelType, Label } from '@/features/api/assignment/types'
 import { updateLabelFx } from '@/features/api/assignment/update-label'
 import { getLabelsTreeLight } from '@/pages/labels/labels-page.model'
 import { createError } from '@/lib/effector/error-generator'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { Label } from '@/features/api/assignment/types'
 
 export const updateLabel = attach({
   effect: updateLabelFx,
-  mapParams: (params: CreateLabelType) => params,
 })
 
 export const loadModalToEdit = createEvent<number>()

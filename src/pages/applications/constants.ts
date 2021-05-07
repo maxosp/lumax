@@ -4,6 +4,7 @@ export const mapObjectType = {
   test_assignment: 'Тестовое задание',
   olympiad_assignment: 'Олимпиадное задание',
   lesson_assignment: 'Урочное задание',
+  assignment_folder: 'Папка урочных заданий',
 }
 
 export const mapApplicationTypeToRoute = {

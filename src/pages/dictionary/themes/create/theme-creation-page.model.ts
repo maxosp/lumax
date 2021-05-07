@@ -40,7 +40,6 @@ const getThemesTreeList = attach({
 
 const saveThemeFx = attach({
   effect: createThemeFx,
-  mapParams: (params: CreateThemeType) => params,
 })
 
 const savePrerequisiteFx = attach({

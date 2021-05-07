@@ -72,13 +72,13 @@ import {
 import { deleteLabels, loadTree, loadTreeLight, $isLoading } from '@/pages/labels/labels-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/labels/constants'
-import { RightClickParams } from '@/pages/labels/types'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
 import { loadModal } from '@/pages/labels/parts/modals/tasks/tasks.model'
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { RightClickParams } from '../common/types'
 
 export default Vue.extend({
   components: {

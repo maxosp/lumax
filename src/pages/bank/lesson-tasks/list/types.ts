@@ -12,5 +12,3 @@ export type ResourceChip = {
   count: string
   description: string
 }
-
-export type ContextMenuType = 'table_lessons' | 'lesson'

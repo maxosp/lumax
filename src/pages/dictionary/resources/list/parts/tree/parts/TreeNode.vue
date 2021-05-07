@@ -90,13 +90,13 @@ export default Vue.extend({
     title() {
       const type = this.node.element_type
       let fullName = ''
-      if (type !== 'study_resource' && type !== 'assignment') {
+      if (type !== 'study_resource' && type !== 'assignment' && type !== 'media') {
         const entity = this.node[type]
         fullName = entity ? entity.name : ''
         if (fullName.length > 100) {
           fullName = `${fullName.slice(0, 100)}...`
         }
-      } else if (type !== 'assignment') {
+      } else if (type !== 'assignment' && type !== 'media') {
         const entity = this.node[type]
         if (!entity) fullName = ''
         else if (entity.text && entity.text.length) fullName = removeHtmlTags(entity.text)

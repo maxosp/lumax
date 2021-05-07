@@ -27,7 +27,7 @@ export type CreateFolderType = {
 export type FolderType = {
   id?: number
   name: string
-  parent_id: number
+  parent_id: number | null
   owner?: number
 }
 
@@ -93,7 +93,7 @@ export type AssignmentStatus =
 export type AssignmentAudioFile = {
   id?: number
   media?: number
-  audio_limit_count?: number
+  audio_limit_count: number | null
 }
 
 export type DifficultyType = 0 | 1 | 2
@@ -128,6 +128,12 @@ export type CreateTestAssignmentFxParams = {
   labels_ids?: number[]
 } & BaseCreateAssignmentParams
 
+export type Clue = {
+  id?: number
+  text: string
+  scores: number
+}
+
 export type CreateOlympiadAssignmentFxParams = {
   subject: Partial<Subject>
   subject_id: number
@@ -135,6 +141,7 @@ export type CreateOlympiadAssignmentFxParams = {
   study_year_id: number
   tags: number[]
   tags_ids: number
+  clues: Clue[]
 } & BaseCreateAssignmentParams
 
 export type CreateLessonAssignmentFxParams = BaseCreateAssignmentParams
@@ -177,10 +184,11 @@ export type TestAssignment = {
   labels_ids: number[]
 } & BaseAssignment
 
-export type ClueType = {
-  name: string
-  price: number
+export type CreateClueFxParams = {
+  text: string
+  scores: number
 }
+
 export type OlympiadAssignment = {
   subject: Partial<Subject>
   subject_id: number
@@ -188,7 +196,7 @@ export type OlympiadAssignment = {
   study_year_id: number
   tags: number[]
   tags_ids: number
-  clue: ClueType[]
+  clues: number[]
   answer_text: string
 } & BaseAssignment
 
@@ -229,5 +237,10 @@ export type RequestDeleteThemesParams = {
 
 export type RequestDeleteSubjectsParams = {
   subjects: number[]
+  ticket_comment?: string
+}
+
+export type RequestDeleteFolderParams = {
+  assignment_folders: number[]
   ticket_comment?: string
 }

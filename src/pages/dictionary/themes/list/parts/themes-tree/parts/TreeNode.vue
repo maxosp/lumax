@@ -71,7 +71,7 @@ export default Vue.extend({
     title() {
       const type = this.node.element_type
       let fullName = ''
-      if (type !== 'assignment' && type !== 'study_resource') {
+      if (type !== 'assignment' && type !== 'study_resource' && type !== 'media') {
         const entity = this.node[type]
         fullName = entity ? entity.name : ''
         if (fullName.length > 100) {

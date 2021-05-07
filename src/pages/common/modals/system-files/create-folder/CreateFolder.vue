@@ -58,7 +58,7 @@ import {
   folderTitleChanged,
   checkIfFolderCanBeSend,
 } from '@/pages/common/modals/system-files/create-folder/create-folder.model'
-import PositionDropdown from '@/pages/common/dropdowns/bank/lesson-tasks/position-dropdown/PositionDropdown.vue'
+import PositionDropdown from '@/pages/common/dropdowns/system-files/position-dropdown/PositionDropdown.vue'
 
 export default Vue.extend({
   name: 'CreatingFolderModal',
