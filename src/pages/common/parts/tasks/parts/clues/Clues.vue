@@ -1,16 +1,16 @@
 <template>
-  <div class="add-hints-block">
+  <div class="clues-block">
     <div
-      v-for="(hint, index) in $hintsList"
-      :key="hint.id"
-      class="hint-block"
+      v-for="(clue, index) in $clues"
+      :key="clue.id"
+      class="clue-block"
     >
       <span class="label">Подсказка {{ index + 1 }} </span>
       <div class="editor-wrapper">
-        <Wysiwyg :value="hint.text" @input="text => handleHintTextChanged({ id: hint.id, text})" />
+        <Wysiwyg :value="clue.text" @input="text => handleClueTextChanged({ id: clue.id, text})" />
         <div
-          class="remove-hint"
-          @click="removeHint({ id: hint.id })"
+          class="remove-clue"
+          @click="removeClue({ id: clue.id })"
         >
           <Icon
             class="icon-close"
@@ -20,13 +20,13 @@
         </div>
       </div>
       <NumericInput
-        :value="+hint.price" 
+        :value="clue.scores" 
         label="Цена подсказки"
-        @input="price => setHintPrice({ id: hint.id, price })" 
+        @input="scores => setCluePrice({ id: clue.id, scores })" 
       />
     </div>
-    <div class="add-hint">
-      <BaseButton @click="addHint">Добавить подсказку</BaseButton>
+    <div class="add-clue">
+      <BaseButton @click="addClue">Добавить подсказку</BaseButton>
     </div>
   </div>
 </template>
@@ -37,10 +37,7 @@ import BaseButton from '@/ui/button/BaseButton.vue'
 import Wysiwyg from '@/ui/wysiwyg/Wysiwyg.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import NumericInput from '@/ui/input/NumericInput.vue'
-import {
-  $hintsList,
-  setHint,
-} from '@/pages/common/parts/tasks/parts/add-hints-block/add-hints-block.model'
+import { $clues, setClues } from '@/pages/common/parts/tasks/parts/clues/clues.model'
 import { getRandomId } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
@@ -51,31 +48,38 @@ export default Vue.extend({
     NumericInput,
   },
   effector: {
-    $hintsList,
+    $clues,
   },
   methods: {
-    addHint() {
-      setHint([...this.$hintsList, { id: getRandomId(), text: '', price: 1 }])
+    addClue() {
+      setClues([
+        ...this.$clues,
+        {
+          id: getRandomId(),
+          text: '',
+          scores: 1,
+        },
+      ])
     },
-    handleHintTextChanged({ id, text }: { id: number; text: string }) {
-      const hints = this.$hintsList.map((hint) => (hint.id === id ? { ...hint, text } : hint))
-      setHint(hints)
+    handleClueTextChanged({ id, text }: { id: number; text: string }) {
+      const clues = this.$clues.map((clue) => (clue.id === id ? { ...clue, text } : clue))
+      setClues(clues)
     },
-    removeHint({ id }: { id: number }) {
-      const hintsList = this.$hintsList.filter((hint) => hint.id !== id)
-      setHint(hintsList)
+    removeClue({ id }: { id: number }) {
+      const cluesList = this.$clues.filter((clue) => clue.id !== id)
+      setClues(cluesList)
     },
-    setHintPrice({ id, price }: { id: number; price: number }) {
-      const hints = this.$hintsList.map((hint) => (hint.id === id ? { ...hint, price } : hint))
-      setHint(hints)
+    setCluePrice({ id, scores }: { id: number; scores: number }) {
+      const clues = this.$clues.map((clue) => (clue.id === id ? { ...clue, scores } : clue))
+      setClues(clues)
     },
   },
 })
 </script>
 
 <style scoped>
-.add-hints-block {
-  .hint-block {
+.clues-block {
+  .clue-block {
     box-sizing: border-box;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--c-grey-4);
@@ -95,22 +99,22 @@ export default Vue.extend({
     .wysiwyg {
       width: 95%;
     }
-    .remove-hint {
+    .remove-clue {
       margin-left: 20px;
       fill: var(--c-grey-3);
       cursor: pointer;
     }
-    .hint-price {
+    .clue-price {
       width: 100%;
       .numeric-input-wrap {
         width: 95%;
       }
     }
   }
-  .hint-block:not(:last-child) {
+  .clue-block:not(:last-child) {
     margin-bottom: 20px;
   }
-  .add-hint button {
+  .add-clue button {
     margin: 0 auto;
   }
 }

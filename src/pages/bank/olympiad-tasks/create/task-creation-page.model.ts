@@ -70,24 +70,21 @@ import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { condition, debounce, every } from 'patronum'
+import { combineEvents, condition, debounce, every } from 'patronum'
 import { createOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/create-olympiad-assignment'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { scoreDropdownModule } from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/score-dropdown.model'
 import {
-  $hintsList,
-  resetHintsList,
-} from '@/pages/common/parts/tasks/parts/add-hints-block/add-hints-block.model'
+  $clues,
+  resetCluesList,
+  uploadCluesFx,
+} from '@/pages/common/parts/tasks/parts/clues/clues.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 
 const createOlympiadAssignment = attach({
   effect: createOlympiadAssignmentFx,
-})
-
-const uploadAudioFilesFx = attach({
-  effect: uploadAudioFiles,
 })
 
 export const setSubject = createEvent<number | null>()
@@ -110,7 +107,7 @@ export const $audioIds = restore(setAudioIds, [])
 
 export const showSolutionEnabledChanged = createEvent<boolean>()
 export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false)
-// TO DO add to form
+
 export const setSolutionText = createEvent<string>()
 export const $solutionText = restore(setSolutionText, '')
 
@@ -147,7 +144,7 @@ forward({
     scoreDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
-    resetHintsList,
+    resetCluesList,
     resetSelectedTags,
   ],
 })
@@ -205,16 +202,16 @@ export const $baseForm = combine(
   $taskType,
   $selectedTags,
   $solutionText,
-  $hintsList,
+  $clues,
   $language,
-  (subject_id, study_year_id, score, taskType, tags, answer_text, hintsList, language) => ({
+  (subject_id, study_year_id, score, taskType, tags, answer_text, clues, language) => ({
     type: taskType,
     subject_id,
     study_year_id,
     score,
     tags: tags.map(({ name }) => name),
     answer_text,
-    clue: hintsList.map(({ text, price }) => ({ hint: text, price })),
+    clues: clues.map(({ text, scores }) => ({ text, scores })),
     interface_language: language.title,
   })
 )
@@ -231,18 +228,28 @@ sample({
   source: $generalForm,
   clock: save,
   fn: ({ audio }) => audio,
-  target: uploadAudioFilesFx,
+  target: uploadAudioFiles,
+})
+
+sample({
+  source: $clues,
+  clock: save,
+  target: uploadCluesFx,
+})
+
+const uploadEvent = combineEvents({
+  events: [uploadAudioFiles.doneData, uploadCluesFx.doneData],
 })
 
 sample({
   source: $generalForm,
-  clock: uploadAudioFilesFx.doneData,
-  fn: (form: any, audioFiles: AssignmentAudioFile[]) => {
-    // eslint-disable-next-line
-    const { audio, ...pureForm } = form
+  clock: uploadEvent,
+  fn: (form: any, [audios, clues]) => {
+    const { ...pureForm } = form
     return {
       ...pureForm,
-      audios_ids: audioFiles.map(({ id }) => id),
+      audios_ids: audios.map(({ id }) => id),
+      clues: clues.map(({ id }) => id),
     }
   },
   target: createOlympiadAssignment,
