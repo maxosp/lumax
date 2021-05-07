@@ -63,15 +63,16 @@ export const mergeTreeData = (oldData: TreeData[], newData: TreeData[]) => {
     if (nData === undefined) return el
     const oldType = el.element_type
     const newType = nData.element_type
-    if (oldType !== 'virtual_folder' && newType !== 'virtual_folder') {
-      if (!checkChildren(el, nData)) {
-        nData.leaves.forEach((ndl) => el.leaves.push(ndl))
-      } else if (checkChildren(el, nData)) {
-        if (oldType === newType && el[oldType]?.id === nData[newType]?.id) {
-          if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
-          else {
-            el.leaves = nData.leaves
-          }
+    if (!checkChildren(el, nData)) {
+      nData.leaves.forEach((ndl) => el.leaves.push(ndl))
+    } else if (checkChildren(el, nData)) {
+      if (
+        (oldType === newType && (el[oldType] as any))?.id === (nData[newType] as any)?.id ||
+        (oldType === 'virtual_folder' && newType === 'virtual_folder')
+      ) {
+        if (el.leaves.length) mergeTreeData(el.leaves, nData.leaves)
+        else {
+          el.leaves = nData.leaves
         }
       }
     }
