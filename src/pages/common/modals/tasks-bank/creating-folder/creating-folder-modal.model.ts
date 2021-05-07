@@ -12,6 +12,7 @@ import {
 import { loadTreeLight } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import { getFolderFx } from '@/features/api/assignment/folder/get-folder'
 import { DropdownItem } from '@/pages/common/types'
+import { setFolder } from '@/pages/bank/lesson-tasks/create/task-creation-page.model'
 
 export const createFolder = attach({
   effect: createFolderFx,
@@ -54,7 +55,7 @@ sample({
 
 forward({
   from: loadFolder,
-  to: [getFolder, modalVisibilityChanged.prepend(() => true)],
+  to: [getFolder, setFolder],
 })
 
 const searchParentFolder = function (id: number, folders: any) {

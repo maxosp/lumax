@@ -81,8 +81,11 @@ const uploadAudioFilesFx = attach({
   effect: uploadAudioFiles,
 })
 
+export const save = createEvent<void>()
+export const clearFields = createEvent<void>()
+
 export const setFolder = createEvent<number | null>()
-export const $folder = restore(setFolder, null)
+export const $folder = restore(setFolder, null).reset(clearFields)
 
 export const setScore = createEvent<number | null>()
 export const $score = restore(setScore, 1)
@@ -101,9 +104,6 @@ export const $needDuplicate = restore(toggleNeedDuplicate, false)
 
 export const setCount = createEvent<number>()
 export const $count = restore(setCount, 0)
-
-export const save = createEvent<void>()
-export const clearFields = createEvent<void>()
 
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
