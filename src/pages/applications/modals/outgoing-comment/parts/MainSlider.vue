@@ -93,6 +93,17 @@ export default Vue.extend({
           init(swiper: SwiperCore) {
             instance.swiper = swiper
           },
+          beforeInit(swiper: SwiperCore) {
+            /* брутфорс, нужно перед каждым переоткрытием, не срабатывает на первый инит,
+                потому что на данный момент изображения еще не загрузились */
+            if (
+              !!instance.$images &&
+              instance.$images.length < instance.swiperOptions.slidesPerView
+            ) {
+              /* @ts-ignore */
+              swiper.params.loop = false
+            }
+          },
           progress() {
             // не работает эвент клика в бесконечном списке
             // из за дублей слайдера
@@ -109,6 +120,14 @@ export default Vue.extend({
     currentSlide(value) {
       if (value !== this.swiper.activeIndex) {
         this.swiper.slideTo(value, 0)
+      }
+    },
+    $images() {
+      /* брутфорс, нужно перед загрузкой слайдера, срабатывает только один раз
+        и при переоктрытии опция не работает */
+      if (!!this.$images && this.$images.length < this.swiperOptions.slidesPerView) {
+        /* @ts-ignore */
+        this.$refs.mainSlider.options.loop = false
       }
     },
   },

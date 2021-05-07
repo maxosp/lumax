@@ -47,7 +47,6 @@ export default Vue.extend({
   border-radius: 5px;
   overflow: hidden;
 }
-
 .preview-image {
   position: absolute;
   top: 50%;
