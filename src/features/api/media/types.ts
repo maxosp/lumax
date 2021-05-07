@@ -1,4 +1,5 @@
 import { File } from '@/features/api/subject/types'
+import { FolderType } from '../assignment/types'
 
 export type FileType =
   | 'file'
@@ -12,12 +13,23 @@ export type FileType =
   | 'img'
   | 'audio'
 
+export type UpdateMediaType = {
+  id: number
+  file_name: string
+  folder_id?: number
+}
+export type CopyToMediaType = {
+  folder_id: number
+  media_id: number
+}
 export type UploadMediaResponse = {
   id: number
   file_type: FileType
   file: string
   file_name: string
   duration_sec: number
+  folder?: Partial<FolderType>
+  folder_id?: number | null
 }
 export type CreateResourceType = {
   link: string
@@ -43,4 +55,9 @@ export type GetResourcesTreeQueryParams = {
   study_year?: number
   search?: string
   search_area?: string
+}
+
+export type CopyToFolderType = {
+  folder_to_id: number
+  folder_obj_id: number
 }

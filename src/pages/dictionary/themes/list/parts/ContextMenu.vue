@@ -36,8 +36,7 @@ import SelectMenu from '@/ui/select/parts/SelectMenu.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import ClickOutside from '@/features/directives/click-outside'
-import { DropdownItem } from '@/pages/common/types'
-import { ContextMenuType } from '@/pages/dictionary/themes/list/types'
+import { ContextMenuType, DropdownItem } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 
 Vue.directive('click-outside', ClickOutside)

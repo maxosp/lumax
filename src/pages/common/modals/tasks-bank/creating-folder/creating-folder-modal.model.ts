@@ -54,7 +54,7 @@ sample({
 
 forward({
   from: loadFolder,
-  to: getFolder,
+  to: [getFolder, modalVisibilityChanged.prepend(() => true)],
 })
 
 const searchParentFolder = function (id: number, folders: any) {

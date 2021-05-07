@@ -23,6 +23,8 @@ export type DropdownItem = {
   leaves?: TreeData[]
   // for types
   code?: string
+  // for system files
+  parent_id?: number | null
 }
 
 export type SelectedObjectType = {
@@ -71,9 +73,26 @@ export type FiltersParams = {
   search?: string
   search_area?: string
   folder?: number
+  file_type?: string
 }
 
 export type PageParams = {
   currentPage?: number
   treeView?: boolean
+}
+
+export type ContextMenuType =
+  | 'table_subjects'
+  | 'subject'
+  | 'table_theme'
+  | 'table_tasks'
+  | 'task'
+  | 'table_lessons'
+  | 'lesson'
+  | 'assignment'
+
+export type RightClickParams = {
+  data: any
+  event: any
+  type?: ContextMenuType
 }

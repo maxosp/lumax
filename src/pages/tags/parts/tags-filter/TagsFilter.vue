@@ -71,16 +71,16 @@ export default Vue.extend({
   methods: {
     toggleVisibility,
     reset,
-    closeFilter(event: any) {
+    closeFilter({ target }: any) {
       // check for close icon (clear filter dropdown)
-      if (event.target.href && event.target.href.baseVal === '#close-icon') {
+      if (target.href && target.href.baseVal === '#close-icon') {
         return
       }
       // check for general filter icon
       if (
-        event.target.id !== 'filter-icon' &&
-        event.target.parentElement &&
-        event.target.parentElement.id !== 'filter-icon'
+        target.id !== 'filter-icon' &&
+        target.parentElement &&
+        target.parentElement.id !== 'filter-icon'
       ) {
         toggleVisibility(false)
       }

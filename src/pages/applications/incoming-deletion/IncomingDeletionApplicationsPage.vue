@@ -114,7 +114,6 @@ import Vue, { VueConstructor } from 'vue'
 import axios from 'axios'
 import { config } from '@/config'
 import { $token } from '@/features/api/common/request'
-import { RightClickParams } from '@/pages/bank/olympiad-tasks/types'
 import { Vuetable, VuetablePagination, VuetableFieldCheckbox } from 'vuetable-2'
 import {
   searchFieldsData,
@@ -147,7 +146,7 @@ import RejectedModal from '@/pages/applications/modals/rejected/RejectedModal.vu
 import { loadModal } from '@/pages/applications/modals/reject/reject.model'
 import CommentModal from '@/pages/applications/modals/comment/CommentModal.vue'
 import { loadCommentModal } from '@/pages/applications/modals/comment/comment.model'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, RightClickParams } from '@/pages/common/types'
 import { ApplicationType } from '@/pages/applications/types'
 import {
   setDataToDelete,

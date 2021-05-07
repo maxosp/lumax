@@ -103,7 +103,7 @@ export const data: NavItem[] = [
       { title: 'Темы', link: 'themes-list' },
       { title: 'Предметы', link: 'subjects-list' },
       { title: 'Библиотека ресурсов', link: 'resources-list' },
-      { title: 'Файлы пользователей', link: '/' },
+      { title: 'Системные файлы', link: 'files-list' },
       { title: 'Метки для тестовых заданий', link: 'labels-list' },
       { title: 'Теги для олимпиадных заданий', link: 'tags-list' },
     ],

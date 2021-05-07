@@ -161,9 +161,8 @@ import {
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
 import { lessonsTableFields, searchFieldsData } from '@/pages/bank/lesson-tasks/list/constants'
-import { ContextMenuType } from '@/pages/bank/lesson-tasks/list/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { RefsType } from '@/pages/common/types'
+import { RefsType, RightClickParams } from '@/pages/common/types'
 import { navigatePush } from '@/features/navigation'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksTypesModal.vue'
@@ -193,11 +192,7 @@ import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-type RightClickParams = {
-  data: any
-  event: any
-  type?: ContextMenuType
-}
+
 export default (Vue as VueConstructor<
   Vue & {
     $refs: RefsType

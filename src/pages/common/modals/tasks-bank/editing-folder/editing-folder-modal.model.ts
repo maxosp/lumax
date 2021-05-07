@@ -110,7 +110,7 @@ sample({
         return res
       }
       if (folder.leaves?.length) {
-        const fold = searchParentFolder(data.parent_id, folder.leaves)
+        const fold = searchParentFolder(data.parent_id!, folder.leaves)
         if (fold) {
           res = fold
           return res
