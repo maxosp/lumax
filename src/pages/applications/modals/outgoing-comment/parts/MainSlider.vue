@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { $images } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import SwiperCore, { Navigation, Controller } from 'swiper'
@@ -53,7 +53,15 @@ import 'swiper/swiper-bundle.css'
 
 SwiperCore.use([Navigation, Controller])
 
-export default Vue.extend({
+type Refs = {
+  mainSlider: typeof Swiper
+}
+
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: Refs
+  }
+>).extend({
   name: 'CommentModal',
   components: {
     Icon,
@@ -100,7 +108,6 @@ export default Vue.extend({
               !!instance.$images &&
               instance.$images.length < instance.swiperOptions.slidesPerView
             ) {
-              /* @ts-ignore */
               swiper.params.loop = false
             }
           },
@@ -124,9 +131,8 @@ export default Vue.extend({
     },
     $images() {
       /* брутфорс, нужно перед загрузкой слайдера, срабатывает только один раз
-        и при переоктрытии опция не работает */
+        и при переоткрытии опция не работает */
       if (!!this.$images && this.$images.length < this.swiperOptions.slidesPerView) {
-        /* @ts-ignore */
         this.$refs.mainSlider.options.loop = false
       }
     },

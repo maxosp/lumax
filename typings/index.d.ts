@@ -28,3 +28,5 @@ declare interface Window {
 }
 
 declare module 'vuetable-2'
+
+declare module 'vue-awesome-swiper'
