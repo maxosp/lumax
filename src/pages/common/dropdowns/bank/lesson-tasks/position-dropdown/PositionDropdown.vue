@@ -16,6 +16,7 @@ import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
   $folders,
+  clearFields,
   foldersDropdownModule,
   loadFolders,
   setSelectedFolder,
@@ -40,6 +41,9 @@ export default Vue.extend({
   },
   mounted() {
     loadFolders()
+  },
+  beforeDestroy() {
+    clearFields()
   },
 })
 </script>

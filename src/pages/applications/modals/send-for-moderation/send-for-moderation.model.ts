@@ -20,6 +20,7 @@ import {
 } from 'effector-root'
 import { canRefreshTableChanged } from '@/pages/applications/incoming/incoming-applications-page.model'
 import { updateApplicationsCounters } from '@/pages/common/navigation/navigation.model'
+import { isArraysEquel } from '@/features/lib'
 
 const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -44,13 +45,21 @@ const sendToRevision = attach({
   }),
 })
 
-const clearFields = createEvent<void>()
+const resetModal = createEvent<void>()
 export const loadModal = createEvent<number[]>()
-export const $selectedApplications = restore<number[]>(loadModal, []).reset(clearFields)
+export const $selectedApplications = createStore<number[]>([])
+  .on(loadModal, (state, payload) => {
+    if (!isArraysEquel(state, payload)) {
+      return [...payload]
+    }
+    return state
+  })
+  .reset(resetModal)
 
 export const modalVisibilityChanged = createEvent<boolean>()
 export const $modalVisibility = restore(modalVisibilityChanged, false)
 
+const clearFields = createEvent<void>()
 export const commentChanged = createEvent<string>()
 export const $comment = restore(commentChanged, '').reset(clearFields)
 export const $commentErrorModule = createError()
@@ -76,14 +85,19 @@ export const fileDataChanged = createEvent<Partial<File> | null>()
 export const $fileData = restore(fileDataChanged, null).reset(clearFields)
 
 const setSelectedImagesIds = createEvent<number>()
-const $selectedImagesIds = createStore<number[]>([]).reset(clearFields)
+const removeImagesId = createEvent<number>()
+const $selectedImagesIds = createStore<number[]>([])
+  .on(removeImagesId, (state, payload) => {
+    return state.filter((id) => id !== payload)
+  })
+  .reset(clearFields)
+
 const getImagesPreview = createEvent<number>()
 const setImagesPreview = createEvent<UploadMediaResponse>()
 const removeImagePreview = createEvent<number>()
 export const $imagesPreview = createStore<UploadMediaResponse[]>([])
   .on(setImagesPreview, (state, payload) => {
-    state.push(payload)
-    return state
+    return [...state, payload]
   })
   .on(removeImagePreview, (state, payload) => state.filter((el) => el.id !== payload))
   .reset(clearFields)
@@ -138,7 +152,7 @@ sample({
 
 forward({
   from: deleteMedia,
-  to: removeImagePreview,
+  to: [removeImagePreview, removeImagesId],
 })
 forward({
   from: deleteMedia.doneData,
@@ -166,10 +180,20 @@ sample({
 })
 
 forward({
+  from: $selectedApplications,
+  to: clearFields,
+})
+
+forward({
+  from: resetModal,
+  to: clearFields,
+})
+
+forward({
   from: sendToRevision.doneData,
   to: [
     successToastEvent('Задание(я) были успешно отправлены на доработку!'),
-    clearFields,
+    resetModal,
     canRefreshTableChanged.prepend(() => true),
     canRefreshAfterSendingToRevision.prepend(() => true),
     updateApplicationsCounters,
@@ -178,5 +202,10 @@ forward({
 
 forward({
   from: clearFields,
+  to: $commentErrorModule.methods.resetError,
+})
+
+forward({
+  from: resetModal,
   to: [$commentErrorModule.methods.resetError, modalVisibilityChanged.prepend(() => false)],
 })

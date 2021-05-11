@@ -10,11 +10,13 @@ const getFolders = attach({
   effect: getLessonAssignmentTreeLightFx,
 })
 
+export const clearFields = createEvent<void>()
+
 export const loadFolders = createEvent<void>()
 export const $folders = createStore<DropdownItem[]>([])
 
 export const setSelectedFolder = createEvent<DropdownItem | null>()
-export const $selectedFolder = restore(setSelectedFolder, null)
+export const $selectedFolder = restore(setSelectedFolder, null).reset(clearFields)
 
 forward({
   from: loadFolders,

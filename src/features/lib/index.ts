@@ -153,3 +153,7 @@ export const computeSortParam = (sortParam: string) => {
   const sign = order === 'desc' ? '-' : ''
   return `${sign}${field}`
 }
+
+export const isArraysEquel = (a: any[], b: any[]) => {
+  return a.length === b.length && a.every((v: any, i: any) => v === b[i])
+}
