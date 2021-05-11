@@ -4,7 +4,7 @@
     :class="{'swiper-container-wrapper_padded': isNavigationVisible}"
   >
     <Swiper
-      ref="mainSlider"
+      ref="swiper"
       :options="swiperOptions"
       class="main-comment-slider"
     >
@@ -50,16 +50,13 @@ import { $images } from '@/pages/applications/modals/outgoing-comment/outgoing-c
 import SwiperCore, { Navigation, Controller } from 'swiper'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
+import { RefsType } from '@/pages/common/types'
 
 SwiperCore.use([Navigation, Controller])
 
-type Refs = {
-  mainSlider: typeof Swiper
-}
-
 export default (Vue as VueConstructor<
   Vue & {
-    $refs: Refs
+    $refs: RefsType
   }
 >).extend({
   name: 'CommentModal',
@@ -133,7 +130,7 @@ export default (Vue as VueConstructor<
       /* брутфорс, нужно перед загрузкой слайдера, срабатывает только один раз
         и при переоткрытии опция не работает */
       if (!!this.$images && this.$images.length < this.swiperOptions.slidesPerView) {
-        this.$refs.mainSlider.options.loop = false
+        this.$refs.swiper.options.loop = false
       }
     },
   },
