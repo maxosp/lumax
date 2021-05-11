@@ -4,7 +4,7 @@
     :class="{'swiper-container-wrapper_padded': isNavigationVisible}"
   >
     <Swiper
-      ref="mainSlider"
+      ref="swiper"
       :options="swiperOptions"
       class="main-comment-slider"
     >
@@ -44,16 +44,23 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { $images } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import SwiperCore, { Navigation, Controller } from 'swiper'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
+import { RefsType } from '@/pages/common/types'
 
 SwiperCore.use([Navigation, Controller])
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   name: 'CommentModal',
   components: {
     Icon,
@@ -93,6 +100,16 @@ export default Vue.extend({
           init(swiper: SwiperCore) {
             instance.swiper = swiper
           },
+          beforeInit(swiper: SwiperCore) {
+            /* брутфорс, нужно перед каждым переоткрытием, не срабатывает на первый инит,
+                потому что на данный момент изображения еще не загрузились */
+            if (
+              !!instance.$images &&
+              instance.$images.length < instance.swiperOptions.slidesPerView
+            ) {
+              swiper.params.loop = false
+            }
+          },
           progress() {
             // не работает эвент клика в бесконечном списке
             // из за дублей слайдера
@@ -109,6 +126,13 @@ export default Vue.extend({
     currentSlide(value) {
       if (value !== this.swiper.activeIndex) {
         this.swiper.slideTo(value, 0)
+      }
+    },
+    $images() {
+      /* брутфорс, нужно перед загрузкой слайдера, срабатывает только один раз
+        и при переоткрытии опция не работает */
+      if (!!this.$images && this.$images.length < this.swiperOptions.slidesPerView) {
+        this.$refs.swiper.options.loop = false
       }
     },
   },

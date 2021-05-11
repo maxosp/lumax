@@ -144,11 +144,13 @@ import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from 
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   components: {
     NoDataContent,
     PageHeader,

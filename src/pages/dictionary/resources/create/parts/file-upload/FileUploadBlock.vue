@@ -64,11 +64,13 @@ import {
 import { deleteMediaFx } from '@/features/api/media/delete-media'
 import { RefsType } from '@/pages/common/types'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   components: {
     BaseButton,
   },

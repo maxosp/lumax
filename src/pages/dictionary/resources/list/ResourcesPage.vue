@@ -72,11 +72,13 @@ import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue
 
 Vue.use(VueEvents)
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   name: 'ResourcesPage',
   components: {
     PageHeader,

@@ -2,6 +2,7 @@ import { StudyYear, Subject } from '@/features/api/subject/types'
 import { TreeData } from '@/features/api/types'
 import { User } from '@/features/api/user/types'
 import { Vuetable, VuetablePagination } from 'vuetable-2'
+import { Swiper } from 'vue-awesome-swiper'
 
 export type DropdownItem = {
   name: string
@@ -37,7 +38,9 @@ export type RefsType = {
   fileInput?: {
     files: FileList
   }
+  swiper: typeof Swiper
 }
+
 export type ParamsHttpOptionsType = {
   page: number
   per_page: number

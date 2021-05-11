@@ -1,6 +1,12 @@
 <template>
   <div class="file-element">
-    <div class="preview" :style="{ backgroundImage: `url(${image})` }" />
+    <div class="preview">
+      <img
+        :src="image"
+        class="preview-image"
+        alt="comment image"
+      >
+    </div>
     <p class="name-file">name file</p>
     <Icon
       type="close"
@@ -36,22 +42,19 @@ export default Vue.extend({
 .preview {
   width: 30px;
   height: 30px;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
   margin-right: 15px;
   position: relative;
   border-radius: 5px;
   overflow: hidden;
-  &:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.2);
-  }
+}
+.preview-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 100%;
+  max-width: 100%;
+  filter: brightness(0.8);
 }
 .name-file {
   font-weight: bold;

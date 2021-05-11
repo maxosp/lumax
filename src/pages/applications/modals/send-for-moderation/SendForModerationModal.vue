@@ -97,11 +97,13 @@ import {
 } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import { RefsType } from '@/pages/common/types'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   components: {
     Modal,
     Icon,
