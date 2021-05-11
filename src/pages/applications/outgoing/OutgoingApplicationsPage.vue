@@ -232,7 +232,7 @@ export default (Vue as VueConstructor<
         name: 'test-tasks-edit',
         query: {
           questions: taskIds.join(','),
-          applications: applicationIds.join(',')[0],
+          applications: applicationIds.join(','),
           fromPage: 'applications',
         },
         params: { id: `${taskIds[0]}` },
