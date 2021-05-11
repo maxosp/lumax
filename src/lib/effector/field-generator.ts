@@ -23,7 +23,7 @@ export const createEffectorField = <T, R = T, E = string | null>(
   // set default options
   const eventMapper = options.eventMapper || ((e) => e)
   const validatorEnhancer =
-    options.validatorEnhancer || ((store: Store<T>): Store<R> => (store as unknown) as Store<R>)
+    options.validatorEnhancer || ((store: Store<T>): Store<R> => store as unknown as Store<R>)
   const validator = options.validator || (() => null)
 
   const changeEvent = createEvent<T>()

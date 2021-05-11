@@ -27,11 +27,12 @@ export const createLabel = attach({
   effect: createLabelFx,
 })
 
-export const createLabelFromTree = createEvent<{
-  class_id: number
-  subject_id: number
-  theme_id: number
-}>()
+export const createLabelFromTree =
+  createEvent<{
+    class_id: number
+    subject_id: number
+    theme_id: number
+  }>()
 
 export const checkIfThemeCanBeSend = createEvent<void>()
 export const clearFields = createEvent<void>()

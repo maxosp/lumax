@@ -54,11 +54,13 @@ import { RefsType } from '@/pages/common/types'
 
 SwiperCore.use([Navigation, Controller])
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   name: 'CommentModal',
   components: {
     Icon,

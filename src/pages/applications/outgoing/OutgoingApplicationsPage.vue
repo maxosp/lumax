@@ -139,11 +139,13 @@ import {
 import { DEFAULT_ID } from '@/pages/common/constants'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: RefsType
-  }
->).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   components: {
     NoDataContent,
     PageHeader,
