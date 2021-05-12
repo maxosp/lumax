@@ -143,9 +143,8 @@ forward({
 sample({
   clock: setSelectedImagesIds,
   source: $selectedImagesIds,
-  fn: (arr, newVal) => {
-    arr.push(newVal)
-    return arr
+  fn: (state, payload) => {
+    return [...state, payload]
   },
   target: $selectedImagesIds,
 })
@@ -160,8 +159,8 @@ forward({
 })
 
 export const $ticketForm = combine({
-  text: $comment.map((data) => data),
-  media_ids: $selectedImagesIds.map((data) => data),
+  text: $comment,
+  media_ids: $selectedImagesIds,
 }).on(checkIfFormCanBeSend, (state) => {
   if (!state.text.trim().length) $commentErrorModule.methods.setError(true)
   else sendComment(state)
