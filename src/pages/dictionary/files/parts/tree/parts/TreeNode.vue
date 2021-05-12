@@ -42,6 +42,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
+        :show-paste="showPaste"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
         @onRemove="val => $emit('onRemove', val)"
