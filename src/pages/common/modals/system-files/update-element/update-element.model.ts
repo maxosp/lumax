@@ -39,7 +39,7 @@ export const loadFolder = createEvent<number>()
 export const loadFile = createEvent<number>()
 
 const setParentId = createEvent<number | null>()
-const $parentId = restore(setParentId, DEFAULT_ID)
+const $parentId = restore(setParentId, null)
 
 const setFolderId = createEvent<number>()
 const $folderId = restore(setFolderId, DEFAULT_ID)
@@ -101,6 +101,7 @@ condition({
 forward({
   from: clearFields,
   to: [
+    titleChanged.prepend(() => ''),
     foldersDropdownModule.methods.resetDropdown,
     $titleErrorModule.methods.resetError,
     setParentId.prepend(() => null),
@@ -138,7 +139,9 @@ sample({
   },
   target: [
     setParentId.prepend((data: DropdownItem | null) => data!.parent_id || null),
-    foldersDropdownModule.methods.itemChanged.prepend((data: DropdownItem | null) => data!.name),
+    foldersDropdownModule.methods.itemChanged.prepend(
+      (data: DropdownItem | null) => `${data!.parent_id}`
+    ),
   ],
 })
 sample({
