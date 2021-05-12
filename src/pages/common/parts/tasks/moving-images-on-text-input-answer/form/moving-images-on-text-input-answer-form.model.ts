@@ -41,15 +41,17 @@ export const droppableImagesCounter = createCounter()
 const draggableTextCounter = createCounter()
 
 export const setupMovingOnTextAnswerDataFx = createEffect((data: MovingOnTextQuestionData) => {
-  draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
-  inputsCounter.set(getMaxByProp(data.inputs, 'id'))
-  droppableImagesCounter.set(getMaxByProp(data.droppable, 'id'))
-  draggableTextCounter.set(getMaxByProp(data['draggable-text'], 'id'))
+  if (data.draggable) draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
+  if (data.droppable) droppableImagesCounter.set(getMaxByProp(data.droppable, 'id'))
+  if (data['draggable-text']) draggableTextCounter.set(getMaxByProp(data['draggable-text'], 'id'))
 
-  const inputsValues = data.inputs.reduce<MovingOnTextInput['value']>((acc, input) => {
-    return [...acc, ...input.value]
-  }, [])
-  inputValuesCounter.set(getMaxByProp(inputsValues, 'id'))
+  if (data.inputs) {
+    inputsCounter.set(getMaxByProp(data.inputs, 'id'))
+    const inputsValues = data.inputs.reduce<MovingOnTextInput['value']>((acc, input) => {
+      return [...acc, ...input.value]
+    }, [])
+    inputValuesCounter.set(getMaxByProp(inputsValues, 'id'))
+  }
 
   return data
 })

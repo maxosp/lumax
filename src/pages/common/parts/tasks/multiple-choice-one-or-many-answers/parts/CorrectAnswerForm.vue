@@ -31,10 +31,11 @@
       <FormInput
         v-if="$marksEnabled"
         :label="idx === 0 ? 'Баллы' : ''"
-        :value="qa.mark"
+        :label-visible="qa.isCorrect"
+        :value="qa.score"
         placeholder="Баллов"
-        class="answer-mark"
-        @input="(mark) => handleMarkChange({ questionId: qa.id, mark })"
+        class="answer-score"
+        @input="(score) => handleMarkChange({ questionId: qa.id, score })"
       />
       <div
         v-if="$questionsAnswers.length > 1"
@@ -96,9 +97,9 @@ export default Vue.extend({
       )
       setQuestionsAnswers(questionsAnswers)
     },
-    handleMarkChange({ questionId, mark }) {
+    handleMarkChange({ questionId, score }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === questionId ? { ...qa, mark } : qa
+        qa.id === questionId ? { ...qa, score } : qa
       )
       setQuestionsAnswers(questionsAnswers)
     },
@@ -109,7 +110,7 @@ export default Vue.extend({
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: getRandomId(), question: '', answer: '', mark: '', isCorrect: false },
+        { id: getRandomId(), question: '', answer: '', score: '', isCorrect: false },
       ])
     },
   },
@@ -172,7 +173,7 @@ export default Vue.extend({
   flex-grow: 1;
 }
 
-.answer-mark {
+.answer-score {
   max-width: 150px;
   margin-left: 10px;
 }

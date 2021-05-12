@@ -36,10 +36,10 @@
           <FormInput
             v-if="$marksEnabled"
             :label="idx === 0 && asnwerIdx === 0 ? 'Баллы' : ''"
-            :value="answer.mark"
+            :value="answer.score"
             placeholder="Баллов"
-            class="answer-mark"
-            @input="(mark) => handleMarkChange({ questionId: qa.id, id: answer.id, mark })"
+            class="answer-score"
+            @input="(score) => handleMarkChange({ questionId: qa.id, id: answer.id, score })"
           />
           <div
             v-if="asnwerIdx === 0"
@@ -120,12 +120,12 @@ export default Vue.extend({
       )
       setQuestionsAnswers(questionsAnswers)
     },
-    handleMarkChange({ questionId, id, mark }) {
+    handleMarkChange({ questionId, id, score }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
         qa.id === questionId
           ? {
             ...qa,
-            answers: qa.answers.map((ans) => (ans.id === id ? { ...ans, mark } : ans)),
+            answers: qa.answers.map((ans) => (ans.id === id ? { ...ans, score } : ans)),
           }
           : qa
       )
@@ -136,7 +136,7 @@ export default Vue.extend({
         qa.id === questionId
           ? {
             ...qa,
-            answers: [...qa.answers, { id: getRandomId(), value: '', mark: '' }],
+            answers: [...qa.answers, { id: getRandomId(), value: '', score: '' }],
           }
           : qa
       )
@@ -159,7 +159,7 @@ export default Vue.extend({
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: getRandomId(), question: '', answers: [{ id: 0, value: '', mark: '' }] }
+        { id: getRandomId(), question: '', answers: [{ id: 0, value: '', score: '' }] }
       ])
     }
   },
@@ -210,7 +210,7 @@ export default Vue.extend({
 }
 
 .answer-input,
-.answer-mark,
+.answer-score,
 .icon-btn {
   max-width: 150px;
   margin-left: 10px;

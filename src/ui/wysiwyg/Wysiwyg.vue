@@ -217,6 +217,9 @@ export default Vue.extend({
     .cke_bottom {
       display: none;
     }
+    .cke_editable {
+      overflow: hidden;
+    }
   }
 }
 </style>

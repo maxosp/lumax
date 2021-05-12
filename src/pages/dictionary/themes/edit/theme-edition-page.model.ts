@@ -112,6 +112,22 @@ export const $formToSendPrerequisite = combine({
   themes_ids: $selectedThemes.map((arr) => arr.map((data) => +data.name)),
 })
 
+export const redirectToResourceCreate = createEvent()
+sample({
+  source: $formToSend,
+  clock: redirectToResourceCreate,
+  fn: (form) => {
+    navigatePush({
+      name: 'resources-create',
+      params: {
+        theme: `${form.id}`,
+        subject: `${form.subject_id}`,
+        class: `${form.study_year_id}`,
+      },
+    })
+  },
+})
+
 sample({
   clock: getThemeToUpdate.done,
   source: getThemeFx.doneData.map((data) => data.body),

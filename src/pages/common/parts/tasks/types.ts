@@ -12,7 +12,7 @@ export type ShortClosedAnswer = {
 }
 
 export type MultipleShortClosedAnswer = {
-  mark?: string
+  score?: string
 } & ShortClosedAnswer
 
 export type MultipleShortClosedQuestion = {
@@ -24,7 +24,7 @@ export type MultipleShortClosedQuestion = {
 export type MultipleChoiceOneOrManyQuestion = {
   id: number
   question: string
-  mark?: string
+  score?: string
   isCorrect: boolean
 }
 

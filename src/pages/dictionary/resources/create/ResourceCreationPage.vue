@@ -17,6 +17,7 @@ import {
   create,
   $formToSend,
   clearFields,
+  initAssignment,
   redirectAfterSaveChanged,
 } from '@/pages/dictionary/resources/create/resource-creation-page.model'
 import { getThemeData } from '@/pages/dictionary/resources/create/parts/theme/theme.model'
@@ -40,8 +41,16 @@ export default Vue.extend({
     },
   },
   mounted() {
-    if (this.$route.params.id) {
-      getThemeData(+this.$route.params.id)
+    const { id, theme, subject } = this.$route.params
+    if (id) {
+      getThemeData(+id)
+    }
+    if (theme && subject && this.$route.params.class) {
+      initAssignment.prepend(() => ({
+        theme: +theme,
+        subject: +subject,
+        class: +this.$route.params.class,
+      }))()
     }
   },
   beforeDestroy() {

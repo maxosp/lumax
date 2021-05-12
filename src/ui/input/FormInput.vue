@@ -12,7 +12,7 @@
         :disabled="disabled"
         :readonly="readOnlyDropdown"
         class="inner-input"
-        :class="{filled: !!value, '--error': hasError, '--disabled': disabled}"
+        :class="{filled: !!value, '--error': hasError, '--disabled': disabled, '--hidden': !labelVisible}"
         v-on="{
           ...$listeners,
           input: (e) => $emit('input', e),
@@ -50,6 +50,7 @@ export default Vue.extend({
   props: {
     value: { type: [String, Number] as PropType<string | number>, default: '' },
     label: { type: String as PropType<string>, default: '' },
+    labelVisible: { type: Boolean as PropType<boolean>, default: true },
     placeholder: { type: String as PropType<string>, default: '' },
     type: { type: String as PropType<string>, default: 'text' },
     maxLength: { type: Number },
@@ -122,6 +123,9 @@ label {
     &:hover {
       cursor: default;
     }
+  }
+  &.--hidden {
+    visibility: hidden;
   }
 }
 .filled {

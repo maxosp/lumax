@@ -63,7 +63,7 @@ export const $form = combine(
     containing,
     correctAnswers,
     answersOptions,
-    text_template,
+    template_text,
     audio,
     reorderEnabled
   ) => ({
@@ -74,8 +74,10 @@ export const $form = combine(
       options: answersOptions.map(({ title }) => title),
       disable_shuffle: reorderEnabled,
     },
-    correct_answer: correctAnswers,
-    text_template,
+    correct_answer: correctAnswers.map((answer) =>
+      answersOptions.findIndex((option) => option.name === answer.name)
+    ),
+    template_text,
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       isLimited,

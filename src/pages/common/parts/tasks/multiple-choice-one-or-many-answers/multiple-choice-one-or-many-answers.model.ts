@@ -22,7 +22,7 @@ export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
 export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyQuestion[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', mark: '', isCorrect: false },
+  { id: getRandomId(), question: '', score: '', isCorrect: false },
 ]).reset(clearFields)
 
 export const toggleMarksEnabling = createEvent<boolean>()
@@ -49,15 +49,13 @@ export const $form = combine(
     wording,
     example_answer,
     text: containing,
-    question_data: {
-      variants: questionsAnswers.map(({ question }, idx) => ({ title: question, number: idx + 1 })),
-    },
+    question_data: questionsAnswers.map(({ question }) => question),
     correct_answer: questionsAnswers
-      .map((q, idx) =>
-        q.isCorrect
+      .map((answer, idx) =>
+        answer.isCorrect
           ? {
-              index: `${idx + 1}`,
-              ...(marks ? { score: q.mark } : {}),
+              id: idx,
+              score: answer.score,
             }
           : null
       )
@@ -72,8 +70,6 @@ export const $form = combine(
   })
 )
 
-// edition mode data init
-
 export const initAssignment = createEvent<TestAssignment>()
 
 forward({
@@ -84,25 +80,25 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
     setQuestionsAnswers.prepend((data) =>
-      data.question_data.variants.map((question: any) => {
-        let mark = ''
+      data.question_data.map((question: string, id: number) => {
+        let score = ''
         let isCorrect = false
 
         const existingCorrectAnswer = data.correct_answer.find(
-          (index: number) => index === question.number
+          (answer: { id: number; score: string }) => answer.id === id
         )
         if (existingCorrectAnswer) {
           isCorrect = true
           if (data.is_add_score_for_each_answer) {
-            mark = existingCorrectAnswer.score
+            score = existingCorrectAnswer.score
           }
         }
 
         return {
-          id: question.number,
-          question: question.title,
+          id,
+          question,
           isCorrect,
-          mark,
+          score,
         }
       })
     ),

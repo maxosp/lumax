@@ -14,6 +14,7 @@ import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import {
   $selectedTheme,
+  setSelectedTheme,
   themeDropdownModule,
 } from '@/pages/dictionary/resources/create/parts/theme/theme.model'
 import {
@@ -32,6 +33,16 @@ import { createResourceFx } from '@/features/api/media/create-resource'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 import { createError } from '@/lib/effector/error-generator'
+import { getThemeFx } from '@/features/api/subject/get-theme'
+import { getSubjectFx } from '@/features/api/subject/get-subject'
+
+const getTheme = attach({
+  effect: getThemeFx,
+})
+
+const getSubject = attach({
+  effect: getSubjectFx,
+})
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -57,6 +68,48 @@ const saveResource = createEvent<void>()
 
 export const redirectAfterSaveChanged = createEvent<boolean>()
 const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
+
+export const initAssignment =
+  createEvent<{
+    theme: number
+    subject: number
+    class: number
+  }>()
+
+forward({
+  from: initAssignment,
+  to: [
+    getTheme.prepend((data) => data.theme),
+    getSubject.prepend((data) => data.subject),
+    setSelectedClass.prepend((data) => ({
+      name: `${data.class}`,
+      title: `${data.class} класс`,
+    })),
+    classDropdownModule.methods.itemChanged.prepend((data) => `${data.class}`),
+  ],
+})
+
+forward({
+  from: getSubject.doneData.map((data) => data.body),
+  to: [
+    setSelectedSubject.prepend((subject) => ({
+      name: `${subject.id}`,
+      title: subject.name,
+    })),
+    subjectDropdownModule.methods.itemChanged.prepend((subject) => `${subject.id}`),
+  ],
+})
+
+forward({
+  from: getTheme.doneData.map((data) => data.body),
+  to: [
+    setSelectedTheme.prepend((theme) => ({
+      name: `${theme.id}`,
+      title: theme.name,
+    })),
+    themeDropdownModule.methods.itemChanged.prepend((theme) => `${theme.id}`),
+  ],
+})
 
 forward({
   from: clearFields,
