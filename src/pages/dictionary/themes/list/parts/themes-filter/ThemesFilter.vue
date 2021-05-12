@@ -84,6 +84,7 @@ import {
 } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 import ClickOutside from '@/features/directives/click-outside.ts'
 import { dropdownComponents } from '@/pages/dictionary/themes/list/parts/themes-filter/parts/dropdown-components'
+import { FiltersParams } from '@/pages/common/types'
 
 Vue.directive('click-outside', ClickOutside)
 
@@ -105,13 +106,13 @@ export default Vue.extend({
   },
   methods: {
     toggleVisibility,
-    closeFilter(event) {
+    closeFilter(event: any) {
       // check for general filter icon
       if (!event.target.closest('#filter-icon')) {
         toggleVisibility(false)
       }
     },
-    setItem(filter) {
+    setItem(filter: FiltersParams) {
       this.$emit('changeFilter', filter)
     },
     applyFilters() {
