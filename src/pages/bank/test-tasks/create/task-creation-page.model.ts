@@ -256,6 +256,9 @@ condition({
   then: navigatePush.prepend(() => ({ name: 'test-tasks-list' })),
   else: navigatePush.prepend((payload: { redirect: boolean; id: number }) => ({
     name: 'test-tasks-edit',
+    query: {
+      fromPage: 'tasks',
+    },
     params: { id: `${payload.id}` },
   })),
 })

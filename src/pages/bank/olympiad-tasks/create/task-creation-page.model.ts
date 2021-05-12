@@ -272,6 +272,9 @@ condition({
   then: navigatePush.prepend(() => ({ name: 'olympiad-tasks-list' })),
   else: navigatePush.prepend((payload: { redirect: boolean; id: number }) => ({
     name: 'olympiad-tasks-edit',
+    query: {
+      fromPage: 'tasks',
+    },
     params: { id: `${payload.id}` },
   })),
 })
