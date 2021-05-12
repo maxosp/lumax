@@ -66,10 +66,12 @@ export type FiltersParams = {
   created_by?: User
   moderate_by?: User
   is_prerequisite?: boolean
+  is_not_prerequisite?: boolean
+  has_assignment?: boolean
+  has_no_assignment?: boolean
   is_test_assignment?: boolean
   is_lesson_assignment?: boolean
   is_olympiad_assignment?: boolean
-  has_assignment?: boolean
   created_by_me?: boolean
   moderate_by_me?: boolean
   theme?: number

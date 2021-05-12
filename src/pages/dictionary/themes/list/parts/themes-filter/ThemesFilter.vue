@@ -8,15 +8,15 @@
       <SubjectsDropdown @setItem="val => setItem({'subject': val})" />
       <BaseSwitch
         class="switch"
-        :checked="!$filterParams.is_prerequisite"
-        @change="setItem({'is_prerequisite': !$event})"
+        :checked="$filterParams.is_not_prerequisite"
+        @change="hidePrerequisites"
       >
         <p>Скрыть пререквизиты</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
         :checked="$filterParams.is_prerequisite"
-        @change="setItem({'is_prerequisite': $event})"
+        @change="showPrerequisitesOnly"
       >
         <p>Отобразить только пререквизиты</p>
       </BaseSwitch>
@@ -25,15 +25,15 @@
       <ClassesDropdown @setItem="val => setItem({'study_year': val})" />
       <BaseSwitch
         class="switch"
-        :checked="!$filterParams.has_assignment"
-        @change="setItem({'has_assignment': !$event})"
+        :checked="$filterParams.has_no_assignment"
+        @change="hideWithAssignments"
       >
         <p>Отобразить только темы без заданий</p>
       </BaseSwitch>
       <BaseSwitch
         class="switch"
         :checked="$filterParams.has_assignment"
-        @change="setItem({'has_assignment': $event})"
+        @change="showOnlyWithAssignments"
       >
         <p>Отобразить только темы с заданиями</p>
       </BaseSwitch>
@@ -71,7 +71,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
@@ -121,6 +121,30 @@ export default Vue.extend({
     resetFilters() {
       this.$emit('resetFilter') // general filter
       reset() // togglers and visibility
+    },
+    hidePrerequisites(switcherState: boolean) {
+      if (this.$filterParams.is_prerequisite) {
+        this.setItem({ is_prerequisite: false })
+      }
+      this.setItem({ is_not_prerequisite: switcherState })
+    },
+    showPrerequisitesOnly(switcherState: boolean) {
+      if (this.$filterParams.is_not_prerequisite) {
+        this.setItem({ is_not_prerequisite: false })
+      }
+      this.setItem({ is_prerequisite: switcherState })
+    },
+    hideWithAssignments(switcherState: boolean) {
+      if (this.$filterParams.has_assignment) {
+        this.setItem({ has_assignment: false })
+      }
+      this.setItem({ has_no_assignment: switcherState })
+    },
+    showOnlyWithAssignments(switcherState: boolean) {
+      if (this.$filterParams.has_no_assignment) {
+        this.setItem({ has_no_assignment: false })
+      }
+      this.setItem({ has_assignment: switcherState })
     },
   },
 })

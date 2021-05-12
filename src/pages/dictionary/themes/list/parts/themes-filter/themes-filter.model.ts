@@ -8,6 +8,8 @@ export const themesFilters = createFiltersModel(
     search_area: 'search_all',
     has_assignment: false,
     is_prerequisite: false,
+    is_not_prerequisite: false,
+    has_no_assignment: false,
   },
   dropdownModules
 )
