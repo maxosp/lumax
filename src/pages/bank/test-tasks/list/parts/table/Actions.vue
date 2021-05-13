@@ -60,9 +60,10 @@ export default Vue.extend({
   props: {
     id: { type: Number, required: true },
     selected: { type: Array as PropType<number[]>, required: true },
-    light: { type: Boolean, default: false },
-    isTheme: { type: Boolean },
-    isTableHeader: { type: Boolean },
+    light: { type: Boolean as PropType<boolean>, default: false },
+    isTheme: { type: Boolean as PropType<boolean> },
+    isPrerequisite: { type: Boolean as PropType<boolean>, default: false },
+    isTableHeader: { type: Boolean as PropType<boolean> },
     subject: { type: [Number, null] as PropType<number | null> },
     studyYear: { type: [Number, null] as PropType<number | null> },
   },
@@ -73,13 +74,17 @@ export default Vue.extend({
   }),
   computed: {
     items(): DropdownItem[] {
-      if (this.light && this.isTheme)
-        return [
-          { name: 'create-theme', title: 'Создать тему' },
+      if (this.light && this.isTheme) {
+        const items = [
           { name: 'create-task', title: 'Создать задание' },
           { name: 'edit-theme', title: 'Редактировать' },
           { name: 'delete-theme', title: 'Удалить' },
         ]
+        if (!this.isPrerequisite) {
+          items.unshift({ name: 'create-theme', title: 'Создать тему' })
+        }
+        return items
+      }
       if (this.light && !this.isTheme)
         return [
           { name: 'edit-task', title: 'Редактировать' },
