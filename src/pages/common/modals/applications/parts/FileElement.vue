@@ -48,13 +48,14 @@ export default Vue.extend({
   overflow: hidden;
 }
 .preview-image {
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   max-height: 100%;
   max-width: 100%;
   filter: brightness(0.8);
+  object-fit: contain;
 }
 .name-file {
   font-weight: bold;
