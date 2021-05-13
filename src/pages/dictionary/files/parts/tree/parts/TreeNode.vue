@@ -186,14 +186,15 @@ export default Vue.extend({
       //     Authorization: `Bearer ${this.token}`,
       //   }),
       // })
-      const img = await fetch(file)
-      const imageBlob = await img.blob()
-      const imgURL = URL.createObjectURL(imageBlob)
-      console.log(img)
-      console.log(imageBlob)
-      console.log(imgURL)
+      // const img = await fetch(file)
+      // console.log(img)
+      // const imageBlob = await img.blob()
+      // console.log(imageBlob)
+      // const imgURL = URL.createObjectURL(imageBlob)
+      // console.log(imgURL)
       const link = document.createElement('a')
-      link.href = imgURL
+      link.href = file
+      link.target = '_blank'
       link.download = file_name
       document.body.appendChild(link)
       link.click()
