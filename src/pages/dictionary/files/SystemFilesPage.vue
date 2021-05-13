@@ -22,6 +22,7 @@
       <FilesTree
         v-if="!$isLoading"
         :show-paste="$elementToCopy.id !== -1"
+        :token="$token"
         @onRightClick="handleRightClick"
         @onRemove="handleRemove"
         @onCreate="handleCreateFolder"
@@ -105,6 +106,7 @@ import {
   loadFile,
   setElementType,
 } from '@/pages/common/modals/system-files/update-element/update-element.model'
+import { $token } from '@/features/api/common/request'
 
 export default Vue.extend({
   name: 'SystemFilesPage',
@@ -133,6 +135,7 @@ export default Vue.extend({
     $isLoading,
     $folderId,
     $elementToCopy,
+    $token,
   },
   methods: {
     changeFilter: filesFilters.methods.changeFilter,
