@@ -59,6 +59,8 @@ export const setupMovingOnImageAnswerDataFx = createEffect((data: MovingOnImageQ
   return data
 })
 
+setupMovingOnImageAnswerDataFx.watch(() => clearFields())
+
 const uploadMainImageFx = attach({
   effect: uploadMediaFx,
 })

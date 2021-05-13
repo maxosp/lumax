@@ -20,7 +20,8 @@ export const loadLabels = createEvent<void>()
 export const $labels = createStore<DropdownItem[]>([])
 
 export const setSelectedLabels = createEvent<DropdownItem[]>()
-export const $selectedLabels = restore(setSelectedLabels, [])
+export const resetLabels = createEvent<void>()
+export const $selectedLabels = restore(setSelectedLabels, []).reset(resetLabels)
 
 export const loadCurrentLabelsIDs = createEvent<number>()
 export const $currentLabelsIDs = createStore<number[]>([])

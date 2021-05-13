@@ -40,6 +40,8 @@ export const inputValuesCounter = createCounter()
 export const droppableImagesCounter = createCounter()
 const draggableTextCounter = createCounter()
 
+const clearFields = createEvent<void>()
+
 export const setupMovingOnTextAnswerDataFx = createEffect((data: MovingOnTextQuestionData) => {
   if (data.draggable) draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
   if (data.droppable) droppableImagesCounter.set(getMaxByProp(data.droppable, 'id'))
@@ -52,39 +54,36 @@ export const setupMovingOnTextAnswerDataFx = createEffect((data: MovingOnTextQue
     }, [])
     inputValuesCounter.set(getMaxByProp(inputsValues, 'id'))
   }
-
   return data
 })
 
+setupMovingOnTextAnswerDataFx.watch(() => clearFields)
+
 const templateChanged = createEvent<string>()
-export const $mainTemplate = restore(templateChanged, '').on(
-  setupMovingOnTextAnswerDataFx.doneData,
-  (_, payload) => payload.mainText
-)
+export const $mainTemplate = restore(templateChanged, '')
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.mainText)
+  .reset(clearFields)
 
 export const changeMainTemplate = createEvent<string>()
 
 export const setInputs = createEvent<MovingOnTextDroppableInput[]>()
-export const $inputs = restore(setInputs, []).on(
-  setupMovingOnTextAnswerDataFx.doneData,
-  (_, payload) => payload.inputs
-)
+export const $inputs = restore(setInputs, [])
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.inputs)
+  .reset(clearFields)
 export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
 export const removeInput = createRemoveEventForArrayStore($inputs, 'id')
 
 export const setDroppableImages = createEvent<MovingOnTextDroppableImage[]>()
-export const $droppableImages = restore(setDroppableImages, []).on(
-  setupMovingOnTextAnswerDataFx.doneData,
-  (_, payload) => payload.droppable
-)
+export const $droppableImages = restore(setDroppableImages, [])
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.droppable)
+  .reset(clearFields)
 export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
 export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
 
 export const setDraggableText = createEvent<DraggableText[]>()
-export const $draggableText = restore(setDraggableText, []).on(
-  setupMovingOnTextAnswerDataFx.doneData,
-  (_, payload) => payload['draggable-text']
-)
+export const $draggableText = restore(setDraggableText, [])
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload['draggable-text'])
+  .reset(clearFields)
 export const replaceDraggableText = createReplaceEventForArrayStore($draggableText, 'id')
 export const removeDraggableText = createRemoveEventForArrayStore($draggableText, 'id')
 export const addDraggableText = createAddEventForArrayStore($draggableText, () => ({
@@ -113,6 +112,7 @@ const uploadDraggableImageFx = createEffect<FileList, void>({
 
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
+  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.draggable)
   .on(uploadMediaImageFx.doneData, (items, res) => [
     ...items,
     {
@@ -125,7 +125,7 @@ export const $draggableImages = restore(setDraggableImages, [])
       id: draggableImagesCounter.next(),
     },
   ])
-  .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.draggable)
+  .reset(clearFields)
 export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 
 export const uploadDraggableImage = createEvent<FileList>()
@@ -154,7 +154,7 @@ sample({
   fn: (draggable, droppable) => {
     return draggable.map((draggableItem) => {
       const inDroppable = droppable.find(
-        (droppableItem) => droppableItem.value === draggableItem.value
+        (droppableItem) => +droppableItem.value === +draggableItem.value
       )
       return {
         ...draggableItem,

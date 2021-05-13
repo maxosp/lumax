@@ -6,13 +6,13 @@
       <span>/</span>
       <span>{{ $questionAmount }}</span>
     </div>
-    <div class="btn" @click="prev">
+    <div class="btn" @click="prev($route)">
       <Icon
         type="arrow-left"
         size="16"
       />
     </div>
-    <div class="btn" @click="next">
+    <div class="btn" @click="next($route)">
       <Icon
         type="arrow-right"
         size="16"
@@ -56,12 +56,12 @@ export default Vue.extend({
     $questionAmount,
   },
   methods: {
+    prev,
+    next,
     onSelectTask(val: string) {
       const index = this.questions.findIndex((item) => item === val)
       if (index !== -1) setCurrentIndex(index)
     },
-    prev,
-    next,
   },
   created() {
     const { questions, currentQuestion } = this.$route.query

@@ -14,7 +14,7 @@
         v-else-if="droppableImages.length"
         class="dropdown"
         placeholder="Нет соответсвий"
-        :value="image.value ? `A${image.value}` : null"
+        :value="image.value ? `A${image.value}` : ''"
         read-only-dropdown
       >
         <template #default="{closeMenu}">
