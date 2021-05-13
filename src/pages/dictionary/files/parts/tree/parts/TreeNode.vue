@@ -180,12 +180,13 @@ export default Vue.extend({
       // const img = await fetch(
       //   'https://upload.wikimedia.org/wikipedia/commons/1/1f/SMirC-thumbsup.svg'
       // )
-      const img = await fetch(`${file}`, {
-        method: 'GET',
-        headers: new Headers({
-          Authorization: `Bearer ${this.token}`,
-        }),
-      })
+      // const img = await fetch(`${file}`, {
+      //   method: 'GET',
+      //   headers: new Headers({
+      //     Authorization: `Bearer ${this.token}`,
+      //   }),
+      // })
+      const img = await fetch(file)
       const imageBlob = await img.blob()
       const imgURL = URL.createObjectURL(imageBlob)
       console.log(img)
