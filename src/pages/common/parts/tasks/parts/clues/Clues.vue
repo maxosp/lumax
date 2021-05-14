@@ -20,9 +20,9 @@
         </div>
       </div>
       <NumericInput
-        :value="clue.scores" 
+        :value="+clue.scores"
         label="Цена подсказки"
-        @input="scores => setCluePrice({ id: clue.id, scores })" 
+        @input="scores => setCluePrice({ id: clue.id, scores })"
       />
     </div>
     <div class="add-clue">
