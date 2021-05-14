@@ -55,7 +55,7 @@
         :id="node.assignment && node.assignment.id || node.theme.id"
         light
         :is-theme="node.element_type === 'theme'"
-        :is-prerequisite="prerequisiteFolder"
+        :is-prerequisite="prerequisiteFolder || isPrerequisite"
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         :subject="node.theme && node.theme.subject_id"
