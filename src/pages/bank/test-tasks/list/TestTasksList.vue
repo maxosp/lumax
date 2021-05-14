@@ -74,6 +74,13 @@
             @onRightClick="handleRightClick"
           />
         </template>
+        <template #labels_string="props">
+          <TooltipCell
+            :row-id="props.rowData.id"
+            :title="props.rowData.labels_string || '-'"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template id="one" #actions="props">
           <Actions
             :id="props.rowData.id"
