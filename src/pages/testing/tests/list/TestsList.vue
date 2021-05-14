@@ -218,7 +218,6 @@ export default (
     $canRefreshAfterDuplicate: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
-        this.$refs.vuetable.selectedTo = []
         this.clearCheckboxes()
       },
     },

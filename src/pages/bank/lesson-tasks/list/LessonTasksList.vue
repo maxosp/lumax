@@ -25,6 +25,7 @@
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
       @onEdit="editTask"
+      @onRemoveSelection="removeSelection"
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable

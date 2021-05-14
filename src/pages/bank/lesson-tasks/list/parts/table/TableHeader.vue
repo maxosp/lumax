@@ -44,6 +44,13 @@
       >
         Предпросмотр
       </span>
+      <span
+        v-if="selectedRows.length"
+        class="text --basic"
+        @click="$emit('onRemoveSelection')"
+      >
+        Снять выделение
+      </span>
     </div>
     <div class="right">
       <BaseSwitch

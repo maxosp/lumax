@@ -28,6 +28,7 @@
       @onPublish="publishAssignments"
       @onPreview="showPreview"
       @onRemove="onRemoveTask"
+      @onRemoveSelection="removeSelection"
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable

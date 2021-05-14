@@ -24,6 +24,7 @@
       @onEdit="editTag"
       @onRemove="onRemoveTags"
       @showTasks="showTasks"
+      @onRemoveSelection="removeSelection"
     />
     <LoaderBig v-if="$isLoading" />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading, hideHeader: !total }">

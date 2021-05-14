@@ -23,6 +23,7 @@
       :selected-rows="selectedRows"
       @onEdit="handleEditTheme"
       @onRemove="onRemoveThemes"
+      @onRemoveSelection="removeSelection"
     />
     <LoaderBig v-if="$isLoading" />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">

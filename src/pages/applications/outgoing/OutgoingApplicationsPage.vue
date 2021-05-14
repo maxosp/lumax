@@ -27,6 +27,7 @@
       @onEdit="editApplications"
       @onCancel="cancelApplications"
       @onSeeComments="showComments"
+      @onRemoveSelection="resetHeaderActions"
     />
 
     <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">

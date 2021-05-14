@@ -32,6 +32,7 @@
       @onAccept="acceptApplications"
       @onSendToRevision="sendToRevision"
       @onAssignToModerator="assignToModerator"
+      @onRemoveSelection="removeSelection"
     />
 
     <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">

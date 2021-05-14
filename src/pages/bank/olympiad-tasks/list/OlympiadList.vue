@@ -26,6 +26,7 @@
       @onRemove="onRemoveTask"
       @duplicate="duplicateTask"
       @showPreview="showPreview"
+      @onRemoveSelection="removeSelection"
     />
 
     <div :class="{ 'table-container': true, invisible: $isLoading, hideHeader: !total }">

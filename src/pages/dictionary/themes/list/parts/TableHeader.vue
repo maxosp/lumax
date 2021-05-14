@@ -21,6 +21,13 @@
       >
         Удалить
       </span>
+      <span
+        v-if="selectedRows.length"
+        class="text --basic"
+        @click="$emit('onRemoveSelection')"
+      >
+        Снять выделение
+      </span>
     </div>
     <BaseSwitch
       :checked="$treeView"
@@ -87,6 +94,10 @@ export default Vue.extend({
   }
   span.--red {
     color: var(--c-red-1);
+    margin-right: 25px;
+  }
+  .text.--basic {
+    margin-right: 25px;
   }
 }
 </style>

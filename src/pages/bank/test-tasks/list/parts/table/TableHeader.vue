@@ -43,6 +43,13 @@
       >
         Предпросмотр
       </span>
+      <span
+        v-if="selectedRows.length"
+        class="text --basic"
+        @click="$emit('onRemoveSelection')"
+      >
+        Снять выделение
+      </span>
       <Actions
         v-if="selectedRows && selectedRows.length === 1"
         :id="selectedRows[0]"

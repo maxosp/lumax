@@ -32,6 +32,13 @@
       >
         Отменить
       </span>
+      <span
+        v-if="showAdditionalActions"
+        class="text --basic"
+        @click="$emit('onRemoveSelection')"
+      >
+        Снять выделение
+      </span>
     </div>
     <div class="right">
       <Icon
