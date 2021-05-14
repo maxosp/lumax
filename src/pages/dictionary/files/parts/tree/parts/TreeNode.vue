@@ -186,6 +186,7 @@ export default Vue.extend({
       const imgURL = URL.createObjectURL(imageBlob)
       const link = document.createElement('a')
       link.href = imgURL
+      link.target = '_blank'
       link.download = file_name
       document.body.appendChild(link)
       link.click()
