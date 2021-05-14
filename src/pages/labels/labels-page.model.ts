@@ -3,7 +3,7 @@ import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tre
 import { getLabelsTreeLightFx } from '@/features/api/assignment/labels/get-labels-tree-light'
 import { getLabelsInfoFx } from '@/features/api/assignment/labels/get-labels-info'
 import { TreeData } from '@/features/api/types'
-import { mergeTreeData } from '@/features/lib'
+import { cropString, mergeTreeData } from '@/features/lib'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
   attach,
@@ -22,6 +22,7 @@ import {
   $dataToUpdateTree,
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
 
 export const getLabelsTree = attach({
   effect: getLabelsTreeFx,
@@ -60,6 +61,25 @@ export const $labelsTree = restore<TreeData[] | null>(rewriteLabelsTree, null).o
 )
 export const setLabelsTreeTotal = createEvent<number>()
 export const $labelsTreeTotal = restore<number>(setLabelsTreeTotal, 0)
+
+export const collectTaskData = createEffect({
+  handler: (ids: number[]): Promise<any[]> =>
+    Promise.all(
+      ids.map(
+        async (id) =>
+          new Promise<any>((resolve) => {
+            const res = getTestAssignmentFx(id).then((r) => {
+              return {
+                id: r.body.id,
+                name: `${r.body.id}`,
+                title: `[id${r.body.id}] - ${cropString(r.body.wording, 34)}`,
+              }
+            })
+            resolve(res)
+          })
+      )
+    ),
+})
 
 forward({
   from: loadTreeLight,

@@ -99,7 +99,7 @@
     />
     <TagCreationModal />
     <TagEditionModal />
-    <TasksModal />
+    <TasksModal @showPreview="showPreview" />
     <ConfirmDeleteModal
       type="tag"
       @confirmDelete="removeSelectedTags"
@@ -126,6 +126,7 @@ import {
   deleteTags,
   tagsPageParams,
   $isLoading,
+  collectTaskData,
 } from '@/pages/tags/tags-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import PageHeader from '@/pages/tags/parts/header/PageHeader.vue'
@@ -155,6 +156,8 @@ import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDele
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { navigatePush } from '@/features/navigation'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -313,6 +316,21 @@ export default (
     removeSelection() {
       this.$refs.vuetable.selectedTo = []
       this.selectedRows = []
+    },
+    showPreview(ids: number[]) {
+      this.transferSelectedApps(ids)
+      navigatePush({
+        name: 'preview-task',
+        query: {
+          questions: ids.join(','),
+          taskType: 'olympiad-assignment',
+          token: this.$token,
+          fromPage: 'tags',
+        },
+      })
+    },
+    transferSelectedApps(ids: number[]) {
+      collectTaskData(ids).then((value) => changeTasks(value))
     },
     hideContextMenu() {
       this.showContextMenu = false

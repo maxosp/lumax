@@ -46,7 +46,7 @@
     />
     <LabelCreationModal />
     <LabelEditionModal />
-    <TasksModal />
+    <TasksModal @showPreview="showPreview" />
     <ConfirmDeleteModal
       type="label"
       @confirmDelete="removeLabel"
@@ -69,7 +69,13 @@ import {
   labelsFilters,
   toggleVisibility,
 } from '@/pages/labels/parts/labels-filter/labels-filter.model'
-import { deleteLabels, loadTree, loadTreeLight, $isLoading } from '@/pages/labels/labels-page.model'
+import {
+  deleteLabels,
+  loadTree,
+  loadTreeLight,
+  $isLoading,
+  collectTaskData,
+} from '@/pages/labels/labels-page.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { searchFieldsData } from '@/pages/labels/constants'
 import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label-edition.modal'
@@ -78,7 +84,10 @@ import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
-import { RightClickParams } from '../common/types'
+import { RightClickParams } from '@/pages/common/types'
+import { navigatePush } from '@/features/navigation'
+import { $token } from '@/features/api/common/request'
+import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 
 export default Vue.extend({
   components: {
@@ -96,6 +105,7 @@ export default Vue.extend({
   effector: {
     $visibility,
     $isLoading,
+    $token,
   },
   data() {
     return {
@@ -148,6 +158,21 @@ export default Vue.extend({
     },
     editLabel(id: number) {
       loadModalToEdit(id)
+    },
+    showPreview(value: number[]) {
+      this.transferSelectedApps(value)
+      navigatePush({
+        name: 'preview-task',
+        query: {
+          questions: value.join(','),
+          taskType: 'test-assignment',
+          token: this.$token,
+          fromPage: 'labels',
+        },
+      })
+    },
+    transferSelectedApps(ids: number[]): void {
+      collectTaskData(ids).then((value) => changeTasks(value))
     },
   },
   mounted() {
