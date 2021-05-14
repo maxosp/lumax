@@ -7,6 +7,7 @@ import {
   sample,
   guard,
   combine,
+  createStore,
 } from 'effector-root'
 // TODO: correctly define WHICH type of assignment
 import {
@@ -27,7 +28,7 @@ import { getTestAssignmentTreeFx } from '@/features/api/assignment/test-assignme
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { condition, every } from 'patronum'
-import { mergeTreeData } from '@/features/lib'
+import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 import { getAssignmentInfoFx } from '@/features/api/assignment/test-assignment/get-tree-info'
 import { FiltersParams } from '@/pages/common/types'
@@ -102,13 +103,12 @@ export const loadTreeLight = createEvent<void>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 export const setTasksTree = createEvent<TreeData[] | null>()
 const rewriteTasksTree = createEvent<TreeData[] | null>()
-export const $tasksTree = restore<TreeData[] | null>(rewriteTasksTree, null).on(
-  setTasksTree,
-  (state, data) => {
+export const $tasksTree = createStore<TreeData[] | null>(null)
+  .on(setTasksTree, (state, data) => {
     if (state === null) return data
     return mergeTreeData(state, data!)
-  }
-)
+  })
+  .on(rewriteTasksTree, (state, payload) => sortTreeLeaves(payload!))
 export const setTasksTreeTotal = createEvent<number>()
 export const $tasksTreeTotal = restore<number>(setTasksTreeTotal, 0)
 
