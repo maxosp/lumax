@@ -98,7 +98,7 @@ export const handleUpdateAudioFiles = attach({
 export const loadTask = createEvent<number>()
 export const $taskId = restore(loadTask, 0)
 
-export const setFolder = createEvent<number | null>()
+export const setFolder = createEvent<string | null>()
 export const $folder = restore(setFolder, null)
 
 export const setScore = createEvent<number | null>()
@@ -143,8 +143,6 @@ forward({
 forward({
   from: loadAssignment.doneData.map((res) => res.body),
   to: [
-    foldersDropdownModule.methods.itemChanged.prepend((data) => `${data.folder.id}`),
-    setFolder.prepend((data) => data.folder.id || 0),
     setScore.prepend((data) => data.score || 0),
     taskTypesDropdownModule.methods.itemChanged.prepend((data) => data.type),
     setTaskType.prepend((data) => data.type),
@@ -153,6 +151,8 @@ forward({
       title: data.interface_language,
     })),
     setSelectedFolder.prepend((data) => ({ title: `${data.folder.id}`, name: data.folder.name })),
+    foldersDropdownModule.methods.itemChanged.prepend((data) => `${data.folder.id}`),
+    setFolder.prepend((data) => `${data.folder.id}` || null),
     setStatus.prepend((data) => data.status),
     setAudioIds.prepend((data) => data.audios),
   ],
