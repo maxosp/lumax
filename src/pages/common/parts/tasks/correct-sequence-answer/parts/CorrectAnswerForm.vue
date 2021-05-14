@@ -4,7 +4,7 @@
     <BaseCheckbox
       option="reorder"
       class="reorder-checkbox"
-      :value="!$reorderEnabled"
+      :value="$reorderEnabled"
       @change="toggleReorderEnabling"
     >
       Отключить перемешивание

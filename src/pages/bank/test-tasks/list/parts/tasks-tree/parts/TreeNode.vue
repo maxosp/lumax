@@ -156,15 +156,12 @@ export default Vue.extend({
       }
     },
     taskIcon() {
-      // @ts-ignore
       return mapTaskTypeTo[this.node.assignment!.type].icon
     },
     correctStatus() {
-      // @ts-ignore
       return mapTaskStatus[this.node.assignment!.status]
     },
     taskDifficultyLevel() {
-      // @ts-ignore
       switch (this.node.assignment!.difficulty) {
         case 0:
           return { title: 'Базовый уровень', class: '--green' }
