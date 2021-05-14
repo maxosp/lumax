@@ -146,6 +146,9 @@ export default (
   mounted() {
     loadTreeLight()
   },
+  destroyed() {
+    this.resetFilters()
+  },
 })
 </script>
 

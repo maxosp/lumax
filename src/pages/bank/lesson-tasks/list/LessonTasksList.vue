@@ -401,9 +401,6 @@ export default (
       this.showContextMenu = false
     },
   },
-  mounted() {
-    loadTreeLight()
-  },
   created() {
     // Authorization request
     axios.interceptors.request.use((request) => {
@@ -411,6 +408,12 @@ export default (
       return request
     })
     this.queryToParams(this.$route.query)
+  },
+  mounted() {
+    loadTreeLight()
+  },
+  destroyed() {
+    this.resetFilters()
   },
 })
 </script>

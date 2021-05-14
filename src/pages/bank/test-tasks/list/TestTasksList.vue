@@ -472,8 +472,8 @@ export default (
     })
     this.queryToParams(this.$route.query)
   },
-  beforeDestroy() {
-    this.onFilterReset()
+  destroyed() {
+    this.resetFilters()
   },
 })
 </script>

@@ -399,8 +399,8 @@ export default (
   mounted() {
     loadList({})
   },
-  beforeDestroy() {
-    this.onFilterReset()
+  destroyed() {
+    this.resetFilters()
   },
 })
 </script>

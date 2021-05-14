@@ -347,6 +347,9 @@ export default (Vue as VueConstructor<Vue & { $refs: RefsType }>).extend({
   mounted() {
     loadList({})
   },
+  destroyed() {
+    this.resetFilters()
+  },
 })
 </script>
 
