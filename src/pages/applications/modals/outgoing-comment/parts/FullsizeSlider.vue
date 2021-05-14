@@ -143,8 +143,9 @@ export default Vue.extend({
   max-height: 80vh;
   max-width: 80vw;
   margin: 0 auto;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
 }
 .FSS-button-prev,
 .FSS-button-next {

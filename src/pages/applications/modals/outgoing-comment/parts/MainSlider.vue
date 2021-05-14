@@ -153,8 +153,9 @@ export default (
 }
 .slide.image {
   height: 80px;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
 }
 .btn {
   margin: 30px auto 0;

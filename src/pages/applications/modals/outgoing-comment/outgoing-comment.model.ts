@@ -2,7 +2,7 @@ import { UploadMediaResponse } from '@/features/api/media/types'
 import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { attach, createEvent, forward, restore } from 'effector-root'
-import { spread } from 'patronum'
+import { condition, spread } from 'patronum'
 
 const loadApplicationFx = attach({
   effect: getTicketFx,
@@ -11,15 +11,16 @@ const loadApplicationFx = attach({
 export const modalVisibilityChanged = createEvent<boolean>()
 export const $modalVisibility = restore(modalVisibilityChanged, false)
 
+const destroyModal = createEvent<void>()
 export const loadCommentModal = createEvent<number>()
 
-export const $selectedId = restore<number>(loadCommentModal, DEFAULT_ID)
+export const $selectedId = restore<number>(loadCommentModal, DEFAULT_ID).reset(destroyModal)
 
 const setComment = createEvent<string>()
-export const $comment = restore(setComment, '')
+export const $comment = restore(setComment, '').reset(destroyModal)
 
 const setImages = createEvent<UploadMediaResponse[] | null>()
-export const $images = restore<UploadMediaResponse[] | null>(setImages, null)
+export const $images = restore<UploadMediaResponse[] | null>(setImages, null).reset(destroyModal)
 
 forward({
   from: loadCommentModal,
@@ -32,4 +33,10 @@ spread({
     text: setComment,
     media: setImages,
   },
+})
+
+condition({
+  source: $modalVisibility,
+  if: (visibility: boolean) => !visibility,
+  then: destroyModal,
 })
