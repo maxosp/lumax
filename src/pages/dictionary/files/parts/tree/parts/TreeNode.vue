@@ -69,7 +69,7 @@ import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tr
 import { FolderType } from '@/features/api/assignment/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
-// import { config } from '@/config'
+import { config } from '@/config'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -174,27 +174,18 @@ export default Vue.extend({
       this.setDataForTree()
     },
     async handleOnDownload() {
-      console.log(this.node)
-      const { file } = this.node[this.node.element_type] as UploadMediaResponse
       const { file_name } = this.node[this.node.element_type] as UploadMediaResponse
-      // const img = await fetch(
-      //   'https://upload.wikimedia.org/wikipedia/commons/1/1f/SMirC-thumbsup.svg'
-      // )
-      // const img = await fetch(`${file}`, {
-      //   method: 'GET',
-      //   headers: new Headers({
-      //     Authorization: `Bearer ${this.token}`,
-      //   }),
-      // })
-      // const img = await fetch(file)
-      // console.log(img)
-      // const imageBlob = await img.blob()
-      // console.log(imageBlob)
-      // const imgURL = URL.createObjectURL(imageBlob)
-      // console.log(imgURL)
+      const { id } = this.node[this.node.element_type] as UploadMediaResponse
+      const img = await fetch(`${config.BACKEND_URL}/api/media-app/media/${id}/file/`, {
+        method: 'GET',
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+      })
+      const imageBlob = await img.blob()
+      const imgURL = URL.createObjectURL(imageBlob)
       const link = document.createElement('a')
-      link.href = file
-      link.target = '_blank'
+      link.href = imgURL
       link.download = file_name
       document.body.appendChild(link)
       link.click()
