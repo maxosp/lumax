@@ -238,6 +238,9 @@ export default (
       return request
     })
   },
+  destroyed() {
+    this.resetFilters()
+  },
 })
 </script>
 

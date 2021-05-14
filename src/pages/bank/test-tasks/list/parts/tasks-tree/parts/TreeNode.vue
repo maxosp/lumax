@@ -6,15 +6,10 @@
       @click="toggle"
     >
       <Icon
-        v-if="opened"
-        type="tree-folder-opened"
+        v-if="node.element_type !== 'assignment'"
         class="folder-icon"
-        size="35"
-      />
-      <Icon
-        v-else-if="!opened && node.element_type !== 'assignment'"
-        :type="node.is_prerequisite ? 'folder-prerequisite' : 'tree-folder'"
-        :class="{ 'folder-icon': true, transapent: node.is_prerequisite }"
+        :class="{ transparent: node.is_prerequisite }"
+        :type="iconType"
         size="35"
       />
       <div
@@ -60,6 +55,7 @@
         :id="node.assignment && node.assignment.id || node.theme.id"
         light
         :is-theme="node.element_type === 'theme'"
+        :is-prerequisite="prerequisiteFolder || isPrerequisite"
         :selected="[]"
         :theme-id="node.element_type === 'theme' ? node.theme.id : null"
         :subject="node.theme && node.theme.subject_id"
@@ -78,7 +74,7 @@
         :key="leaf[leaf.element_type].id"
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
-        :prerequisite-folder="$props.prerequisiteFolder"
+        :is-prerequisite="prerequisiteFolder || isPrerequisite"
         @onRightClick="$emit('onRightClick', $event)"
         @onRemoveTask="val => $emit('onRemoveTask', val)"
         @onRemoveTheme="val => $emit('onRemoveTheme', val)"
@@ -113,11 +109,21 @@ export default Vue.extend({
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
+    isPrerequisite: { type: Boolean as PropType<boolean>, default: false },
   },
   data: () => ({
     opened: false,
   }),
   computed: {
+    iconType(): string {
+      if (this.prerequisiteFolder) {
+        return 'folder-prerequisite'
+      }
+      if (this.opened) {
+        return 'tree-folder-opened'
+      }
+      return 'tree-folder'
+    },
     title() {
       const entity = this.node[this.node.element_type]
       let fullName = ''
@@ -150,15 +156,12 @@ export default Vue.extend({
       }
     },
     taskIcon() {
-      // @ts-ignore
       return mapTaskTypeTo[this.node.assignment!.type].icon
     },
     correctStatus() {
-      // @ts-ignore
       return mapTaskStatus[this.node.assignment!.status]
     },
     taskDifficultyLevel() {
-      // @ts-ignore
       switch (this.node.assignment!.difficulty) {
         case 0:
           return { title: 'Базовый уровень', class: '--green' }
@@ -215,6 +218,7 @@ export default Vue.extend({
           isTheme: this.$props.node.element_type === 'theme',
           subject: this.$props.node.theme && this.$props.node.theme.subject_id,
           studyYear: this.$props.node.theme && this.$props.node.theme.study_year_id,
+          isPrerequisite: this.isPrerequisite,
         },
         event,
         type,

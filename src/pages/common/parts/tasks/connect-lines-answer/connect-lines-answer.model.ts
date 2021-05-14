@@ -40,11 +40,15 @@ export const $form = combine(
   $containing,
   $matches,
   $audioFiles,
-  (wording, example_answer, containing, matches, audio) => ({
+  $reorderEnabled,
+  (wording, example_answer, containing, matches, audio, reorderEnabled) => ({
     wording,
     text: containing,
     example_answer,
-    question_data: matches.map(({ matchA }) => matchA),
+    question_data: {
+      options: matches.map(({ matchA }) => matchA),
+      disable_shuffle: reorderEnabled,
+    },
     correct_answer: matches.map(({ matchA, matchB }) => ({ [matchA]: matchB })),
     common_list_text_answer: matches.map(({ matchB }) => matchB),
     audio: audio.map(({ id, isLimited, limit }) => ({
@@ -70,6 +74,7 @@ forward({
         matchB: Object.values(ca)[0],
       }))
     ),
+    toggleReorderEnabling.prepend((data) => data.question_data.disable_shuffle),
     getAudioFilesFx.prepend(({ audios }) => audios),
   ],
 })

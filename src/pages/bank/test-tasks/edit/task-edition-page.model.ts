@@ -129,13 +129,13 @@ export const handleUpdateAudioFiles = attach({
 export const loadTask = createEvent<number>()
 export const $taskId = restore(loadTask, 0)
 
-export const setSubject = createEvent<number | null>()
+export const setSubject = createEvent<string | null>()
 export const $subject = restore(setSubject, null)
 
-export const setClass = createEvent<number | null>()
+export const setClass = createEvent<string | null>()
 export const $class = restore(setClass, null)
 
-export const setTheme = createEvent<number | null>()
+export const setTheme = createEvent<string | null>()
 export const $theme = restore(setTheme, null)
 
 export const setDifficulty = createEvent<string | null>()
@@ -193,15 +193,15 @@ forward({
       name: data && data.theme.subject ? `${data.theme.subject.id}` : '',
       title: data && data.theme.subject ? data.theme.subject.name : '',
     })),
-    setSubject.prepend((data) => data.theme?.subject?.id || 0),
+    setSubject.prepend((data) => `${data.theme?.subject?.id}` || null),
     classesDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.study_year?.id}`),
-    setClass.prepend((data) => data.theme?.study_year?.id || 0),
+    setClass.prepend((data) => `${data.theme?.study_year?.id}` || null),
     setSelectedClass.prepend((data) => ({
       name: data && data.theme.study_year ? `${data.theme.study_year.id}` : '',
       title: data && data.theme.study_year ? data.theme.study_year.name : '',
     })),
     themesDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.id}`),
-    setTheme.prepend((data) => data.theme.id || 0),
+    setTheme.prepend((data) => `${data.theme.id}` || null),
     difficultiesDropdownModule.methods.itemChanged.prepend((data) => `${data.difficulty}`),
     setDifficulty.prepend((data) => `${data.difficulty}`),
     taskTypesDropdownModule.methods.itemChanged.prepend((data) => data.type),
@@ -313,7 +313,7 @@ const $baseForm = combine(
     study_year_id,
     is_test_assignment: true,
     type: taskType,
-    theme: themes.find((theme) => theme.id === theme_id),
+    theme: themes.find((theme) => +theme.id! === +theme_id!),
     theme_id,
     difficulty,
     labels: labels.map(({ name }) => name),

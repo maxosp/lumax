@@ -87,6 +87,8 @@ const createOlympiadAssignment = attach({
   effect: createOlympiadAssignmentFx,
 })
 
+export const clearFields = createEvent<void>()
+
 export const setSubject = createEvent<number | null>()
 export const $subject = restore(setSubject, null)
 
@@ -97,7 +99,7 @@ export const setScore = createEvent<number | null>()
 export const $score = restore(setScore, null)
 
 export const setTaskType = createEvent<string | null>()
-export const $taskType = restore(setTaskType, null)
+export const $taskType = restore(setTaskType, null).reset(clearFields)
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
@@ -106,13 +108,12 @@ export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
 export const showSolutionEnabledChanged = createEvent<boolean>()
-export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false)
+export const $showSolutionEnabled = restore(showSolutionEnabledChanged, false).reset(clearFields)
 
 export const setSolutionText = createEvent<string>()
-export const $solutionText = restore(setSolutionText, '')
+export const $solutionText = restore(setSolutionText, '').reset(clearFields)
 
 export const save = createEvent<void>()
-export const clearFields = createEvent<void>()
 
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
@@ -143,7 +144,6 @@ forward({
     subjectsDropdownModule.methods.resetDropdown,
     scoreDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
-    setTaskType.prepend(() => null),
     resetCluesList,
     resetSelectedTags,
   ],

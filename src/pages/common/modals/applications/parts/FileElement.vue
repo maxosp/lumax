@@ -7,7 +7,7 @@
         alt="comment image"
       >
     </div>
-    <p class="name-file">name file</p>
+    <p class="name-file">Изображение {{ fileIndex }}</p>
     <Icon
       type="close"
       class="close-icon"
@@ -25,9 +25,14 @@ export default Vue.extend({
   name: 'ModalLogout',
   components: { Icon },
   props: {
-    name: { type: String as PropType<string>, default: '' },
+    index: { type: Number as PropType<number> },
     image: { type: String as PropType<string>, default: '' },
     id: { type: Number as PropType<number> },
+  },
+  computed: {
+    fileIndex() {
+      return this.index !== undefined ? this.index + 1 : ''
+    },
   },
 })
 </script>
@@ -48,13 +53,14 @@ export default Vue.extend({
   overflow: hidden;
 }
 .preview-image {
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   max-height: 100%;
   max-width: 100%;
   filter: brightness(0.8);
+  object-fit: contain;
 }
 .name-file {
   font-weight: bold;

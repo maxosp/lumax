@@ -7,6 +7,7 @@ import {
   sample,
   guard,
   combine,
+  createStore,
 } from 'effector-root'
 import { gethThemesTreeLightFx, getThemesTreeFx } from '@/features/api/subject/get-themes-tree'
 import { successToastEvent } from '@/features/toasts/toasts.model'
@@ -17,7 +18,7 @@ import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confi
 import { condition, every } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { RequestDeleteThemesParams } from '@/features/api/assignment/types'
-import { mergeTreeData } from '@/features/lib'
+import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { getThemesInfoFx } from '@/features/api/subject/get-themes-tree-info'
 import { FiltersParams } from '@/pages/common/types'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
@@ -71,13 +72,12 @@ export const loadTree = createEvent<GetThemesTreeQueryParams>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteThemesTree = createEvent<TreeData[] | null>()
 export const setThemesTree = createEvent<TreeData[] | null>()
-export const $themesTree = restore<TreeData[] | null>(rewriteThemesTree, null).on(
-  setThemesTree,
-  (state, data) => {
+export const $themesTree = createStore<TreeData[] | null>(null)
+  .on(setThemesTree, (state, data) => {
     if (state === null) return data
     return mergeTreeData(state, data!)
-  }
-)
+  })
+  .on(rewriteThemesTree, (state, payload) => sortTreeLeaves(payload!))
 export const setThemesTreeTotal = createEvent<number>()
 export const $themesTreeTotal = restore<number>(setThemesTreeTotal, 0)
 

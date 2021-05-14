@@ -153,6 +153,9 @@ export default Vue.extend({
   mounted() {
     loadTreeLight()
   },
+  destroyed() {
+    this.resetFilters()
+  },
 })
 </script>
 

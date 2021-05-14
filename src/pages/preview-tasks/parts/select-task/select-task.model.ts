@@ -1,7 +1,12 @@
+import { Navigate } from '@/features/navigation'
+import {
+  loadCurrentLabelsIDs,
+  resetLabels,
+} from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { createEvent, restore, sample } from 'effector'
 
-export const prev = createEvent<void>()
-export const next = createEvent<void>()
+export const prev = createEvent<Navigate>()
+export const next = createEvent<Navigate>()
 
 export const setQuestionsAmount = createEvent<number>()
 export const $questionAmount = restore(setQuestionsAmount, 1)
@@ -13,21 +18,35 @@ export const setCurrentQuestion = createEvent<number>()
 export const $currentQuestion = restore(setCurrentQuestion, 1)
 
 sample({
+  source: [$currentIndex, $questionAmount],
   clock: prev,
-  source: { $currentIndex, $questionAmount },
-  fn: (stores) => {
-    if (stores.$currentIndex === 0) return stores.$questionAmount - 1
-    return --stores.$currentIndex
+  fn: ([currentIndex, questionAmount], route: Navigate) => {
+    const labelsIds = route.query!.questions.split(',')
+    resetLabels()
+    if (currentIndex === 0) {
+      loadCurrentLabelsIDs(+labelsIds[questionAmount - 1])
+      return questionAmount - 1
+    }
+    loadCurrentLabelsIDs(+labelsIds[currentIndex - 1])
+    return --currentIndex
   },
   target: setCurrentIndex,
 })
 
 sample({
+  source: [$currentIndex, $questionAmount],
   clock: next,
-  source: { $currentIndex, $questionAmount },
-  fn: (stores) => {
-    if (stores.$currentIndex === stores.$questionAmount - 1) return 0
-    return ++stores.$currentIndex
+  fn: ([currentIndex, questionAmount], route: Navigate) => {
+    const labelsIds = route.query!.questions.split(',')
+    resetLabels()
+
+    if (currentIndex === questionAmount - 1) {
+      loadCurrentLabelsIDs(+labelsIds[0])
+      return 0
+    }
+
+    loadCurrentLabelsIDs(+labelsIds[currentIndex + 1])
+    return ++currentIndex
   },
   target: setCurrentIndex,
 })
@@ -35,7 +54,7 @@ sample({
 sample({
   clock: setCurrentIndex,
   source: $currentIndex,
-  fn: (currentIndex) => {
+  fn: (currentIndex: number) => {
     return currentIndex + 1
   },
   target: $currentQuestion,
@@ -44,7 +63,7 @@ sample({
 sample({
   clock: setCurrentQuestion,
   source: $currentQuestion,
-  fn: (currentQuestion) => {
+  fn: (currentQuestion: number) => {
     return currentQuestion - 1
   },
   target: $currentIndex,

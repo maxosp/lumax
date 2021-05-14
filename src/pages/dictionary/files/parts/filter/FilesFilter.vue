@@ -19,6 +19,8 @@
         :key="index"
         class="filter-checkbox"
         :name="item.name"
+        :value="$checkboxes[item.name]"
+        @change="value => updateCheckboxes({ [item.name]: value })"
       >
         {{ item.title }}
       </BaseCheckbox>
@@ -59,6 +61,8 @@ import {
   filesFilters,
   toggleVisibility,
   reset,
+  $checkboxes,
+  updateCheckboxes,
 } from '@/pages/dictionary/files/parts/filter/filter.model'
 
 Vue.directive('click-outside', ClickOutside)
@@ -75,6 +79,7 @@ export default Vue.extend({
   },
   effector: {
     $filterParams: filesFilters.store.$filterParams,
+    $checkboxes,
   },
   data: () => ({
     fileTypes: [
@@ -89,6 +94,7 @@ export default Vue.extend({
   methods: {
     toggleVisibility,
     reset,
+    updateCheckboxes,
     closeFilter({ target }: any) {
       // check for close icon (clear filter dropdown)
       if (target.href && target.href.baseVal === '#close-icon') {
@@ -107,18 +113,16 @@ export default Vue.extend({
       this.$emit('changeFilter', filter)
     },
     applyFilters() {
-      const ckbx = Array.from(document.querySelectorAll('input[type=checkbox]'))
-        .filter((el) => (el as HTMLInputElement).checked)
-        .map((el) => (el as HTMLInputElement).name)
-        .filter((el) => !!el.length)
-      const res = ckbx.length > 1 ? ckbx.join(', ') : ckbx.join('')
+      const ckbx = Object.entries(this.$checkboxes)
+        .filter((el) => el[1])
+        .map((el) => el[0])
+      const res = ckbx.join(',')
       this.setItem({ file_type: res.length > 0 ? res : undefined })
       this.$emit('setFilter')
       toggleVisibility(false)
     },
     resetFilters() {
       this.$emit('resetFilter') // general filter
-      reset() // togglers and visibility
     },
   },
 })

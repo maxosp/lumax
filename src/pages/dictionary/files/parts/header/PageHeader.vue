@@ -1,8 +1,30 @@
 <template>
   <div class="header">
     <div class="title"> Системные файлы </div>
+    <BaseButton
+      class="btn btn_creating-theme"
+      yellow
+      @click="modalVisibilityChanged(true)"
+    >
+      Создать папку
+    </BaseButton>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import BaseButton from '@/ui/button/BaseButton.vue'
+import { modalVisibilityChanged } from '@/pages/common/modals/system-files/create-folder/create-folder.model'
+
+export default Vue.extend({
+  components: {
+    BaseButton,
+  },
+  methods: {
+    modalVisibilityChanged,
+  },
+})
+</script>
 
 <style scoped>
 .header {

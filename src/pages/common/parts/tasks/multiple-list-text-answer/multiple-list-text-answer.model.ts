@@ -49,7 +49,8 @@ export const $form = combine(
   $answersList,
   $textTemplate,
   $audioFiles,
-  (wording, example_answer, containing, answersList, text_template, audio) => ({
+  $reorderEnabled,
+  (wording, example_answer, containing, answersList, text_template, audio, reorderEnabled) => ({
     wording,
     example_answer,
     text: containing,
@@ -58,6 +59,7 @@ export const $form = combine(
         number: idx + 1,
         options: list.answers.map(({ value }) => value),
       })),
+      disable_shuffle: reorderEnabled,
     },
     correct_answer: answersList.map((list) => list.answers.findIndex(({ isCorrect }) => isCorrect)),
     template_text: text_template,
@@ -94,6 +96,7 @@ forward({
         }),
       }))
     ),
+    toggleReorderEnabling.prepend((data) => data.question_data.disable_shuffle),
     getAudioFilesFx.prepend(({ audios }) => audios),
   ],
 })

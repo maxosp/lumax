@@ -46,11 +46,11 @@
       </label>
       <div class="imgs">
         <FileElement
-          v-for="image in $imagesPreview"
+          v-for="(image, index) in $imagesPreview"
           :id="image.id"
           :key="image.id"
-          :name="image.file_name"
           :image="image.file"
+          :index="index"
           class="file-element"
           @delete="deleteMedia"
         />

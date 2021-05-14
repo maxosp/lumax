@@ -111,13 +111,13 @@ export const handleUpdateAudioFiles = attach({
 export const loadTask = createEvent<number>()
 export const $taskId = restore(loadTask, 0)
 
-export const setSubject = createEvent<number | null>()
+export const setSubject = createEvent<string | null>()
 export const $subject = restore(setSubject, null)
 
-export const setClass = createEvent<number | null>()
+export const setClass = createEvent<string | null>()
 export const $class = restore(setClass, null)
 
-export const setScore = createEvent<number | null>()
+export const setScore = createEvent<string | null>()
 export const $score = restore(setScore, null)
 
 export const setTaskType = createEvent<string | null>()
@@ -145,8 +145,8 @@ export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
 const $formToGetTagsList = combine($class, $subject, (cl, obj) => ({
-  study_year: cl || undefined,
-  subject: obj || undefined,
+  study_year: (cl && +cl) || undefined,
+  subject: (obj && +obj) || undefined,
 }))
 
 const debounced = debounce({
@@ -193,11 +193,11 @@ forward({
   from: loadAssignment.doneData.map((res) => res.body),
   to: [
     subjectsDropdownModule.methods.itemChanged.prepend((data) => `${data.subject.id}`),
-    setSubject.prepend((data) => data.subject.id || 0),
+    setSubject.prepend((data) => `${data.subject.id}` || null),
     classesDropdownModule.methods.itemChanged.prepend((data) => `${data.study_year.id}`),
-    setClass.prepend((data) => data.study_year.id || 0),
+    setClass.prepend((data) => `${data.study_year.id}` || null),
     scoreDropdownModule.methods.itemChanged.prepend((data) => `${data.score}`),
-    setScore.prepend((data) => data.score || 0),
+    setScore.prepend((data) => `${data.score}` || null),
     taskTypesDropdownModule.methods.itemChanged.prepend((data) => data.type),
     setTaskType.prepend((data) => data.type),
     setLanguage.prepend((data) => ({

@@ -121,6 +121,7 @@
       :is-theme="isTheme"
       :subject="subject"
       :study-year="studyYear"
+      :is-prerequisite="isPrerequisite"
       class="context-menu"
       @onOutsideClick="hideContextMenu"
       @onRemove="onRemoveTask"
@@ -265,6 +266,7 @@ export default (
       isTheme: false,
       subject: null,
       studyYear: null,
+      isPrerequisite: false,
       theme: null,
       localItems: [] as TestAssignment[],
       showDeleteModalType: 'task',
@@ -440,6 +442,7 @@ export default (
       this.isTheme = data.isTheme
       this.subject = data.subject
       this.studyYear = data.studyYear
+      this.isPrerequisite = data.isPrerequisite
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
@@ -469,8 +472,8 @@ export default (
     })
     this.queryToParams(this.$route.query)
   },
-  beforeDestroy() {
-    this.onFilterReset()
+  destroyed() {
+    this.resetFilters()
   },
 })
 </script>

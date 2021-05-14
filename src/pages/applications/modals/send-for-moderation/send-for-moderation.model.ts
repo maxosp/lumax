@@ -118,6 +118,11 @@ export const uploadFileFx = createEffect({
 })
 
 forward({
+  from: uploadMedia,
+  to: addToast.prepend(() => ({ type: 'loading', message: 'Идет загрузка файла...' })),
+})
+
+forward({
   from: uploadMedia.doneData,
   to: [
     fileDataChanged.prepend((file) => ({

@@ -14,7 +14,7 @@
       <Icon
         v-else-if="!opened && node.element_type !== 'study_resource'"
         :type="prerequisiteFolder ? 'folder-prerequisite' : 'tree-folder'"
-        :class="{ 'folder-icon': true, transapent: node.is_prerequisite }"
+        :class="{ 'folder-icon': true, transparent: node.is_prerequisite }"
         size="35"
       />
       <div

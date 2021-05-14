@@ -73,7 +73,6 @@ sample({
     foldersDropdownModule.methods.itemChanged.prepend((data: DropdownItem | null) => data!.name),
   ],
 })
-
 forward({
   from: folderTitleChanged,
   to: $titleErrorModule.methods.resetError,
