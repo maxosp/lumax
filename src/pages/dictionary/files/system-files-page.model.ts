@@ -89,7 +89,7 @@ forward({
 
 forward({
   from: loadTree,
-  to: [getFilesTree, getFilesTreeInfo.prepend(() => ({}))],
+  to: getFilesTree,
 })
 
 forward({
