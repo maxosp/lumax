@@ -47,29 +47,18 @@
         Снять выделение
       </span>
     </div>
-    <div class="right">
-      <Icon
-        type="information"
-        size="20"
-        class="icon"
-        @click="modalTasksTypesVisibilityChanged(true)"
-      />
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
-import { modalTasksTypesVisibilityChanged } from '@/pages/common/modals/tasks-bank/tasks-types/tasks-types-modal.model'
 import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'TableHeader',
   components: {
     Divider,
-    Icon,
   },
   props: {
     total: { type: Number, required: true },
@@ -87,7 +76,6 @@ export default Vue.extend({
       return this.selectedApplications.map((el) => el.application)
     },
   },
-  methods: { modalTasksTypesVisibilityChanged },
 })
 </script>
 
@@ -126,10 +114,6 @@ export default Vue.extend({
   .left {
     @mixin flex-row-central;
   }
-  .right .icon {
-    fill: var(--c-grey-3);
-    cursor: pointer;
-  }
 }
 @media screen and (max-width: 1150px) {
   .header.--expand {
@@ -138,9 +122,6 @@ export default Vue.extend({
     overflow-x: auto;
     padding-top: 10px;
     padding-bottom: 10px;
-    .right {
-      padding-right: 20px;
-    }
   }
   .header.--expand .left {
     min-width: 800px;
