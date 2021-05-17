@@ -29,9 +29,10 @@
       </div>
     </div>
     <div v-if="$labelsList.length" class="btn-wrapper">
-      <BaseButton        
+      <BaseButton
         class="btn"
         big
+        @click="handleOnPreview"
       >
         Перейти к массовому предпросмотру
       </BaseButton>
@@ -65,6 +66,10 @@ export default Vue.extend({
   },
   methods: {
     modalVisibilityChanged,
+    handleOnPreview() {
+      this.$emit('showPreview', this.$labelsList)
+      modalVisibilityChanged(false)
+    },
   },
 })
 </script>

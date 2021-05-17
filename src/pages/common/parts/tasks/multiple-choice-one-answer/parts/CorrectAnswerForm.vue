@@ -7,9 +7,9 @@
       class="question-answers"
     >
       <FormInput
-        :label="idx === 0 ? 'Вопрос' : ''"
+        :label="idx === 0 ? 'Ответы' : ''"
         :value="qa.question"
-        placeholder="Введите вопрос"
+        placeholder="Введите вариант ответа"
         class="question-input"
         @input="(question) => handleQuestionChange({ id: qa.id, question })"
       />

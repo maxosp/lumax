@@ -13,7 +13,7 @@ import { deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { getTagsTreeLightFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree-light'
-import { mergeTreeData } from '@/features/lib'
+import { cropString, mergeTreeData } from '@/features/lib'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition, every } from 'patronum'
 import { FiltersParams } from '@/pages/common/types'
@@ -24,6 +24,7 @@ import {
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
+import { getOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-assignment'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -49,6 +50,24 @@ export const deleteTags = createEffect({
   },
 })
 
+export const collectTaskData = createEffect({
+  handler: (ids: number[]): Promise<any[]> =>
+    Promise.all(
+      ids.map(
+        async (id) =>
+          new Promise<any>((resolve) => {
+            const res = getOlympiadAssignmentFx(id).then((r) => {
+              return {
+                id: r.body.id,
+                name: `${r.body.id}`,
+                title: `[id${r.body.id}] - ${cropString(r.body.wording, 34)}`,
+              }
+            })
+            resolve(res)
+          })
+      )
+    ),
+})
 export const tagsPageParams = createPageParamsModel()
 
 export const canrefreshTableAfterDeletionChanged = createEvent<boolean>()

@@ -1,13 +1,15 @@
-import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { attach, createEvent, sample, forward, restore } from 'effector-root'
 import {
   $switchers,
   resetSwitchers,
 } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/parts/switchers/swichers.model'
 import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'
 import { createError } from '@/lib/effector/error-generator'
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 import { condition } from 'patronum'
+import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { TaskUpdateForm } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/types'
 
 const makeMultiChanges = attach({
   effect: updateLessonAssignmentBulkFx,
@@ -32,6 +34,12 @@ const resetField = createEvent<void>()
 export const tasksIdsChanged = createEvent<string>()
 export const $tasksIds = restore<string>(tasksIdsChanged, '').reset(resetField)
 
+const validateData = createEvent<TaskUpdateForm>()
+const validationIsPassed = createEvent<boolean>()
+
+const sentForm = createEvent<void>()
+const setValidationError = createEvent<void>()
+
 export const $tasksIdsErrorModule = createError()
 
 const canSetModeratorChanged = createEvent<boolean>()
@@ -40,7 +48,7 @@ export const $canSetModerator = restore(canSetModeratorChanged, false)
 forward({
   from: loadModalForMultiChanges,
   to: [
-    tasksIdsChanged.prepend((data) => data.join(', ')),
+    tasksIdsChanged.prepend((data) => data.join(',')),
     modalVisibilityChanged.prepend(() => true),
     canRefreshAfterMultiChangesChanged.prepend(() => false),
   ],
@@ -56,25 +64,48 @@ forward({
   to: [modalVisibilityChanged.prepend(() => false), clearFields],
 })
 
-const $form = combine({
-  assignments: $tasksIds.map((data) => {
-    const res = data.split(', ').map((el: string) => +el)
-    return res
-  }),
-  status: $switchers.map((data) => {
-    const res = Object.entries(data).find((el) => el[1])
-    return res && res[0]
-  }),
+sample({
+  clock: submitForm,
+  source: { $tasksIds },
+  target: validateData,
 })
 
 sample({
-  clock: submitForm,
-  source: $form,
-  fn: (obj) => {
-    if (!areAssignmentsIdsValid(obj.assignments.join(',')) || !obj.assignments.length)
-      $tasksIdsErrorModule.methods.setError(true)
-    else makeMultiChanges(obj)
+  clock: validateData,
+  fn: (form: TaskUpdateForm) => {
+    return areAssignmentsIdsValid(form.$tasksIds)
   },
+  target: validationIsPassed,
+})
+
+condition({
+  source: validationIsPassed,
+  if: (passed: boolean) => passed,
+  then: sentForm,
+  else: setValidationError,
+})
+
+sample({
+  clock: sentForm,
+  source: { $tasksIds, $switchers },
+  fn: (form): UpdateAssignmentsBulkParams => {
+    const params: UpdateAssignmentsBulkParams = {
+      assignments: form.$tasksIds.split(',').map((el: string) => +el),
+    }
+    const checkedSwitcher = Object.entries(form.$switchers).find((switcher) => switcher[1])
+    if (checkedSwitcher) [params.status] = checkedSwitcher
+
+    return params
+  },
+  target: makeMultiChanges,
+})
+
+forward({
+  from: setValidationError,
+  to: [
+    $tasksIdsErrorModule.methods.setError.prepend(() => true),
+    errorToastEvent('ID заданий указаны в неправильном формате'),
+  ],
 })
 
 forward({

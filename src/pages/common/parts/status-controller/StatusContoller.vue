@@ -73,12 +73,15 @@ export default Vue.extend({
     isFromTaskPages(): boolean {
       return this.fromPage === 'tasks'
     },
+    useMapTaskStatus(): boolean {
+      return ['tasks', 'labels', 'tags'].includes(this.fromPage)
+    },
     isModerator(): boolean {
       return !!this.$session && this.$session.is_moderator
     },
     correctStatus(): string {
       if (this.$status) {
-        return this.isFromTaskPages
+        return this.useMapTaskStatus
           ? mapTaskStatus[this.$status]
           : mapApplicationsStatus[this.$applicationStatus]
       }
