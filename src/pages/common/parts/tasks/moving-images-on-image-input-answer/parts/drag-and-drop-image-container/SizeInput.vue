@@ -55,7 +55,7 @@ export default Vue.extend({
       if (this.relative) {
         this.$emit('change', {
           width,
-          height: width / this.lastScale,
+          height: (width / this.lastScale).toFixed(1),
         })
         return
       }
@@ -69,7 +69,7 @@ export default Vue.extend({
       if (this.relative) {
         this.$emit('change', {
           height,
-          width: height * this.lastScale,
+          width: (height * this.lastScale).toFixed(1),
         })
         return
       }
