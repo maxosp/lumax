@@ -58,6 +58,7 @@ import {
   $currentLabel,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import { DEFAULT_ID } from '@/pages/common/constants'
 
 export default Vue.extend({
   components: {
@@ -81,7 +82,11 @@ export default Vue.extend({
     $currentLabel: {
       immediate: false,
       handler() {
-        setSelectedLabels([...this.$selectedLabels, this.$currentLabel])
+        const index = this.$selectedLabels.findIndex((label) => label.id === this.$currentLabel.id)
+        setSelectedLabels([
+          ...this.$selectedLabels,
+          index === DEFAULT_ID ? this.$currentLabel : null,
+        ])
       },
     },
   },

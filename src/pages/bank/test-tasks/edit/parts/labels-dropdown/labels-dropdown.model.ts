@@ -1,4 +1,4 @@
-import { createEvent, createStore, forward, attach, restore } from 'effector-root'
+import { createEvent, createStore, forward, attach, restore, sample } from 'effector-root'
 import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
 import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
@@ -24,10 +24,14 @@ export const resetLabels = createEvent<void>()
 export const $selectedLabels = restore(setSelectedLabels, []).reset(resetLabels)
 
 export const loadCurrentLabelsIDs = createEvent<number>()
-export const $currentLabelsIDs = createStore<number[]>([])
+export const setCurrentLabelsIds = createEvent<number[]>()
+export const $currentLabelsIDs = restore(setCurrentLabelsIds, []).reset(resetLabels)
 
 export const loadCurrentLabels = createEvent<number>()
 export const $currentLabel = createStore<any>({})
+
+const setTaskId = createEvent<number>()
+const $taskId = restore(setTaskId, null)
 
 forward({
   from: loadLabels,
@@ -36,7 +40,7 @@ forward({
 
 forward({
   from: loadCurrentLabelsIDs,
-  to: loadAssignment,
+  to: [loadAssignment, setTaskId],
 })
 
 forward({
@@ -51,9 +55,14 @@ forward({
   to: $labels,
 })
 
-forward({
-  from: loadAssignment.doneData.map(({ body }) => body.labels),
-  to: $currentLabelsIDs,
+sample({
+  source: $taskId,
+  clock: loadAssignment.doneData.map((data) => data.body),
+  fn: (taskId, data) => {
+    if (data.id === taskId) return data.labels
+    return []
+  },
+  target: setCurrentLabelsIds,
 })
 
 forward({

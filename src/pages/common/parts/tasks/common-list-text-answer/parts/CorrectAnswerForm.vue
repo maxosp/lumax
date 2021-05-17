@@ -27,7 +27,7 @@
         <div
           :class="{ 's-bookmark': true, 'first-mark': idx === 0}"
         >
-          S{{ idx + 1 }}
+          S{{ answer.id }}
         </div>
         <BaseDropdown
           class="dropdown"
@@ -211,10 +211,11 @@ export default Vue.extend({
       this.clearCorrectAnswers(deletedOption)
     },
     addList() {
-      const id = `input-${getRandomId()}`
+      const { length } = this.$correctAnswers
+      const id = length ? this.$correctAnswers[length - 1].id + 1 : length
       this.addCorrectAnswer({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id}" type="" value="S${this.$correctAnswers.length}" />`,
+        detail: `<input id="${id}" type="" value="S${id}" /> `,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
 

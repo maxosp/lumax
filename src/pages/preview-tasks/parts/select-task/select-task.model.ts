@@ -21,13 +21,13 @@ sample({
   source: [$currentIndex, $questionAmount],
   clock: prev,
   fn: ([currentIndex, questionAmount], route: Navigate) => {
-    const labelsIds = route.query!.questions.split(',')
+    const tasksIds = route.query!.questions.split(',')
     resetLabels()
     if (currentIndex === 0) {
-      loadCurrentLabelsIDs(+labelsIds[questionAmount - 1])
+      loadCurrentLabelsIDs(+tasksIds[questionAmount - 1])
       return questionAmount - 1
     }
-    loadCurrentLabelsIDs(+labelsIds[currentIndex - 1])
+    loadCurrentLabelsIDs(+tasksIds[currentIndex - 1])
     return --currentIndex
   },
   target: setCurrentIndex,
@@ -37,15 +37,15 @@ sample({
   source: [$currentIndex, $questionAmount],
   clock: next,
   fn: ([currentIndex, questionAmount], route: Navigate) => {
-    const labelsIds = route.query!.questions.split(',')
+    const tasksIds = route.query!.questions.split(',')
     resetLabels()
 
     if (currentIndex === questionAmount - 1) {
-      loadCurrentLabelsIDs(+labelsIds[0])
+      loadCurrentLabelsIDs(+tasksIds[0])
       return 0
     }
 
-    loadCurrentLabelsIDs(+labelsIds[currentIndex + 1])
+    loadCurrentLabelsIDs(+tasksIds[currentIndex + 1])
     return ++currentIndex
   },
   target: setCurrentIndex,

@@ -125,8 +125,13 @@ sample({
 sample({
   source: $selectedFolder,
   clock: setSelectedFolder,
-  fn: (data): string | null => `${data?.id}`,
-  target: foldersDropdownModule.methods.itemChanged,
+  fn: (data): string | null => {
+    return data?.id ? `${data?.id}` : ''
+  },
+  target: condition({
+    if: (data) => !!data,
+    then: foldersDropdownModule.methods.itemChanged,
+  }),
 })
 
 forward({
