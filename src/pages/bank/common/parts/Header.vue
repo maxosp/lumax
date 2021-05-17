@@ -17,6 +17,7 @@
       </div>
       <div class='buttons'>
         <BaseSwitch
+          v-if="statusController"
           class="switcher"
           :checked="isPreview"
           @change="val => $emit('toggle', val)"
@@ -43,6 +44,7 @@
     </div>
     <Divider />
     <StatusController
+      v-if="statusController"
       :from-page="fromPage"
       :is-preview="isPreview"
       :task-type="taskType"
@@ -76,8 +78,9 @@ export default Vue.extend({
     title: { type: String as PropType<string>, default: '' },
     disabled: { type: Boolean as PropType<boolean>, default: true },
     isPreview: { type: Boolean as PropType<boolean> },
-    fromPage: { type: String as PropType<string>, required: true },
+    fromPage: { type: String as PropType<string> },
     taskType: { type: String as PropType<string> },
+    statusController: { type: Boolean as PropType<boolean>, default: false },
   },
   computed: {
     getWishedRoute() {

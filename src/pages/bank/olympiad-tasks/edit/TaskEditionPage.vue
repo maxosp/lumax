@@ -6,6 +6,7 @@
       :is-preview="$isPreview"
       :from-page="fromPage"
       class="header"
+      status-controller
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"

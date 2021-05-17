@@ -76,20 +76,20 @@ export default Vue.extend({
     items(): DropdownItem[] {
       if (this.light && this.isTheme) {
         const items = [
-          { name: 'create-task', title: 'Создать задание' },
-          { name: 'edit-theme', title: 'Редактировать' },
-          { name: 'delete-theme', title: 'Удалить' },
+          { name: 'create_task', title: 'Создать задание' },
+          { name: 'edit_theme', title: 'Редактировать' },
+          { name: 'delete_theme', title: 'Удалить' },
         ]
         if (!this.isPrerequisite) {
-          items.unshift({ name: 'create-theme', title: 'Создать тему' })
+          items.unshift({ name: 'create_theme', title: 'Создать тему' })
         }
         return items
       }
       if (this.light && !this.isTheme)
         return [
-          { name: 'edit-task', title: 'Редактировать' },
+          { name: 'edit_task', title: 'Редактировать' },
           { name: 'preview', title: 'Предпросмотр' },
-          { name: 'delete-task', title: 'Удалить' },
+          { name: 'delete_task', title: 'Удалить' },
         ]
       if (this.isTableHeader)
         return [
@@ -120,50 +120,23 @@ export default Vue.extend({
     },
     handleAction(item: SelectItemI) {
       const ids = this.selected.length ? this.selected : [this.id]
-      switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.$props.id)
-          break
-        case 'duplicate':
-          this.$emit('duplicate', ids[0])
-          break
-        case 'duplicate-n-times':
-          // TO DO add copy method
-          break
-        case 'delete-theme':
-          this.$emit('onRemoveTheme', ids)
-          break
-        case 'delete-task':
-          this.$emit('onRemoveTask', ids)
-          break
-        case 'delete':
-          this.$emit('onRemove', ids)
-          break
-        case 'delete_all':
-          this.$emit('onRemove', ids)
-          break
-        case 'send_to_check':
-          this.$emit('onSendToReview', ids[0])
-          break
-        case 'send_to_check_all':
-          this.$emit('onSendToReview', ids)
-          break
-        case 'public':
-          this.$emit('onPublish', ids)
-          break
-        case 'public_all':
-          this.$emit('onPublish', ids)
-          break
-        case 'preview':
-          this.$emit('onPreview', ids)
-          break
-        case 'edit-theme':
-          navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } })
-          break
-        case 'edit-task':
-          this.$emit('onEdit', this.$props.id)
-          break
-        case 'create-theme':
+      const map = {
+        edit: () => this.$emit('onEdit', this.$props.id),
+        double_task: () => this.$emit('duplicate', ids[0]),
+        duplicate: () => this.$emit('duplicate', ids[0]),
+        double_n_task: () => console.log('double_n_task'),
+        delete_theme: () => this.$emit('onRemoveTheme', ids),
+        delete_task: () => this.$emit('onRemoveTask', ids),
+        delete: () => this.$emit('onRemove', ids),
+        delete_all: () => this.$emit('onRemove', ids),
+        send_to_check: () => this.$emit('onSendToReview', ids[0]),
+        send_to_check_all: () => this.$emit('onSendToReview', ids),
+        public: () => this.$emit('onPublish', ids),
+        public_all: () => this.$emit('onPublish', ids),
+        preview: () => this.$emit('onPreview', ids),
+        edit_theme: () =>
+          navigatePush({ name: 'themes-edit', params: { id: `${this.$props.id}` } }),
+        create_theme: () =>
           navigatePush({
             name: 'themes-create',
             params: {
@@ -171,11 +144,19 @@ export default Vue.extend({
               studyYear: `${this.$props.studyYear}`,
               theme: `${this.$props.id}`,
             },
-          })
-          break
-        default:
-          break
+          }),
+        create_task: () =>
+          navigatePush({
+            name: 'test-tasks-create',
+            params: {
+              subject: `${this.$props.subject}`,
+              studyYear: `${this.$props.studyYear}`,
+              theme: `${this.$props.id}`,
+            },
+          }),
+        edit_task: () => this.$emit('onEdit', this.$props.id),
       }
+      map[item.name] ? map[item.name]() : undefined
     },
     closeMenu() {
       this.isOpen = false

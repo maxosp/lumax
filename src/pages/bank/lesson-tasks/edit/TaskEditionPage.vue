@@ -5,6 +5,7 @@
       :disabled="!$canSave"
       :is-preview="$isPreview"
       :from-page="fromPage"
+      status-controller
       class="header"
       @toggle="toggleIsPreview"
       @save="saveTask(false)"

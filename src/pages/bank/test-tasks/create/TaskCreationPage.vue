@@ -26,6 +26,15 @@ import {
   setRedirectAfterSave,
   clearFields,
 } from '@/pages/bank/test-tasks/create/task-creation-page.model'
+import {
+  setSelectedSubject,
+  subjectsDropdownModule,
+} from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import {
+  classesDropdownModule,
+  setSelectedClass,
+} from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { themesDropdownModule } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -42,6 +51,16 @@ export default Vue.extend({
       save()
       if (isRedirect) setRedirectAfterSave(true)
     },
+  },
+  mounted() {
+    if (this.$route.params) {
+      const { subject, studyYear, theme } = this.$route.params
+      subject && subjectsDropdownModule.methods.itemChanged(subject)
+      subject && setSelectedSubject({ name: subject, title: '' })
+      studyYear && classesDropdownModule.methods.itemChanged(studyYear)
+      studyYear && setSelectedClass({ name: studyYear, title: '' })
+      theme && themesDropdownModule.methods.itemChanged(theme)
+    }
   },
   beforeDestroy() {
     clearFields()

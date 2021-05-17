@@ -6,6 +6,7 @@
       :is-preview="$isPreview"
       :from-page="fromPage"
       task-type="test-assignment"
+      status-controller
       @toggle="toggleIsPreview"
       @save="saveTask(false)"
       @saveAndBackToList="saveTask(true)"
