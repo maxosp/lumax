@@ -30,6 +30,14 @@ export type User = {
   permissions?: PermissionsType
 }
 
+export type UserRelated = {
+  id: number
+  first_name: string
+  last_name: string
+  is_moderator: boolean
+  is_teacher: boolean
+}
+
 export type GetUsersListQueryParams = {
   is_student?: boolean
 } & GetListQueryParams

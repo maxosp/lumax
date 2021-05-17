@@ -26,7 +26,6 @@
       v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
-      :show-actions="showTableHeaderActions"
       @showPreview="showPreview"
       @onEdit="editApplications"
       @onAccept="acceptApplications"
@@ -51,6 +50,7 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
+        @vuetable:checkbox-toggled-all="allToggled"
       >
         <template id="one" #actions="props">
           <Actions
@@ -137,7 +137,7 @@ import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
-import { Ticket } from '@/features/api/ticket/types'
+import { ModerationTicket } from '@/features/api/ticket/types'
 import {
   combineRouteQueries,
   computeSortParam,
@@ -183,8 +183,7 @@ export default (Vue as VueConstructor<Vue & { $refs: RefsType }>).extend({
       showContextMenu: false,
       contextMenuStyles: { top: '0', left: '0' },
       selectedApplications: [] as ApplicationType[],
-      showTableHeaderActions: false,
-      localItems: [] as Ticket[],
+      localItems: [] as ModerationTicket[],
     }
   },
   computed: {
@@ -327,7 +326,18 @@ export default (Vue as VueConstructor<Vue & { $refs: RefsType }>).extend({
           task: res.data.test_assignment.id,
         })
       }
-      this.showTableHeaderActions = selectedTo.length > 0
+    },
+    allToggled(isSelected: boolean) {
+      if (isSelected) {
+        this.selectedApplications = this.$refs.vuetable.tableData.map(
+          (ticket: ModerationTicket) => ({
+            application: ticket.id,
+            task: ticket.test_assignment.id,
+          })
+        )
+      } else {
+        this.selectedApplications = []
+      }
     },
     removeSelection() {
       this.$refs.vuetable.selectedTo = []
