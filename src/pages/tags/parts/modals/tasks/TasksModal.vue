@@ -32,6 +32,7 @@
       <BaseButton
         class="btn"
         big
+        @click="handleOnPreview"
       >
         Перейти к массовому предпросмотру
       </BaseButton>
@@ -65,6 +66,10 @@ export default Vue.extend({
   },
   methods: {
     modalVisibilityChanged,
+    handleOnPreview() {
+      this.$emit('showPreview', this.$tagsList)
+      modalVisibilityChanged(false)
+    },
   },
 })
 </script>

@@ -35,6 +35,7 @@ forward({
   from: loadTestAssignment.doneData,
   to: [setStatus.prepend(({ body }) => body.status)],
 })
+
 forward({
   from: loadOlympiadTask,
   to: loadOlympiadAssignment,

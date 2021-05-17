@@ -28,15 +28,25 @@ export default Vue.extend({
     $currentIndex,
     ...tasksDropdownModule.store,
   },
+  watch: {
+    $tasks: {
+      handler() {
+        this.setCurrentTaskNameIntoDd()
+      },
+    },
+  },
   methods: {
     ...tasksDropdownModule.methods,
     onSelectItem(item: DropdownItem | null) {
       setSelectedTasks(item)
       this.$emit('setItem', item ? item.name : null)
     },
+    setCurrentTaskNameIntoDd() {
+      tasksDropdownModule.methods.itemChanged(this.$tasks[this.$currentIndex].name)
+    },
   },
   mounted() {
-    tasksDropdownModule.methods.itemChanged(this.$tasks[this.$currentIndex].name)
+    this.setCurrentTaskNameIntoDd()
   },
 })
 </script>
