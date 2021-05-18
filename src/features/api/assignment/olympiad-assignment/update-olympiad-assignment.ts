@@ -1,8 +1,6 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import {
-  CreateOlympiadAssignmentFxParams,
-  OlympiadAssignment,
-} from '@/features/api/assignment/types'
+import { OlympiadAssignment } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { CreateOlympiadAssignmentFxParams } from '@/features/api/assignment/types/types'
 
 export const updateOlympiadAssignmentFx = createApiEffect<
   { id: number; body: CreateOlympiadAssignmentFxParams },

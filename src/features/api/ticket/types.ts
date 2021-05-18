@@ -1,13 +1,10 @@
 import { User, UserRelated } from '@/features/api/user/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { StudyYear, SubjectGrid, SubjectRelated, ThemeRelated } from '@/features/api/subject/types'
-import {
-  AssignmentFolderRelated,
-  LessonAssignmentRelated,
-  MediaFolderRelated,
-  OlympiadAssignmentRelated,
-  TestAssignmentRelated,
-} from '@/features/api/assignment/types'
+import { TestAssignmentRelated } from '@/features/api/assignment/types/test-assignments-types'
+import { LessonAssignmentRelated } from '@/features/api/assignment/types/lesson-assignments-types'
+import { OlympiadAssignmentRelated } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { AssignmentFolderRelated, MediaFolderRelated } from '@/features/api/assignment/types/types'
 
 export type TicketStatus = 'new' | 'accepted' | 'declined'
 

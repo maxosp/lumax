@@ -5,11 +5,14 @@ import {
 } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/parts/switchers/swichers.model'
 import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'
 import { createError } from '@/lib/effector/error-generator'
-import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
+import { errorToastEvent, addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 import { condition } from 'patronum'
-import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { formatFailToGetIdResponseMessage } from '@/pages/bank/common/lib'
 import { TaskUpdateForm } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/types'
+import { LessonAssignmentsBulkUpdate } from '@/features/api/assignment/types/lesson-assignments-types'
+import { entries } from '@/features/lib'
+import { UpdateAssignmentsBulkFailResponse } from '@/features/api/assignment/types/types'
 
 const makeMultiChanges = attach({
   effect: updateLessonAssignmentBulkFx,
@@ -88,11 +91,12 @@ condition({
 sample({
   clock: sentForm,
   source: { $tasksIds, $switchers },
-  fn: (form): UpdateAssignmentsBulkParams => {
-    const params: UpdateAssignmentsBulkParams = {
+  fn: (form): LessonAssignmentsBulkUpdate => {
+    const params: LessonAssignmentsBulkUpdate = {
       assignments: form.$tasksIds.split(',').map((el: string) => +el),
     }
-    const checkedSwitcher = Object.entries(form.$switchers).find((switcher) => switcher[1])
+
+    const checkedSwitcher = entries(form.$switchers).find((switcher) => switcher[1])
     if (checkedSwitcher) [params.status] = checkedSwitcher
 
     return params
@@ -127,4 +131,17 @@ forward({
     clearFields,
     canRefreshAfterMultiChangesChanged.prepend(() => true),
   ],
+})
+
+condition({
+  source: makeMultiChanges.failData.map((res): UpdateAssignmentsBulkFailResponse => res.body),
+  if: (data: UpdateAssignmentsBulkFailResponse) => !!data.detail,
+  then: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: data.detail!,
+  })),
+  else: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: formatFailToGetIdResponseMessage(data.assignments![0]),
+  })),
 })

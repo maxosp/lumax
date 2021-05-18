@@ -17,12 +17,6 @@ import {
 import { getTestAssignmentTreeLightFx } from '@/features/api/assignment/test-assignment/get-test-tree-light'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
-import {
-  DuplicateAssignmentType,
-  GetAssignmentTreeQueryParams,
-  RequestDeleteAssignmentsParams,
-  UpdateAssignmentsBulkParams,
-} from '@/features/api/assignment/types'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import { getTestAssignmentTreeFx } from '@/features/api/assignment/test-assignment/get-test-tree'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
@@ -37,6 +31,12 @@ import {
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
+import { TestAssignmentsBulkUpdate } from '@/features/api/assignment/types/test-assignments-types'
+import {
+  DuplicateAssignmentType,
+  GetAssignmentTreeQueryParams,
+  RequestDeleteAssignmentsParams,
+} from '@/features/api/assignment/types/types'
 
 const getTasksList = attach({
   effect: getTestAssignmentListFx,
@@ -95,7 +95,10 @@ export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplica
 
 export const sendAssignmentsPublish = attach({
   effect: updateTestAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'published' }),
+  mapParams: (params: TestAssignmentsBulkUpdate): TestAssignmentsBulkUpdate => ({
+    ...params,
+    status: 'published',
+  }),
 })
 
 export const loadTree = createEvent<GetAssignmentTreeQueryParams>()

@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { RequestDeleteFolderParams } from '@/features/api/assignment/types'
+import { RequestDeleteFolderParams } from '@/features/api/assignment/types/types'
 
 export const deleteFolderFx = createApiEffect<number, void>({
   requestMapper: (id) => ({

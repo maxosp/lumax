@@ -67,9 +67,9 @@ import { loadModalToEdit } from '@/pages/labels/parts/modals/label-edition/label
 import { createLabelFromTree } from '@/pages/labels/parts/modals/label-creation/label-creation.model'
 import { sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
-import { FolderType } from '@/features/api/assignment/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { FolderType } from '@/features/api/assignment/types/types'
 import { downloadMediaFileFx } from '@/features/api/media/download-media-file'
 
 export default Vue.extend({

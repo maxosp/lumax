@@ -70,7 +70,6 @@ import {
 
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
-import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
@@ -96,6 +95,7 @@ import {
   setStatus,
 } from '@/pages/common/parts/status-controller/status.model'
 import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 const updateAssignment = attach({
   effect: updateOlympiadAssignmentFx,

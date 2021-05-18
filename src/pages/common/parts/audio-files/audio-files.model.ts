@@ -4,7 +4,7 @@ import { UploadMediaResponse } from '@/features/api/media/types'
 import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { addToast } from '@/features/toasts/toasts.model'
 import { getMediaFx } from '@/features/api/media/get-media'
-import { AssignmentAudioFile } from '@/features/api/assignment/types'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,

@@ -65,7 +65,6 @@ import {
 
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
-import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
@@ -82,6 +81,7 @@ import {
 } from '@/pages/common/parts/tasks/parts/clues/clues.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 const createOlympiadAssignment = attach({
   effect: createOlympiadAssignmentFx,

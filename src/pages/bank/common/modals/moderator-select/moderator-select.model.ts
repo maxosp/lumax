@@ -7,15 +7,18 @@ import {
   moderatorDropdownModule,
 } from '@/pages/common/dropdowns/users/moderator-dropdown/moderator-dropdown.model'
 import { createError } from '@/lib/effector/error-generator'
-import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
 import { loadTreeLight } from '@/pages/bank/test-tasks/list//tasks-page.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import { TaskType } from '@/pages/bank/common/modals/moderator-select/constants'
 import { updateApplicationsCounters } from '@/pages/common/navigation/navigation.model'
+import { TestAssignmentsBulkUpdate } from '@/features/api/assignment/types/test-assignments-types'
 
 export const sendTestAssignmentsToModeration = attach({
   effect: updateTestAssignmentBulkFx,
-  mapParams: (params: UpdateAssignmentsBulkParams) => ({ ...params, status: 'moderation' }),
+  mapParams: (params: TestAssignmentsBulkUpdate): TestAssignmentsBulkUpdate => ({
+    ...params,
+    status: 'moderation',
+  }),
 })
 
 export const loadModalToSendForCheck = createEvent<number[]>()

@@ -1,7 +1,7 @@
 import { createEvent, forward, restore, attach, combine } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
-import { TestAssignment } from '@/features/api/assignment/types'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,

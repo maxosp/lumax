@@ -17,7 +17,6 @@ import { deleteThemesFx, requestDeleteThemesFx } from '@/features/api/subject/de
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition, every } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
-import { RequestDeleteThemesParams } from '@/features/api/assignment/types'
 import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { getThemesInfoFx } from '@/features/api/subject/get-themes-tree-info'
 import { FiltersParams } from '@/pages/common/types'
@@ -28,6 +27,7 @@ import {
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { loadTreeLight as loadTasksTreeLight } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
+import { RequestDeleteThemesParams } from '@/features/api/assignment/types/types'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,

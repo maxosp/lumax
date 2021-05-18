@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { RequestDeleteThemesParams } from '@/features/api/assignment/types'
+import { RequestDeleteThemesParams } from '@/features/api/assignment/types/types'
 
 export const deleteThemesFx = createApiEffect<number[], void>({
   requestMapper: (themes) => ({

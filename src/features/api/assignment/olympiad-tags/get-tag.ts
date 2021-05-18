@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { Tag } from '@/features/api/assignment/types'
+import { Tag } from '@/features/api/assignment/types/types'
 
 export const getTagFx = createApiEffect<number, Tag>({
   requestMapper: (id) => ({

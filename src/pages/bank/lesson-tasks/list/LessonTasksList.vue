@@ -189,8 +189,8 @@ import {
   removeHtmlTags,
 } from '@/features/lib'
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
-import { LessonAssignment } from '@/features/api/assignment/types'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { LessonAssignment } from '@/features/api/assignment/types/lesson-assignments-types'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)

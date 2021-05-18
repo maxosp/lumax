@@ -1,6 +1,6 @@
 import { createEvent, forward, restore, combine } from 'effector-root'
-import { TestAssignment } from '@/features/api/assignment/types'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 export const clearFields = createEvent<void>()
 

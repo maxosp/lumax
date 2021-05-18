@@ -1,9 +1,11 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { OlympiadAssignment, UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { OlympiadAssignmentsBulkUpdate } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { UpdateAssignmentsBulkFailResponse } from '@/features/api/assignment/types/types'
 
 export const updateOlympiadAssignmentBulkFx = createApiEffect<
-  UpdateAssignmentsBulkParams,
-  OlympiadAssignment
+  OlympiadAssignmentsBulkUpdate,
+  OlympiadAssignmentsBulkUpdate,
+  UpdateAssignmentsBulkFailResponse
 >({
   requestMapper: (body) => ({
     method: 'PATCH',
