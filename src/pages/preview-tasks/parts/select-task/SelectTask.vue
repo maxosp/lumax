@@ -27,7 +27,6 @@ import Card from '@/ui/card/Card.vue'
 import TasksDropdown from '@/pages/preview-tasks/parts/tasks-dropdown/TasksDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import {
-  $currentIndex,
   $currentQuestion,
   $questionAmount,
   setCurrentIndex,
@@ -36,7 +35,11 @@ import {
   setQuestionsAmount,
   setCurrentQuestion,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
-import { goBack } from '@/features/navigation'
+import { goBack, Navigate } from '@/features/navigation'
+import {
+  loadCurrentLabelsIDs,
+  resetLabels,
+} from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 
 export default Vue.extend({
   name: 'SelectTask',
@@ -51,7 +54,6 @@ export default Vue.extend({
     }
   },
   effector: {
-    $currentIndex,
     $currentQuestion,
     $questionAmount,
   },
@@ -60,7 +62,12 @@ export default Vue.extend({
     next,
     onSelectTask(val: string) {
       const index = this.questions.findIndex((item) => item === val)
-      if (index !== -1) setCurrentIndex(index)
+      const tasksIds = (this.$route as Navigate).query!.questions.split(',')
+      if (index !== -1) {
+        resetLabels()
+        loadCurrentLabelsIDs(+tasksIds[index])
+        setCurrentIndex(index)
+      }
     },
   },
   created() {

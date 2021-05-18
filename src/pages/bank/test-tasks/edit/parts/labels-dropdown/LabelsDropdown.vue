@@ -56,9 +56,12 @@ import {
   loadCurrentLabelsIDs,
   loadCurrentLabels,
   $currentLabel,
+  resetLabels,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 import { DEFAULT_ID } from '@/pages/common/constants'
+import { Navigate } from '@/features/navigation'
+import { $currentQuestion } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 
 export default Vue.extend({
   components: {
@@ -71,6 +74,7 @@ export default Vue.extend({
     $selectedLabels,
     $currentLabelsIDs,
     $currentLabel,
+    $currentQuestion,
   },
   watch: {
     $currentLabelsIDs: {
@@ -82,11 +86,23 @@ export default Vue.extend({
     $currentLabel: {
       immediate: false,
       handler() {
-        const index = this.$selectedLabels.findIndex((label) => label.id === this.$currentLabel.id)
-        setSelectedLabels([
-          ...this.$selectedLabels,
-          index === DEFAULT_ID ? this.$currentLabel : null,
-        ])
+        resetLabels()
+        const index = this.$selectedLabels.findIndex(
+          (label) => label.name === this.$currentLabel.name
+        )
+        if (index === DEFAULT_ID) {
+          setSelectedLabels([...this.$selectedLabels, this.$currentLabel])
+        }
+      },
+    },
+    $currentQuestion: {
+      immediate: false,
+      handler() {
+        if (this.$route.name === 'test-tasks-edit') {
+          const taskIds = (this.$route as Navigate).query!.questions.split(',')
+          const taskId = +taskIds[+this.$route.query.currentQuestion - 1]
+          loadCurrentLabelsIDs(taskId)
+        }
       },
     },
   },
