@@ -126,23 +126,23 @@ export default Vue.extend({
     setNextResizerToImage,
     setNextResizerToText,
     createResizableBlock,
+    removeMainImage,
+    uploadMainImage,
+    addInput,
+    addDroppableImage,
     resetNextResizableBlock() {
       setNextResizableBlockType(null)
     },
-    uploadMainImage,
     saveContainerWidth() {
       const el = this.$el
       if (el) {
         setContainerWidth(el.clientWidth)
       }
     },
-    addInput,
-    addDroppableImage,
     triggerInputFile() {
       const filePicker = document.getElementById('file-picker')
       filePicker!.click()
     },
-    removeMainImage,
   },
   mounted() {
     window.addEventListener('resize', this.saveContainerWidth)
