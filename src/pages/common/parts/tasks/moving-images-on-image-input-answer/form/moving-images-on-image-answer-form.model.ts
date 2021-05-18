@@ -206,7 +206,7 @@ export const removeMainImage = createEvent<void>()
 export const setMainImage = createEvent<string | null>()
 export const $mainImage = restore(setMainImage, '')
   .on(setupMovingOnImageAnswerDataFx.doneData, (_, payload) => payload.mainImage)
-  .reset(removeMainImage, clearFields)
+  .reset(removeMainImage)
 
 export const setMainImageSize = createEvent<Size | null>()
 export const $mainImageSize = restore(setMainImageSize, null)
@@ -225,6 +225,10 @@ export const addDraggableText = createAddEventForArrayStore($draggableText, () =
   id: draggableTextCounter.next(),
 }))
 
+forward({
+  from: removeMainImage,
+  to: clearFields,
+})
 export const uploadMainImage = createEvent<FilePickerEvent>()
 
 // form-states
