@@ -62,7 +62,6 @@ import {
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
-import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { navigatePush } from '@/features/navigation'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { DropdownItem } from '@/pages/common/types'
@@ -73,6 +72,7 @@ import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subject
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,

@@ -22,7 +22,7 @@ import { updateLabelFx } from '@/features/api/assignment/update-label'
 import { getLabelsTreeLight } from '@/pages/labels/labels-page.model'
 import { createError } from '@/lib/effector/error-generator'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
-import { Label } from '@/features/api/assignment/types'
+import { Label } from '@/features/api/assignment/types/types'
 
 export const updateLabel = attach({
   effect: updateLabelFx,

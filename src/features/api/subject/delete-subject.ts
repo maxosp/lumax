@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
+import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types/types'
 
 export const deleteSubjectsFx = createApiEffect<number[], void>({
   requestMapper: (subjects) => ({

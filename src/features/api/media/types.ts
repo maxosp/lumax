@@ -1,5 +1,5 @@
 import { File } from '@/features/api/subject/types'
-import { FolderType } from '../assignment/types'
+import { FolderType } from '@/features/api/assignment/types/types'
 
 export type FileType =
   | 'file'

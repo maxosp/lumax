@@ -5,7 +5,7 @@ import {
 } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/parts/switchers/swichers.model'
 import { areAssignmentsIdsValid } from '@/lib/validators/assignments-list'
 import { createError } from '@/lib/effector/error-generator'
-import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import {
   $selectedScore,
   scoreDropdownModule,
@@ -13,8 +13,11 @@ import {
 import { updateOlympiadAssignmentBulkFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-bulk'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { condition } from 'patronum'
+import { formatFailToGetIdResponseMessage } from '@/pages/bank/common/lib'
 import { TaskUpdateForm } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/types'
-import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { OlympiadAssignmentsBulkUpdate } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { entries } from '@/features/lib'
+import { UpdateAssignmentsBulkFailResponse } from '@/features/api/assignment/types/types'
 
 const makeMultiChanges = attach({
   effect: updateOlympiadAssignmentBulkFx,
@@ -93,11 +96,11 @@ condition({
 sample({
   clock: sentForm,
   source: { $tasksIds, $switchers, $selectedScore },
-  fn: (form): UpdateAssignmentsBulkParams => {
-    const params: UpdateAssignmentsBulkParams = {
+  fn: (form): OlympiadAssignmentsBulkUpdate => {
+    const params: OlympiadAssignmentsBulkUpdate = {
       assignments: form.$tasksIds.split(',').map((el: string) => +el),
     }
-    const checkedSwitcher = Object.entries(form.$switchers).find((switcher) => switcher[1])
+    const checkedSwitcher = entries(form.$switchers).find((switcher) => switcher[1])
     if (checkedSwitcher) [params.status] = checkedSwitcher
 
     if (
@@ -139,4 +142,17 @@ forward({
     clearFields,
     canRefreshAfterMultiChangesChanged.prepend(() => true),
   ],
+})
+
+condition({
+  source: makeMultiChanges.failData.map((res) => res.body),
+  if: (data: UpdateAssignmentsBulkFailResponse) => !!data.detail,
+  then: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: data.detail!,
+  })),
+  else: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: formatFailToGetIdResponseMessage(data.assignments![0]),
+  })),
 })

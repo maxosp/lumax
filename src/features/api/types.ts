@@ -1,6 +1,6 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
-import { BaseAssignment, FolderType, Label, Tag } from '@/features/api/assignment/types'
 import { ResourceType, UploadMediaResponse } from '@/features/api/media/types'
+import { BaseAssignment, FolderType, Label, Tag } from '@/features/api/assignment/types/types'
 
 export type TreeElementType =
   | 'subject'

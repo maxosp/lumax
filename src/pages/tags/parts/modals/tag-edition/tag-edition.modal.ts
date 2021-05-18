@@ -18,7 +18,7 @@ import {
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTreeLight } from '@/pages/tags/tags-page.model'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
-import { Tag } from '@/features/api/assignment/types'
+import { Tag } from '@/features/api/assignment/types/types'
 
 export const updateTag = attach({
   effect: updateTagFx,

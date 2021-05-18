@@ -10,10 +10,6 @@ import {
 } from 'effector-root'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
-import {
-  RequestDeleteAssignmentsParams,
-  RequestDeleteFolderParams,
-} from '@/features/api/assignment/types'
 import { getLessonAssignmentTreeFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree'
 import { getLessonAssignmentTreeLightFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-tree-light'
 import {
@@ -36,6 +32,10 @@ import {
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getLessonAssignmentListFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-list'
+import {
+  RequestDeleteAssignmentsParams,
+  RequestDeleteFolderParams,
+} from '@/features/api/assignment/types/types'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,

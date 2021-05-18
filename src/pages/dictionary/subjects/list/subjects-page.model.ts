@@ -13,11 +13,11 @@ import { getSubjectFx } from '@/features/api/subject/get-subject'
 import { deleteSubjectsFx, requestDeleteSubjectsFx } from '@/features/api/subject/delete-subject'
 import { updateSubjectFx } from '@/features/api/subject/update-subject'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
+import { RequestDeleteSubjectsParams } from '@/features/api/assignment/types/types'
 
 export const subjectsFilters = createFiltersModel(
   {

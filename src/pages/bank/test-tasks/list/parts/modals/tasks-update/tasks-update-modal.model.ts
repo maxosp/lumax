@@ -16,8 +16,11 @@ import { createError } from '@/lib/effector/error-generator'
 import { addToast, errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import { DEFAULT_ID } from '@/pages/common/constants'
+import { formatFailToGetIdResponseMessage } from '@/pages/bank/common/lib'
 import { TaskUpdateForm } from '@/pages/bank/lesson-tasks/list/parts/modals/tasks-update/types'
-import { UpdateAssignmentsBulkParams } from '@/features/api/assignment/types'
+import { TestAssignmentsBulkUpdate } from '@/features/api/assignment/types/test-assignments-types'
+import { entries } from '@/features/lib'
+import { UpdateAssignmentsBulkFailResponse } from '@/features/api/assignment/types/types'
 
 const makeMultiChanges = attach({
   effect: updateTestAssignmentBulkFx,
@@ -111,12 +114,12 @@ condition({
 sample({
   clock: sentForm,
   source: { $tasksIds, $switchers, $selectedDifficulty, $selectedModerator },
-  fn: (form): UpdateAssignmentsBulkParams => {
-    const params: UpdateAssignmentsBulkParams = {
+  fn: (form): TestAssignmentsBulkUpdate => {
+    const params: TestAssignmentsBulkUpdate = {
       assignments: form.$tasksIds.split(',').map((el: string) => +el),
     }
 
-    const checkedSwitcher = Object.entries(form.$switchers).find((switcher) => switcher[1])
+    const checkedSwitcher = entries(form.$switchers).find((switcher) => switcher[1])
     if (checkedSwitcher) [params.status] = checkedSwitcher
 
     if (
@@ -163,7 +166,15 @@ condition({
   then: clearFields,
 })
 
-forward({
-  from: makeMultiChanges.failData.map((res) => res.body),
-  to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
+condition({
+  source: makeMultiChanges.failData.map((res) => res.body),
+  if: (data: UpdateAssignmentsBulkFailResponse) => !!data.detail,
+  then: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: data.detail!,
+  })),
+  else: addToast.prepend((data: UpdateAssignmentsBulkFailResponse) => ({
+    type: 'error',
+    message: formatFailToGetIdResponseMessage(data.assignments![0]),
+  })),
 })

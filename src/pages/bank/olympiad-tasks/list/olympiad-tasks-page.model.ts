@@ -1,9 +1,5 @@
 import { attach, combine, createEffect, createEvent, forward, restore } from 'effector-root'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
-import {
-  DuplicateAssignmentType,
-  RequestDeleteAssignmentsParams,
-} from '@/features/api/assignment/types'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
   deleteOlympiadAssignmentsFx,
@@ -16,6 +12,10 @@ import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { loadTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import {
+  DuplicateAssignmentType,
+  RequestDeleteAssignmentsParams,
+} from '@/features/api/assignment/types/types'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,

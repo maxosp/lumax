@@ -1,8 +1,8 @@
 import { uploadAudioFx } from '@/features/api/assignment/audio/upload-audio'
-import { AssignmentAudioFile } from '@/features/api/assignment/types'
 import { createEffect } from 'effector'
 import { AudioFile } from '@/pages/common/parts/tasks/types'
 import { updateAudioFx } from '@/features/api/assignment/audio/update-audio'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 export const uploadAudioFiles = createEffect({
   handler: (audioFiles: AudioFile[]): Promise<AssignmentAudioFile[]> =>

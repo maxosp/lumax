@@ -207,7 +207,6 @@ import {
   $canRefreshAfterSendingToReview,
   loadModalToSendForCheck,
 } from '@/pages/bank/common/modals/moderator-select/moderator-select.model'
-import { TestAssignment } from '@/features/api/assignment/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import {
   combineRouteQueries,
@@ -217,6 +216,7 @@ import {
   removeHtmlTags,
 } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)

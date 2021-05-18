@@ -1,4 +1,4 @@
-import { StudyYear, Subject, Theme, ThemeRelated } from '@/features/api/subject/types'
+import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 import { User } from '@/features/api/user/types'
 
 export type Tag = {
@@ -95,17 +95,14 @@ export type AssignmentType =
 
 export type AssignmentStatus = 'reserve' | 'published' | 'archive'
 
-export type TestAssignmentStatus = AssignmentStatus | 'new' | 'moderation' | 'revision'
-
 export type AssignmentAudioFile = {
   id?: number
   media?: number
   audio_limit_count: number | null
 }
-
 export type DifficultyType = 0 | 1 | 2
 
-type BaseCreateAssignmentParams = {
+export type BaseCreateAssignmentParams = {
   wording?: string
   type?: AssignmentType
   status?: AssignmentStatus
@@ -127,13 +124,6 @@ type BaseCreateAssignmentParams = {
   audios_ids?: number[]
   example_answer?: string
 }
-
-export type CreateTestAssignmentFxParams = {
-  theme?: Partial<Theme>
-  theme_id: number
-  labels?: number[]
-  labels_ids?: number[]
-} & BaseCreateAssignmentParams
 
 export type Clue = {
   id?: number
@@ -185,18 +175,9 @@ export type BaseAssignment = {
   study_year?: number
 }
 
-export type TestAssignment = {
-  theme: Partial<Theme>
-  theme_id: number
-  labels_ids: number[]
-} & BaseAssignment
-
-export type TestAssignmentRelated = {
-  id: number
-  wording: string
-  type: AssignmentType
-  status: TestAssignmentStatus
-  theme: ThemeRelated
+export type AssignmentsBulkParams = {
+  assignments: number[]
+  number_of_duplicates?: number
 }
 
 export type CreateClueFxParams = {
@@ -204,36 +185,9 @@ export type CreateClueFxParams = {
   scores: number
 }
 
-export type OlympiadAssignment = {
-  subject: Partial<Subject>
-  subject_id: number
-  study_year: StudyYear
-  study_year_id: number
-  tags: number[]
-  tags_ids: number
-  clues: number[]
-  answer_text: string
-} & BaseAssignment
-
-export type OlympiadAssignmentRelated = {
-  id?: number
-  wording?: string
-  type?: AssignmentType
-  status?: AssignmentStatus
-}
-
-export type LessonAssignment = {
-  folder: {
-    id: number
-    name: string
-  }
-} & BaseAssignment
-
-export type LessonAssignmentRelated = {
-  id?: number
-  wording?: string
-  type?: AssignmentType
-  status?: AssignmentStatus
+export type UpdateAssignmentsBulkFailResponse = {
+  detail?: string
+  assignments?: string[]
 }
 
 export type DuplicateAssignmentType = {
@@ -244,14 +198,6 @@ export type DuplicateAssignmentType = {
 export type SendToModerationParams = {
   assignments: number[]
   moderator_id?: number
-}
-
-export type UpdateAssignmentsBulkParams = {
-  assignments: number[]
-  status?: string
-  difficulty?: number
-  moderator_id?: number
-  score?: number
 }
 
 export type RequestDeleteAssignmentsParams = {
@@ -273,3 +219,10 @@ export type RequestDeleteFolderParams = {
   assignment_folders: number[]
   ticket_comment?: string
 }
+
+export type CreateTestAssignmentFxParams = {
+  theme?: Partial<Theme>
+  theme_id: number
+  labels?: number[]
+  labels_ids?: number[]
+} & BaseCreateAssignmentParams

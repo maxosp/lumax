@@ -1,8 +1,8 @@
 import { getClueFx } from '@/features/api/assignment/olympiad-clues/get-clue'
 import { updateClueFx } from '@/features/api/assignment/olympiad-clues/update-clue'
 import { createClueFx } from '@/features/api/assignment/olympiad-clues/create-clue'
-import { Clue } from '@/features/api/assignment/types'
 import { createEffect, createEvent, forward, restore } from 'effector-root'
+import { Clue } from '@/features/api/assignment/types/types'
 
 export const setClues = createEvent<Clue[]>()
 export const resetCluesList = createEvent<void>()

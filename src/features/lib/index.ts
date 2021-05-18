@@ -157,3 +157,15 @@ export const computeSortParam = (sortParam: string) => {
 export const isArraysEquel = (a: any[], b: any[]) => {
   return a.length === b.length && a.every((v: any, i: any) => v === b[i])
 }
+
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]]
+}[keyof T][]
+
+/*
+  last comment
+  https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript
+*/
+export function entries<T>(obj: T): Entries<T> {
+  return Object.entries(obj) as any
+}

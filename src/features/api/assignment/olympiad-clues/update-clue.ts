@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { Clue, CreateClueFxParams } from '@/features/api/assignment/types'
+import { Clue, CreateClueFxParams } from '@/features/api/assignment/types/types'
 
 export const updateClueFx = createApiEffect<{ id: number | null; data: CreateClueFxParams }, Clue>({
   requestMapper: (params) => ({

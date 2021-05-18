@@ -1,6 +1,6 @@
 import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
 import { User } from '@/features/api/user/types'
-import { TestAssignment } from '@/features/api/assignment/types'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 export type GetTestsListQueryParams = {
   sort?: string

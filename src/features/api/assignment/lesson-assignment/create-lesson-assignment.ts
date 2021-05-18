@@ -1,5 +1,6 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { CreateLessonAssignmentFxParams, LessonAssignment } from '@/features/api/assignment/types'
+import { LessonAssignment } from '@/features/api/assignment/types/lesson-assignments-types'
+import { CreateLessonAssignmentFxParams } from '@/features/api/assignment/types/types'
 
 export const createLessonAssignmentFx = createApiEffect<
   CreateLessonAssignmentFxParams,

@@ -1,5 +1,5 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { Label } from '@/features/api/assignment/types'
+import { Label } from '@/features/api/assignment/types/types'
 
 export const getLabelFx = createApiEffect<number, Label>({
   requestMapper: (id) => ({

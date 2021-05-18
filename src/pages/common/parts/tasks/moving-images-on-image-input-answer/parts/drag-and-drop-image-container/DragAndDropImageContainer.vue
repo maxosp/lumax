@@ -55,7 +55,6 @@
         }"
         :droppable-images="[]"
         is-background-image
-        @change="img => setMainImageSize(img.size)"
         @remove="removeMainImage"
       />
     </div>
@@ -73,7 +72,6 @@ import {
   $mainImageUploading,
   $hideDragAndDropControls,
   $mainImageSize,
-  setMainImageSize,
   $scale,
   addInput,
   addDroppableImage,
@@ -128,24 +126,23 @@ export default Vue.extend({
     setNextResizerToImage,
     setNextResizerToText,
     createResizableBlock,
-    setMainImageSize,
+    removeMainImage,
+    uploadMainImage,
+    addInput,
+    addDroppableImage,
     resetNextResizableBlock() {
       setNextResizableBlockType(null)
     },
-    uploadMainImage,
     saveContainerWidth() {
       const el = this.$el
       if (el) {
         setContainerWidth(el.clientWidth)
       }
     },
-    addInput,
-    addDroppableImage,
     triggerInputFile() {
       const filePicker = document.getElementById('file-picker')
       filePicker!.click()
     },
-    removeMainImage,
   },
   mounted() {
     window.addEventListener('resize', this.saveContainerWidth)

@@ -1,6 +1,6 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
 import { GetListQueryParams, TableDataResponse } from '@/features/api/types'
-import { OlympiadAssignment } from '@/features/api/assignment/types'
+import { OlympiadAssignment } from '@/features/api/assignment/types/olympiad-assignments-types'
 
 export const getOlympiadTasksListFx = createApiEffect<
   GetListQueryParams,
