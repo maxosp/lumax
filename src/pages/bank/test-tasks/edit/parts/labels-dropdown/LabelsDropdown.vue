@@ -86,7 +86,6 @@ export default Vue.extend({
     $currentLabel: {
       immediate: false,
       handler() {
-        resetLabels()
         const index = this.$selectedLabels.findIndex(
           (label) => label.name === this.$currentLabel.name
         )
@@ -99,6 +98,7 @@ export default Vue.extend({
       immediate: false,
       handler() {
         if (this.$route.name === 'test-tasks-edit') {
+          resetLabels()
           const taskIds = (this.$route as Navigate).query!.questions.split(',')
           const taskId = +taskIds[+this.$route.query.currentQuestion - 1]
           loadCurrentLabelsIDs(taskId)
