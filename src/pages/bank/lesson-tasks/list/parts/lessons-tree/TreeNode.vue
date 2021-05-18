@@ -55,6 +55,7 @@
         class="action"
         @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
+        @onEdit="(val) => $emit('onEdit', val)"
         @onCreateFolder="createFolder"
         @onCreateTask="createTask"
         @onEditFolder="editFolder"
@@ -72,6 +73,7 @@
         @onRightClick="handleRightClick"
         @onRemove="(val) => $emit('onRemove', val)"
         @onPreview="(val) => $emit('onPreview', val)"
+        @onEdit="(val) => $emit('onEdit', val)"
       />
     </div>
     <ContextMenu

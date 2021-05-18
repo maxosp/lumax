@@ -5,7 +5,7 @@ import {
   setupMovingOnTextAnswerDataFx,
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
-import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
+import { BaseAssignment } from '@/features/api/assignment/types/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -57,7 +57,7 @@ export const $form = combine(
   }
 )
 
-export const initAssignment = createEvent<TestAssignment>()
+export const initAssignment = createEvent<BaseAssignment>()
 
 forward({
   from: initAssignment,

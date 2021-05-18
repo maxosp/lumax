@@ -1,6 +1,6 @@
 import { createEvent, forward, restore, combine } from 'effector-root'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
-import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
+import { BaseAssignment } from '@/features/api/assignment/types/types'
 
 export const clearFields = createEvent<void>()
 
@@ -56,7 +56,7 @@ export const $form = combine(
 
 // edition mode data init
 
-export const initAssignment = createEvent<TestAssignment>()
+export const initAssignment = createEvent<BaseAssignment>()
 
 forward({
   from: initAssignment,
