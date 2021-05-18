@@ -28,6 +28,10 @@ export const updateLabel = attach({
   effect: updateLabelFx,
 })
 
+const getLabel = attach({
+  effect: getLabelFx,
+})
+
 export const loadModalToEdit = createEvent<number>()
 export const checkIfThemeCanBeSend = createEvent<void>()
 export const clearFields = createEvent<void>()
@@ -99,11 +103,11 @@ forward({
 
 forward({
   from: loadModalToEdit,
-  to: [getLabelFx, modalVisibilityChanged.prepend(() => true)],
+  to: [getLabel, modalVisibilityChanged.prepend(() => true)],
 })
 
 sample({
-  clock: getLabelFx.doneData.map((data) => data.body),
+  clock: getLabel.doneData.map((data) => data.body),
   fn: (label: Label) => {
     $form.map((data) => (data.id = label.id))
     labelTitleChanged(label.name)

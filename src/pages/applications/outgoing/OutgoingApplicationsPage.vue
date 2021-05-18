@@ -22,7 +22,6 @@
       v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
-      :show-actions="showTableHeaderActions"
       @showPreview="showPreview"
       @onEdit="editApplications"
       @onCancel="cancelApplications"
@@ -46,6 +45,7 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
+        @vuetable:checkbox-toggled-all="allToggled"
       >
         <template id="one" #actions="props">
           <Actions
@@ -128,7 +128,7 @@ import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import { loadCommentModal } from '@/pages/applications/modals/outgoing-comment/outgoing-comment.model'
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
-import { Ticket } from '@/features/api/ticket/types'
+import { ModerationTicket } from '@/features/api/ticket/types'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 import {
@@ -181,8 +181,7 @@ export default (
       showContextMenu: false,
       contextMenuStyles: { top: '0', left: '0' },
       selectedApplications: [] as ApplicationType[],
-      showTableHeaderActions: false,
-      localItems: [] as Ticket[],
+      localItems: [] as ModerationTicket[],
     }
   },
   computed: {
@@ -322,7 +321,18 @@ export default (
           task: res.data.test_assignment.id,
         })
       }
-      this.showTableHeaderActions = selectedTo.length > 0
+    },
+    allToggled(isSelected: boolean) {
+      if (isSelected) {
+        this.selectedApplications = this.$refs.vuetable.tableData.map(
+          (ticket: ModerationTicket) => ({
+            application: ticket.id,
+            task: ticket.test_assignment.id,
+          })
+        )
+      } else {
+        this.selectedApplications = []
+      }
     },
     hideContextMenu() {
       this.selectedApplications = []
@@ -331,7 +341,6 @@ export default (
     resetHeaderActions() {
       this.$refs.vuetable.selectedTo = []
       this.selectedApplications = []
-      this.showTableHeaderActions = false
     },
   },
   created() {

@@ -6,7 +6,7 @@
       @click="toggle"
     >
       <Icon
-        v-if="opened"
+        v-if="opened && node.element_type !== 'media'"
         type="tree-folder-opened"
         class="folder-icon"
         size="35"
@@ -17,7 +17,7 @@
         :class="{ 'folder-icon': true }"
         size="35"
       />
-      <div v-else-if="!opened && node.element_type === 'media'" class="fake-icon">
+      <div v-else-if="node.element_type === 'media'" class="fake-icon">
         {{ extension }}
       </div>
       <span>{{ title }}</span>
@@ -42,6 +42,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
+        :token="token"
         :show-paste="showPaste"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
@@ -69,6 +70,7 @@ import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tr
 import { FolderType } from '@/features/api/assignment/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { downloadMediaFileFx } from '@/features/api/media/download-media-file'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -82,6 +84,7 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
     showPaste: { type: Boolean },
+    token: { type: String },
   },
   data: () => ({
     opened: false,
@@ -120,7 +123,10 @@ export default Vue.extend({
     createLabelFromTree,
     loadConfirmDeleteModal,
     toggle(evt: any) {
-      if (evt.target.closest('.action') || this.node.element_type === 'media') return
+      if (this.node.element_type === 'media') {
+        this.handleOnDownload()
+      }
+      if (evt.target.closest('.action')) return
       if (!this.opened && this.node.element_type === 'folder') {
         const { id } = this.node[this.node.element_type]!
         this.$emit('loadTree', { folder: id })
@@ -167,6 +173,19 @@ export default Vue.extend({
     handleOnPaste(val: { id: number; type: string }) {
       this.$emit('onPaste', val)
       this.setDataForTree()
+    },
+    async handleOnDownload() {
+      const { file_name } = this.node[this.node.element_type] as UploadMediaResponse
+      const { id } = this.node[this.node.element_type] as UploadMediaResponse
+      const imageBlob = await downloadMediaFileFx(id)
+      const imgURL = URL.createObjectURL(imageBlob.body)
+      const link = document.createElement('a')
+      link.href = imgURL
+      link.target = '_blank'
+      link.download = file_name
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
     setDataForTree() {
       const id =

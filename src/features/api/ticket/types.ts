@@ -1,6 +1,15 @@
-import { User } from '@/features/api/user/types'
+import { User, UserRelated } from '@/features/api/user/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
-import { StudyYear, SubjectGrid } from '@/features/api/subject/types'
+import { StudyYear, SubjectGrid, SubjectRelated, ThemeRelated } from '@/features/api/subject/types'
+import {
+  AssignmentFolderRelated,
+  LessonAssignmentRelated,
+  MediaFolderRelated,
+  OlympiadAssignmentRelated,
+  TestAssignmentRelated,
+} from '@/features/api/assignment/types'
+
+export type TicketStatus = 'new' | 'accepted' | 'declined'
 
 export type getTicketsListQueryParams = {
   sort?: string
@@ -40,17 +49,42 @@ export type TicketCommentType = {
   text: string
 }
 
-export type Ticket = {
+export type BaseTicket = {
   id: number
-  test_assignment: TestAssignmentType
-  created_by: User
-  moderate_by: User
-  status: string
-  comment?: TicketCommentType
+  status: TicketStatus
+  created_by: UserRelated
+  moderate_by: UserRelated
   created_at?: string
   updated_at?: string
   moderated_at?: string
 }
+
+export type ModerationTicket = {
+  test_assignment: TestAssignmentRelated
+  comment?: TicketCommentType
+} & BaseTicket
+
+export type ObjectType =
+  | 'theme'
+  | 'subject'
+  | 'test_assignment'
+  | 'olympiad_assignment'
+  | 'lesson_assignment'
+  | 'media_folder'
+  | 'assignment_folder'
+
+export type DeletionTicket = {
+  object_type: ObjectType
+  test_assignment: TestAssignmentRelated
+  olympiad_assignment: OlympiadAssignmentRelated
+  lesson_assignment: LessonAssignmentRelated
+  subject: SubjectRelated
+  theme: ThemeRelated
+  media_folder: MediaFolderRelated
+  assignment_folder: AssignmentFolderRelated
+  comment: string
+  object_name: string
+} & BaseTicket
 
 export type GetTypesResponse = {
   code: string

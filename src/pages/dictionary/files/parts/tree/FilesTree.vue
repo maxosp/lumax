@@ -16,6 +16,7 @@
         :node="leaf"
         :show-paste="showPaste"
         parent
+        :token="token"
         :prerequisite-folder="leaf.element_type === 'virtual_folder'"
         @loadTree="val => $emit('loadTree', val)"
         @onRightClick="$emit('onRightClick', $event)"
@@ -47,6 +48,7 @@ export default Vue.extend({
   },
   props: {
     showPaste: { type: Boolean },
+    token: { type: String },
   },
   effector: { $filesTree, $filesTreeTotal },
   computed: {

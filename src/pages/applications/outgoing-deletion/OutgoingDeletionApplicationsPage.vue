@@ -22,7 +22,6 @@
       v-if="!$isLoading"
       :total="total"
       :selected-applications="selectedApplications"
-      :show-actions="showTableHeaderActions"
       @onOpen="openApplications"
       @onSeeComment="showComment"
       @onCancel="cancelApplications"
@@ -45,6 +44,7 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
+        @vuetable:checkbox-toggled-all="allToggled"
       >
         <template #object_name="props">
           <TooltipCell
@@ -143,6 +143,7 @@ import { mapApplicationTypeToRoute } from '@/pages/applications/constants'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import { DeletionTicket } from '@/features/api/ticket/types'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (
@@ -185,7 +186,6 @@ export default (
       showContextMenu: false,
       contextMenuStyles: { top: '0', left: '0' },
       selectedApplications: [] as ApplicationType[],
-      showTableHeaderActions: false,
     }
   },
   computed: {
@@ -284,7 +284,17 @@ export default (
           type: res.data.object_type,
         })
       }
-      this.showTableHeaderActions = selectedTo.length > 0
+    },
+    allToggled(isSelected: boolean) {
+      if (isSelected) {
+        this.selectedApplications = this.$refs.vuetable.tableData.map((ticket: DeletionTicket) => ({
+          application: ticket.id,
+          task: ticket[ticket.object_type].id,
+          type: ticket.object_type,
+        }))
+      } else {
+        this.selectedApplications = []
+      }
     },
     hideContextMenu() {
       this.selectedApplications = []
@@ -293,7 +303,6 @@ export default (
     resetHeaderActions() {
       this.$refs.vuetable.selectedTo = []
       this.selectedApplications = []
-      this.showTableHeaderActions = false
     },
   },
   created() {

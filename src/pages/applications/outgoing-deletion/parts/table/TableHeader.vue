@@ -1,39 +1,39 @@
 <template>
   <div
     class="header"
-    :class="{invisible: !total, '--expand': showAdditionalActions}"
+    :class="{invisible: !total, '--expand': this.selectedApplications.length}"
   >
     <div class="left">
       <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         vertical
         height="25px"
         class="divider"
       />
       <span
-        v-if="showAdditionalActions && selectedApplications.length === 1"
+        v-if="selectedApplications.length === 1"
         class="text --basic"
         @click="$emit('onOpen', selectedApplications[0])"
       >
         Открыть
       </span>
       <span
-        v-if="showAdditionalActions && selectedApplications.length === 1"
+        v-if="selectedApplications.length === 1"
         class="text --basic"
         @click="$emit('onSeeComment', selectedApplicationsIds[0])"
       >
         Посмотреть комментарий
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('onCancel', selectedApplicationsIds)"
       >
         Отменить
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('onRemoveSelection')"
       >
@@ -56,12 +56,8 @@ export default Vue.extend({
   props: {
     total: { type: Number, required: true },
     selectedApplications: { type: Array as PropType<ApplicationType[]> },
-    showActions: { type: Boolean as PropType<boolean> },
   },
   computed: {
-    showAdditionalActions() {
-      return this.showActions && this.selectedApplications.length
-    },
     selectedApplicationsIds() {
       return this.selectedApplications.map((el) => el.application)
     },
