@@ -108,7 +108,9 @@ export default Vue.extend({
       setQuestions(questions)
     },
     handlerEnd() {
-      this.$questions.map((question, id) => (question.order = id))
+      const questions = JSON.parse(JSON.stringify(this.$questions))
+      questions.map((question, id) => (question.order = id))
+      setQuestions(questions)
     },
   },
 })
