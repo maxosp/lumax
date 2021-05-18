@@ -209,7 +209,7 @@ forward({
     setSolutionText.prepend((data) => data.answer_text),
     setStatus.prepend((data) => data.status),
     setAudioIds.prepend((data) => data.audios),
-    setCluesEvent.prepend((data) => data.clues),
+    setCluesEvent.prepend((data) => data.clues.sort((a, b) => a - b)),
   ],
 })
 
