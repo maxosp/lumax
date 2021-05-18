@@ -60,6 +60,13 @@ export const setupMovingOnImageAnswerDataFx = createEffect((data: MovingOnImageQ
 })
 
 setupMovingOnImageAnswerDataFx.watch(() => clearFields())
+clearFields.watch(() => {
+  inputsValuesCounter.reset()
+  inputsCounter.reset()
+  droppableImagesCounter.reset()
+  draggableImagesCounter.reset()
+  draggableTextCounter.reset()
+})
 
 const uploadMainImageFx = attach({
   effect: uploadMediaFx,
@@ -206,7 +213,7 @@ export const removeMainImage = createEvent<void>()
 export const setMainImage = createEvent<string | null>()
 export const $mainImage = restore(setMainImage, '')
   .on(setupMovingOnImageAnswerDataFx.doneData, (_, payload) => payload.mainImage)
-  .reset(removeMainImage)
+  .reset(clearFields)
 
 export const setMainImageSize = createEvent<Size | null>()
 export const $mainImageSize = restore(setMainImageSize, null)
@@ -229,6 +236,7 @@ forward({
   from: removeMainImage,
   to: clearFields,
 })
+
 export const uploadMainImage = createEvent<FilePickerEvent>()
 
 // form-states
