@@ -31,7 +31,7 @@ export const $reorderEnabled = restore(toggleReorderEnabling, false).reset(clear
 export const $isFilled = combine(
   $wording,
   $matches,
-  (wording, matches) => wording && matches.every((match) => match.matchA && match.matchB)
+  (wording, matches) => wording && matches.every((match) => match.matchA || match.matchB)
 )
 
 export const $form = combine(
