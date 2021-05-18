@@ -1,4 +1,4 @@
-import { StudyYear, Subject, Theme } from '@/features/api/subject/types'
+import { StudyYear, Subject, Theme, ThemeRelated } from '@/features/api/subject/types'
 import { User } from '@/features/api/user/types'
 
 export type Tag = {
@@ -29,6 +29,17 @@ export type FolderType = {
   name: string
   parent_id: number | null
   owner?: number
+}
+
+export type MediaFolderRelated = {
+  id?: number
+  name: string
+  parent?: number
+}
+
+export type AssignmentFolderRelated = {
+  id?: number
+  name: string
 }
 
 export type CreateLabelType = CreateTagType & {
@@ -82,13 +93,9 @@ export type AssignmentType =
   | 'BROAD_FILE_ANSWER'
   | 'COLOR_HIGHLIGHT_ANSWER'
 
-export type AssignmentStatus =
-  | 'new'
-  | 'moderation'
-  | 'revision'
-  | 'reserve'
-  | 'published'
-  | 'archive'
+export type AssignmentStatus = 'reserve' | 'published' | 'archive'
+
+export type TestAssignmentStatus = AssignmentStatus | 'new' | 'moderation' | 'revision'
 
 export type AssignmentAudioFile = {
   id?: number
@@ -184,6 +191,14 @@ export type TestAssignment = {
   labels_ids: number[]
 } & BaseAssignment
 
+export type TestAssignmentRelated = {
+  id: number
+  wording: string
+  type: AssignmentType
+  status: TestAssignmentStatus
+  theme: ThemeRelated
+}
+
 export type CreateClueFxParams = {
   text: string
   scores: number
@@ -200,12 +215,26 @@ export type OlympiadAssignment = {
   answer_text: string
 } & BaseAssignment
 
+export type OlympiadAssignmentRelated = {
+  id?: number
+  wording?: string
+  type?: AssignmentType
+  status?: AssignmentStatus
+}
+
 export type LessonAssignment = {
   folder: {
     id: number
     name: string
   }
 } & BaseAssignment
+
+export type LessonAssignmentRelated = {
+  id?: number
+  wording?: string
+  type?: AssignmentType
+  status?: AssignmentStatus
+}
 
 export type DuplicateAssignmentType = {
   assignments: number[]

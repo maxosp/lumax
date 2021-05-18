@@ -29,6 +29,7 @@
         @vuetable:load-error="handleLoadError"
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
+        @vuetable:checkbox-toggled-all="allToggled"
       >
         <template #name="props">
           <TooltipCell
@@ -153,15 +154,12 @@ export default (
       fields: subjectsTableFields,
       searchFields: searchFieldsData,
       total: 0,
+      selectedRows: [] as number[] | null,
     }
   },
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/subject-app/subjects/list/`
-    },
-    selectedRows(): number[] {
-      if (!this.$refs.vuetable) return []
-      return this.$refs.vuetable.selectedTo
     },
   },
   watch: {
@@ -225,7 +223,12 @@ export default (
       this.showContextMenu = true
       this.contextMenuType = type
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
+      this.selectedRows = this.$refs.vuetable.selectedTo
       event.preventDefault()
+    },
+    allToggled(isSelected: boolean) {
+      if (isSelected) this.selectedRows = this.$refs.vuetable.selectedTo
+      else this.selectedRows = []
     },
     hideContextMenu() {
       this.showContextMenu = false

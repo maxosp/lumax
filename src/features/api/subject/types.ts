@@ -7,6 +7,10 @@ export type StudyYear = {
   subject_id: number
 }
 
+export type StudyYearRelated = {
+  sort_field: number
+} & StudyYear
+
 export type Icon = {
   id: number
   name: string
@@ -55,6 +59,15 @@ export type Subject = {
   }
 }
 
+export type SubjectRelated = {
+  id?: number
+  name: string
+  icon?: number
+  color?: number
+  author?: number
+  is_mandatory?: boolean
+}
+
 export type ParentTheme = {
   name: string
   is_prerequisite: boolean
@@ -97,6 +110,13 @@ export type Theme = {
   text_resource_count: number
   link_resource_count: number
   media_resource_count: number
+}
+
+export type ThemeRelated = {
+  id?: number
+  name: string
+  study_year: StudyYearRelated
+  subject: SubjectRelated
 }
 
 export type CreateThemeType = {

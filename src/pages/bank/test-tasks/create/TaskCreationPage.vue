@@ -23,6 +23,9 @@ import TaskFooter from '@/pages/bank/common/parts/Footer.vue'
 import {
   save,
   $canSave,
+  setSubject,
+  setClass,
+  setTheme,
   setRedirectAfterSave,
   clearFields,
 } from '@/pages/bank/test-tasks/create/task-creation-page.model'
@@ -57,9 +60,12 @@ export default Vue.extend({
       const { subject, studyYear, theme } = this.$route.params
       subject && subjectsDropdownModule.methods.itemChanged(subject)
       subject && setSelectedSubject({ name: subject, title: '' })
+      setSubject(+subject)
       studyYear && classesDropdownModule.methods.itemChanged(studyYear)
       studyYear && setSelectedClass({ name: studyYear, title: '' })
+      setClass(+studyYear)
       theme && themesDropdownModule.methods.itemChanged(theme)
+      setTheme(+theme)
     }
   },
   beforeDestroy() {

@@ -55,6 +55,7 @@
         }"
         :droppable-images="[]"
         is-background-image
+        @change="img => setMainImageSize(img.size)"
         @remove="removeMainImage"
       />
     </div>
@@ -72,6 +73,7 @@ import {
   $mainImageUploading,
   $hideDragAndDropControls,
   $mainImageSize,
+  setMainImageSize,
   $scale,
   addInput,
   addDroppableImage,
@@ -126,6 +128,7 @@ export default Vue.extend({
     setNextResizerToImage,
     setNextResizerToText,
     createResizableBlock,
+    setMainImageSize,
     resetNextResizableBlock() {
       setNextResizableBlockType(null)
     },

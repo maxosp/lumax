@@ -42,6 +42,7 @@
         @vuetable:pagination-data="onPaginationData"
         @vuetable:cell-rightclicked="handleRightClick"
         @vuetable:row-clicked="handleRowClick"
+        @vuetable:checkbox-toggled-all="allToggled"
       >
         <template #name="props">
           <TooltipCell
@@ -254,6 +255,10 @@ export default (
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
       } else selectedTo.push(res.data.id)
       this.selectedRows = this.$refs.vuetable.selectedTo
+    },
+    allToggled(isSelected: boolean) {
+      if (isSelected) this.selectedRows = this.$refs.vuetable.selectedTo
+      else this.selectedRows = []
     },
     onRemoveThemes(ids: number[]) {
       this.$session?.permissions?.subjects_theme?.delete

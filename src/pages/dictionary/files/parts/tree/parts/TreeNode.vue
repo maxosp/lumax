@@ -70,7 +70,7 @@ import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tr
 import { FolderType } from '@/features/api/assignment/types'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
-import { config } from '@/config'
+import { downloadMediaFileFx } from '@/features/api/media/download-media-file'
 
 export default Vue.extend({
   name: 'TreeNode',
@@ -177,14 +177,8 @@ export default Vue.extend({
     async handleOnDownload() {
       const { file_name } = this.node[this.node.element_type] as UploadMediaResponse
       const { id } = this.node[this.node.element_type] as UploadMediaResponse
-      const img = await fetch(`${config.BACKEND_URL}/api/media-app/media/${id}/file/`, {
-        method: 'GET',
-        headers: new Headers({
-          Authorization: `Bearer ${this.token}`,
-        }),
-      })
-      const imageBlob = await img.blob()
-      const imgURL = URL.createObjectURL(imageBlob)
+      const imageBlob = await downloadMediaFileFx(id)
+      const imgURL = URL.createObjectURL(imageBlob.body)
       const link = document.createElement('a')
       link.href = imgURL
       link.target = '_blank'

@@ -1,46 +1,46 @@
 <template>
   <div
     class="header"
-    :class="{invisible: !total, '--expand': showAdditionalActions}"
+    :class="{invisible: !total, '--expand': this.selectedApplications.length}"
   >
     <div class="left">
       <span class="text">{{ total | formatTasksTitle }}</span>
       <Divider
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         vertical
         height="25px"
         class="divider"
       />
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('showPreview', selectedApplicationsIds, selectedTasksIds )"
       >
         Предпросмотр
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('onEdit', selectedApplicationsIds, selectedTasksIds )"
       >
         Редактировать
       </span>
       <span
-        v-if="showAdditionalActions && selectedTasksIds.length === 1"
+        v-if="selectedTasksIds.length === 1"
         class="text --basic"
         @click="$emit('onSeeComments', selectedApplicationsIds)"
       >
         Посмотреть комментарий
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('onCancel', selectedApplicationsIds)"
       >
         Отменить
       </span>
       <span
-        v-if="showAdditionalActions"
+        v-if="this.selectedApplications.length"
         class="text --basic"
         @click="$emit('onRemoveSelection')"
       >
@@ -63,12 +63,8 @@ export default Vue.extend({
   props: {
     total: { type: Number, required: true },
     selectedApplications: { type: Array as PropType<ApplicationType[]> },
-    showActions: { type: Boolean as PropType<boolean> },
   },
   computed: {
-    showAdditionalActions() {
-      return this.showActions && this.selectedApplications.length
-    },
     selectedTasksIds() {
       return this.selectedApplications.map((el) => el.task)
     },
