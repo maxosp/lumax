@@ -27,6 +27,13 @@
           >
             A{{ droppable.value }}
           </SelectItem>
+          <SelectItem
+            placeholder="Нет сопоставления"
+            class="select-item"
+            @click="pickValue(null, image); closeMenu(null)"
+          >
+            Нет сопоставления
+          </SelectItem>
         </template>
       </BaseDropdown>
       <SizeInput
@@ -80,10 +87,10 @@ export default Vue.extend({
     isBackgroundImage: { type: Boolean, default: false },
   },
   methods: {
-    pickValue(droppable: DroppableImage, image: DraggableImage) {
+    pickValue(droppable: DroppableImage | null, image: DraggableImage) {
       this.$emit('change', {
         ...image,
-        value: droppable.value,
+        value: droppable?.value || 0,
       })
     },
   },

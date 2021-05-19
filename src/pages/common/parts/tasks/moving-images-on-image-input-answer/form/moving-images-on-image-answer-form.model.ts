@@ -37,11 +37,12 @@ import {
 
 export const clearFields = createEvent<void>()
 
-const draggableImagesCounter = createCounter()
+export const draggableImagesCounter = createCounter()
 const inputsCounter = createCounter()
 export const inputsValuesCounter = createCounter()
-const droppableImagesCounter = createCounter()
-const draggableTextCounter = createCounter()
+export const droppableImagesCounter = createCounter()
+export const draggableTextCounter = createCounter()
+export const resetCounters = createEvent<void>()
 
 export const setupMovingOnImageAnswerDataFx = createEffect((data: MovingOnImageQuestionData) => {
   if (data.draggable) draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))
@@ -60,7 +61,8 @@ export const setupMovingOnImageAnswerDataFx = createEffect((data: MovingOnImageQ
 })
 
 setupMovingOnImageAnswerDataFx.watch(() => clearFields())
-clearFields.watch(() => {
+
+resetCounters.watch(() => {
   inputsValuesCounter.reset()
   inputsCounter.reset()
   droppableImagesCounter.reset()
@@ -137,18 +139,20 @@ export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
   .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => question.draggable)
-  .on(uploadMediaImageFx.doneData, (items, res) => [
-    ...items,
-    {
-      size: {
-        width: 0,
-        height: 0,
+  .on(uploadMediaImageFx.doneData, (items, res) => {
+    return [
+      ...items,
+      {
+        size: {
+          width: 0,
+          height: 0,
+        },
+        value: 0,
+        image: res.body.file,
+        id: draggableImagesCounter.next(),
       },
-      value: 0,
-      image: res.body.file,
-      id: draggableImagesCounter.next(),
-    },
-  ])
+    ]
+  })
   .reset(clearFields)
 export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 

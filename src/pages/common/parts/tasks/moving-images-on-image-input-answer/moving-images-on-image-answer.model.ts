@@ -28,11 +28,10 @@ export const $isFilled = combine(
   (wording, questionData) =>
     wording &&
     questionData.mainImage !== '' &&
-    questionData.draggable.length === questionData.droppable.length &&
-    (questionData.droppable.length || questionData.inputs.length) &&
-    questionData.draggable.every((img) => img.value !== 0) &&
-    questionData['draggable-text'].every((input) => input.text !== '') &&
-    questionData.inputs.every((input) => input.value.some((value) => value.value !== ''))
+    (!!questionData.droppable.length ||
+      !!questionData.inputs.length ||
+      !!questionData['draggable-text'].length ||
+      !!questionData.inputs.length)
 )
 
 export const $form = combine(

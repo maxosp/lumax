@@ -38,6 +38,7 @@ import {
   setSelectedClass,
 } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { themesDropdownModule } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
+import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -70,6 +71,7 @@ export default Vue.extend({
   },
   beforeDestroy() {
     clearFields()
+    resetCounters()
   },
 })
 </script>

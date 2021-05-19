@@ -100,40 +100,19 @@ export default Vue.extend({
     },
     handleAction(item: SelectItemI) {
       const ids = this.selected.length ? this.selected : [this.id]
-      switch (item.name) {
-        case 'edit':
-          this.$emit('onEdit', this.$props.id)
-          break
-        case 'delete':
-          this.$emit('onRemove', ids)
-          break
-        case 'delete_all':
-          this.$emit('onRemove', ids)
-          break
-        case 'double_task':
-          this.$emit('onDoubleTask', this.$props.id)
-          break
-        case 'double_n_task':
-          this.$emit('onDoubleTask', ids)
-          break
-        case 'preview':
-          this.$emit('onPreview', ids)
-          break
-        case 'create-folder':
-          this.$emit('onCreateFolder')
-          break
-        case 'create-task':
-          this.$emit('onCreateTask')
-          break
-        case 'edit-folder':
-          this.$emit('onEditFolder')
-          break
-        case 'delete-folder':
-          this.$emit('onDeleteFolder')
-          break
-        default:
-          break
+      const map = {
+        edit: () => this.$emit('onEdit', this.$props.id),
+        delete: () => this.$emit('onRemove', ids),
+        delete_all: () => this.$emit('onRemove', ids),
+        double_task: () => this.$emit('onDoubleTask', this.$props.id),
+        double_n_task: () => this.$emit('onDoubleTask', ids),
+        preview: () => this.$emit('onPreview', ids),
+        create_folder: () => this.$emit('onCreateFolder'),
+        create_task: () => this.$emit('onCreateTask'),
+        edit_folder: () => this.$emit('onEditFolder'),
+        delete_folder: () => this.$emit('onDeleteFolder'),
       }
+      map[item.name] ? map[item.name]() : undefined
     },
     closeMenu() {
       this.isOpen = false

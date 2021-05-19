@@ -67,7 +67,7 @@ forward({
     setWording.prepend((data) => data.wording || ''),
     setContaining.prepend((data) => data.text || ''),
     setAnswerExample.prepend((data) => data.example_answer || ''),
-    setTextTemplate.prepend((data) => data.correct_answer),
+    setTextTemplate.prepend((data) => data.template_text),
     setColorsPalette.prepend((data) => data.question_data.colors),
     getAudioFilesFx.prepend(({ audios }) => audios),
   ],

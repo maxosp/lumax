@@ -52,6 +52,13 @@
             @onRightClick="handleRightClick"
           />
         </template>
+        <template #assignments_ids="props">
+          <TooltipCell
+            :title="props.rowData.assignments_ids && props.rowData.assignments_ids.join(', ') || ''"
+            :row-id="props.rowData.id"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template id="one" #actions="props">
           <Actions
             :id="props.rowData.id"
