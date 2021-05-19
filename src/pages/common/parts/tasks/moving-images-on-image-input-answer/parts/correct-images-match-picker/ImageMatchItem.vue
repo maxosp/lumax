@@ -91,6 +91,7 @@ export default Vue.extend({
       this.$emit('change', {
         ...image,
         value: droppable?.value || 0,
+        size: droppable?.size,
       })
     },
   },

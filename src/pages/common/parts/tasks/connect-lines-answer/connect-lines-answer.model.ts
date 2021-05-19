@@ -50,7 +50,7 @@ export const $form = combine(
       disable_shuffle: reorderEnabled,
     },
     correct_answer: matches.map(({ matchA, matchB }) => ({ [matchA]: matchB })),
-    common_list_text_answer: matches.map(({ matchB }) => matchB),
+    common_list_answer_choices: matches.map(({ matchB }) => matchB),
     audio: audio.map(({ id, isLimited, limit }) => ({
       id,
       isLimited,
