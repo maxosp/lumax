@@ -83,6 +83,7 @@ import {
 import { $selectedLabels } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { mapTaskTypeToComponent } from '@/pages/common/dropdowns/bank/task-types-dropdown/constants'
+import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { navigatePush } from '@/features/navigation'
@@ -104,7 +105,6 @@ import {
 } from '@/pages/common/parts/status-controller/status.model'
 import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
 import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
-import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -269,7 +269,6 @@ export const $canSave = combine(
     return $isFilledTask && theme && difficulty && subject && selectedClass
   }
 )
-
 const $taskform = combine({
   BroadFileAnswer: $formBroadFile,
   BroadOpenAnswer: $formBroadOpen,

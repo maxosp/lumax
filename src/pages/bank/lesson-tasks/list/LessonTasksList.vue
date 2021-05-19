@@ -100,6 +100,7 @@
         @resetFilters="onFilterReset"
         @loadTree="val => loadTree(val)"
         @onRightClick="handleRightClick"
+        @onEdit="editTask"
         @onRemove="onRemoveTask"
       />
     </div>

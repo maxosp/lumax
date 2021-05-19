@@ -151,13 +151,13 @@ export const contextMethodsOneLesson = [
 ]
 
 export const contextMethodsManyLessons = [
-  { name: 'delete-all', title: 'Удалить выделенные задания' },
+  { name: 'delete_all', title: 'Удалить выделенные задания' },
   { name: 'preview', title: 'Предпросмотр' },
 ]
 
 export const contextMethodsFolder = [
-  { name: 'create-folder', title: 'Создать папку' },
-  { name: 'create-task', title: 'Создать задание' },
-  { name: 'edit-folder', title: 'Редактировать' },
-  { name: 'delete-folder', title: 'Удалить' },
+  { name: 'create_folder', title: 'Создать папку' },
+  { name: 'create_task', title: 'Создать задание' },
+  { name: 'edit_folder', title: 'Редактировать' },
+  { name: 'delete_folder', title: 'Удалить' },
 ]
