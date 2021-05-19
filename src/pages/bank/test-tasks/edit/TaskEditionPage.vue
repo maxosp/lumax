@@ -68,6 +68,7 @@ import {
   $currentQuestion,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { combineRouteQueries } from '@/features/lib'
+import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -165,6 +166,7 @@ export default Vue.extend({
   beforeDestroy() {
     clearFields()
     toggleIsPreview(false)
+    resetCounters()
   },
   created() {
     const { questions, applications, fromPage, currentQuestion } = this.$route.query

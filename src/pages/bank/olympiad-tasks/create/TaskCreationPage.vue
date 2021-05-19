@@ -26,6 +26,7 @@ import {
   clearFields,
   setRedirectAfterSave,
 } from '@/pages/bank/olympiad-tasks/create/task-creation-page.model'
+import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -45,6 +46,7 @@ export default Vue.extend({
   },
   beforeDestroy() {
     clearFields()
+    resetCounters()
   },
 })
 </script>

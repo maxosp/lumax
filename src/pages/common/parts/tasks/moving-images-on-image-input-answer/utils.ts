@@ -7,5 +7,6 @@ export const createCounter = () => {
   }
 }
 
-export const getMax = (numbers: number[]) => Math.max.apply(null, numbers)
+export const getMax = (numbers: number[]) =>
+  numbers.length > 0 ? Math.max.apply(null, numbers) : 0
 export const getMaxByProp = <T>(arr: T[], prop: keyof T) => getMax(arr.map((item) => +item[prop]))
