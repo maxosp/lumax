@@ -77,16 +77,6 @@ import {
   resetSelectedTags,
   setSelectedTagsIds,
 } from '@/pages/bank/olympiad-tasks/edit/parts/tags-dropdown/tags-dropdown.model'
-import {
-  $isFilled as $isFilledMovingOnImage,
-  $form as $formMovingOnImage,
-  initAssignment as initMovingOnImageTask,
-} from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/moving-images-on-image-answer.model'
-import {
-  $isFilled as $isFilledMovingOnText,
-  $form as $formMovingOnText,
-  initAssignment as initMovingOnTextTask,
-} from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 
 import { successToastEvent } from '@/features/toasts/toasts.model'
 
