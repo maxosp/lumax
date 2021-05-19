@@ -3,7 +3,7 @@ import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { getRandomId } from '@/pages/common/parts/tasks/utils'
 import { ConnectLinesMatch } from '@/pages/common/parts/tasks/types'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
-import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
+import { BaseAssignment } from '@/features/api/assignment/types/types'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -31,7 +31,7 @@ export const $reorderEnabled = restore(toggleReorderEnabling, false).reset(clear
 export const $isFilled = combine(
   $wording,
   $matches,
-  (wording, matches) => wording && matches.every((match) => match.matchA && match.matchB)
+  (wording, matches) => wording && matches.every((match) => match.matchA || match.matchB)
 )
 
 export const $form = combine(
@@ -59,7 +59,7 @@ export const $form = combine(
   })
 )
 
-export const initAssignment = createEvent<TestAssignment>()
+export const initAssignment = createEvent<BaseAssignment>()
 
 forward({
   from: initAssignment,
