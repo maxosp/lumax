@@ -121,7 +121,7 @@ import {
   $textTemplate,
   setTextTemplate,
 } from '@/pages/common/parts/tasks/common-list-text-answer/common-list-text-answer.model'
-import { getRandomId, getInputsIds, getArraysDiff } from '@/pages/common/parts/tasks/utils'
+import { getRandomId, getArraysDiff } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -143,12 +143,13 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        if (val && val.split('<input').length < oldVal.split('<input').length) {
-          const oldInputsIds = getInputsIds(oldVal)
-          const newInputsIds = getInputsIds(val)
-
+        const valMatch = val.match(/<input(.*?)>/g)
+        const oldValMatch = oldVal.match(/<input(.*?)>/g)
+        if (val && valMatch && oldValMatch && valMatch.length < oldValMatch.length) {
+          const oldInputsIds = this.getInputsIds(oldValMatch)
+          const newInputsIds = this.getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
-          this.removeCorrectAnswer({ id: diffInputId })
+          this.removeCorrectAnswer({ id: +diffInputId })
         }
       },
     },
@@ -157,6 +158,10 @@ export default Vue.extend({
     toggleReorderEnabling,
     setTextTemplate,
     setCorrectAnswers,
+    getInputsIds(arr) {
+      const idsString = arr.map((input) => input.match(/id="(\d+)"/g))
+      return idsString.map((input) => input[0].match(/\d/g)[0])
+    },
     handleCorrectAnswerChange({ id, value }, cb) {
       const correctAnswers = this.$correctAnswers.map((answer) =>
         answer.id === id ? { ...answer, name: value, title: value } : answer
@@ -168,7 +173,17 @@ export default Vue.extend({
       setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
     removeCorrectAnswer({ id }) {
-      const correctAnswers = this.$correctAnswers.filter((answer) => answer.id !== id)
+      console.log(id)
+      let correctAnswers = JSON.parse(JSON.stringify(this.$correctAnswers)).filter(
+        (answer) => answer.id !== id
+      )
+      correctAnswers = correctAnswers.map((answer) => {
+        console.log(answer)
+        console.log({ ...answer, id: answer.id - 1 })
+        return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
+      })
+      console.log(correctAnswers)
+      console.log(typeof id)
       setCorrectAnswers(correctAnswers)
 
       // remove from editor
