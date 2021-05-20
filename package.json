@@ -95,6 +95,7 @@
     "gulp-svg-sprite": "^1.5.0",
     "gulp-svgmin": "^3.0.0",
     "jest": "^26.1.0",
+    "nodemon": "^2.0.7",
     "postcss-css-variables": "^0.17.0",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
