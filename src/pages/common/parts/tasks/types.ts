@@ -105,6 +105,7 @@ export type DraggableImage = SystemIndex & {
   size: Size
   image: string
   value: number
+  ratio?: number
 }
 
 export type DroppableImage = {
