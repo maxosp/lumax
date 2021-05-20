@@ -157,7 +157,7 @@ export const addInput = createAddEventForArrayStore($inputs, () => ({
 export const removeInput = createRemoveEventForArrayStore($inputs, 'id')
 export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
 
-const defaultSize = 200
+const DEFAULT_SIZE = 200
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
   .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => question.draggable)
@@ -208,7 +208,7 @@ function changeSize(image: DraggableImage, item: DraggableImage) {
     if (item.id === image.id) {
       return item.size
     }
-    return { width: image.ratio ? defaultSize * image.ratio : defaultSize, height: defaultSize }
+    return { width: image.ratio ? DEFAULT_SIZE * image.ratio : DEFAULT_SIZE, height: DEFAULT_SIZE }
   }
   return image.size
 }
