@@ -123,10 +123,10 @@ export default Vue.extend({
     createLabelFromTree,
     loadConfirmDeleteModal,
     toggle(evt: any) {
+      if (evt.target.closest('.action')) return
       if (this.node.element_type === 'media') {
         this.handleOnDownload()
       }
-      if (evt.target.closest('.action')) return
       if (!this.opened && this.node.element_type === 'folder') {
         const { id } = this.node[this.node.element_type]!
         this.$emit('loadTree', { folder: id })
