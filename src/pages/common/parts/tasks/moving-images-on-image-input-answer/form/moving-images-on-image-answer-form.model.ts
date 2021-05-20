@@ -157,6 +157,16 @@ export const addInput = createAddEventForArrayStore($inputs, () => ({
 export const removeInput = createRemoveEventForArrayStore($inputs, 'id')
 export const replaceInput = createReplaceEventForArrayStore($inputs, 'id')
 
+$inputs.on(removeInput, (inputs, removed) => {
+  inputsCounter.prev()
+  return inputs
+    .filter((i) => i.id !== removed.id)
+    .map((i) => ({
+      ...i,
+      id: i.id! > removed.id! ? i.id! - 1 : i.id!,
+    }))
+})
+
 const DEFAULT_SIZE = 200
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
@@ -260,7 +270,17 @@ export const addDroppableImage = createAddEventForArrayStore($droppableImages, (
   }
 })
 
+$droppableImages.on(removeDroppableImage, (droppableImage, droppable) => {
+  return droppableImage
+    .filter((d) => d.id !== droppable.id)
+    .map((d) => ({
+      ...d,
+      value: d.value > droppable.value ? d.value - 1 : d.value,
+      id: d.id! > droppable.id! ? d.id! - 1 : d.id!,
+    }))
+})
 $draggableImages.on(removeDroppableImage, (draggableImage, droppable) => {
+  droppableImagesCounter.prev()
   return draggableImage.map((draggable) => ({
     ...draggable,
     value: droppable.value === draggable.value ? 0 : draggable.value,
