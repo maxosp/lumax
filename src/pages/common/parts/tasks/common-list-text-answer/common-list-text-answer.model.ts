@@ -96,14 +96,14 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     setAnswersOptions.prepend((data) =>
       data.question_data.options.map((value: string, idx: number) => ({
-        id: idx + 1,
+        id: idx,
         name: value,
         title: value,
       }))
     ),
     setCorrectAnswers.prepend((data) =>
       data.correct_answer.map((value: string, index: number) => ({
-        id: index + 1,
+        id: index,
         title: data.question_data.options[+value],
       }))
     ),
