@@ -1,11 +1,13 @@
 import { config } from '@/config'
 
-export const url = 'https://cdn.ckeditor.com/4.16.0/full-all/ckeditor.js'
+export const url =
+  'https://storage.yandexcloud.net/lo-storage-main/frontend-static/ckeditor/ckeditor.js'
 
 export const wysiwygConfig = {
   title: false,
   language: 'ru',
-  extraPlugins: 'uploadimage, divarea',
+  extraPlugins:
+    'uploadimage, divarea, html5video, widget, widgetselection, clipboard, lineutils, video',
   removePlugins: 'easyimage, cloudservices, exportpdf',
   uploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   allowedContent: true,
@@ -27,7 +29,17 @@ export const wysiwygConfig = {
       'Format',
     ],
     '/',
-    ['BulletedList', 'NumberedList', 'Link', 'Table', 'Image', 'Iframe', 'Maximize', 'Source'],
+    [
+      'BulletedList',
+      'NumberedList',
+      'Link',
+      'Table',
+      'Image',
+      'Video',
+      'Iframe',
+      'Maximize',
+      'Source',
+    ],
   ],
   removeButtons: '',
   editorplaceholder: '',
