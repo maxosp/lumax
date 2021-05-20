@@ -160,6 +160,16 @@ export const removeDraggableImage = createRemoveEventForArrayStore($draggableIma
 
 export const uploadDraggableImage = createEvent<FileList>()
 
+function changeSize(image: DraggableImage, item: DraggableImage) {
+  if (item.value === image.value) {
+    if (item.id === image.id) {
+      return item.size
+    }
+    return { width: 0, height: 0 }
+  }
+  return image.size
+}
+
 sample({
   source: $draggableImages,
   clock: replaceDraggableImage,
@@ -168,6 +178,7 @@ sample({
       return {
         ...image,
         value: image.id !== item.id && item.value === image.value ? 0 : image.value,
+        size: changeSize(image, item),
       }
     }),
   target: setDraggableImages,
