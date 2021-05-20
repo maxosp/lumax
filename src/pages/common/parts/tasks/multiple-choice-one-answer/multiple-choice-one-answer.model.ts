@@ -30,7 +30,7 @@ export const $isFilled = combine(
   $questionsAnswers,
   (wording, questionsAnswers) =>
     wording &&
-    questionsAnswers.length >= 1 &&
+    questionsAnswers.length > 1 &&
     questionsAnswers.every((qa) => qa.question) &&
     questionsAnswers.some((qa) => qa.isCorrect)
 )
