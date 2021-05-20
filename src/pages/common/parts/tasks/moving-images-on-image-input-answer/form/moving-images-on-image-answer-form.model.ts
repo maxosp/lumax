@@ -186,6 +186,7 @@ export const $droppableImages = restore(setDroppableImages, [])
 export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
 export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
 export const addDroppableImage = createAddEventForArrayStore($droppableImages, () => {
+  console.log($droppableImages)
   const id = droppableImagesCounter.next()
   return {
     pin: {
@@ -207,6 +208,8 @@ export const addDroppableImage = createAddEventForArrayStore($droppableImages, (
 })
 
 $draggableImages.on(removeDroppableImage, (draggableImage, droppable) => {
+  console.log(draggableImage)
+  console.log(droppable)
   return draggableImage.map((draggable) => ({
     ...draggable,
     value: droppable.value === draggable.value ? 0 : draggable.value,
