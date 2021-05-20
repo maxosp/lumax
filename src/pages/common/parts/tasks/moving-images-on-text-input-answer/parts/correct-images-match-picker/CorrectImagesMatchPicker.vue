@@ -65,7 +65,7 @@ export default Vue.extend({
   margin-bottom: 10px;
 }
 .actions {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   margin-top: 10px;

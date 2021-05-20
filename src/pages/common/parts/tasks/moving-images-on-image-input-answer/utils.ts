@@ -4,6 +4,7 @@ export const createCounter = () => {
     next: () => ++counter,
     set: (newCounter: number) => (counter = newCounter),
     reset: () => (counter = 0),
+    prev: () => --counter,
   }
 }
 
