@@ -2,12 +2,13 @@
   <div class='wysiwyg'>
     <Ckeditor
       :id="editorId"
+      ref="ckeditor"
       :value="value"
       :config="editorConfig"
       :editor-url="editorUrl"
       class="editor"
       @ready="onEditorReady"
-      @input="$emit('input', $event)"
+      @input="uploadPictureAndEmit"
     />
   </div>
 </template>
@@ -17,6 +18,7 @@ import Vue from 'vue'
 import Ckeditor from 'ckeditor4-vue'
 import { wysiwygConfig, url, enableRules } from '@/ui/wysiwyg/constants'
 import { $token } from '@/features/api/common/request'
+import { config } from '@/config'
 
 export default Vue.extend({
   name: 'Wysiwyg',
@@ -42,6 +44,75 @@ export default Vue.extend({
     }
   },
   methods: {
+    getReadStream(mediaURL) {
+      return fetch(mediaURL.trim()).then(({ body }) => body.getReader())
+    },
+    getCaptionFromURL(mediaURL) {
+      const splittedURL = mediaURL.trim().split('/')
+      return splittedURL[splittedURL.length - 1]
+    },
+    async transformStreamIntoFile({ url: mediaUrl, fileType }) {
+      try {
+        const streamReader = await this.getReadStream(mediaUrl)
+        const streamBuffer = await streamReader.read().then(({ done, value }) => ({ done, value }))
+        const file = new File(streamBuffer.value, this.getCaptionFromURL(mediaUrl), {
+          type: fileType,
+        })
+        return file
+      } catch (err) {
+        console.error('ERRORED_WHILE_STREAM_TRANSFORM')
+        console.log(err)
+      }
+    },
+    parseForMedia(v) {
+      const exp = /https?:\/\/(.*?)"/gi
+      const expVideo = /(.mp4|.webm|.avi|.wmv|.mov)/gi
+      const expImage = /(.jpeg|.jpg|.png)/gi
+      const URLs = v.match(exp)
+
+      let mediaObject = null
+
+      if (URLs) {
+        if (URLs[URLs.length - 1].match(expVideo)) {
+          mediaObject = {
+            url: URLs[URLs.length - 1].slice(0, -1),
+            tag: 'video',
+            fileType: `video/${URLs[URLs.length - 1].match(expVideo)[0].replace('.', '')}`,
+          }
+        } else if (URLs[URLs.length - 1].match(expImage)) {
+          mediaObject = {
+            url: URLs[URLs.length - 1].slice(0, -1),
+            tag: 'img',
+            fileType: `image/${URLs[URLs.length - 1].match(expImage)[0].replace('.', '')}`,
+          }
+        }
+        return mediaObject
+      }
+    },
+    async uploadPictureAndEmit(v) {
+      const mediaObject = this.parseForMedia(v)
+      if (mediaObject) {
+        try {
+          const file = await this.transformStreamIntoFile(mediaObject)
+          const fd = new FormData()
+
+          fd.append('file', file, file.name)
+          fd.append('file_type', mediaObject.tag)
+
+          await fetch(`${config.BACKEND_URL}/api/media-app/media/upload/`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${this.$token}`,
+            },
+            body: fd,
+          }).then((r) => r.json())
+        } catch (err) {
+          console.error('ERORRED_WHILE_UPLOADING_PICTURE')
+          console.log(err)
+        }
+      }
+      this.$emit('input', v)
+    },
     onEditorReady(editor) {
       this.editorName = editor.name
       editor.on('fileUploadRequest', (event) => {
