@@ -17,9 +17,17 @@
         <div v-if="idx === 0" class="radio-label">Правильный ответ</div>
         <RadioButton
           option="is-correct"
-          :class="{ 'radio-button': true, 'first-radio': idx === 0 }"
+          :class="[ 'radio-button', {'first-radio': idx === 0 }]"
           :value="qa.isCorrect ? 'is-correct' : 'non-correct'"
           @change="handleIsCorrectChange({ questionId: qa.id })"
+        />
+      </div>
+      <div :class="[ 'icon-wrapper', {'first-icon-wrapper': idx === 0}]">
+        <Icon
+          class="remove-icon"
+          size="10px"
+          type="close"
+          @click="removeQuestion({ questionId: qa.id })"
         />
       </div>
     </div>
@@ -34,6 +42,7 @@ import Vue from 'vue'
 import FormInput from '@/ui/input/FormInput.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import RadioButton from '@/ui/radio/RadioButton.vue'
+import Icon from '@/ui/icon/Icon.vue'
 import {
   $questionsAnswers,
   setQuestionsAnswers,
@@ -46,6 +55,7 @@ export default Vue.extend({
     FormInput,
     BaseButton,
     RadioButton,
+    Icon,
   },
   effector: {
     $questionsAnswers,
@@ -136,6 +146,21 @@ export default Vue.extend({
 
 .transparent {
   background-color: transparent;
+}
+
+.icon-wrapper {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  .remove-icon {
+    fill: var(--base-text-primary);
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+.first-icon-wrapper {
+  margin-top: 16px;
 }
 
 .add-question {
