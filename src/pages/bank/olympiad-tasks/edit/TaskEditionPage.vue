@@ -4,6 +4,7 @@
       title="Редактирование олимпиадного задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
+      :can-toggle-preview="canTogglePreview"
       :from-page="fromPage"
       class="header"
       status-controller
@@ -69,6 +70,11 @@ export default Vue.extend({
       questions: [] as string[],
       fromPage: '',
     }
+  },
+  computed: {
+    canTogglePreview(): boolean {
+      return !!this.questions.length || !!this.$taskId
+    },
   },
   watch: {
     $isPreview: {

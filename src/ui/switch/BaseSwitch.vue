@@ -1,7 +1,8 @@
 <template>
   <div>
-    <label>
+    <label :class="{disabled}">
       <input
+        :disabled="disabled"
         :checked="checked"
         type="checkbox"
         @change="$emit('change', !checked)"
@@ -26,6 +27,7 @@ export default Vue.extend({
   name: 'BaseSwitch',
   props: {
     checked: { type: Boolean as PropType<boolean> },
+    disabled: { type: Boolean as PropType<boolean>, default: false },
   },
   model: {
     event: 'change',
@@ -51,6 +53,10 @@ label {
   display: flex;
   align-items: center;
   cursor: pointer;
+}
+label.disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 input {
   opacity: 0;

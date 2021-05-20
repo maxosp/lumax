@@ -5,6 +5,7 @@
       :disabled="!$canSave"
       :is-preview="$isPreview"
       :from-page="fromPage"
+      :can-toggle-preview="canTogglePreview"
       status-controller
       class="header"
       @toggle="toggleIsPreview"
@@ -69,6 +70,11 @@ export default Vue.extend({
       questions: [] as string[],
       fromPage: '',
     }
+  },
+  computed: {
+    canTogglePreview(): boolean {
+      return !!this.questions.length || !!this.$taskId
+    },
   },
   watch: {
     $isPreview: {

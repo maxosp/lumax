@@ -92,6 +92,27 @@ const getRealMainImageSizesFx = createEffect<string, Size>({
     }),
 })
 
+const getDraggableImageSizesFx = createEffect<string, { src: string; size: Size }>({
+  handler: (src) =>
+    new Promise<{ src: string; size: Size }>((res, rej) => {
+      const mainImage = new Image()
+      mainImage.onload = () => {
+        const maxImageWidth = 900
+        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
+
+        res({
+          src,
+          size: {
+            width: mainImage.width * scale,
+            height: mainImage.height * scale,
+          },
+        })
+      }
+      mainImage.onerror = rej
+      mainImage.src = src
+    }),
+})
+
 const uploadMediaImageFx = attach({
   effect: uploadMediaFx,
 })
@@ -146,6 +167,7 @@ $inputs.on(removeInput, (inputs, removed) => {
     }))
 })
 
+const DEFAULT_SIZE = 200
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
   .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => question.draggable)
@@ -160,15 +182,46 @@ export const $draggableImages = restore(setDraggableImages, [])
         value: 0,
         image: res.body.file,
         id: draggableImagesCounter.next(),
+        ratio: 1,
       },
     ]
   })
   .reset(clearFields)
+
+forward({
+  from: uploadMediaImageFx.doneData.map((res) => res.body.file),
+  to: getDraggableImageSizesFx,
+})
+
+sample({
+  source: $draggableImages,
+  clock: getDraggableImageSizesFx.doneData,
+  fn: (images, params) => {
+    const newImage = images.find((image) => image.image === params.src)
+    if (newImage) {
+      newImage.size = params.size
+      newImage.ratio = params.size.width / params.size.height
+    }
+    return images
+  },
+  target: setDraggableImages,
+})
+
 export const replaceDraggableImage = createReplaceEventForArrayStore($draggableImages, 'id')
 
 export const removeDraggableImage = createRemoveEventForArrayStore($draggableImages, 'id')
 
 export const uploadDraggableImage = createEvent<FileList>()
+
+function changeSize(image: DraggableImage, item: DraggableImage) {
+  if (item.value === image.value) {
+    if (item.id === image.id) {
+      return item.size
+    }
+    return { width: image.ratio ? DEFAULT_SIZE * image.ratio : DEFAULT_SIZE, height: DEFAULT_SIZE }
+  }
+  return image.size
+}
 
 sample({
   source: $draggableImages,
@@ -178,6 +231,7 @@ sample({
       return {
         ...image,
         value: image.id !== item.id && item.value === image.value ? 0 : image.value,
+        size: changeSize(image, item),
       }
     }),
   target: setDraggableImages,

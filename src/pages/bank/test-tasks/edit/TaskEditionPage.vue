@@ -4,6 +4,7 @@
       title="Редактирование тестового задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
+      :can-toggle-preview="canTogglePreview"
       :from-page="fromPage"
       task-type="test-assignment"
       status-controller
@@ -97,6 +98,11 @@ export default Vue.extend({
     fromPage: '',
     applications: [] as number[],
   }),
+  computed: {
+    canTogglePreview(): boolean {
+      return !!this.questions.length || !!this.$taskId
+    },
+  },
   watch: {
     $isPreview: {
       handler(newVal) {
