@@ -49,7 +49,7 @@
         </BaseDropdown>
         <div
           :class="{ transparent: true, 'icon-btn': true, 'first-icon': idx === 0 }"
-          @click="removeCorrectAnswer({ id: answer.id })"
+          @click="removeCorrectAnswerFromEditor({ id: answer.id })"
         >
           <Icon
             class="icon-close"
@@ -149,7 +149,7 @@ export default Vue.extend({
           const oldInputsIds = this.getInputsIds(oldValMatch)
           const newInputsIds = this.getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
-          this.removeCorrectAnswer({ id: +diffInputId })
+          this.removeCorrectAnswerFromEditor({ id: +diffInputId })
         }
       },
     },
@@ -172,21 +172,7 @@ export default Vue.extend({
     addCorrectAnswer({ id }) {
       setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
-    removeCorrectAnswer({ id }) {
-      console.log(id)
-      let correctAnswers = JSON.parse(JSON.stringify(this.$correctAnswers)).filter(
-        (answer) => answer.id !== id
-      )
-      correctAnswers = correctAnswers.map((answer) => {
-        console.log(answer)
-        console.log({ ...answer, id: answer.id - 1 })
-        return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
-      })
-      console.log(correctAnswers)
-      console.log(typeof id)
-      setCorrectAnswers(correctAnswers)
-
-      // remove from editor
+    removeCorrectAnswerFromEditor({ id }) {
       const inputStr = `<input id="${id}" type="" value="`
       const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
       const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
@@ -196,8 +182,42 @@ export default Vue.extend({
         // 2 - length of "/>" string
         indexOfInputBeginning + indexOfInputEnding + 2
       )
-      const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
-      setTextTemplate(newTextTemplate)
+      let newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+      const inputsIds = this.getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
+        +inputId > id ? `${+inputId - 1}` : `${+inputId}`
+      )
+      newTextTemplate = newTextTemplate
+        .match(/<input(.*?)>/g)
+        .map((input) => {
+          if (+input.match(/id="(\d+)"/)[1] === id) input.replace(/value="(.*?)"/, `value="0"`)
+          return input
+        })
+        .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
+        .map((input, index) => input.replace(/value="S(\d+)"/, `value="S${inputsIds[index]}"`))
+      setTextTemplate(newTextTemplate.join(','))
+      this.removeCorrectAnswer({ id })
+    },
+    removeCorrectAnswer({ id }) {
+      let correctAnswers = JSON.parse(JSON.stringify(this.$correctAnswers)).filter(
+        (answer) => answer.id !== id
+      )
+      correctAnswers = correctAnswers.map((answer) => {
+        return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
+      })
+      setCorrectAnswers(correctAnswers)
+
+      // remove from editor
+      // const inputStr = `<input id="${id}" type="" value="`
+      // const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
+      // const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
+      // const indexOfInputEnding = cuttedBeginning.indexOf('/>')
+      // const inputToRemove = this.$textTemplate.slice(
+      //   indexOfInputBeginning,
+      //   // 2 - length of "/>" string
+      //   indexOfInputBeginning + indexOfInputEnding + 2
+      // )
+      // const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+      // setTextTemplate(newTextTemplate)
     },
     clearCorrectAnswers(changedOption) {
       const correctAnswers = this.$correctAnswers.map((answer) =>
