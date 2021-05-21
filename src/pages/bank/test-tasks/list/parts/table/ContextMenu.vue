@@ -91,7 +91,7 @@ export default Vue.extend({
       const ids = this.selected.length ? this.selected : [this.id]
       const map = {
         create: () => navigatePush({ name: 'test-tasks-create' }),
-        edit: () => navigatePush({ name: 'test-tasks-edit', params: { id: this.$props.id } }),
+        edit: () => this.$emit('onEdit', ids),
         delete_theme: () => this.$emit('onRemoveTheme', ids),
         delete_task: () => this.$emit('onRemoveTask', ids),
         delete: () => this.$emit('onRemove', ids),

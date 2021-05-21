@@ -20,7 +20,6 @@
           v-if="statusController"
           class="switcher"
           :checked="isPreview"
-          :disabled="!canTogglePreview"
           @change="val => $emit('toggle', val)"
         >
           <p>Предпросмотр</p>
@@ -82,7 +81,6 @@ export default Vue.extend({
     fromPage: { type: String as PropType<string> },
     taskType: { type: String as PropType<string> },
     statusController: { type: Boolean as PropType<boolean>, default: false },
-    canTogglePreview: { type: Boolean as PropType<boolean>, default: false },
   },
   computed: {
     getWishedRoute() {

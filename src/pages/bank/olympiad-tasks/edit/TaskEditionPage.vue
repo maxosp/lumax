@@ -4,7 +4,6 @@
       title="Редактирование олимпиадного задания"
       :disabled="!$canSave"
       :is-preview="$isPreview"
-      :can-toggle-preview="canTogglePreview"
       :from-page="fromPage"
       class="header"
       status-controller
@@ -45,6 +44,7 @@ import SelectTask from '@/pages/preview-tasks/parts/select-task/SelectTask.vue'
 import {
   $currentIndex,
   $currentQuestion,
+  setCurrentQuestion,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { combineRouteQueries } from '@/features/lib'
 import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
@@ -71,11 +71,6 @@ export default Vue.extend({
       fromPage: '',
     }
   },
-  computed: {
-    canTogglePreview(): boolean {
-      return !!this.questions.length || !!this.$taskId
-    },
-  },
   watch: {
     $isPreview: {
       handler(newVal) {
@@ -99,7 +94,7 @@ export default Vue.extend({
       },
     },
     $currentQuestion(value) {
-      if (value !== $currentQuestion) {
+      if (value !== +this.$route.query.currentQuestion) {
         this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
       }
     },
@@ -121,6 +116,9 @@ export default Vue.extend({
       this.fromPage = fromPage
     }
     if (currentQuestion && typeof +currentQuestion === 'number') {
+      setCurrentQuestion(+currentQuestion)
+    }
+    if (this.questions.length) {
       loadTask(+this.questions[this.$currentIndex])
     } else {
       loadTask(+this.$route.params.id)
