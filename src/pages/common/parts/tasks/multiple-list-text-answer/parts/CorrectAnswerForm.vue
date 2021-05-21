@@ -232,7 +232,7 @@ export default Vue.extend({
       const id = `input-${getRandomId()}`
       this.addAnswersList({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id}" type="" value="S${this.$answersList.length}" />`,
+        detail: `<input id="${id}" type="" value="S${this.$answersList.length}" /> `,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
       editor && editor.dispatchEvent(event)
