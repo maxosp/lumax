@@ -205,19 +205,6 @@ export default Vue.extend({
         return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
       })
       setCorrectAnswers(correctAnswers)
-
-      // remove from editor
-      // const inputStr = `<input id="${id}" type="" value="`
-      // const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
-      // const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
-      // const indexOfInputEnding = cuttedBeginning.indexOf('/>')
-      // const inputToRemove = this.$textTemplate.slice(
-      //   indexOfInputBeginning,
-      //   // 2 - length of "/>" string
-      //   indexOfInputBeginning + indexOfInputEnding + 2
-      // )
-      // const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
-      // setTextTemplate(newTextTemplate)
     },
     clearCorrectAnswers(changedOption) {
       const correctAnswers = this.$correctAnswers.map((answer) =>
