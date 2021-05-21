@@ -56,6 +56,7 @@
         @onRemove="(val) => handleRemove(val)"
         @onPreview="(val) => $emit('onPreview', val)"
         @onEdit="(val) => $emit('onEdit', val)"
+        @onDuplicate="val => $emit('onDuplicate', val)"
         @onCreateFolder="createFolder"
         @onCreateTask="createTask"
         @onEditFolder="editFolder"
@@ -74,6 +75,7 @@
         @onRemove="(val) => $emit('onRemove', val)"
         @onPreview="(val) => $emit('onPreview', val)"
         @onEdit="(val) => $emit('onEdit', val)"
+        @onDuplicate="val => $emit('onDuplicate', val)"
       />
     </div>
     <ContextMenu

@@ -145,7 +145,7 @@ export const searchFieldsData: DropdownItem[] = [
 export const contextMethodsOneLesson = [
   { name: 'edit', title: 'Редактирование' },
   { name: 'delete', title: 'Удалить задание' },
-  { name: 'double_task', title: 'Дублировать задание' },
+  { name: 'duplicate', title: 'Дублировать задание' },
   { name: 'double_n_task', title: 'Дублировать задание n раз' },
   { name: 'preview', title: 'Предпросмотр' },
 ]

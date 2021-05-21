@@ -104,7 +104,7 @@ export default Vue.extend({
         edit: () => this.$emit('onEdit', this.$props.id),
         delete: () => this.$emit('onRemove', ids),
         delete_all: () => this.$emit('onRemove', ids),
-        double_task: () => this.$emit('onDoubleTask', this.$props.id),
+        duplicate: () => this.$emit('onDuplicate', this.$props.id),
         double_n_task: () => this.$emit('onDoubleTask', ids),
         preview: () => this.$emit('onPreview', ids),
         create_folder: () => this.$emit('onCreateFolder'),

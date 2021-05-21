@@ -33,9 +33,12 @@ import {
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getLessonAssignmentListFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-list'
 import {
+  DuplicateAssignmentType,
+  GetAssignmentTreeQueryParams,
   RequestDeleteAssignmentsParams,
   RequestDeleteFolderParams,
 } from '@/features/api/assignment/types/types'
+import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
@@ -50,6 +53,15 @@ export const getFilteredTree = attach({
 
 const getLessonTreeInfo = attach({
   effect: getLessonInfoFx,
+})
+
+const getTasksList = attach({
+  effect: getLessonAssignmentListFx,
+})
+
+export const duplicateAssignment = attach({
+  effect: updateLessonAssignmentBulkFx,
+  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
 })
 
 export const deleteAssignments = createEffect({
@@ -109,12 +121,22 @@ export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 const showDeleteAssignmentsToast = createEvent<number[]>()
 const showDeleteFolderToast = createEvent<number>()
 
+export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
+export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)
+
 export const $isLoading = combine(
   getFilteredTree.pending,
   getLessonAssignmentTreeLightFx.pending,
   getLessonAssignmentListFx.pending,
   (tree, light, list) => tree || light || list
 )
+
+export const loadList = createEvent<GetAssignmentTreeQueryParams>()
+
+forward({
+  from: loadList,
+  to: getTasksList,
+})
 
 forward({
   from: loadTreeLight,
@@ -201,5 +223,19 @@ forward({
   to: [
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),
+  ],
+})
+
+forward({
+  from: duplicateAssignment,
+  to: canRefreshAfterDuplicateChanged.prepend(() => false),
+})
+
+forward({
+  from: duplicateAssignment.doneData,
+  to: [
+    successToastEvent('Задание было успешно дублировано!'),
+    loadList.prepend(() => ({})),
+    canRefreshAfterDuplicateChanged.prepend(() => true),
   ],
 })

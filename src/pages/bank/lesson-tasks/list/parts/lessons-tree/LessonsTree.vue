@@ -19,6 +19,7 @@
         @onRightClick="$emit('onRightClick', $event)"
         @onRemove="val => $emit('onRemove', val)"
         @onEdit="val => $emit('onEdit', val)"
+        @onDuplicate="val => $emit('onDuplicate', val)"
       />
     </div>
   </div>
