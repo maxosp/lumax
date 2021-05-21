@@ -214,7 +214,7 @@ export default Vue.extend({
     removeAnswersList({ id }) {
       const answersList = this.$answersList.filter((list) => list.id !== id)
       setAnswersList(answersList)
-
+      
       // remove from editor
       const inputStr = `<input id="${id}" type="" value="`
       const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
@@ -232,7 +232,7 @@ export default Vue.extend({
       const id = `input-${getRandomId()}`
       this.addAnswersList({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id}" type="" value="S${this.$answersList.length}" /> `,
+        detail: `<input id="${id}" type="" placeholder="S${this.$answersList.length}" />`,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
       editor && editor.dispatchEvent(event)
