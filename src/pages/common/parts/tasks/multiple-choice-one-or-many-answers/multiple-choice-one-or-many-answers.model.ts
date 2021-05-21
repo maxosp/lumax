@@ -1,7 +1,6 @@
 import { createEvent, forward, restore, attach, combine } from 'effector-root'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
-import { getRandomId } from '@/pages/common/parts/tasks/utils'
-import { MultipleChoiceOneOrManyQuestion } from '@/pages/common/parts/tasks/types'
+import { MultipleChoiceOneOrManyAnswers } from '@/pages/common/parts/tasks/types'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
 import { BaseAssignment } from '@/features/api/assignment/types/types'
 
@@ -20,9 +19,9 @@ export const $containing = restore(setContaining, '').reset(clearFields)
 export const setAnswerExample = createEvent<string>()
 export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
-export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyQuestion[]>()
+export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyAnswers[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: getRandomId(), question: '', score: '', isCorrect: false },
+  { id: 1, question: '', score: null, isCorrect: false },
 ]).reset(clearFields)
 
 export const toggleMarksEnabling = createEvent<boolean>()
@@ -49,12 +48,17 @@ export const $form = combine(
     wording,
     example_answer,
     text: containing,
-    question_data: questionsAnswers.map(({ question }) => question),
+    question_data: questionsAnswers.map(({ question, id }: { question: string; id: number }) => {
+      return {
+        title: question,
+        number: id,
+      }
+    }),
     correct_answer: questionsAnswers
-      .map((answer, idx) =>
+      .map((answer) =>
         answer.isCorrect
           ? {
-              id: idx,
+              id: answer.id,
               score: answer.score,
             }
           : null
@@ -80,12 +84,12 @@ forward({
     setAnswerExample.prepend((data) => data.example_answer || ''),
     toggleMarksEnabling.prepend((data) => data.is_add_score_for_each_answer),
     setQuestionsAnswers.prepend((data) =>
-      data.question_data.map((question: string, id: number) => {
-        let score = ''
+      data.question_data.map(({ title, number }: { title: string; number: number }) => {
+        let score = null
         let isCorrect = false
 
         const existingCorrectAnswer = data.correct_answer.find(
-          (answer: { id: number; score: string }) => answer.id === id
+          (answer: { id: number; score: number }) => answer.id === number
         )
         if (existingCorrectAnswer) {
           isCorrect = true
@@ -95,8 +99,8 @@ forward({
         }
 
         return {
-          id,
-          question,
+          id: number,
+          question: title,
           isCorrect,
           score,
         }

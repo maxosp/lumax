@@ -68,7 +68,6 @@ import {
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/common/parts/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
-import { getRandomId } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -99,7 +98,7 @@ export default Vue.extend({
     },
     handleMarkChange({ questionId, score }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === questionId ? { ...qa, score } : qa
+        qa.id === questionId ? { ...qa, score: +score } : qa
       )
       setQuestionsAnswers(questionsAnswers)
     },
@@ -110,7 +109,7 @@ export default Vue.extend({
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: getRandomId(), question: '', answer: '', score: '', isCorrect: false },
+        { id: this.$questionsAnswers.length + 1, question: '', score: null, isCorrect: false },
       ])
     },
   },

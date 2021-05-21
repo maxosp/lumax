@@ -21,10 +21,16 @@ export type MultipleShortClosedQuestion = {
   answers: MultipleShortClosedAnswer[]
 }
 
-export type MultipleChoiceOneOrManyQuestion = {
+export type MultipleChoiceOneOrManyAnswers = {
   id: number
   question: string
-  score?: string
+  score: number | null
+  isCorrect: boolean
+}
+
+export type MultipleChoiceOneAnswer = {
+  id: number
+  answer: string
   isCorrect: boolean
 }
 
