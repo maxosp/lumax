@@ -129,12 +129,25 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        if (val && val.split('<input').length < oldVal.split('<input').length) {
-          const oldInputsIds = getInputsIds(oldVal)
-          const newInputsIds = getInputsIds(val)
+        // if (val && val.split('<input').length < oldVal.split('<input').length) {
+        //   const oldInputsIds = getInputsIds(oldVal)
+        //   const newInputsIds = getInputsIds(val)
 
+        //   const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
+        //   this.removeAnswersList({ id: diffInputId })
+        // }
+        const valMatch = val.match(/<input(.*?)>/g)
+        const oldValMatch = oldVal.match(/<input(.*?)>/g)
+        if (val && valMatch && oldValMatch && valMatch.length < oldValMatch.length) {
+          const oldInputsIds = getInputsIds(oldValMatch)
+          const newInputsIds = getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
-          this.removeAnswersList({ id: diffInputId })
+          this.removeCorrectAnswerFromEditor({ id: +diffInputId })
+          return
+        }
+        if (!valMatch && oldValMatch) {
+          const oldInputsIds = getInputsIds(oldValMatch)
+          this.removeCorrectAnswerFromEditor({ id: +oldInputsIds[0] })
         }
       },
     },
@@ -214,25 +227,37 @@ export default Vue.extend({
     removeAnswersList({ id }) {
       const answersList = this.$answersList.filter((list) => list.id !== id)
       setAnswersList(answersList)
-      
+
       // remove from editor
-      const inputStr = `<input id="${id}" type="" value="`
-      const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
-      const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
-      const indexOfInputEnding = cuttedBeginning.indexOf('/>')
-      const inputToRemove = this.$textTemplate.slice(
-        indexOfInputBeginning,
-        // 2 - length of "/>" string
-        indexOfInputBeginning + indexOfInputEnding + 2
+      const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
+      console.log(pattern)
+      console.log(this.$textTemplate)
+      let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
+      console.log(newTextTemplate.match(/<input(.*?)>/g))
+      const inputsIds = getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
+        +inputId > id ? `${+inputId - 1}` : `${+inputId}`
       )
-      const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
-      setTextTemplate(newTextTemplate)
+      newTextTemplate = newTextTemplate
+        .match(/<input(.*?)>/g)
+        .map((input) => {
+          if (+input.match(/id="(\d+)"/)[1] === id)
+            input.replace(/placeholder="(.*?)"/, `placeholder="1"`)
+          return input
+        })
+        .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
+        .map((input, index) =>
+          input.replace(/placeholder="S(\d+)"/, `placeholder="S${inputsIds[index]}"`)
+        )
+      setTextTemplate(newTextTemplate.join(','))
+      // setTextTemplate(newTextTemplate)
     },
     addList() {
-      const id = `input-${getRandomId()}`
+      // const id = `input-${getRandomId()}`
+      const { length } = this.$answersList
+      const id = length ? this.$answersList[length - 1].id + 1 : length + 1
       this.addAnswersList({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id}" type="" placeholder="S${this.$answersList.length}" />`,
+        detail: `<input id="${id}" type="" placeholder="S${this.$answersList.length}" /> `,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
       editor && editor.dispatchEvent(event)
