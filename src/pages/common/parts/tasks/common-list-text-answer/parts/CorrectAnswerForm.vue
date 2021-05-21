@@ -27,7 +27,7 @@
         <div
           :class="{ 's-bookmark': true, 'first-mark': idx === 0}"
         >
-          S{{ answer.id + 1 }}
+          S{{ answer.id }}
         </div>
         <BaseDropdown
           class="dropdown"
@@ -150,6 +150,11 @@ export default Vue.extend({
           const newInputsIds = this.getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
           this.removeCorrectAnswerFromEditor({ id: +diffInputId })
+          return
+        }
+        if (!valMatch && oldValMatch) {
+          const oldInputsIds = this.getInputsIds(oldValMatch)
+          this.removeCorrectAnswerFromEditor({ id: +oldInputsIds[0] })
         }
       },
     },
@@ -173,27 +178,27 @@ export default Vue.extend({
       setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
     removeCorrectAnswerFromEditor({ id }) {
-      const inputStr = `<input id="${id}" type="" value="`
-      const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
-      const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
-      const indexOfInputEnding = cuttedBeginning.indexOf('/>')
-      const inputToRemove = this.$textTemplate.slice(
-        indexOfInputBeginning,
-        // 2 - length of "/>" string
-        indexOfInputBeginning + indexOfInputEnding + 2
-      )
-      let newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+      const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
+      let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
+      if (newTextTemplate.match(/<p><\/p>/g) || newTextTemplate === '') {
+        setTextTemplate('')
+        this.removeCorrectAnswer({ id })
+        return
+      }
       const inputsIds = this.getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
         +inputId > id ? `${+inputId - 1}` : `${+inputId}`
       )
       newTextTemplate = newTextTemplate
         .match(/<input(.*?)>/g)
         .map((input) => {
-          if (+input.match(/id="(\d+)"/)[1] === id) input.replace(/value="(.*?)"/, `value="0"`)
+          if (+input.match(/id="(\d+)"/)[1] === id)
+            input.replace(/placeholder="(.*?)"/, `placeholder="1"`)
           return input
         })
         .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
-        .map((input, index) => input.replace(/value="S(\d+)"/, `value="S${inputsIds[index]}"`))
+        .map((input, index) =>
+          input.replace(/placeholder="S(\d+)"/, `placeholder="S${inputsIds[index]}"`)
+        )
       setTextTemplate(newTextTemplate.join(','))
       this.removeCorrectAnswer({ id })
     },
@@ -234,10 +239,10 @@ export default Vue.extend({
     },
     addList() {
       const { length } = this.$correctAnswers
-      const id = length ? this.$correctAnswers[length - 1].id + 1 : length
+      const id = length ? this.$correctAnswers[length - 1].id + 1 : length + 1
       this.addCorrectAnswer({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id + 1}" type="" placeholder="S${id + 1}" /> `,
+        detail: `<input id="${id}" type="" placeholder="S${id}" /> `,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
 
