@@ -22,7 +22,9 @@
           @change="handleIsCorrectChange({ questionId: qa.id })"
         />
       </div>
-      <div :class="[ 'icon-wrapper', {'first-icon-wrapper': idx === 0}]">
+      <div
+        :class="[ 'icon-wrapper',{'first-icon-wrapper': idx === 0, '--invisible': $questionsAnswers.length === 1   }]"
+      >
         <Icon
           class="remove-icon"
           size="10px"
@@ -169,5 +171,8 @@ export default Vue.extend({
   border-top: 1px solid var(--c-grey-11);
   display: flex;
   justify-content: center;
+}
+.--invisible {
+  display: none;
 }
 </style>
