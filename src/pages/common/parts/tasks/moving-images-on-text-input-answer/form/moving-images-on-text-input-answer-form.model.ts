@@ -40,7 +40,7 @@ export const inputValuesCounter = createCounter()
 export const droppableImagesCounter = createCounter()
 const draggableTextCounter = createCounter()
 
-const clearFields = createEvent<void>()
+export const clearFields = createEvent<void>()
 
 export const setupMovingOnTextAnswerDataFx = createEffect((data: MovingOnTextQuestionData) => {
   if (data.draggable) draggableImagesCounter.set(getMaxByProp(data.draggable, 'id'))

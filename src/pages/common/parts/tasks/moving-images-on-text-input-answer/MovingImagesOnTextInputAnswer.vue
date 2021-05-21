@@ -60,6 +60,7 @@ import {
   setAudioFiles,
   uploadAudioFiles,
 } from '@/pages/common/parts/audio-files/audio-files.model'
+import { clearFields as clearAnswerForm } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/form/moving-images-on-text-input-answer-form.model'
 
 export default Vue.extend({
   name: 'MovingImagesOnTextInputAnswer',
@@ -84,6 +85,7 @@ export default Vue.extend({
     setAnswerExample,
   },
   beforeDestroy() {
+    clearAnswerForm()
     clearFields()
   },
 })
