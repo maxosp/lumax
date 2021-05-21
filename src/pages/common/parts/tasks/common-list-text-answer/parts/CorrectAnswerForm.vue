@@ -49,7 +49,7 @@
         </BaseDropdown>
         <div
           :class="{ transparent: true, 'icon-btn': true, 'first-icon': idx === 0 }"
-          @click="removeCorrectAnswer({ id: answer.id })"
+          @click="removeCorrectAnswerFromEditor({ id: answer.id })"
         >
           <Icon
             class="icon-close"
@@ -121,7 +121,7 @@ import {
   $textTemplate,
   setTextTemplate,
 } from '@/pages/common/parts/tasks/common-list-text-answer/common-list-text-answer.model'
-import { getRandomId, getInputsIds, getArraysDiff } from '@/pages/common/parts/tasks/utils'
+import { getRandomId, getArraysDiff } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -143,12 +143,13 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        if (val && val.split('<input').length < oldVal.split('<input').length) {
-          const oldInputsIds = getInputsIds(oldVal)
-          const newInputsIds = getInputsIds(val)
-
+        const valMatch = val.match(/<input(.*?)>/g)
+        const oldValMatch = oldVal.match(/<input(.*?)>/g)
+        if (val && valMatch && oldValMatch && valMatch.length < oldValMatch.length) {
+          const oldInputsIds = this.getInputsIds(oldValMatch)
+          const newInputsIds = this.getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
-          this.removeCorrectAnswer({ id: diffInputId })
+          this.removeCorrectAnswerFromEditor({ id: +diffInputId })
         }
       },
     },
@@ -157,6 +158,10 @@ export default Vue.extend({
     toggleReorderEnabling,
     setTextTemplate,
     setCorrectAnswers,
+    getInputsIds(arr) {
+      const idsString = arr.map((input) => input.match(/id="(\d+)"/g))
+      return idsString.map((input) => input[0].match(/\d/g)[0])
+    },
     handleCorrectAnswerChange({ id, value }, cb) {
       const correctAnswers = this.$correctAnswers.map((answer) =>
         answer.id === id ? { ...answer, name: value, title: value } : answer
@@ -167,11 +172,7 @@ export default Vue.extend({
     addCorrectAnswer({ id }) {
       setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
-    removeCorrectAnswer({ id }) {
-      const correctAnswers = this.$correctAnswers.filter((answer) => answer.id !== id)
-      setCorrectAnswers(correctAnswers)
-
-      // remove from editor
+    removeCorrectAnswerFromEditor({ id }) {
       const inputStr = `<input id="${id}" type="" value="`
       const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
       const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
@@ -181,8 +182,29 @@ export default Vue.extend({
         // 2 - length of "/>" string
         indexOfInputBeginning + indexOfInputEnding + 2
       )
-      const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
-      setTextTemplate(newTextTemplate)
+      let newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+      const inputsIds = this.getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
+        +inputId > id ? `${+inputId - 1}` : `${+inputId}`
+      )
+      newTextTemplate = newTextTemplate
+        .match(/<input(.*?)>/g)
+        .map((input) => {
+          if (+input.match(/id="(\d+)"/)[1] === id) input.replace(/value="(.*?)"/, `value="0"`)
+          return input
+        })
+        .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
+        .map((input, index) => input.replace(/value="S(\d+)"/, `value="S${inputsIds[index]}"`))
+      setTextTemplate(newTextTemplate.join(','))
+      this.removeCorrectAnswer({ id })
+    },
+    removeCorrectAnswer({ id }) {
+      let correctAnswers = JSON.parse(JSON.stringify(this.$correctAnswers)).filter(
+        (answer) => answer.id !== id
+      )
+      correctAnswers = correctAnswers.map((answer) => {
+        return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
+      })
+      setCorrectAnswers(correctAnswers)
     },
     clearCorrectAnswers(changedOption) {
       const correctAnswers = this.$correctAnswers.map((answer) =>
