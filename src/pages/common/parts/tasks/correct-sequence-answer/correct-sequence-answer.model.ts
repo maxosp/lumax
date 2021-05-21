@@ -26,7 +26,7 @@ export const $questions = restore(setQuestions, [
 ]).reset(clearFields)
 
 export const toggleReorderEnabling = createEvent<boolean>()
-export const $reorderEnabled = restore(toggleReorderEnabling, true).reset(clearFields)
+export const $reorderEnabled = restore(toggleReorderEnabling, false).reset(clearFields)
 
 export const $isFilled = combine(
   $wording,
