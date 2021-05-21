@@ -28,6 +28,7 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
+        @click="$emit('onDuplicate', selectedRows[0])"
       >
         Дублировать
       </span>

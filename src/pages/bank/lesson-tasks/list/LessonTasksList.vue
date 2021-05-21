@@ -22,6 +22,7 @@
       v-if="!$isLoading"
       :total="total"
       :selected-rows="selectedRows"
+      @onDuplicate="duplicateTask"
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
       @onEdit="editTask"
@@ -81,6 +82,7 @@
             @onRemove="onRemoveTask"
             @onPreview="showPreview"
             @onEdit="editTask"
+            @onDuplicate="duplicateTask"
           />
         </template>
       </Vuetable>
@@ -102,6 +104,7 @@
         @onRightClick="handleRightClick"
         @onEdit="editTask"
         @onRemove="onRemoveTask"
+        @onDuplicate="duplicateTask"
       />
     </div>
     <ContextMenu
@@ -115,6 +118,7 @@
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
       @onEdit="editTask"
+      @onDuplicate="duplicateTask"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
@@ -155,6 +159,8 @@ import {
   loadTreeLight,
   $isLoading,
   requestDeleteFolder,
+  $canRefreshAfterDuplicate,
+  duplicateAssignment,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -236,6 +242,7 @@ export default (
     $currentPage: lessonTaskPageParams.store.currentPage,
     $isLoading,
     $deleteType,
+    $canRefreshAfterDuplicate,
   },
   data() {
     return {
@@ -256,6 +263,12 @@ export default (
     },
   },
   watch: {
+    $canRefreshAfterDuplicate: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.reload()
+        this.removeSelection()
+      },
+    },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
@@ -283,6 +296,9 @@ export default (
     queryToParams: lessonTaskPageParams.methods.queryToParams,
     toggleVisibility,
     loadTree,
+    duplicateTask(id: number) {
+      duplicateAssignment({ assignments: [id] })
+    },
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems

@@ -92,6 +92,7 @@ export default Vue.extend({
       const map = {
         create: () => navigatePush({ name: 'test-tasks-create' }),
         edit: () => this.$emit('onEdit', ids),
+        duplicate: () => this.$emit('onDuplicate', ids[0]),
         delete_theme: () => this.$emit('onRemoveTheme', ids),
         delete_task: () => this.$emit('onRemoveTask', ids),
         delete: () => this.$emit('onRemove', ids),

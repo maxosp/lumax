@@ -122,8 +122,8 @@ export default Vue.extend({
       const ids = this.selected.length ? this.selected : [this.id]
       const map = {
         edit: () => this.$emit('onEdit', this.$props.id),
-        double_task: () => this.$emit('duplicate', ids[0]),
-        duplicate: () => this.$emit('duplicate', ids[0]),
+        double_task: () => this.$emit('onDuplicate', ids[0]),
+        duplicate: () => this.$emit('onDuplicate', ids[0]),
         double_n_task: () => console.log('double_n_task'),
         delete_theme: () => this.$emit('onRemoveTheme', ids),
         delete_task: () => this.$emit('onRemoveTask', ids),
