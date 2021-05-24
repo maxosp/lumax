@@ -109,6 +109,7 @@ import {
   getRandomId,
   getInputsIds,
   getArraysDiff,
+  removeInputsFromEditor,
 } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
@@ -225,26 +226,13 @@ export default Vue.extend({
     removeAnswersListFromEditor({ id }) {
       const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
       let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
-      if (newTextTemplate.match(/<p><\/p>/g) || newTextTemplate === '') {
-        setTextTemplate('')
+      if (newTextTemplate.match(/<input(.*?)>/g) === null || newTextTemplate === '') {
+        setTextTemplate(newTextTemplate)
         this.removeAnswersListFromArray({ id })
         return
       }
-      const inputsIds = getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
-        +inputId > id ? `${+inputId - 1}` : `${+inputId}`
-      )
-      newTextTemplate = newTextTemplate
-        .match(/<input(.*?)>/g)
-        .map((input) => {
-          if (+input.match(/id="(\d+)"/)[1] === id)
-            input.replace(/placeholder="(.*?)"/, `placeholder="1"`)
-          return input
-        })
-        .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
-        .map((input, index) =>
-          input.replace(/placeholder="S(\d+)"/, `placeholder="S${inputsIds[index]}"`)
-        )
-      setTextTemplate(newTextTemplate.join(','))
+      newTextTemplate = removeInputsFromEditor(newTextTemplate, id)
+      setTextTemplate(newTextTemplate)
       this.removeAnswersListFromArray({ id })
     },
     removeAnswersListFromArray({ id }) {
