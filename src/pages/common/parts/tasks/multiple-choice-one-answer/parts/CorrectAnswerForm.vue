@@ -8,10 +8,10 @@
     >
       <FormInput
         :label="idx === 0 ? 'Ответы' : ''"
-        :value="qa.question"
+        :value="qa.answer"
         placeholder="Введите вариант ответа"
         class="question-input"
-        @input="(question) => handleQuestionChange({ id: qa.id, question })"
+        @input="(answer) => handleAnswerChange({ id: qa.id, answer })"
       />
       <div class="correct-radio">
         <div v-if="idx === 0" class="radio-label">Правильный ответ</div>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="add-question">
-      <BaseButton @click="addQuestion">Добавить вариант ответа</BaseButton>
+      <BaseButton @click="addAnswer">Добавить вариант ответа</BaseButton>
     </div>
   </div>
 </template>
@@ -63,9 +63,9 @@ export default Vue.extend({
     $questionsAnswers,
   },
   methods: {
-    handleQuestionChange({ id, question }) {
+    handleAnswerChange({ id, answer }) {
       const questionsAnswers = this.$questionsAnswers.map((qa) =>
-        qa.id === id ? { ...qa, question } : qa
+        qa.id === id ? { ...qa, answer } : qa
       )
       setQuestionsAnswers(questionsAnswers)
     },
@@ -81,10 +81,10 @@ export default Vue.extend({
       })
       setQuestionsAnswers(questionsAnswers)
     },
-    addQuestion() {
+    addAnswer() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: getRandomId(), question: '', answer: '', isCorrect: false },
+        { id: getRandomId(), answer: '', isCorrect: false },
       ])
     },
     removeQuestion({ questionId }) {
