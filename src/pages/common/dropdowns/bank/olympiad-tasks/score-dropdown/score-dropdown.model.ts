@@ -2,7 +2,7 @@ import { createStore, attach, createEvent, forward, restore } from 'effector-roo
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 // TODO: correctly define WHICH type of assignment
-import { getOlympiadScoreListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-score-list'
+import { getOlympiadDifficultyListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-difficulty-list'
 
 export const scoreDropdownModule = createFilter()
 
@@ -10,7 +10,7 @@ export const setSelectedScore = createEvent<DropdownItem | null>()
 export const $selectedScore = restore(setSelectedScore, null)
 
 const getScoresList = attach({
-  effect: getOlympiadScoreListFx,
+  effect: getOlympiadDifficultyListFx,
 })
 
 export const loadScores = createEvent<void>()
