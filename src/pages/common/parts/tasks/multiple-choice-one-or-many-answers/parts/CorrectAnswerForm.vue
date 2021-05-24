@@ -68,6 +68,7 @@ import {
   $questionsAnswers,
   setQuestionsAnswers,
 } from '@/pages/common/parts/tasks/multiple-choice-one-or-many-answers/multiple-choice-one-or-many-answers.model'
+import { getRandomId } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -109,7 +110,7 @@ export default Vue.extend({
     addQuestion() {
       setQuestionsAnswers([
         ...this.$questionsAnswers,
-        { id: this.$questionsAnswers.length + 1, question: '', score: null, isCorrect: false },
+        { id: getRandomId(), question: '', score: null, isCorrect: false },
       ])
     },
   },

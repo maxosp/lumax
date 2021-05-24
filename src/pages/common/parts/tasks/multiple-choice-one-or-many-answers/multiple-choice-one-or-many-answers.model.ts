@@ -3,6 +3,7 @@ import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { MultipleChoiceOneOrManyAnswers } from '@/pages/common/parts/tasks/types'
 import { $audioFiles, getAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files.model'
 import { BaseAssignment } from '@/features/api/assignment/types/types'
+import { getRandomId } from '@/pages/common/parts/tasks/utils'
 
 export const uploadMedia = attach({
   effect: uploadMediaFx,
@@ -21,7 +22,7 @@ export const $answerExample = restore(setAnswerExample, '').reset(clearFields)
 
 export const setQuestionsAnswers = createEvent<MultipleChoiceOneOrManyAnswers[]>()
 export const $questionsAnswers = restore(setQuestionsAnswers, [
-  { id: 1, question: '', score: null, isCorrect: false },
+  { id: getRandomId(), question: '', score: null, isCorrect: false },
 ]).reset(clearFields)
 
 export const toggleMarksEnabling = createEvent<boolean>()
