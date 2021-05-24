@@ -32,7 +32,7 @@
         </div>
         <div
           class="remove-list"
-          @click="removeAnswersList({ id: list.id })"
+          @click="removeAnswersListFromEditor({ id: list.id })"
         >
           Удалить список
         </div>
@@ -109,6 +109,7 @@ import {
   getRandomId,
   getInputsIds,
   getArraysDiff,
+  removeInputsFromEditor,
 } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
@@ -129,15 +130,29 @@ export default Vue.extend({
   watch: {
     $textTemplate: {
       handler(val, oldVal) {
-        if (val && val.split('<input').length < oldVal.split('<input').length) {
-          const oldInputsIds = getInputsIds(oldVal)
-          const newInputsIds = getInputsIds(val)
-
+        const valMatch = val.match(/<input(.*?)>/g)
+        const oldValMatch = oldVal.match(/<input(.*?)>/g)
+        if (val && valMatch && oldValMatch && valMatch.length < oldValMatch.length) {
+          const oldInputsIds = getInputsIds(oldValMatch)
+          const newInputsIds = getInputsIds(valMatch)
           const diffInputId = getArraysDiff(oldInputsIds, newInputsIds)[0]
-          this.removeAnswersList({ id: diffInputId })
+          this.removeAnswersListFromEditor({ id: +diffInputId })
+          return
+        }
+        if (!valMatch && oldValMatch) {
+          const oldInputsIds = getInputsIds(oldValMatch)
+          this.removeAnswersListFromEditor({ id: +oldInputsIds[0] })
         }
       },
     },
+    $answersList: {
+      handler(val) {
+        const empty = val.filter((list) => !list.answers.length)
+        if (empty[0]) {
+          this.removeAnswersListFromEditor({ id: empty[0].id })
+        }
+      }
+    }
   },
   methods: {
     toggleReorderEnabling,
@@ -185,14 +200,11 @@ export default Vue.extend({
       setAnswersList(answersList)
     },
     removeAnswer({ id, answerId }) {
-      let answersList = this.$answersList.map((list) =>
+      let answersList = JSON.parse(JSON.stringify(this.$answersList)).map((list) =>
         list.id === id
         ? { ...list, answers: list.answers.filter(answer => answer.id !== answerId) }
         : list
       )
-      if (answersList.find(list => list.id === id).answers.length === 0) {
-        this.removeAnswersList({ id })
-      }
       setAnswersList(answersList)
     },
     addAnswersList({ id }) {
@@ -211,28 +223,33 @@ export default Vue.extend({
         },
       ])
     },
-    removeAnswersList({ id }) {
-      const answersList = this.$answersList.filter((list) => list.id !== id)
-      setAnswersList(answersList)
-      
-      // remove from editor
-      const inputStr = `<input id="${id}" type="" value="`
-      const indexOfInputBeginning = this.$textTemplate.indexOf(inputStr)
-      const cuttedBeginning = this.$textTemplate.slice(indexOfInputBeginning)
-      const indexOfInputEnding = cuttedBeginning.indexOf('/>')
-      const inputToRemove = this.$textTemplate.slice(
-        indexOfInputBeginning,
-        // 2 - length of "/>" string
-        indexOfInputBeginning + indexOfInputEnding + 2
-      )
-      const newTextTemplate = this.$textTemplate.replace(inputToRemove, '')
+    removeAnswersListFromEditor({ id }) {
+      const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
+      let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
+      if (newTextTemplate.match(/<input(.*?)>/g) === null || newTextTemplate === '') {
+        setTextTemplate(newTextTemplate)
+        this.removeAnswersListFromArray({ id })
+        return
+      }
+      newTextTemplate = removeInputsFromEditor(newTextTemplate, id)
       setTextTemplate(newTextTemplate)
+      this.removeAnswersListFromArray({ id })
+    },
+    removeAnswersListFromArray({ id }) {
+      let answersList = JSON.parse(JSON.stringify(this.$answersList)).filter(
+        (answer) => answer.id !== id
+      )
+      answersList = answersList.map((answer) => {
+        return answer.id > id ? { ...answer, id: answer.id - 1 } : answer
+      })
+      setAnswersList(answersList)
     },
     addList() {
-      const id = `input-${getRandomId()}`
+      const { length } = this.$answersList
+      const id = length ? this.$answersList[length - 1].id + 1 : length + 1
       this.addAnswersList({ id })
       const event = new CustomEvent('insert', {
-        detail: `<input id="${id}" type="" placeholder="S${this.$answersList.length}" />`,
+        detail: `<input id="${id}" type="" placeholder="S${this.$answersList.length}" /> `,
       })
       const editor = document.querySelector('#common-list-wysiwyg')
       editor && editor.dispatchEvent(event)

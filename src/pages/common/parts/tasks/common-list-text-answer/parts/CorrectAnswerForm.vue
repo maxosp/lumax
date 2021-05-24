@@ -121,7 +121,11 @@ import {
   $textTemplate,
   setTextTemplate,
 } from '@/pages/common/parts/tasks/common-list-text-answer/common-list-text-answer.model'
-import { getRandomId, getArraysDiff } from '@/pages/common/parts/tasks/utils'
+import {
+  getRandomId,
+  getArraysDiff,
+  removeInputsFromEditor,
+} from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: 'CorrectAnswerForm',
@@ -180,26 +184,13 @@ export default Vue.extend({
     removeCorrectAnswerFromEditor({ id }) {
       const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
       let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
-      if (newTextTemplate.match(/<p><\/p>/g) || newTextTemplate === '') {
-        setTextTemplate('')
+      if (newTextTemplate.match(/<input(.*?)>/g) === null || newTextTemplate === '') {
+        setTextTemplate(newTextTemplate)
         this.removeCorrectAnswer({ id })
         return
       }
-      const inputsIds = this.getInputsIds(newTextTemplate.match(/<input(.*?)>/g)).map((inputId) =>
-        +inputId > id ? `${+inputId - 1}` : `${+inputId}`
-      )
-      newTextTemplate = newTextTemplate
-        .match(/<input(.*?)>/g)
-        .map((input) => {
-          if (+input.match(/id="(\d+)"/)[1] === id)
-            input.replace(/placeholder="(.*?)"/, `placeholder="1"`)
-          return input
-        })
-        .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
-        .map((input, index) =>
-          input.replace(/placeholder="S(\d+)"/, `placeholder="S${inputsIds[index]}"`)
-        )
-      setTextTemplate(newTextTemplate.join(','))
+      newTextTemplate = removeInputsFromEditor(newTextTemplate, id)
+      setTextTemplate(newTextTemplate)
       this.removeCorrectAnswer({ id })
     },
     removeCorrectAnswer({ id }) {

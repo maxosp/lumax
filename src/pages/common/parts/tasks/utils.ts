@@ -1,13 +1,9 @@
 export const getRandomId = (): number => Number.parseInt(`${Math.random() * 1000}`, 10)
 
-export const getInputsIds = (htmlString: string) =>
-  htmlString
-    .split('<input ')
-    .filter((str) => str.includes('input'))
-    .map((str) => {
-      const matchedArr = str.match(/(input-)\d+/g)
-      return matchedArr ? matchedArr[0] : ''
-    })
+export const getInputsIds = (arr: string[]) => {
+  const idsString = arr.map((input) => input.match(/id="(\d+)"/g))
+  return idsString.map((input) => input![0].match(/\d/g)![0])
+}
 
 export const getArraysDiff = (a1: Array<any>, a2: Array<any>) => {
   const a = []
@@ -31,4 +27,28 @@ export const getArraysDiff = (a1: Array<any>, a2: Array<any>) => {
   }
 
   return diff
+}
+
+export const removeInputsFromEditor = (mainStr: string, id: number) => {
+  let newTextTemplate = mainStr
+  const inputsIds = getInputsIds(newTextTemplate.match(/<input(.*?)>/g)!).map((inputId) =>
+    +inputId > id ? `${+inputId - 1}` : `${+inputId}`
+  )
+  const tempTemplate = newTextTemplate
+    .match(/<input(.*?)>/g)!
+    .map((input) => {
+      if (+input.match(/id="(\d+)"/)![1] === id)
+        input.replace(/placeholder="(.*?)"/, `placeholder="1"`)
+      return input
+    })
+    .map((input, index) => input.replace(/id="(\d+)"/, `id="${inputsIds[index]}"`))
+    .map((input, index) =>
+      input.replace(/placeholder="S(\d+)"/, `placeholder="S${inputsIds[index]}"`)
+    )
+  newTextTemplate = newTextTemplate.replace(/<input(.*?)>/g, () => {
+    const res = tempTemplate[0]
+    tempTemplate.shift()
+    return res
+  })
+  return newTextTemplate
 }
