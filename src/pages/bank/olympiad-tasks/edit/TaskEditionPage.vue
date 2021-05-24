@@ -78,7 +78,7 @@ export default Vue.extend({
           navigateReplace({
             name: 'preview-task',
             query: {
-              questions: this.questions.length ? this.questions.join(',') : `${this.$taskId}`,
+              questions: this.questions.length ? this.questions.join(',') : this.$route.params.id,
               taskType: 'olympiad-assignment',
               token: this.$token,
               fromPage: this.fromPage,
