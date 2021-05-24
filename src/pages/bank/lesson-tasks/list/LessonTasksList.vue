@@ -22,11 +22,12 @@
       v-if="!$isLoading"
       :total="total"
       :selected-rows="selectedRows"
-      @onDuplicate="duplicateTask"
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
       @onEdit="editTask"
       @onRemoveSelection="removeSelection"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
     />
     <div :class="{ 'table-container': true, invisible: $treeView || $isLoading }">
       <Vuetable
@@ -82,7 +83,8 @@
             @onRemove="onRemoveTask"
             @onPreview="showPreview"
             @onEdit="editTask"
-            @onDuplicate="duplicateTask"
+            @onDuplicate="duplicateAssignment"
+            @onDuplicateNTimes="loadDuplicateModal"
           />
         </template>
       </Vuetable>
@@ -104,7 +106,8 @@
         @onRightClick="handleRightClick"
         @onEdit="editTask"
         @onRemove="onRemoveTask"
-        @onDuplicate="duplicateTask"
+        @onDuplicate="duplicateAssignment"
+        @onDuplicateNTimes="loadDuplicateModal"
       />
     </div>
     <ContextMenu
@@ -118,7 +121,8 @@
       @onRemove="onRemoveTask"
       @onPreview="showPreview"
       @onEdit="editTask"
-      @onDuplicate="duplicateTask"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
@@ -131,6 +135,9 @@
     />
     <CreatingFolderModal />
     <EditingFolderModal />
+    <DuplicateModal
+      @confirmTaskDuplicate="duplicateAssignment"
+    />
   </div>
 </template>
 
@@ -159,8 +166,8 @@ import {
   loadTreeLight,
   $isLoading,
   requestDeleteFolder,
-  $canRefreshAfterDuplicate,
   duplicateAssignment,
+  $canRefreshAfterDuplicate,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -198,6 +205,8 @@ import {
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 import { LessonAssignment } from '@/features/api/assignment/types/lesson-assignments-types'
+import DuplicateModal from '@/pages/bank/common/modals/duplicate/DuplicateModal.vue'
+import { loadDuplicateModal } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -229,6 +238,7 @@ export default (
     CreatingFolderModal,
     EditingFolderModal,
     LoaderBig,
+    DuplicateModal,
   },
   effector: {
     $token,
@@ -263,12 +273,6 @@ export default (
     },
   },
   watch: {
-    $canRefreshAfterDuplicate: {
-      handler(newVal) {
-        if (newVal) this.$refs.vuetable.reload()
-        this.removeSelection()
-      },
-    },
     $canRefreshAfterMultiChanges: {
       handler(newVal) {
         if (newVal) this.$refs.vuetable.reload()
@@ -286,6 +290,12 @@ export default (
         if (newVal) this.removeSelection()
       },
     },
+    $canRefreshAfterDuplicate: {
+      handler(newVal) {
+        if (newVal) this.$refs.vuetable.reload()
+        this.removeSelection()
+      },
+    },
   },
   methods: {
     changeFilter: lessonTasksFilters.methods.changeFilter,
@@ -296,9 +306,8 @@ export default (
     queryToParams: lessonTaskPageParams.methods.queryToParams,
     toggleVisibility,
     loadTree,
-    duplicateTask(id: number) {
-      duplicateAssignment({ assignments: [id] })
-    },
+    duplicateAssignment,
+    loadDuplicateModal,
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems

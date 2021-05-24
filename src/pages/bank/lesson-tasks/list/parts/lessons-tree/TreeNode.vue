@@ -57,6 +57,7 @@
         @onPreview="(val) => $emit('onPreview', val)"
         @onEdit="(val) => $emit('onEdit', val)"
         @onDuplicate="val => $emit('onDuplicate', val)"
+        @onDuplicateNTimes="val => $emit('onDuplicateNTimes', val)"
         @onCreateFolder="createFolder"
         @onCreateTask="createTask"
         @onEditFolder="editFolder"
@@ -76,6 +77,7 @@
         @onPreview="(val) => $emit('onPreview', val)"
         @onEdit="(val) => $emit('onEdit', val)"
         @onDuplicate="val => $emit('onDuplicate', val)"
+        @onDuplicateNTimes="val => $emit('onDuplicateNTimes', val)"
       />
     </div>
     <ContextMenu
@@ -90,6 +92,8 @@
       @onCreateTask="createTask"
       @onEditFolder="editFolder"
       @onDeleteFolder="deleteFolder"
+      @onDuplicate="val => $emit('onDuplicate', val)"
+      @onDuplicateNTimes="val => $emit('onDuplicateNTimes', val)"
     />
   </div>
 </template>

@@ -33,11 +33,15 @@ import {
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getLessonAssignmentListFx } from '@/features/api/assignment/lesson-assignment/get-lesson-assignment-list'
 import {
-  DuplicateAssignmentType,
   GetAssignmentTreeQueryParams,
   RequestDeleteAssignmentsParams,
   RequestDeleteFolderParams,
 } from '@/features/api/assignment/types/types'
+import {
+  $nDuplicate,
+  changedDuplicateModalVisibility,
+} from '@/pages/bank/common/modals/duplicate/duplicate.model'
+import { LessonAssignmentsBulkUpdate } from '@/features/api/assignment/types/lesson-assignments-types'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
 
 const getLessonsTree = attach({
@@ -59,11 +63,6 @@ const getTasksList = attach({
   effect: getLessonAssignmentListFx,
 })
 
-export const duplicateAssignment = attach({
-  effect: updateLessonAssignmentBulkFx,
-  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
-})
-
 export const deleteAssignments = createEffect({
   handler: (ids: number[]): Promise<number[]> => {
     return new Promise((resolve) => {
@@ -82,6 +81,40 @@ export const requestDeleteAssignments = attach({
       ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
     }
   },
+})
+
+export const duplicateAssignment = attach({
+  effect: updateLessonAssignmentBulkFx,
+  source: $nDuplicate,
+  mapParams: (id: number[], n: number): LessonAssignmentsBulkUpdate => ({
+    assignments: id,
+    number_of_duplicates: n,
+  }),
+})
+
+export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
+export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)
+
+export const loadList = createEvent<GetAssignmentTreeQueryParams>()
+
+forward({
+  from: loadList,
+  to: getTasksList,
+})
+
+forward({
+  from: duplicateAssignment,
+  to: canRefreshAfterDuplicateChanged.prepend(() => false),
+})
+
+forward({
+  from: duplicateAssignment.doneData,
+  to: [
+    changedDuplicateModalVisibility.prepend(() => false),
+    successToastEvent('Задание было успешно дублировано!'),
+    canRefreshAfterDuplicateChanged.prepend(() => true),
+    loadList.prepend(() => ({})),
+  ],
 })
 
 export const deleteFolder = createEffect({
@@ -121,22 +154,12 @@ export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 const showDeleteAssignmentsToast = createEvent<number[]>()
 const showDeleteFolderToast = createEvent<number>()
 
-export const canRefreshAfterDuplicateChanged = createEvent<boolean>()
-export const $canRefreshAfterDuplicate = restore<boolean>(canRefreshAfterDuplicateChanged, false)
-
 export const $isLoading = combine(
   getFilteredTree.pending,
   getLessonAssignmentTreeLightFx.pending,
   getLessonAssignmentListFx.pending,
   (tree, light, list) => tree || light || list
 )
-
-export const loadList = createEvent<GetAssignmentTreeQueryParams>()
-
-forward({
-  from: loadList,
-  to: getTasksList,
-})
 
 forward({
   from: loadTreeLight,
@@ -223,19 +246,5 @@ forward({
   to: [
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),
-  ],
-})
-
-forward({
-  from: duplicateAssignment,
-  to: canRefreshAfterDuplicateChanged.prepend(() => false),
-})
-
-forward({
-  from: duplicateAssignment.doneData,
-  to: [
-    successToastEvent('Задание было успешно дублировано!'),
-    loadList.prepend(() => ({})),
-    canRefreshAfterDuplicateChanged.prepend(() => true),
   ],
 })

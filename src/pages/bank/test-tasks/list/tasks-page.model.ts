@@ -33,10 +33,13 @@ import {
 import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
 import { TestAssignmentsBulkUpdate } from '@/features/api/assignment/types/test-assignments-types'
 import {
-  DuplicateAssignmentType,
   GetAssignmentTreeQueryParams,
   RequestDeleteAssignmentsParams,
 } from '@/features/api/assignment/types/types'
+import {
+  $nDuplicate,
+  changedDuplicateModalVisibility,
+} from '@/pages/bank/common/modals/duplicate/duplicate.model'
 
 const getTasksList = attach({
   effect: getTestAssignmentListFx,
@@ -85,7 +88,11 @@ export const requestDeleteAssignments = attach({
 
 export const duplicateAssignment = attach({
   effect: updateTestAssignmentBulkFx,
-  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
+  source: $nDuplicate,
+  mapParams: (id: number[], n: number): TestAssignmentsBulkUpdate => ({
+    assignments: id,
+    number_of_duplicates: n,
+  }),
 })
 
 export const testTaskPageParams = createPageParamsModel()
@@ -191,6 +198,7 @@ forward({
 forward({
   from: duplicateAssignment.doneData,
   to: [
+    changedDuplicateModalVisibility.prepend(() => false),
     successToastEvent('Задание было успешно дублировано!'),
     loadList.prepend(() => ({})),
     canRefreshAfterDuplicateChanged.prepend(() => true),

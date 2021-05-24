@@ -56,7 +56,8 @@
         :selected="selectedRows"
         :is-table-header="true"
         class="actions"
-        @duplicate="$emit('onDuplicate', selectedRows[0])"
+        @onDuplicate="$emit('onDuplicate', selectedRows)"
+        @onDuplicateNTimes="$emit('onDuplicateNTimes', selectedRows)"
       />
     </div>
     <div class="right">

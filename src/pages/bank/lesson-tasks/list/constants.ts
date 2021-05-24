@@ -146,7 +146,7 @@ export const contextMethodsOneLesson = [
   { name: 'edit', title: 'Редактирование' },
   { name: 'delete', title: 'Удалить задание' },
   { name: 'duplicate', title: 'Дублировать задание' },
-  { name: 'double_n_task', title: 'Дублировать задание n раз' },
+  { name: 'duplicate_n_times', title: 'Дублировать задание n раз' },
   { name: 'preview', title: 'Предпросмотр' },
 ]
 

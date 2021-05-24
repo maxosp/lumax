@@ -150,7 +150,7 @@ export const contextMethodsOneTask = [
   { name: 'edit', title: 'Редактирование' },
   { name: 'delete', title: 'Удалить задание' },
   { name: 'duplicate', title: 'Дублировать задание' },
-  { name: 'double_n_task', title: 'Дублировать задание n раз' },
+  { name: 'duplicate_n_times', title: 'Дублировать задание n раз' },
   { name: 'send_to_check', title: 'Отправить задание на проверку' },
   { name: 'public', title: 'Опубликовать' },
   { name: 'preview', title: 'Предпросмотр' },

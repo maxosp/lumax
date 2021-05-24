@@ -12,10 +12,12 @@ import { condition } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { loadTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import { RequestDeleteAssignmentsParams } from '@/features/api/assignment/types/types'
 import {
-  DuplicateAssignmentType,
-  RequestDeleteAssignmentsParams,
-} from '@/features/api/assignment/types/types'
+  $nDuplicate,
+  changedDuplicateModalVisibility,
+} from '@/pages/bank/common/modals/duplicate/duplicate.model'
+import { OlympiadAssignmentsBulkUpdate } from '@/features/api/assignment/types/olympiad-assignments-types'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
@@ -43,7 +45,11 @@ export const requestDeleteAssignments = attach({
 
 export const duplicateAssignment = attach({
   effect: updateOlympiadAssignmentBulkFx,
-  mapParams: (params: DuplicateAssignmentType) => ({ ...params, number_of_duplicates: 1 }),
+  source: $nDuplicate,
+  mapParams: (id: number[], n: number): OlympiadAssignmentsBulkUpdate => ({
+    assignments: id,
+    number_of_duplicates: n,
+  }),
 })
 
 export const olympiadTaskPageParams = createPageParamsModel()
@@ -76,6 +82,7 @@ forward({
 forward({
   from: duplicateAssignment.doneData,
   to: [
+    changedDuplicateModalVisibility.prepend(() => false),
     successToastEvent('Задание было успешно дублировано!'),
     loadList.prepend(() => ({})),
     canRefreshAfterDuplicateChanged.prepend(() => true),

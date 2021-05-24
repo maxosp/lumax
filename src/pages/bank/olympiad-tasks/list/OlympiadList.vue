@@ -24,7 +24,8 @@
       :selected-rows="selectedRows"
       @onEdit="editTask"
       @onRemove="onRemoveTask"
-      @duplicate="duplicateTask"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
       @showPreview="showPreview"
       @onRemoveSelection="removeSelection"
     />
@@ -76,7 +77,8 @@
             @onRemove="onRemoveTask"
             @onEdit="editTask"
             @showPreview="showPreview"
-            @duplicate="duplicateTask"
+            @onDuplicate="duplicateAssignment"
+            @onDuplicateNTimes="loadDuplicateModal"
           />
         </template>
       </Vuetable>
@@ -105,7 +107,8 @@
       @onRemove="onRemoveTask"
       @onEdit="editTask"
       @showPreview="showPreview"
-      @duplicate="duplicateTask"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
@@ -115,6 +118,9 @@
     />
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTask"
+    />
+    <DuplicateModal
+      @confirmTaskDuplicate="duplicateAssignment"
     />
   </div>
 </template>
@@ -172,6 +178,8 @@ import {
 import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 import { OlympiadAssignment } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { loadDuplicateModal } from '@/pages/bank/common/modals/duplicate/duplicate.model'
+import DuplicateModal from '@/pages/bank/common/modals/duplicate/DuplicateModal.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 
@@ -198,6 +206,7 @@ export default (
     ConfirmDeleteModal,
     RequestDeleteModal,
     LoaderBig,
+    DuplicateModal,
   },
   effector: {
     $visibility,
@@ -272,12 +281,8 @@ export default (
     toggleVisibility,
     loadList,
     reset,
-    duplicateTask(id: number) {
-      duplicateAssignment({ assignments: [id] })
-    },
-    duplicateNTasks(ids: number[]) {
-      console.log('dupllicate', ids)
-    },
+    duplicateAssignment,
+    loadDuplicateModal,
     clearWording(str: string) {
       return removeHtmlTags(str)
     },

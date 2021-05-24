@@ -23,7 +23,8 @@
       :total="$treeView ? $tasksTreeTotal : total"
       :selected-rows="selectedRows"
       @onSendToReview="sendToReview"
-      @onDuplicate="duplicateTask"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
       @onEdit="handleEditTask"
       @onPublish="publishAssignments"
       @onPreview="showPreview"
@@ -89,12 +90,13 @@
             :selected="selectedRows"
             :subject="subject"
             :study-year="studyYear"
-            @onDuplicate="duplicateTask"
             @onRemove="onRemoveTask"
             @onSendToReview="sendToReview"
             @onPublish="publishAssignments"
             @onPreview="showPreview"
             @onEdit="handleEditTask"
+            @onDuplicate="duplicateAssignment"
+            @onDuplicateNTimes="loadDuplicateModal"
           />
         </template>
       </Vuetable>
@@ -133,7 +135,6 @@
       :study-year="studyYear"
       :is-prerequisite="isPrerequisite"
       class="context-menu"
-      @duplicate="duplicateTask"
       @onOutsideClick="hideContextMenu"
       @onRemove="onRemoveTask"
       @onSendToReview="sendToReview"
@@ -142,6 +143,8 @@
       @onRemoveTheme="onRemoveTheme"
       @onPreview="showPreview"
       @onEdit="handleEditTask"
+      @onDuplicate="duplicateAssignment"
+      @onDuplicateNTimes="loadDuplicateModal"
     />
     <TasksTypesModal />
     <TasksUpdateModal />
@@ -153,6 +156,9 @@
       @confirmRequestDelete="sendRequestDeleteTask"
     />
     <ModeratorSelectModal type="test" />
+    <DuplicateModal
+      @confirmTaskDuplicate="duplicateAssignment"
+    />
   </div>
 </template>
 
@@ -219,6 +225,8 @@ import {
 } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
+import DuplicateModal from '@/pages/bank/common/modals/duplicate/DuplicateModal.vue'
+import { loadDuplicateModal } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -232,6 +240,7 @@ export default (
 ).extend({
   name: 'TestTasksList',
   components: {
+    DuplicateModal,
     Vuetable,
     VuetablePagination,
     PageHeader,
@@ -327,9 +336,8 @@ export default (
     queryToParams: testTaskPageParams.methods.queryToParams,
     loadTree,
     toggleVisibility,
-    duplicateTask(id: number) {
-      duplicateAssignment({ assignments: [id] })
-    },
+    duplicateAssignment,
+    loadDuplicateModal,
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems

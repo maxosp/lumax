@@ -94,7 +94,7 @@ export default Vue.extend({
       if (this.isTableHeader)
         return [
           { name: 'duplicate', title: 'Дублировать' },
-          { name: 'double_n_task', title: 'Дублировать n раз' },
+          { name: 'duplicate_n_times', title: 'Дублировать n раз' },
         ]
       return this.$props.selected.length ? contextMethodsManyTasks : contextMethodsOneTask
     },
@@ -122,9 +122,8 @@ export default Vue.extend({
       const ids = this.selected.length ? this.selected : [this.id]
       const map = {
         edit: () => this.$emit('onEdit', this.$props.id),
-        double_task: () => this.$emit('onDuplicate', ids[0]),
-        duplicate: () => this.$emit('onDuplicate', ids[0]),
-        double_n_task: () => console.log('double_n_task'),
+        duplicate: () => this.$emit('onDuplicate', ids),
+        duplicate_n_times: () => this.$emit('onDuplicateNTimes', ids),
         delete_theme: () => this.$emit('onRemoveTheme', ids),
         delete_task: () => this.$emit('onRemoveTask', ids),
         delete: () => this.$emit('onRemove', ids),

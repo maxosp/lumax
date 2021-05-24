@@ -20,6 +20,7 @@
         @onRemove="val => $emit('onRemove', val)"
         @onEdit="val => $emit('onEdit', val)"
         @onDuplicate="val => $emit('onDuplicate', val)"
+        @onDuplicateNTimes="val => $emit('onDuplicateNTimes', val)"
       />
     </div>
   </div>

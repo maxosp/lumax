@@ -86,7 +86,7 @@ export default Vue.extend({
       return [
         { name: 'edit', title: 'Редактировать' },
         { name: 'duplicate', title: 'Дублировать задание' },
-        { name: 'duplicate-n-times', title: 'Дублировать задание n раз' },
+        { name: 'duplicate_n_times', title: 'Дублировать задание n раз' },
         { name: 'preview', title: 'Предпросмотр' },
         { name: 'delete', title: 'Удалить задание' },
       ]
@@ -118,10 +118,10 @@ export default Vue.extend({
           this.$emit('onEdit', ids[0])
           break
         case 'duplicate':
-          this.$emit('duplicate', ids[0])
+          this.$emit('onDuplicate', ids)
           break
-        case 'duplicate-n-times':
-          // TO DO add copy method
+        case 'duplicate_n_times':
+          this.$emit('onDuplicateNTimes', ids)
           break
         case 'delete-all':
           this.$emit('onRemove', ids)

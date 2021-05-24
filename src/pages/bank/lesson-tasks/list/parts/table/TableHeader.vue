@@ -28,13 +28,14 @@
       <span
         v-if="showAdditionalActions"
         class="text --basic"
-        @click="$emit('onDuplicate', selectedRows[0])"
+        @click="$emit('onDuplicate', selectedRows)"
       >
         Дублировать
       </span>
       <span
         v-if="showAdditionalActions"
         class="text --basic"
+        @click="$emit('onDuplicateNTimes', selectedRows)"
       >
         Дублировать n раз
       </span>
