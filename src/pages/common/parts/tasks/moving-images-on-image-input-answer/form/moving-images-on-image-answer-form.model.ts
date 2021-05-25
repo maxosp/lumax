@@ -34,11 +34,12 @@ import {
   MovingOnImageInput,
   MovingOnImageQuestionData,
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/form/types'
+import { getImageSize } from '@/pages/common/parts/tasks/utils'
 
 export const clearFields = createEvent<void>()
 
-export const draggableImagesCounter = createCounter()
 const inputsCounter = createCounter()
+export const draggableImagesCounter = createCounter()
 export const inputsValuesCounter = createCounter()
 export const droppableImagesCounter = createCounter()
 export const draggableTextCounter = createCounter()
@@ -74,43 +75,12 @@ const uploadMainImageFx = attach({
   effect: uploadMediaFx,
 })
 
-const getRealMainImageSizesFx = createEffect<string, Size>({
-  handler: (src) =>
-    new Promise<Size>((res, rej) => {
-      const mainImage = new Image()
-      mainImage.onload = () => {
-        const maxImageWidth = 900
-        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
-
-        res({
-          width: mainImage.width * scale,
-          height: mainImage.height * scale,
-        })
-      }
-      mainImage.onerror = rej
-      mainImage.src = src
-    }),
+const getRealMainImageSizesFx = createEffect<string, { src: string; size: Size }>({
+  handler: getImageSize,
 })
 
 const getDraggableImageSizesFx = createEffect<string, { src: string; size: Size }>({
-  handler: (src) =>
-    new Promise<{ src: string; size: Size }>((res, rej) => {
-      const mainImage = new Image()
-      mainImage.onload = () => {
-        const maxImageWidth = 900
-        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
-
-        res({
-          src,
-          size: {
-            width: mainImage.width * scale,
-            height: mainImage.height * scale,
-          },
-        })
-      }
-      mainImage.onerror = rej
-      mainImage.src = src
-    }),
+  handler: getImageSize,
 })
 
 const uploadMediaImageFx = attach({
@@ -202,7 +172,7 @@ sample({
       newImage.size = params.size
       newImage.ratio = params.size.width / params.size.height
     }
-    return images
+    return { ...images }
   },
   target: setDraggableImages,
 })
@@ -248,6 +218,33 @@ export const $droppableImages = restore(setDroppableImages, [])
   .reset(clearFields)
 
 export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
+
+sample({
+  source: $droppableImages,
+  clock: replaceDraggableImage,
+  fn: (images, drop) => {
+    const imageOnDrop = images.find(({ value }) => value === drop.value)
+    if (imageOnDrop) {
+      imageOnDrop.size = drop.size
+    }
+    return { ...images }
+  },
+  target: setDroppableImages,
+})
+
+sample({
+  source: $draggableImages,
+  clock: replaceDroppableImage,
+  fn: (images, drop) => {
+    const imageOnDrop = images.find(({ value }) => value === drop.value)
+    if (imageOnDrop) {
+      imageOnDrop.size = drop.size
+    }
+    return { ...images }
+  },
+  target: setDraggableImages,
+})
+
 export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
 export const addDroppableImage = createAddEventForArrayStore($droppableImages, () => {
   const id = droppableImagesCounter.next()
@@ -417,7 +414,7 @@ forward({
 })
 
 forward({
-  from: getRealMainImageSizesFx.doneData,
+  from: getRealMainImageSizesFx.doneData.map((res) => res.size),
   to: setMainImageSize,
 })
 

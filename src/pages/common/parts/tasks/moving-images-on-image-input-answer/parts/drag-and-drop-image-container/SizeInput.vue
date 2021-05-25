@@ -41,17 +41,13 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    relative: false,
+    relative: true,
     lastScale: 1,
   }),
-  watch: {
-    relative() {
-      this.lastScale = this.size.width / this.size.height || 1
-    },
-  },
   methods: {
     changeWidth(size: number) {
       const width = +size
+      this.lastScale = this.size.width / this.size.height || 1
       if (this.relative) {
         this.$emit('change', {
           width,
@@ -66,6 +62,7 @@ export default Vue.extend({
     },
     changeHeight(size: number) {
       const height = +size
+      this.lastScale = this.size.width / this.size.height || 1
       if (this.relative) {
         this.$emit('change', {
           height,
