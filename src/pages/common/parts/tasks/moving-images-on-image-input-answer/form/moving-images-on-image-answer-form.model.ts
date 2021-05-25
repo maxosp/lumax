@@ -38,8 +38,8 @@ import { getImageSize } from '@/pages/common/parts/tasks/utils'
 
 export const clearFields = createEvent<void>()
 
-export const draggableImagesCounter = createCounter()
 const inputsCounter = createCounter()
+export const draggableImagesCounter = createCounter()
 export const inputsValuesCounter = createCounter()
 export const droppableImagesCounter = createCounter()
 export const draggableTextCounter = createCounter()
@@ -218,6 +218,20 @@ export const $droppableImages = restore(setDroppableImages, [])
   .reset(clearFields)
 
 export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
+
+sample({
+  source: $draggableImages,
+  clock: replaceDroppableImage,
+  fn: (images, drop) => {
+    const imageOnDrop = images.find(({ value }) => value === drop.value)
+    if (imageOnDrop) {
+      imageOnDrop.size = drop.size
+    }
+    return images
+  },
+  target: setDraggableImages,
+})
+
 export const removeDroppableImage = createRemoveEventForArrayStore($droppableImages, 'id')
 export const addDroppableImage = createAddEventForArrayStore($droppableImages, () => {
   const id = droppableImagesCounter.next()

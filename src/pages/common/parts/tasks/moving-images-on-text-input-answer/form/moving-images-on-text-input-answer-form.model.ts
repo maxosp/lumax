@@ -37,10 +37,10 @@ import {
 import { getImageSize } from '@/pages/common/parts/tasks/utils'
 
 const draggableImagesCounter = createCounter()
+const draggableTextCounter = createCounter()
 export const inputsCounter = createCounter()
 export const inputValuesCounter = createCounter()
 export const droppableImagesCounter = createCounter()
-const draggableTextCounter = createCounter()
 
 export const clearFields = createEvent<void>()
 
@@ -154,7 +154,7 @@ sample({
     if (newImage) {
       newImage.size = params.size
     }
-    return images
+    return { ...images }
   },
   target: setDraggableImages,
 })
