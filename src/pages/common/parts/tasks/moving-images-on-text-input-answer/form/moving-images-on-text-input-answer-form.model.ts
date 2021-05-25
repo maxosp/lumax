@@ -154,7 +154,7 @@ sample({
     if (newImage) {
       newImage.size = params.size
     }
-    return { ...images }
+    return [...images]
   },
   target: setDraggableImages,
 })
