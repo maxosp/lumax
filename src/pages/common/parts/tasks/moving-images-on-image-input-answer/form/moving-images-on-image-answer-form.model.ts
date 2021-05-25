@@ -220,6 +220,19 @@ export const $droppableImages = restore(setDroppableImages, [])
 export const replaceDroppableImage = createReplaceEventForArrayStore($droppableImages, 'id')
 
 sample({
+  source: $droppableImages,
+  clock: replaceDraggableImage,
+  fn: (images, drop) => {
+    const imageOnDrop = images.find(({ value }) => value === drop.value)
+    if (imageOnDrop) {
+      imageOnDrop.size = drop.size
+    }
+    return images
+  },
+  target: setDroppableImages,
+})
+
+sample({
   source: $draggableImages,
   clock: replaceDroppableImage,
   fn: (images, drop) => {
