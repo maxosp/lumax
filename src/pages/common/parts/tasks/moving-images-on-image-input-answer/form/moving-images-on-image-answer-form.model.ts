@@ -34,6 +34,7 @@ import {
   MovingOnImageInput,
   MovingOnImageQuestionData,
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/form/types'
+import { getImageSize } from '@/pages/common/parts/tasks/utils'
 
 export const clearFields = createEvent<void>()
 
@@ -74,43 +75,12 @@ const uploadMainImageFx = attach({
   effect: uploadMediaFx,
 })
 
-const getRealMainImageSizesFx = createEffect<string, Size>({
-  handler: (src) =>
-    new Promise<Size>((res, rej) => {
-      const mainImage = new Image()
-      mainImage.onload = () => {
-        const maxImageWidth = 900
-        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
-
-        res({
-          width: mainImage.width * scale,
-          height: mainImage.height * scale,
-        })
-      }
-      mainImage.onerror = rej
-      mainImage.src = src
-    }),
+const getRealMainImageSizesFx = createEffect<string, { src: string; size: Size }>({
+  handler: getImageSize,
 })
 
 const getDraggableImageSizesFx = createEffect<string, { src: string; size: Size }>({
-  handler: (src) =>
-    new Promise<{ src: string; size: Size }>((res, rej) => {
-      const mainImage = new Image()
-      mainImage.onload = () => {
-        const maxImageWidth = 900
-        const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
-
-        res({
-          src,
-          size: {
-            width: mainImage.width * scale,
-            height: mainImage.height * scale,
-          },
-        })
-      }
-      mainImage.onerror = rej
-      mainImage.src = src
-    }),
+  handler: getImageSize,
 })
 
 const uploadMediaImageFx = attach({
@@ -417,7 +387,7 @@ forward({
 })
 
 forward({
-  from: getRealMainImageSizesFx.doneData,
+  from: getRealMainImageSizesFx.doneData.map((res) => res.size),
   to: setMainImageSize,
 })
 

@@ -1,3 +1,5 @@
+import { Size } from '@/pages/common/parts/tasks/types'
+
 export const getRandomId = (): number => Number.parseInt(`${Math.random() * 1000}`, 10)
 
 export const getInputsIds = (arr: string[]) => {
@@ -52,3 +54,22 @@ export const removeInputsFromEditor = (mainStr: string, id: number) => {
   })
   return newTextTemplate
 }
+
+export const getImageSize = (src: string) =>
+  new Promise<{ src: string; size: Size }>((resolve, reject) => {
+    const mainImage = new Image()
+    mainImage.onload = () => {
+      const maxImageWidth = 900
+      const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
+
+      resolve({
+        src,
+        size: {
+          width: mainImage.width * scale,
+          height: mainImage.height * scale,
+        },
+      })
+    }
+    mainImage.onerror = reject
+    mainImage.src = src
+  })

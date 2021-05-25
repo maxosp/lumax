@@ -17,6 +17,7 @@ import {
   DraggableText,
   MovingOnTextDroppableImage,
   MovingOnTextDroppableInput,
+  Size,
 } from '@/pages/common/parts/tasks/types'
 import {
   createAddEventForArrayStore,
@@ -33,6 +34,7 @@ import {
   MovingOnTextQuestionData,
   MovingOnTextInput,
 } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/types'
+import { getImageSize } from '@/pages/common/parts/tasks/utils'
 
 const draggableImagesCounter = createCounter()
 export const inputsCounter = createCounter()
@@ -110,6 +112,10 @@ const uploadDraggableImageFx = createEffect<FileList, void>({
   },
 })
 
+const getDraggableImageSizesFx = createEffect<string, { src: string; size: Size }>({
+  handler: getImageSize,
+})
+
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
   .on(setupMovingOnTextAnswerDataFx.doneData, (_, payload) => payload.draggable)
@@ -133,6 +139,24 @@ export const uploadDraggableImage = createEvent<FileList>()
 forward({
   from: uploadDraggableImage,
   to: uploadDraggableImageFx,
+})
+
+forward({
+  from: uploadMediaImageFx.doneData.map((res) => res.body.file),
+  to: getDraggableImageSizesFx,
+})
+
+sample({
+  source: $draggableImages,
+  clock: getDraggableImageSizesFx.doneData,
+  fn: (images, params) => {
+    const newImage = images.find((image) => image.image === params.src)
+    if (newImage) {
+      newImage.size = params.size
+    }
+    return images
+  },
+  target: setDraggableImages,
 })
 
 sample({
