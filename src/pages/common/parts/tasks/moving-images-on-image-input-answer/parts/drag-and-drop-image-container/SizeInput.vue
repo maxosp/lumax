@@ -41,7 +41,7 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    relative: false,
+    relative: true,
     lastScale: 1,
   }),
   methods: {
