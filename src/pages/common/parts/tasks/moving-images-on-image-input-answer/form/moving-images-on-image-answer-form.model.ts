@@ -172,7 +172,7 @@ sample({
       newImage.size = params.size
       newImage.ratio = params.size.width / params.size.height
     }
-    return { ...images }
+    return [...images]
   },
   target: setDraggableImages,
 })
@@ -227,7 +227,7 @@ sample({
     if (imageOnDrop) {
       imageOnDrop.size = drop.size
     }
-    return { ...images }
+    return [...images]
   },
   target: setDroppableImages,
 })
@@ -240,7 +240,7 @@ sample({
     if (imageOnDrop) {
       imageOnDrop.size = drop.size
     }
-    return { ...images }
+    return [...images]
   },
   target: setDraggableImages,
 })
