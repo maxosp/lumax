@@ -57,19 +57,19 @@ export const removeInputsFromEditor = (mainStr: string, id: number) => {
 
 export const getImageSize = (src: string) =>
   new Promise<{ src: string; size: Size }>((resolve, reject) => {
-    const mainImage = new Image()
-    mainImage.onload = () => {
+    const img = new Image()
+    img.onload = () => {
       const maxImageWidth = 900
-      const scale = mainImage.width > maxImageWidth ? maxImageWidth / mainImage.width : 1
+      const scale = img.width > maxImageWidth ? maxImageWidth / img.width : 1
 
       resolve({
         src,
         size: {
-          width: mainImage.width * scale,
-          height: mainImage.height * scale,
+          width: img.width * scale,
+          height: img.height * scale,
         },
       })
     }
-    mainImage.onerror = reject
-    mainImage.src = src
+    img.onerror = reject
+    img.src = src
   })
