@@ -56,6 +56,7 @@
         :droppable-images="[]"
         is-background-image
         @remove="removeMainImage"
+        @change="updateMainImageSizes"
       />
     </div>
   </div>
@@ -81,6 +82,7 @@ import {
   setNextResizerToImage,
   setNextResizableBlockType,
   removeMainImage,
+  setMainImageSize,
 } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
 import FilePicker from '@/ui/file-picker/FilePicker.vue'
 import Spinner from '@/ui/spinner/Spinner.vue'
@@ -88,7 +90,9 @@ import DraggableInputs from '@/pages/common/parts/tasks/moving-images-on-image-i
 import DraggableImages from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/DraggableImages.vue'
 import ResizableCreator from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/resizable/ResizableCreator.vue'
 import ImageMatchItem from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/correct-images-match-picker/ImageMatchItem.vue'
-import ImageContextMenu from './ImageContextMenu.vue'
+import ImageContextMenu from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/ImageContextMenu.vue'
+import { DraggableImage } from '@/pages/common/parts/tasks/types'
+import { backgroundImageSize } from '@/pages/common/parts/tasks/utils'
 
 export default Vue.extend({
   name: `DragAndDropImageContainer`,
@@ -125,6 +129,7 @@ export default Vue.extend({
   methods: {
     setNextResizerToImage,
     setNextResizerToText,
+    setMainImageSize,
     createResizableBlock,
     removeMainImage,
     uploadMainImage,
@@ -142,6 +147,9 @@ export default Vue.extend({
     triggerInputFile() {
       const filePicker = document.getElementById('file-picker')
       filePicker!.click()
+    },
+    updateMainImageSizes(event: DraggableImage) {
+      if (event.size.width <= backgroundImageSize) setMainImageSize(event.size)
     },
   },
   mounted() {
