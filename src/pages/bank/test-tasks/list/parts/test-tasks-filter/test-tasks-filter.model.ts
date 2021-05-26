@@ -1,4 +1,4 @@
-import { createEvent, restore, forward, combine, sample } from 'effector-root'
+import { createEvent, restore, forward, combine } from 'effector-root'
 import { debounce, every } from 'patronum'
 import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
@@ -7,7 +7,6 @@ import {
   $selectedTheme,
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
-import { loadFilteredTree, loadTreeLight } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import { dropdownModules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdown-modules'
 
 export const testTasksFilters = createFiltersModel(
@@ -30,17 +29,6 @@ export const $canSetThemePosition = every({
 export const $canSetTags = every({
   predicate: (value) => value !== null,
   stores: [$selectedTheme],
-})
-
-forward({
-  from: testTasksFilters.methods.resetFilters,
-  to: loadTreeLight.prepend(() => ({})),
-})
-
-sample({
-  clock: testTasksFilters.methods.applyFilters,
-  source: testTasksFilters.store.$filterParams,
-  target: loadFilteredTree,
 })
 
 forward({

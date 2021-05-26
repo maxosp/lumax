@@ -29,6 +29,7 @@ import { deleteMediaFolderFx } from '@/features/api/media/folder/delete-media-fo
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { mediaCopyToFx } from '@/features/api/media/media-copy-to'
 import { mediaFolderCopyToFx } from '@/features/api/media/folder/folder-copy-to'
+import { filesFilters, reset } from '@/pages/dictionary/files/parts/filter/filter.model'
 
 export const getFilesTree = attach({
   effect: getMediaTreeFx,
@@ -226,4 +227,20 @@ forward({
 forward({
   from: pasteFolderFx.doneData,
   to: [loadTreeLight, successToastEvent('Файл был успешно скопирован!'), clearCopyPasteElements],
+})
+
+forward({
+  from: filesFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: filesFilters.methods.applyFilters,
+  source: filesFilters.store.$filterParams,
+  target: loadFilteredTree,
+})
+
+forward({
+  from: filesFilters.methods.resetFilters,
+  to: reset,
 })

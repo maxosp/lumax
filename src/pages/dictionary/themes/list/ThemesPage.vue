@@ -1,6 +1,8 @@
 <template>
   <div id="themes-page">
-    <PageHeader />
+    <PageHeader
+      :table-columns="fields"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"

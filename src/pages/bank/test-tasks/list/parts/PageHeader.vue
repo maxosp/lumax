@@ -27,16 +27,15 @@
           class="icon"
         />
       </BaseButton>
-      <BaseButton class="btn">
-        <div class="btn-content">
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon type="settings" size="20" />
-        </div>
-      </BaseButton>
+      <DownloadButton
+        v-if="!$treeView"
+      />
     </div>
+    <HeaderPopup
+      class="popup"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
+    />
   </GridPageHead>
 </template>
 
@@ -44,27 +43,38 @@
 import Vue, { PropType } from 'vue'
 import GridPageHead from '@/pages/common/grid-parts/GridPageHead.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import Divider from '@/ui/divider/Divider.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import { loadModalForMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
+import { TableField } from '@/pages/dictionary/themes/list/types'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
+import { testTaskPageParams } from '@/pages/bank/test-tasks/list/tasks-page.model'
 
 export default Vue.extend({
   name: 'PageHeader',
   components: {
+    DownloadButton,
     BaseButton,
-    Divider,
     Icon,
     GridPageHead,
+    HeaderPopup,
   },
   props: {
+    tableColumns: { type: Array as PropType<TableField[]> },
     selectedRows: { type: Array as PropType<number[]> },
   },
-  methods: { loadModalForMultiChanges },
+  effector: {
+    $treeView: testTaskPageParams.store.treeView,
+  },
+  methods: {
+    loadModalForMultiChanges,
+  },
 })
 </script>
 
 <style scoped>
 .header {
+  position: relative;
   width: 100%;
   height: 58px;
   display: flex;
@@ -93,20 +103,11 @@ export default Vue.extend({
   line-height: 17px;
 }
 
-.btn-content {
-  display: flex;
-  align-items: center;
-  & /deep/ .divider {
-    margin: 0 10px;
-    background-color: var(--c-dark-1);
-  }
-}
 .btn.--square {
   width: 40px;
   min-width: 40px;
   padding: 0;
   @mixin flex-center;
-  margin-right: 20px;
   .icon {
     fill: #fff;
     stroke: transparent;

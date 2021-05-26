@@ -23,6 +23,7 @@ import {
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
+import { labelsFilters } from '@/pages/labels/parts/labels-filter/labels-filter.model'
 
 export const getLabelsTree = attach({
   effect: getLabelsTreeFx,
@@ -144,4 +145,15 @@ forward({
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     successToastEvent('Метка была успешно удалена!'),
   ],
+})
+
+forward({
+  from: labelsFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: labelsFilters.methods.applyFilters,
+  source: labelsFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

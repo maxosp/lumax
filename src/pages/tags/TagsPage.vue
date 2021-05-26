@@ -1,6 +1,6 @@
 <template>
   <div id="tags-page">
-    <PageHeader :table-columns-names="fields" />
+    <PageHeader :table-columns="fields" />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"

@@ -1,6 +1,10 @@
 <template>
   <div id="tags-page">
-    <PageHeader :table-columns-names="fields" :selected-rows="selectedRows" />
+    <PageHeader
+      :table-columns="fields"
+      :selected-rows="selectedRows"
+      @onExport="downloadOlympiadAssignmentTableFile"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"
@@ -150,6 +154,7 @@ import {
   requestDeleteAssignments,
   olympiadTaskPageParams,
   $isLoading,
+  downloadOlympiadAssignmentTableFile,
 } from '@/pages/bank/olympiad-tasks/list/olympiad-tasks-page.model'
 import {
   olympiadTasksFilters,
@@ -283,6 +288,7 @@ export default (
     reset,
     duplicateAssignment,
     loadDuplicateModal,
+    downloadOlympiadAssignmentTableFile,
     clearWording(str: string) {
       return removeHtmlTags(str)
     },

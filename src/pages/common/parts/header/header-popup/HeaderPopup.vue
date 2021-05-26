@@ -1,37 +1,39 @@
 <template>
   <div
     v-click-outside="clickOutside"
-    v-if="visibility"
+    v-if="$exportPopupVisibility"
     class="header-popup"
   >
     <BaseSwitch
       class="switch"
-      :checked="$selectAll"
-      @change="selectAllChanged"
+      :checked="$allSelected"
+      @change="toggleSelectAll"
     >
       <p class="text"> Выбрать все </p>
     </BaseSwitch>
     <p class="text"> Выберите нужные столбцы </p>
     <div class="ckbx">
       <BaseCheckbox
-        v-for="(item, index) in filteredColumnsNames"
+        v-for="(value, key, index) in $exportColumns"
         :key="index"
-        :name="item.name"
+        :name="key"
+        :value="value"
         option="reorder"
         class="checkbox"
+        @change="changeTestAssignmentsExportColumns({[key]: $event})"
       >
-        {{ item.title }}
+        {{ $exportColumnsNames[key] }}
       </BaseCheckbox>
     </div>
     <p
       class="text --underline"
-      @click="clearFields"
+      @click="uncheckAll"
     >
       Сбросить фильтры
     </p>
     <BaseButton
       class="btn"
-      @click="handleClick"
+      @click="$emit('onExport')"
     >
       Выгрузить
     </BaseButton>
@@ -45,10 +47,17 @@ import BaseCheckbox from '@/ui/checkbox/BaseCheckbox.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import {
-  $selectAll,
-  selectAllChanged,
-  download,
-} from '@/pages/applications/incoming/parts/header/header-popup/header-popup.model'
+  $exportPopupVisibility,
+  changeExportPopupVisibility,
+  $allSelected,
+  toggleSelectAll,
+  changeTestAssignmentsExportColumns,
+  uncheckAll,
+  $exportColumns,
+  $exportColumnsNames,
+  initExportPopupStores,
+  exportPopupDestroy,
+} from '@/pages/common/parts/header/header-popup/header-popup.model'
 
 const ClickOutside = require('vue-click-outside')
 
@@ -63,48 +72,38 @@ export default Vue.extend({
     ClickOutside,
   },
   props: {
-    tableColumnsNames: { type: Array as PropType<TableField[]> },
+    tableColumns: { type: Array as PropType<TableField[]> },
     visibility: { type: Boolean as PropType<boolean> },
   },
   effector: {
-    $selectAll,
-  },
-  computed: {
-    filteredColumnsNames() {
-      return this.tableColumnsNames.filter((el) => el.title.length > 0)
-    },
-  },
-  watch: {
-    $selectAll: {
-      handler(newVal) {
-        Array.from(document.querySelectorAll('.header-popup input')).forEach(
-          (el: any) => (el.checked = newVal)
-        )
-      },
-    },
+    $exportPopupVisibility,
+    $allSelected,
+    $exportColumns,
+    $exportColumnsNames,
   },
   methods: {
-    selectAllChanged,
-    download,
+    toggleSelectAll,
+    changeTestAssignmentsExportColumns,
+    uncheckAll,
     clickOutside(evt: any) {
       if (evt.target.closest('#btn-download')) return
-      this.$emit('close')
+      changeExportPopupVisibility(false)
     },
-    clearFields() {
-      Array.from(document.querySelectorAll('.header-popup input:checked')).forEach(
-        (el: any) => (el.checked = false)
-      )
-    },
-    handleClick() {
-      download()
-      this.$emit('close')
-    },
+  },
+  mounted() {
+    initExportPopupStores(this.tableColumns)
+  },
+  beforeDestroy() {
+    exportPopupDestroy()
   },
 })
 </script>
 
 <style scoped>
 .header-popup {
+  position: absolute;
+  top: 5px;
+  right: 65px;
   background-color: #fff;
   padding: 20px;
   border-radius: 7px;

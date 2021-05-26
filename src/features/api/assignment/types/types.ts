@@ -56,7 +56,7 @@ export type GetTypesResponse = {
   name: string
 }
 
-export type GetAssignmentTreeQueryParams = {
+export interface GetAssignmentTreeQueryParams {
   sort?: string
   subject?: number
   study_year?: number
@@ -69,8 +69,19 @@ export type GetAssignmentTreeQueryParams = {
   is_test_assignment?: boolean
   is_lesson_assignment?: boolean
   is_olympiad_assignment?: boolean
+  created_by_me?: boolean
+  theme?: number
   search?: string
 }
+
+export interface GetAssignmentListQueryParams extends GetAssignmentTreeQueryParams {
+  page?: number
+  per_page?: number
+}
+
+export type ExportAssignmentQueryParams = {
+  export_fields: string[]
+} & GetAssignmentListQueryParams
 
 export type ListType = {
   code: string | number

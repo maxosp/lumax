@@ -22,6 +22,7 @@ import {
   $dataToUpdateTree,
   resetDataToUpdateTree,
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { resourcesFilters } from '@/pages/dictionary/resources/list/parts/resources-filter/resources-filter.model'
 
 const getResourcesTree = attach({
   effect: getResourcesTreeFx,
@@ -132,4 +133,15 @@ forward({
     confirmDeleteModalVisibilityChanged.prepend(() => false),
     successToastEvent('Обучающий ресурс был успешно удален!'),
   ],
+})
+
+forward({
+  from: resourcesFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: resourcesFilters.methods.applyFilters,
+  source: resourcesFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

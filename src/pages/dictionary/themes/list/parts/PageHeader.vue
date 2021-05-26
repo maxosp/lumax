@@ -4,43 +4,45 @@
     <div class="buttons">
       <RouterLink :to="{ name: 'themes-create' }">
         <BaseButton
-          class="btn"
+          class="btn btn_theme-create"
           yellow
         >
           Создать тему
         </BaseButton>
       </RouterLink>
-      <BaseButton class="btn">
-        <div class="btn-content">
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon type="settings" size="20" />
-        </div>
-      </BaseButton>
+      <DownloadButton />
     </div>
+    <HeaderPopup
+      class="popup"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
+import { TableField } from '@/pages/dictionary/themes/list/types'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
 
 export default Vue.extend({
   name: 'PageHeader',
   components: {
     BaseButton,
-    Divider,
-    Icon,
+    HeaderPopup,
+    DownloadButton,
+  },
+  props: {
+    tableColumns: { type: Array as PropType<TableField[]> },
   },
 })
 </script>
 
 <style scoped>
 .header {
+  position: relative;
   width: 100%;
   height: 58px;
   display: flex;
@@ -62,24 +64,11 @@ export default Vue.extend({
   display: flex;
 }
 
-.btn {
+.btn_theme-create {
   min-width: 130px;
   font-weight: 600;
   font-size: 14px;
   line-height: 17px;
-}
-
-.btn-content {
-  display: flex;
-  align-items: center;
-  & /deep/ .divider {
-    margin: 0 10px;
-    background-color: var(--c-dark-1);
-  }
-}
-
-a + .btn {
-  margin-left: 15px;
   padding-right: 10px;
   padding-left: 15px;
 }

@@ -16,31 +16,15 @@
       >
         Добавить тег
       </BaseButton>
-      <BaseButton
+      <DownloadButton
         v-if="!$treeView"
-        id="btn-download"
-        class="btn"
-      >
-        <div
-          class="btn-content"
-          @click="showPopup = true"
-        >
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon
-            type="settings"
-            size="20"
-          />
-        </div>
-      </BaseButton>
+      />
     </div>
+
     <HeaderPopup
       class="popup"
-      :table-columns-names="tableColumnsNames"
-      :visibility="showPopup"
-      @close="showPopup = false"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
     />
   </div>
 </template>
@@ -49,10 +33,8 @@
 import Vue, { PropType } from 'vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
-import HeaderPopup from '@/pages/tags/parts/header/header-popup/HeaderPopup.vue'
-import { modalVisibilityChanged } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { tagsPageParams } from '@/pages/tags/tags-page.model'
 
@@ -60,31 +42,24 @@ export default Vue.extend({
   components: {
     BaseSwitch,
     BaseButton,
-    Divider,
-    Icon,
+    DownloadButton,
     HeaderPopup,
   },
   props: {
-    tableColumnsNames: { type: Array as PropType<TableField[]> },
+    tableColumns: { type: Array as PropType<TableField[]> },
   },
   effector: {
     $treeView: tagsPageParams.store.treeView,
   },
-  data() {
-    return {
-      showPopup: false,
-    }
-  },
   methods: {
     toggleTreeView: tagsPageParams.methods.toggleTreeView,
-
-    modalVisibilityChanged,
   },
 })
 </script>
 
 <style scoped>
 .header {
+  position: relative;
   width: 100%;
   height: 58px;
   border-radius: 3px;
@@ -94,7 +69,6 @@ export default Vue.extend({
   padding: 0 20px;
   box-sizing: border-box;
   margin-bottom: 20px;
-  position: relative;
 }
 .title {
   font-size: 20px;
@@ -114,22 +88,5 @@ export default Vue.extend({
     font-size: 14px;
     line-height: 17px;
   }
-  .btn:last-child {
-    padding: 0 10px 0 15px;
-    margin-left: 20px;
-  }
-  .btn-content {
-    display: flex;
-    align-items: center;
-    & /deep/ .divider {
-      margin: 0 10px;
-      background-color: var(--c-dark-1);
-    }
-  }
-}
-.popup {
-  position: absolute;
-  top: 0;
-  right: 65px;
 }
 </style>

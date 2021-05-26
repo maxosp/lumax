@@ -1,4 +1,4 @@
-import { attach, combine, createEffect, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEffect, createEvent, forward, restore, sample } from 'effector-root'
 import { getOlympiadTasksListFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-tasks-list'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
@@ -18,6 +18,9 @@ import {
   changedDuplicateModalVisibility,
 } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 import { OlympiadAssignmentsBulkUpdate } from '@/features/api/assignment/types/olympiad-assignments-types'
+import { $exportColumnsQueryParam } from '@/pages/common/parts/header/header-popup/header-popup.model'
+import { exportOlympiadAssignmentListFx } from '@/features/api/assignment/olympiad-assignment/export-olympiad-assignment'
+import { olympiadTasksFilters } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/tasks-filter.model'
 
 const getOlympiadsTasksList = attach({
   effect: getOlympiadTasksListFx,
@@ -50,6 +53,14 @@ export const duplicateAssignment = attach({
     assignments: id,
     number_of_duplicates: n,
   }),
+})
+
+export const downloadOlympiadAssignmentTableFile = attach({
+  effect: exportOlympiadAssignmentListFx,
+  source: [olympiadTasksFilters.store.$filterParams, $exportColumnsQueryParam],
+  mapParams: (_, [filters, exportedColumns]) => {
+    return { ...filters, ...exportedColumns }
+  },
 })
 
 export const olympiadTaskPageParams = createPageParamsModel()
@@ -113,4 +124,15 @@ forward({
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),
   ],
+})
+
+forward({
+  from: olympiadTasksFilters.methods.resetFilters,
+  to: loadList.prepend(() => ({})),
+})
+
+sample({
+  clock: olympiadTasksFilters.methods.applyFilters,
+  source: olympiadTasksFilters.store.$filterParams,
+  target: loadList,
 })

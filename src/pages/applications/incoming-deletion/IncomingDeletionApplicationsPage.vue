@@ -1,6 +1,9 @@
 <template>
   <div id="applications-page">
-    <PageHeader :table-columns-names="fields" :selected-rows="selectedApplications" />
+    <PageHeader
+      :table-columns="fields"
+      :selected-rows="selectedApplications"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @handleFilterVisibility="toggleVisibility(!$visibility)"

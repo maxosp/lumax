@@ -9,63 +9,37 @@
       >
         <p class="text"> Отображать только назначенные на меня </p>
       </BaseSwitch>
-      <BaseButton
-        id="btn-download"
-        class="btn"
-      >
-        <div
-          class="btn-content"
-          @click="showPopup = true"
-        >
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon
-            type="settings"
-            size="20"
-          />
-        </div>
-      </BaseButton>
+      <DownloadButton />
     </div>
+
     <HeaderPopup
       class="popup"
-      :table-columns-names="tableColumnsNames"
-      :visibility="showPopup"
-      @close="showPopup = false"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
     />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import BaseButton from '@/ui/button/BaseButton.vue'
 import BaseSwitch from '@/ui/switch/BaseSwitch.vue'
-import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
-import HeaderPopup from '@/pages/applications/incoming/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { incomingApplicationsFilters } from '@/pages/applications/incoming/parts/filter/filter.model'
 import { FiltersParams } from '@/pages/common/types'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
 
 export default Vue.extend({
   components: {
-    BaseButton,
     BaseSwitch,
-    Divider,
-    Icon,
     HeaderPopup,
+    DownloadButton,
   },
   effector: {
     $filterParams: incomingApplicationsFilters.store.$filterParams,
   },
   props: {
-    tableColumnsNames: { type: Array as PropType<TableField[]> },
-  },
-  data() {
-    return {
-      showPopup: false,
-    }
+    tableColumns: { type: Array as PropType<TableField[]> },
   },
   methods: {
     setItem(filter: FiltersParams) {
@@ -99,7 +73,6 @@ export default Vue.extend({
   @mixin flex-row-central;
   width: fit-content;
   .switch {
-    margin-right: 20px;
     margin-top: 0;
   }
   .btn {
@@ -120,22 +93,5 @@ export default Vue.extend({
       stroke: transparent;
     }
   }
-  .btn:last-child {
-    padding: 0 10px 0 15px;
-    margin-left: 20px;
-  }
-  .btn-content {
-    display: flex;
-    align-items: center;
-    & /deep/ .divider {
-      margin: 0 10px;
-      background-color: var(--c-dark-1);
-    }
-  }
-}
-.popup {
-  position: absolute;
-  top: 0;
-  right: 65px;
 }
 </style>

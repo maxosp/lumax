@@ -40,6 +40,9 @@ import {
   $nDuplicate,
   changedDuplicateModalVisibility,
 } from '@/pages/bank/common/modals/duplicate/duplicate.model'
+import { exportTestAssignmentListFx } from '@/features/api/assignment/test-assignment/export-test-assignment'
+import { testTasksFilters } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
+import { $exportColumnsQueryParam } from '@/pages/common/parts/header/header-popup/header-popup.model'
 
 const getTasksList = attach({
   effect: getTestAssignmentListFx,
@@ -93,6 +96,14 @@ export const duplicateAssignment = attach({
     assignments: id,
     number_of_duplicates: n,
   }),
+})
+
+export const downloadTestAssignmentTableFile = attach({
+  effect: exportTestAssignmentListFx,
+  source: [testTasksFilters.store.$filterParams, $exportColumnsQueryParam],
+  mapParams: (_, [filters, exportedColumns]) => {
+    return { ...filters, ...exportedColumns }
+  },
 })
 
 export const testTaskPageParams = createPageParamsModel()
@@ -223,4 +234,15 @@ forward({
 forward({
   from: sendAssignmentsPublish.failData.map(({ body }) => body),
   to: addToast.prepend((data: any) => ({ type: 'error', message: data.detail })),
+})
+
+forward({
+  from: testTasksFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: testTasksFilters.methods.applyFilters,
+  source: testTasksFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

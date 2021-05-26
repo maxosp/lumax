@@ -1,9 +1,10 @@
-import { attach, combine, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { getTicketsListFx } from '@/features/api/ticket/moderation/get-tickets-list'
 import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import { outgoingApplicationsFilters } from '@/pages/applications/outgoing/parts/filter/filter.model'
 import { modalVisibilityChanged } from '../modals/cancel/cancel.model'
 
 export const cancelApplicationsFx = attach({
@@ -45,4 +46,15 @@ forward({
     modalVisibilityChanged.prepend(() => false),
     canUpdateTableChanged.prepend(() => true),
   ],
+})
+
+forward({
+  from: outgoingApplicationsFilters.methods.resetFilters,
+  to: loadList.prepend(() => ({})),
+})
+
+sample({
+  clock: outgoingApplicationsFilters.methods.applyFilters,
+  source: outgoingApplicationsFilters.store.$filterParams,
+  target: loadList,
 })

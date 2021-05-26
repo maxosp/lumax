@@ -28,6 +28,7 @@ import {
 import { loadTreeLight as loadTasksTreeLight } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { RequestDeleteThemesParams } from '@/features/api/assignment/types/types'
+import { themesFilters } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -163,4 +164,15 @@ forward({
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),
   ],
+})
+
+forward({
+  from: themesFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: themesFilters.methods.applyFilters,
+  source: themesFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

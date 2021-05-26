@@ -10,40 +10,12 @@
           Создать задание
         </BaseButton>
       </RouterLink>
-      <BaseButton
-        class="btn --square"
-        @click="loadModalForMultiChanges(selectedRows)"
-      >
-        <Icon
-          type="edit"
-          size="20"
-          class="icon"
-        />
-      </BaseButton>
-      <BaseButton
-        id="btn-download"
-        class="btn"
-      >
-        <div
-          class="btn-content"
-          @click="showPopup = true"
-        >
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon
-            type="settings"
-            size="20"
-          />
-        </div>
-      </BaseButton>
+      <DownloadButton />
     </div>
     <HeaderPopup
       class="popup"
-      :table-columns-names="tableColumnsNames"
-      :visibility="showPopup"
-      @close="showPopup = false"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
     />
   </div>
 </template>
@@ -51,27 +23,20 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
-import HeaderPopup from '@/pages/bank/olympiad-tasks/list/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { loadModalForMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
 
 export default Vue.extend({
   components: {
     BaseButton,
-    Divider,
-    Icon,
     HeaderPopup,
+    DownloadButton,
   },
   props: {
-    tableColumnsNames: { type: Array as PropType<TableField[]> },
+    tableColumns: { type: Array as PropType<TableField[]> },
     selectedRows: { type: Array as PropType<number[]> },
-  },
-  data() {
-    return {
-      showPopup: false,
-    }
   },
   methods: { loadModalForMultiChanges },
 })
@@ -121,22 +86,5 @@ export default Vue.extend({
       stroke: transparent;
     }
   }
-  .btn:last-child {
-    padding: 0 10px 0 15px;
-    margin-left: 20px;
-  }
-  .btn-content {
-    display: flex;
-    align-items: center;
-    & /deep/ .divider {
-      margin: 0 10px;
-      background-color: var(--c-dark-1);
-    }
-  }
-}
-.popup {
-  position: absolute;
-  top: 0;
-  right: 65px;
 }
 </style>

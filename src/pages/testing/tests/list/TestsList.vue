@@ -1,6 +1,9 @@
 <template>
   <div id="tests-page">
-    <PageHeader :table-columns-names="fields" :selected-rows="selectedRows" />
+    <PageHeader
+      :table-columns="fields"
+      :selected-rows="selectedRows"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"

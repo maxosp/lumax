@@ -1,7 +1,7 @@
 <template>
   <div id="applications-page">
     <PageHeader
-      :table-columns-names="fields"
+      :table-columns="fields"
       @setFilter="onFilterSet"
       @changeFilter="changeFilter"
     />
@@ -148,7 +148,13 @@ import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue
 import { DEFAULT_ID } from '@/pages/common/constants'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
-export default (Vue as VueConstructor<Vue & { $refs: RefsType }>).extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: RefsType
+    }
+  >
+).extend({
   components: {
     NoDataContent,
     PageHeader,

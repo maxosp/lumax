@@ -10,30 +10,12 @@
           Создать тест
         </BaseButton>
       </RouterLink>
-      <BaseButton
-        id="btn-download"
-        class="btn"
-      >
-        <div
-          class="btn-content"
-          @click="showPopup = true"
-        >
-          <span>
-            Выгрузить
-          </span>
-          <Divider vertical />
-          <Icon
-            type="settings"
-            size="20"
-          />
-        </div>
-      </BaseButton>
+      <DownloadButton />
     </div>
     <HeaderPopup
       class="popup"
-      :table-columns-names="tableColumnsNames"
-      :visibility="showPopup"
-      @close="showPopup = false"
+      :table-columns="tableColumns"
+      @onExport="$emit('onExport')"
     />
   </div>
 </template>
@@ -41,22 +23,20 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import BaseButton from '@/ui/button/BaseButton.vue'
-import Divider from '@/ui/divider/Divider.vue'
-import Icon from '@/ui/icon/Icon.vue'
-import HeaderPopup from '@/pages/bank/olympiad-tasks/list/parts/header/header-popup/HeaderPopup.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 // TODO: change import.
 import { loadModalForMultiChanges } from '@/pages/bank/olympiad-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
+import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vue'
+import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
 
 export default Vue.extend({
   components: {
     BaseButton,
-    Divider,
-    Icon,
+    DownloadButton,
     HeaderPopup,
   },
   props: {
-    tableColumnsNames: { type: Array as PropType<TableField[]> },
+    tableColumns: { type: Array as PropType<TableField[]> },
     selectedRows: { type: Array as PropType<number[]> },
   },
   data() {

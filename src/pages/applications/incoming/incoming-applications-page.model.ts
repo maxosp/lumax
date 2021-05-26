@@ -1,10 +1,11 @@
-import { attach, combine, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import { getTicketsListFx } from '@/features/api/ticket/moderation/get-tickets-list'
 import { getTicketsListQueryParams, UpdateTicketBulkType } from '@/features/api/ticket/types'
 import { updateTicketBulkFx } from '@/features/api/ticket/moderation/update-ticket-bulk'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 import { updateApplicationsCounters } from '@/pages/common/navigation/navigation.model'
+import { incomingApplicationsFilters } from '@/pages/applications/incoming/parts/filter/filter.model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsListFx,
@@ -45,4 +46,15 @@ forward({
     canRefreshTableChanged.prepend(() => true),
     updateApplicationsCounters,
   ],
+})
+
+forward({
+  from: incomingApplicationsFilters.methods.resetFilters,
+  to: loadList.prepend(() => ({})),
+})
+
+sample({
+  clock: incomingApplicationsFilters.methods.applyFilters,
+  source: incomingApplicationsFilters.store.$filterParams,
+  target: loadList,
 })

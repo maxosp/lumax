@@ -1,6 +1,10 @@
 <template>
   <div id="lessons-page">
-    <PageHeader :selected-rows="selectedRows" />
+    <PageHeader
+      :table-columns="fields"
+      :selected-rows="selectedRows"
+      @onExport="downloadLessonAssignmentTableFile"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"
@@ -170,6 +174,7 @@ import {
   requestDeleteFolder,
   duplicateAssignment,
   $canRefreshAfterDuplicate,
+  downloadLessonAssignmentTableFile,
 } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
 import {
   toggleVisibility,
@@ -310,6 +315,7 @@ export default (
     loadTree,
     duplicateAssignment,
     loadDuplicateModal,
+    downloadLessonAssignmentTableFile,
     showPreview(idArr: number[]) {
       if (idArr.length > 1) {
         const filteredList = this.localItems

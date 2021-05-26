@@ -3,7 +3,7 @@ import { TableField } from '@/pages/dictionary/themes/list/types'
 import { DropdownItem } from '@/pages/common/types'
 import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
 
-export const themesTableFields: TableField[] = [
+export const TestTasksTableFields: TableField[] = [
   {
     name: '__checkbox',
     title: '',

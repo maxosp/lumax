@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
 import {
   getTicketsDeletionListQueryParams,
   UpdateTicketBulkType,
@@ -8,6 +8,7 @@ import { updateTicketBulkFx } from '@/features/api/ticket/deletion/update-ticket
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { modalVisibilityChanged } from '@/pages/applications/modals/cancel/cancel.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
+import { outgoingDeletionFilters } from '@/pages/applications/outgoing-deletion/parts/filter/filter.model'
 
 const getIncomingApplicationsList = attach({
   effect: getTicketsDeletionListFx,
@@ -44,4 +45,15 @@ forward({
     modalVisibilityChanged.prepend(() => false),
     canRefreshTableChanged.prepend(() => true),
   ],
+})
+
+forward({
+  from: outgoingDeletionFilters.methods.resetFilters,
+  to: loadList.prepend(() => ({})),
+})
+
+sample({
+  clock: outgoingDeletionFilters.methods.applyFilters,
+  source: outgoingDeletionFilters.store.$filterParams,
+  target: loadList,
 })

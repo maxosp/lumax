@@ -43,6 +43,9 @@ import {
 } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 import { LessonAssignmentsBulkUpdate } from '@/features/api/assignment/types/lesson-assignments-types'
 import { updateLessonAssignmentBulkFx } from '@/features/api/assignment/lesson-assignment/update-lesson-assignment-bulk'
+import { $exportColumnsQueryParam } from '@/pages/common/parts/header/header-popup/header-popup.model'
+import { lessonTasksFilters } from '@/pages/bank/lesson-tasks/list/parts/lesson-tasks-filter/lesson-tasks-filter.model'
+import { exportLessonAssignmentListFx } from '@/features/api/assignment/lesson-assignment/export-lesson-assignment'
 
 const getLessonsTree = attach({
   effect: getLessonAssignmentTreeFx,
@@ -134,6 +137,14 @@ export const requestDeleteFolder = attach({
       assignment_folders: payload.assignment_folders,
       ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
     }
+  },
+})
+
+export const downloadLessonAssignmentTableFile = attach({
+  effect: exportLessonAssignmentListFx,
+  source: [lessonTasksFilters.store.$filterParams, $exportColumnsQueryParam],
+  mapParams: (_, [filters, exportedColumns]) => {
+    return { ...filters, ...exportedColumns }
   },
 })
 
@@ -247,4 +258,15 @@ forward({
     successToastEvent('Отправлена заявка на удаление'),
     requestDeleteModalVisibilityChanged.prepend(() => false),
   ],
+})
+
+forward({
+  from: lessonTasksFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: lessonTasksFilters.methods.applyFilters,
+  source: lessonTasksFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

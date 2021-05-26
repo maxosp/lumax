@@ -1,6 +1,10 @@
 <template>
   <div id="tasks-page">
-    <PageHeader :selected-rows="selectedRows" />
+    <PageHeader
+      :table-columns="fields"
+      :selected-rows="selectedRows"
+      @onExport="downloadTestAssignmentTableFile"
+    />
     <GeneralFilter
       :search-fields="searchFields"
       @setFilter="onFilterSet"
@@ -191,6 +195,7 @@ import {
   duplicateAssignment,
   $canRefreshAfterDuplicate,
   $isLoading,
+  downloadTestAssignmentTableFile,
 } from '@/pages/bank/test-tasks/list/tasks-page.model'
 import {
   toggleVisibility,
@@ -199,7 +204,7 @@ import {
 } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
 import { reset } from '@/pages/common/general-filter/general-filter.model'
 import { noInternetToastEvent } from '@/features/toasts/toasts.model'
-import { themesTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
+import { TestTasksTableFields, searchFieldsData } from '@/pages/bank/test-tasks/list/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
@@ -281,8 +286,8 @@ export default (
       showContextMenu: false,
       contextMenuType: 'table_tasks',
       contextMenuStyles: { top: '0', left: '0' },
-      fields: themesTableFields,
       searchFields: searchFieldsData,
+      fields: TestTasksTableFields,
       total: 0,
       selectedRows: [] as number[] | null,
       isTheme: false,
@@ -485,6 +490,7 @@ export default (
     hideContextMenu() {
       this.showContextMenu = false
     },
+    downloadTestAssignmentTableFile,
   },
   mounted() {
     loadTreeLight()

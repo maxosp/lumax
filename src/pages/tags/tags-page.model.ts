@@ -25,6 +25,7 @@ import {
 } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { getTagsListFx } from '@/features/api/assignment/olympiad-tags/get-tags-list'
 import { getOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-assignment'
+import { tagsFilters } from '@/pages/tags/parts/tags-filter/tags-filter.model'
 
 export const getTagsTree = attach({
   effect: getTagsTreeFx,
@@ -167,4 +168,15 @@ condition({
   if: (ids: number[]) => ids.length === 1,
   then: successToastEvent('Тег был успешно удален!'),
   else: successToastEvent('Теги были успешно удалены!'),
+})
+
+forward({
+  from: tagsFilters.methods.resetFilters,
+  to: loadTreeLight.prepend(() => ({})),
+})
+
+sample({
+  clock: tagsFilters.methods.applyFilters,
+  source: tagsFilters.store.$filterParams,
+  target: loadFilteredTree,
 })

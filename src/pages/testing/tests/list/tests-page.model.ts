@@ -2,6 +2,8 @@ import { attach, combine, createEffect, createEvent, forward } from 'effector'
 import { GetTestsListQueryParams, RequestDeleteTestsParams } from '@/features/api/test/types'
 import { getTestsListFx } from '@/features/api/test/get-tests-list'
 import { deleteTestFx, requestDeleteTestsFx } from '@/features/api/test/delete-test'
+import { sample } from 'effector-root'
+import { testsFilters } from '@/pages/testing/tests/list/parts/tests-filter/tests-filter.model'
 
 const getTestsList = attach({
   effect: getTestsListFx,
@@ -36,3 +38,14 @@ forward({
 })
 
 export const $isLoading = combine(getTestsListFx.pending, (list) => list)
+
+forward({
+  from: testsFilters.methods.resetFilters,
+  to: loadList.prepend(() => ({})),
+})
+
+sample({
+  clock: testsFilters.methods.applyFilters,
+  source: testsFilters.store.$filterParams,
+  target: loadList.prepend(() => ({})),
+})
