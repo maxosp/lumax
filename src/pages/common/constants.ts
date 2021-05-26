@@ -1,6 +1,7 @@
 export const DEFAULT_ID = -1
 export const selectItemHeight = 51
 export const actionsSelectMenuMaxHeight = 255
+export const BACKGROUND_IMAGE_SIZE = 900
 
 export const mapTaskTypeTo = {
   SHORT_CLOSED_ANSWER: {

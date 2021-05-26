@@ -92,7 +92,7 @@ import ResizableCreator from '@/pages/common/parts/tasks/moving-images-on-image-
 import ImageMatchItem from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/correct-images-match-picker/ImageMatchItem.vue'
 import ImageContextMenu from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/parts/drag-and-drop-image-container/ImageContextMenu.vue'
 import { DraggableImage } from '@/pages/common/parts/tasks/types'
-import { backgroundImageSize } from '@/pages/common/parts/tasks/utils'
+import { BACKGROUND_IMAGE_SIZE } from '@/pages/common/constants'
 
 export default Vue.extend({
   name: `DragAndDropImageContainer`,
@@ -149,7 +149,7 @@ export default Vue.extend({
       filePicker!.click()
     },
     updateMainImageSizes(event: DraggableImage) {
-      if (event.size.width <= backgroundImageSize) setMainImageSize(event.size)
+      if (event.size.width <= BACKGROUND_IMAGE_SIZE) setMainImageSize(event.size)
     },
   },
   mounted() {
