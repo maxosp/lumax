@@ -14,6 +14,7 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :node="leaf"
         parent
+        :filters="filters"
         :prerequisite-folder="leaf.element_type === 'virtual_folder'"
         @loadTree="val => $emit('loadTree', val)"
         @onRightClick="$emit('onRightClick', $event)"
@@ -27,16 +28,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import TreeNode from '@/pages/bank/lesson-tasks/list/parts/lessons-tree/TreeNode.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { $lessonsTree } from '@/pages/bank/lesson-tasks/list/lesson-page.model'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'TasksTree',
   components: {
     TreeNode,
     NoDataContent,
+  },
+  props: {
+    filters: { type: Object as PropType<FiltersParams> },
   },
   effector: { $lessonsTree },
 })

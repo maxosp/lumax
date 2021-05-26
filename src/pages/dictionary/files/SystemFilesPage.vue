@@ -21,6 +21,7 @@
     <div>
       <FilesTree
         v-if="!$isLoading"
+        :filters="filterParams"
         :show-paste="$elementToCopy.id !== -1"
         :token="$token"
         @onRightClick="handleRightClick"
@@ -135,6 +136,7 @@ export default Vue.extend({
     $isLoading,
     $folderId,
     $elementToCopy,
+    filterParams: filesFilters.store.$filterParams,
     $token,
   },
   methods: {

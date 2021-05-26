@@ -52,6 +52,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
+        :filters="filters"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
         @onRemove="(val) => $emit('onRemove', val)"
@@ -61,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
 import Actions from '@/pages/dictionary/resources/list/parts/Actions.vue'
@@ -69,8 +70,17 @@ import { TreeData } from '@/features/api/types'
 import { navigatePush } from '@/features/navigation'
 import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import { FiltersParams } from '@/pages/common/types'
+import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
 
-export default Vue.extend({
+export default AutoOpenFolderMixin({
+  filters: {
+    theme: (item, search) => !!item.theme?.name.toLowerCase().includes(search.toLowerCase()),
+    study_year: (item, search) =>
+      !!item.study_year?.name.toLowerCase().includes(search.toLowerCase()),
+    subject: (item, search) => !!item.subject?.name.toLowerCase().includes(search.toLowerCase()),
+  },
+}).extend({
   name: 'TreeNode',
   components: {
     Icon,
@@ -82,6 +92,7 @@ export default Vue.extend({
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
+    filters: { type: Object as PropType<FiltersParams> },
   },
   data: () => ({
     opened: false,
@@ -207,6 +218,12 @@ export default Vue.extend({
     if (element_type === 'theme' || element_type === 'study_resource') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}-${element_type}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+    if (this.filters.search) {
+      this.searchString = this.filters.search_area
+        ? this.filters.search_area.slice(this.filters.search_area?.indexOf('_') + 1)
+        : ''
+      this.autoOpenFolders([this.node])
     }
   },
   beforeDestroy() {

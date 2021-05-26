@@ -14,6 +14,7 @@
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :node="leaf"
         parent
+        :filters="filters"
         :prerequisite-folder="leaf.element_type === 'virtual_folder'"
         @onRightClick="$emit('onRightClick', $event)"
         @onRemoveTask="val => $emit('onRemoveTask', val)"
@@ -27,16 +28,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import TreeNode from '@/pages/bank/test-tasks/list/parts/tasks-tree/parts/TreeNode.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { $tasksTree } from '@/pages/bank/test-tasks/list/tasks-page.model'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'TasksTree',
   components: {
     TreeNode,
     NoDataContent,
+  },
+  props: {
+    filters: { type: Object as PropType<FiltersParams> },
   },
   effector: { $tasksTree },
 })

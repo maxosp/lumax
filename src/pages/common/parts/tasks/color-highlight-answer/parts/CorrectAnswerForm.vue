@@ -153,8 +153,6 @@ export default Vue.extend({
       if (element.tagName === 'P') {
         const span = document.createElement('span');
         span.innerHTML = element.innerHTML;
-
-
         // @ts-ignore
         element.parentNode.replaceChild(span, element);
         element = span

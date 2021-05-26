@@ -111,8 +111,10 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView || $isLoading }">
+    <div :class="{ invisible: !$treeView }">
       <TasksTree
+        v-if="!$isLoading"
+        :filters="$filterParams"
         @resetFilters="onFilterReset"
         @onRightClick="handleRightClick"
         @onRemoveTask="onRemoveTask"

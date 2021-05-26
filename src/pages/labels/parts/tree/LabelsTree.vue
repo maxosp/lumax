@@ -14,6 +14,7 @@
         :key="leaf[leaf.element_type].id"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :node="leaf"
+        :filters="filters"
         parent
         :prerequisite-folder="leaf.element_type === 'virtual_folder'"
         @loadTree="val => $emit('loadTree', val)"
@@ -25,12 +26,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import TreeNode from '@/pages/labels/parts/tree/TreeNode.vue'
 import { $labelsTree, $labelsTreeTotal } from '@/pages/labels/labels-page.model'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import TreeHeader from '@/pages/common/parts/tree/TreeHeader.vue'
 import { formatLabelsTitle } from '@/features/lib'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'LabelsTree',
@@ -38,6 +40,9 @@ export default Vue.extend({
     TreeNode,
     NoDataContent,
     TreeHeader,
+  },
+  props: {
+    filters: { type: Object as PropType<FiltersParams> },
   },
   effector: { $labelsTree, $labelsTreeTotal },
   computed: {

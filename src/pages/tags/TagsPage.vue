@@ -81,8 +81,10 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView || $isLoading }">
+    <div :class="{ invisible: !$treeView }">
       <TagsTree
+        v-if="!$isLoading"
+        :filters="$filterParams"
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
         @onRemove="onRemoveTags"
