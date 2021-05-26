@@ -201,7 +201,7 @@ sample({
       return {
         ...image,
         value: image.id !== item.id && item.value === image.value ? 0 : image.value,
-        size: changeSize(image, item),
+        size: image.value ? changeSize(image, item) : image.size,
       }
     }),
   target: setDraggableImages,
