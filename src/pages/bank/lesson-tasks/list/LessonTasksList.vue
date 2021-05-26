@@ -99,8 +99,10 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView || $isLoading }">
+    <div :class="{ invisible: !$treeView }">
       <LessonsTree
+        v-if="!$isLoading"
+        :filters="$filterParams"
         @resetFilters="onFilterReset"
         @loadTree="val => loadTree(val)"
         @onRightClick="handleRightClick"

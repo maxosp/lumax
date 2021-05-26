@@ -74,6 +74,7 @@
         :key="leaf[leaf.element_type].id"
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
+        :filters="filters"
         :is-prerequisite="prerequisiteFolder || isPrerequisite"
         @onRightClick="$emit('onRightClick', $event)"
         @onRemoveTask="val => $emit('onRemoveTask', val)"
@@ -87,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import Actions from '@/pages/bank/test-tasks/list/parts/table/Actions.vue'
@@ -96,8 +97,21 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { mapTaskStatus } from '@/pages/common/parts/status-controller/constants'
+import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
+import { FiltersParams } from '@/pages/common/types'
 
-export default Vue.extend({
+export default AutoOpenFolderMixin({
+  filters: {
+    id: (item, search) => !!item.assignment?.id.toString().includes(search),
+    theme: (item, search) => !!item.theme?.name.toLowerCase().includes(search.toLowerCase()),
+    wording: (item, search) =>
+      !!item.assignment?.wording.toLowerCase().includes(search.toLowerCase()),
+    created_by: (item, search) =>
+      !!item.assignment?.created_by.first_name?.toLowerCase().includes(search) ||
+      !!item.assignment?.created_by.last_name?.toLowerCase().includes(search) ||
+      !!item.assignment?.created_by.id?.toString().includes(search),
+  },
+}).extend({
   name: 'TreeNode',
   components: {
     Icon,
@@ -109,10 +123,12 @@ export default Vue.extend({
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
+    filters: { type: Object as PropType<FiltersParams> },
     isPrerequisite: { type: Boolean as PropType<boolean>, default: false },
   },
   data: () => ({
     opened: false,
+    searchString: '',
   }),
   computed: {
     iconType(): string {
@@ -225,7 +241,6 @@ export default Vue.extend({
       })
     },
     setDataForTree() {
-      // @ts-ignore
       const { assignment } = this.node
       if (assignment) {
         setDataToUpdateTree({
@@ -262,6 +277,13 @@ export default Vue.extend({
     if (element_type === 'theme' || element_type === 'assignment') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+    if (this.filters.search) {
+      const searchString = this.filters.search_area
+        ? this.filters.search_area.slice(this.filters.search_area?.indexOf('_') + 1)
+        : ''
+      this.searchString = searchString === 'search_wording' ? 'assignment' : searchString
+      this.autoOpenFolders([this.node])
     }
   },
   beforeDestroy() {

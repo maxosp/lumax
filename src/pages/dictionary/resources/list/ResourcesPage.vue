@@ -20,6 +20,7 @@
     <LoaderBig v-if="$isLoading" />
     <ResourcesTree
       v-if="!$isLoading"
+      :filters="filterParams"
       @resetFilter="onFilterReset"
       @onRightClick="handleRightClick"
       @loadTree="val => loadTree(val)"
@@ -93,6 +94,7 @@ export default (
     $visibility,
     $resourcesTreeTotal,
     $isLoading,
+    filterParams: resourcesFilters.store.$filterParams,
   },
   data() {
     return {

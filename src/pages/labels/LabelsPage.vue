@@ -21,6 +21,7 @@
     <div>
       <LabelsTree
         v-if="!$isLoading"
+        :filters="filterParams"
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
         @resetFilter="onFilterReset"
@@ -105,6 +106,7 @@ export default Vue.extend({
   effector: {
     $visibility,
     $isLoading,
+    filterParams: labelsFilters.store.$filterParams,
     $token,
   },
   data() {

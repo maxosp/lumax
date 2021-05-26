@@ -42,6 +42,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
+        :filters="filters"
         :token="token"
         :show-paste="showPaste"
         @onRightClick="$emit('onRightClick', $event)"
@@ -58,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Actions from '@/pages/dictionary/files/parts/tree/parts/Actions.vue'
 import { TreeData } from '@/features/api/types'
@@ -69,10 +70,14 @@ import { sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import { FiltersParams } from '@/pages/common/types'
+import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
 import { FolderType } from '@/features/api/assignment/types/types'
 import { downloadMediaFileFx } from '@/features/api/media/download-media-file'
 
-export default Vue.extend({
+export default AutoOpenFolderMixin({
+  filters: {},
+}).extend({
   name: 'TreeNode',
   components: {
     Icon,
@@ -84,6 +89,7 @@ export default Vue.extend({
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
     showPaste: { type: Boolean },
+    filters: { type: Object as PropType<FiltersParams> },
     token: { type: String },
   },
   data: () => ({
@@ -201,6 +207,12 @@ export default Vue.extend({
     if (['folder', 'media'].includes(this.node.element_type)) {
       const nodeElement = document.querySelector(`#node-${this.node.element_type}-${this.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+    if (this.filters.search) {
+      this.searchString = this.filters.search_area
+        ? this.filters.search_area.slice(this.filters.search_area?.indexOf('_') + 1)
+        : ''
+      this.autoOpenFolders([this.node])
     }
   },
   beforeDestroy() {

@@ -13,6 +13,7 @@
       :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
       :node="leaf"
       parent
+      :filters="filters"
       :prerequisite-folder="leaf.element_type === 'virtual_folder'"
       @loadTree="val => $emit('loadTree', val)"
       @onRightClick="$emit('onRightClick', $event)"
@@ -22,16 +23,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import TreeNode from '@/pages/tags/parts/tree/TreeNode.vue'
 import { $tagsTree, $isLoading } from '@/pages/tags/tags-page.model'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'TagsTree',
   components: {
     NoDataContent,
     TreeNode,
+  },
+  props: {
+    filters: { type: Object as PropType<FiltersParams> },
   },
   effector: { $tagsTree, $isLoading },
 })

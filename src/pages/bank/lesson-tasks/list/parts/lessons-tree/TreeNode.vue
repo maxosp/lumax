@@ -71,6 +71,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :prerequisite-folder="$props.prerequisiteFolder"
+        :filters="filters"
         @loadTree="val => $emit('loadTree', val)"
         @onRightClick="handleRightClick"
         @onRemove="(val) => $emit('onRemove', val)"
@@ -99,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vue'
 import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
@@ -123,8 +124,25 @@ import {
 import { $session } from '@/features/session'
 import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import ContextMenu from '@/pages/bank/lesson-tasks/list/parts/table/ContextMenu.vue'
+import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
+import { FiltersParams } from '@/pages/common/types'
 
-export default Vue.extend({
+export default AutoOpenFolderMixin({
+  filters: {
+    id: (item, search) => !!item.assignment?.id.toString().includes(search),
+    folder: (item, search) => {
+      return !!item.folder?.name.toLowerCase().includes(search.toLowerCase())
+    },
+    wording: (item, search) =>
+      !!item.assignment?.wording.toLowerCase().includes(search.toLowerCase()),
+    score: (item, search) => !!item.assignment?.score.toString().includes(search),
+    course: (item, search) => !!item.assignment?.course.toString().includes(search),
+    created_by: (item, search) =>
+      !!item.assignment?.created_by.first_name?.toLowerCase().includes(search) ||
+      !!item.assignment?.created_by.last_name?.toLowerCase().includes(search) ||
+      !!item.assignment?.created_by.id?.toString().includes(search),
+  },
+}).extend({
   name: 'TreeNode',
   components: {
     Icon,
@@ -140,11 +158,13 @@ export default Vue.extend({
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: Number },
+    filters: { type: Object as PropType<FiltersParams> },
   },
   data: () => ({
     opened: false,
     showContextMenu: false,
     contextMenuStyles: { top: '0', left: '0' },
+    searchString: '',
   }),
   computed: {
     title(): string {
@@ -264,6 +284,13 @@ export default Vue.extend({
     if (element_type === 'assignment' || element_type === 'folder') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+    if (this.filters.search) {
+      const searchString = this.filters.search_area
+        ? this.filters.search_area.slice(this.filters.search_area?.indexOf('_') + 1)
+        : ''
+      this.searchString = searchString === 'search_wording' ? 'assignment' : searchString
+      this.autoOpenFolders([this.node])
     }
   },
   beforeDestroy() {

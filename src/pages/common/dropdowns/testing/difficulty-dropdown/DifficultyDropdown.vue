@@ -1,7 +1,7 @@
 <template>
   <FilterDropdown
     v-if="$difficulties.length"
-    label="Слолжность"
+    label="Сложность"
     placeholder="Выберите сложность"
     :data="$difficulties"
     :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"

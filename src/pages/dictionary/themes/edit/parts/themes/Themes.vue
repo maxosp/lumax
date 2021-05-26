@@ -40,7 +40,7 @@ import {
   $themes,
   $selectedThemes,
   themeDropdownModule,
-} from '@/pages/dictionary/themes/create/parts/themes/themes.model'
+} from '@/pages/dictionary/themes/edit/parts/themes/themes.model'
 
 export default Vue.extend({
   components: {

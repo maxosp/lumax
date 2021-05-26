@@ -14,6 +14,7 @@
         :key="leaf[leaf.element_type].id"
         :node-id="leaf[leaf.element_type].id || leaf[leaf.element_type].name"
         :node="leaf"
+        :filters="filters"
         parent
         :prerequisite-folder="leaf.element_type === 'virtual_folder'"
         @onRightClick="$emit('onRightClick', $event)"
@@ -25,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import TreeNode from '@/pages/dictionary/resources/list/parts/tree/parts/TreeNode.vue'
 import {
   $resourcesTree,
@@ -34,6 +35,7 @@ import {
 import TreeHeader from '@/pages/common/parts/tree/TreeHeader.vue'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
 import { formatResourcesTitle } from '@/features/lib'
+import { FiltersParams } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'ResourcesTree',
@@ -41,6 +43,9 @@ export default Vue.extend({
     TreeNode,
     TreeHeader,
     NoDataContent,
+  },
+  props: {
+    filters: { type: Object as PropType<FiltersParams> },
   },
   effector: { $resourcesTree, $resourcesTreeTotal },
   computed: {

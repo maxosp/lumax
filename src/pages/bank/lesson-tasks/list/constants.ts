@@ -138,8 +138,8 @@ export const searchFieldsData: DropdownItem[] = [
   { name: 'wording', title: 'Формулировка' },
   { name: 'score', title: 'Баллы' },
   { name: 'created_by', title: 'Создатель' },
-  { name: 'search_course', title: 'Курс' },
-  { name: 'search_folder', title: 'Расположение' },
+  { name: 'course', title: 'Курс' },
+  { name: 'folder', title: 'Расположение' },
 ]
 
 export const contextMethodsOneLesson = [

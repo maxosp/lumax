@@ -6,7 +6,7 @@
       @click="toggle($event)"
     >
       <Icon
-        v-if="opened"
+        v-if="opened && node.element_type !== 'olympiad_tag'"
         type="tree-folder-opened"
         class="folder-icon"
         size="35"
@@ -56,6 +56,7 @@
         :node="leaf"
         :node-id="leaf[leaf.element_type] && leaf[leaf.element_type].id || leaf[leaf.element_type].name "
         :prerequisite-folder="$props.prerequisiteFolder"
+        :filters="filters"
         @onRightClick="$emit('onRightClick', $event)"
         @loadTree="val => $emit('loadTree', val)"
         @onRemove="val => $emit('onRemove', val)"
@@ -65,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
 import Chip from '@/pages/tags/parts/tree/Chip.vue'
 import Actions from '@/pages/tags/parts/table/Actions.vue'
@@ -75,8 +76,17 @@ import { loadModal } from '@/pages/tags/parts/modals/tasks/tasks.model'
 import { createTagFromTree } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 import { sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
+import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
+import { FiltersParams } from '@/pages/common/types'
 
-export default Vue.extend({
+export default AutoOpenFolderMixin({
+  filters: {
+    name: (item, search) => !!item.olympiad_tag?.name.toLowerCase().includes(search.toLowerCase()),
+    study_year: (item, search) =>
+      !!item.study_year?.name.toLowerCase().includes(search.toLowerCase()),
+    subject: (item, search) => !!item.subject?.name.toLowerCase().includes(search.toLowerCase()),
+  },
+}).extend({
   name: 'TreeNode',
   components: {
     Icon,
@@ -88,6 +98,7 @@ export default Vue.extend({
     parent: { type: Boolean, default: false },
     prerequisiteFolder: { type: Boolean, default: false },
     nodeId: { type: [Number, String] },
+    filters: { type: Object as PropType<FiltersParams> },
   },
   data: () => ({
     opened: false,
@@ -192,6 +203,12 @@ export default Vue.extend({
     if (type === 'study_year' || type === 'olympiad_tag') {
       const nodeElement = document.querySelector(`#node-${this.$props.nodeId}`)
       nodeElement && nodeElement.addEventListener('contextmenu', this.handleRightClick)
+    }
+    if (this.filters.search) {
+      this.searchString = this.filters.search_area
+        ? this.filters.search_area.slice(this.filters.search_area?.indexOf('_') + 1)
+        : ''
+      this.autoOpenFolders([this.node])
     }
   },
   beforeDestroy() {

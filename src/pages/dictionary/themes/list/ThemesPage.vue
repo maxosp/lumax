@@ -70,8 +70,10 @@
         />
       </div>
     </div>
-    <div :class="{ invisible: !$treeView || $isLoading }">
+    <div :class="{ invisible: !$treeView }">
       <ThemesTree
+        v-if="!$isLoading"
+        :filters="$filterParams"
         @onRightClick="handleRightClick"
         @loadTree="val => loadTree(val)"
         @resetFilter="onFilterReset"
