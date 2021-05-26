@@ -1,6 +1,5 @@
 import { Size } from '@/pages/common/parts/tasks/types'
-
-export const backgroundImageSize = 900
+import { BACKGROUND_IMAGE_SIZE } from '@/pages/common/constants'
 
 export const getRandomId = (): number => Number.parseInt(`${Math.random() * 1000}`, 10)
 
@@ -61,7 +60,7 @@ export const getImageSize = (src: string) =>
   new Promise<{ src: string; size: Size }>((resolve, reject) => {
     const img = new Image()
     img.onload = () => {
-      const scale = img.width > backgroundImageSize ? backgroundImageSize / img.width : 1
+      const scale = img.width > BACKGROUND_IMAGE_SIZE ? BACKGROUND_IMAGE_SIZE / img.width : 1
 
       resolve({
         src,
