@@ -48,9 +48,9 @@
         @vuetable:row-clicked="handleRowClick"
         @vuetable:checkbox-toggled-all="allToggled"
       >
-        <template #assignments_ids="props">
+        <template #tags_string="props">
           <TooltipCell
-            :title="props.rowData.assignments_ids && props.rowData.assignments_ids.join(', ') || ''"
+            :title="props.rowData.tags_string || '-'"
             :row-id="props.rowData.id"
             @onRightClick="handleRightClick"
           />

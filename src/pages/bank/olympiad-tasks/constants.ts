@@ -79,12 +79,12 @@ export const olympiadTasksDataFields: TableField[] = [
     },
   },
   {
-    name: 'assignments_ids',
-    sortField: 'assignments_ids',
+    name: 'tags_string',
+    sortField: 'tags_string',
     title: 'Теги',
     width: '150px',
     formatter(list: string[]) {
-      return list
+      return list || '-'
     },
   },
   {
