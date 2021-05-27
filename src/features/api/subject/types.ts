@@ -1,4 +1,5 @@
 import { User } from '@/features/api/user/types'
+import { ResourceType } from '@/features/api/media/types'
 
 export type StudyYear = {
   id: number
@@ -94,6 +95,7 @@ export type Theme = {
   prerequisites: ThemeListItem[]
   themes: ThemeListItem[]
   study_year: StudyYear
+  study_resources: ResourceType[]
   subject: Subject
   prerequisites_ids: number[]
   study_year_id: number

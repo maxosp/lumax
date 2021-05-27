@@ -30,6 +30,7 @@ import { getThemeFx } from '@/features/api/subject/get-theme'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { createError } from '@/lib/effector/error-generator'
+import { setTeachingResources } from './parts/teaching-resources/teaching-resources-page.model'
 
 const getThemesTreeList = attach({
   effect: getThemesTreeListFx,
@@ -159,6 +160,7 @@ sample({
     theme.parent_theme && positionDropdownModule.methods.itemChanged(`${theme.parent_theme.id}`)
     $formToSend.map((el) => (el.id = theme.id))
     $formToSendPrerequisite.map((el) => (el.id = theme.id))
+    setTeachingResources(theme.study_resources)
   },
 })
 
