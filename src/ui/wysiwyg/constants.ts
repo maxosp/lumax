@@ -7,7 +7,7 @@ export const wysiwygConfig = {
   title: false,
   language: 'ru',
   extraPlugins:
-    'uploadimage, divarea, html5video, widget, widgetselection, clipboard, lineutils, video',
+    'uploadimage, divarea, html5video, widget, widgetselection, clipboard, lineutils, video, videodetector',
   removePlugins: 'easyimage, cloudservices, exportpdf',
   uploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   pasteUploadFileApi: `${config.BACKEND_URL}/api/media-app/media/upload/`,
@@ -37,6 +37,7 @@ export const wysiwygConfig = {
       'Table',
       'Image',
       'Video',
+      'VideoDetector',
       'Iframe',
       'Maximize',
       'Source',
