@@ -100,10 +100,10 @@ export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
 export const toggleNeedDuplicate = createEvent<boolean>()
-export const $needDuplicate = restore(toggleNeedDuplicate, false)
+export const $needDuplicate = restore(toggleNeedDuplicate, false).reset(clearFields)
 
 export const setCount = createEvent<number>()
-export const $count = restore(setCount, 0)
+export const $count = restore(setCount, 0).reset(clearFields)
 
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)

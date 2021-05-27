@@ -82,6 +82,8 @@ const uploadAudioFilesFx = attach({
   effect: uploadAudioFiles,
 })
 
+export const clearFields = createEvent<void>()
+
 export const setSubject = createEvent<number | null>()
 export const $subject = restore(setSubject, null)
 
@@ -95,13 +97,13 @@ export const setDifficulty = createEvent<string | null>()
 export const $difficulty = restore(setDifficulty, null)
 
 export const setTaskType = createEvent<string | null>()
-export const $taskType = restore(setTaskType, null)
+export const $taskType = restore(setTaskType, null).reset(clearFields)
 
 export const toggleNeedDuplicate = createEvent<boolean>()
-export const $needDuplicate = restore(toggleNeedDuplicate, false)
+export const $needDuplicate = restore(toggleNeedDuplicate, false).reset(clearFields)
 
 export const setCount = createEvent<number>()
-export const $count = restore(setCount, 1)
+export const $count = restore(setCount, 1).reset(clearFields)
 
 export const setLanguage = createEvent<DropdownItem>()
 export const $language = restore(setLanguage, LANGUAGE_DATA[0])
@@ -110,7 +112,6 @@ export const setAudioIds = createEvent<AssignmentAudioFile[]>()
 export const $audioIds = restore(setAudioIds, [])
 
 export const save = createEvent<void>()
-export const clearFields = createEvent<void>()
 
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
@@ -121,7 +122,6 @@ forward({
     classesDropdownModule.methods.resetDropdown,
     subjectsDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
-    setTaskType.prepend(() => null),
     themesDropdownModule.methods.resetDropdown,
     difficultiesDropdownModule.methods.resetDropdown,
   ],
