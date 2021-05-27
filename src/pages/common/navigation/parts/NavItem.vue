@@ -1,29 +1,39 @@
 <template>
   <div
     class="nav-item"
-    @mouseenter="isHovered = true"
-    @mouseleave="isHovered =  false"
   >
-    <Icon
-      :type="iconType"
-      size="30"
-    />
+
     <div v-if="opened" class="content">
-      <div class="header" @click="changeCollapseState">
-        <div class="title">{{ item.title }}</div>
-        <div
-          v-if="item.type === 'applications'"
-          class="tickets-counter"
-        >
-          {{ $totalApplicationsCounter }}
+      <div
+        class="header"
+        @click="changeCollapseState"
+        @mouseenter="isHovered = true"
+        @mouseleave="isHovered = false"
+      >
+        <div class="left">
+          <Icon
+            :type="iconType"
+            size="30"
+            class="title-icon"
+          />
+          <div class="title">{{ item.title }}</div>
         </div>
-        <Icon
-          v-if="item.children"
-          type="chevron-down"
-          :class="{ uncollapsed: !isCollapsed, icon: true }"
-          size="10"
-        />
-        <div v-else />
+        <div class="right">
+          <div
+            v-if="item.type === 'applications'"
+            class="tickets-counter"
+          >
+            {{ $totalApplicationsCounter }}
+          </div>
+          <Icon
+            v-if="item.children"
+            type="chevron-down"
+            class="tile-chevron"
+            :class="{ uncollapsed: !isCollapsed, icon: true }"
+            size="10"
+          />
+          <div v-else />
+        </div>
       </div>
       <div v-if="!isCollapsed" class="nav-children">
         <NavChild
@@ -90,16 +100,11 @@ export default Vue.extend({
   display: flex;
   align-items: flex-start;
   white-space: nowrap;
-  cursor: pointer;
-  &:hover .content .header .title {
-    color: var(--c-yellow-1);
-  }
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  padding-left: 15px;
   flex-basis: 100%;
 }
 
@@ -108,8 +113,20 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 7px;
   flex-basis: 100%;
+  &:hover .title {
+    color: var(--c-yellow-1);
+  }
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.title-icon {
+  margin-right: 15px;
 }
 
 .title {

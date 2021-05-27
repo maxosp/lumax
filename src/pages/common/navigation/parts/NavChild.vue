@@ -52,7 +52,9 @@ export default Vue.extend({
 <style scoped>
 .nav-child {
   cursor: pointer;
-  padding-top: 20px;
+  margin-top: 10px;
+  padding: 5px 0;
+  margin-left: 45px;
   display: flex;
   align-items: flex-start;
   white-space: normal;
