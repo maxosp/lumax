@@ -22,7 +22,9 @@
         :max-length="100"
         placeholder="Введите имя модератора"
         class="input"
+        :clear-btn="true"
         @input="searchStringChanged"
+        @clear="clearSearchString"
       />
     </form>
     <ul class="list">
@@ -75,6 +77,7 @@ import {
   selectedPageChanged,
   $moderators,
   submit,
+  clearSearchString,
 } from '@/pages/applications/modals/set-to-moderator/set-to-moderator.model'
 
 export default Vue.extend({
@@ -97,6 +100,7 @@ export default Vue.extend({
     searchStringChanged,
     selectedPageChanged,
     submit,
+    clearSearchString,
   },
 })
 </script>

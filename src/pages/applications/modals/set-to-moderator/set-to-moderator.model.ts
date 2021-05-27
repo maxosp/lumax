@@ -56,8 +56,9 @@ export const $prevPage = restore<string | null>(prevPageChanged, null)
 export const countChanged = createEvent<number | null>()
 export const $count = restore<number | null>(countChanged, null)
 
+export const clearSearchString = createEvent<void>()
 export const searchStringChanged = createEvent<string>()
-export const $searchString = restore(searchStringChanged, '').reset(clearFields)
+export const $searchString = restore(searchStringChanged, '').reset(clearFields, clearSearchString)
 
 forward({
   from: loadModeratorModal,
