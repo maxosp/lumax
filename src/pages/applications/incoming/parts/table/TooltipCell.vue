@@ -1,13 +1,13 @@
 <template>
-  <div :id="`cell-${$props.rowId}`">
+  <div :id="`cell-${rowId}`">
     <div
       v-if="title"
       class="contents"
     >
-      <span v-if="$props.title.length <= 15">{{ $props.title }}</span>
+      <span v-if="title.length <= 15">{{ title }}</span>
       <div v-else>
         <span v-tooltip.top-end="options">
-          {{ `${$props.title.slice(0,15)}...` }}
+          {{ `${title.slice(0,15)}...` }}
         </span>
       </div>
     </div>
@@ -37,6 +37,7 @@ export default Vue.extend({
   props: {
     title: { type: String },
     rowId: { type: Number, required: true },
+    assignmentId: { type: Number, required: true },
     iconType: { type: String },
   },
   computed: {
@@ -49,15 +50,18 @@ export default Vue.extend({
   methods: {
     handleRightClick(event: any) {
       event.preventDefault()
-      this.$emit('onRightClick', { data: { id: this.$props.rowId }, event })
+      this.$emit('onRightClick', {
+        data: { id: this.rowId, test_assignment: { id: this.assignmentId } },
+        event,
+      })
     },
   },
   mounted() {
-    const container = document.querySelector(`#cell-${this.$props.rowId}`)
+    const container = document.querySelector(`#cell-${this.rowId}`)
     container && container.addEventListener('contextmenu', this.handleRightClick)
   },
   beforeDestroy() {
-    const container = document.querySelector(`#cell-${this.$props.rowId}`)
+    const container = document.querySelector(`#cell-${this.rowId}`)
     container && container.removeEventListener('contextmenu', this.handleRightClick)
   },
 })

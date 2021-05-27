@@ -47,6 +47,15 @@
         @vuetable:row-clicked="handleRowClick"
         @vuetable:checkbox-toggled-all="allToggled"
       >
+        <template #comment="props">
+          <TooltipCell
+            :row-id="props.rowData.id"
+            :task-id="props.rowData.test_assignment.id"
+            :assignment-id="props.rowData.test_assignment.id"
+            :title="props.rowData.comment ? props.rowData.comment.text : '-'"
+            @onRightClick="handleRightClick"
+          />
+        </template>
         <template id="one" #actions="props">
           <Actions
             :application-id="props.rowData.id"
@@ -138,6 +147,7 @@ import {
   isQueryParamsEquelToPage,
 } from '@/features/lib'
 import { DEFAULT_ID } from '@/pages/common/constants'
+import TooltipCell from '@/pages/applications/outgoing/parts/table/TooltipCell.vue'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (
@@ -160,6 +170,7 @@ export default (
     CancelModal,
     OutgoingModal,
     LoaderBig,
+    TooltipCell,
   },
   effector: {
     $visibility,
