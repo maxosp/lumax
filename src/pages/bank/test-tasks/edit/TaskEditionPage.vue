@@ -162,7 +162,7 @@ export default Vue.extend({
       if (this.applications.length) loadApplication(this.applications[this.$currentIndex])
     },
     showComments() {
-      loadCommentModal(this.$taskId)
+      loadCommentModal(this.applications[this.$currentIndex])
     },
   },
   beforeDestroy() {

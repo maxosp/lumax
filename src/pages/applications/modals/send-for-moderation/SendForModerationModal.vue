@@ -18,7 +18,7 @@
     <BaseTextarea
       class="textarea"
       :class="{'--error': commentError}"
-      :max-length="200"
+      :max-length="textareaMaxLength"
       placeholder="Введите ваш комментарий"
       :value="$comment"
       label="Комментарий"
@@ -96,6 +96,7 @@ import {
   $ticketForm,
 } from '@/pages/applications/modals/send-for-moderation/send-for-moderation.model'
 import { RefsType } from '@/pages/common/types'
+import { TEXTAREA_MAX_LENGTH } from '@/pages/applications/constants'
 
 export default (
   Vue as VueConstructor<
@@ -117,6 +118,11 @@ export default (
     $imagesPreview,
     commentError: $commentErrorModule.store.$error,
     $ticketForm,
+  },
+  data() {
+    return {
+      textareaMaxLength: TEXTAREA_MAX_LENGTH,
+    }
   },
   computed: {
     images() {

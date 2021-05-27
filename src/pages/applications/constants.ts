@@ -1,3 +1,5 @@
+export const TEXTAREA_MAX_LENGTH = 1000
+
 export const mapObjectType = {
   theme: 'Тема',
   subject: 'Предмет',
