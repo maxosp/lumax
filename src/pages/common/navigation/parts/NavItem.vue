@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="nav-item"
-  >
-
-    <div v-if="opened" class="content">
+  <div class="nav-item">
+    <div class="content">
       <div
         class="header"
         @click="changeCollapseState"
@@ -14,11 +11,10 @@
           <Icon
             :type="iconType"
             size="30"
-            class="title-icon"
           />
-          <div class="title">{{ item.title }}</div>
+          <div v-if="opened" class="title">{{ item.title }}</div>
         </div>
-        <div class="right">
+        <div v-if="opened" class="right">
           <div
             v-if="item.type === 'applications'"
             class="tickets-counter"
@@ -125,13 +121,10 @@ export default Vue.extend({
   align-items: center;
 }
 
-.title-icon {
-  margin-right: 15px;
-}
-
 .title {
   color: var(--base-text-primary);
   font-weight: 600;
+  margin-left: 15px;
 }
 
 .tickets-counter {
