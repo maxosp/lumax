@@ -3,6 +3,7 @@ import {
   combine,
   createEffect,
   createEvent,
+  createStore,
   forward,
   guard,
   restore,
@@ -25,7 +26,7 @@ import { condition, every } from 'patronum'
 import { requestDeleteModalVisibilityChanged } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { createPageParamsModel } from '@/pages/common/page-params/create-page-params-model'
 import { FiltersParams } from '@/pages/common/types'
-import { mergeTreeData } from '@/features/lib'
+import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { getLessonInfoFx } from '@/features/api/assignment/lesson-assignment/get-tree-info'
 import {
   $dataToUpdateTree,
@@ -155,10 +156,9 @@ export const loadTreeLight = createEvent<void>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteTree = createEvent<TreeData[] | null>()
 export const setLessonsTree = createEvent<TreeData[] | null>()
-export const $lessonsTree = restore<TreeData[] | null>(rewriteTree, null).on(
-  setLessonsTree,
-  (state, data) => mergeTreeData(state!, data!)
-)
+export const $lessonsTree = createStore<TreeData[] | null>(null)
+  .on(setLessonsTree, (state, data) => mergeTreeData(state!, data!))
+  .on(rewriteTree, (state, payload) => sortTreeLeaves(payload!))
 export const setLessonsTreeTotal = createEvent<number>()
 export const $lessonsTreeTotal = restore<number>(setLessonsTreeTotal, 0)
 

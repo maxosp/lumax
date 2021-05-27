@@ -3,7 +3,7 @@ import { getLabelsTreeFx } from '@/features/api/assignment/labels/get-labels-tre
 import { getLabelsTreeLightFx } from '@/features/api/assignment/labels/get-labels-tree-light'
 import { getLabelsInfoFx } from '@/features/api/assignment/labels/get-labels-info'
 import { TreeData } from '@/features/api/types'
-import { cropString, mergeTreeData } from '@/features/lib'
+import { cropString, mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import {
   attach,
@@ -14,6 +14,7 @@ import {
   guard,
   sample,
   combine,
+  createStore,
 } from 'effector-root'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { FiltersParams } from '@/pages/common/types'
@@ -56,10 +57,10 @@ export const loadTree = createEvent<FiltersParams>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteLabelsTree = createEvent<TreeData[] | null>()
 export const setLabelsTree = createEvent<TreeData[] | null>()
-export const $labelsTree = restore<TreeData[] | null>(rewriteLabelsTree, null).on(
-  setLabelsTree,
-  (state, data) => mergeTreeData(state!, data!)
-)
+export const $labelsTree = createStore<TreeData[] | null>(null)
+  .on(setLabelsTree, (state, data) => mergeTreeData(state!, data!))
+  .on(rewriteLabelsTree, (state, payload) => sortTreeLeaves(payload!))
+
 export const setLabelsTreeTotal = createEvent<number>()
 export const $labelsTreeTotal = restore<number>(setLabelsTreeTotal, 0)
 

@@ -141,11 +141,19 @@ export default AutoOpenFolderMixin({
       const { element_type } = this.$props.node
       return element_type === 'olympiad_tag' || element_type === 'study_year'
     },
+    nodeLeavesLength(): number {
+      return this.node.leaves.length
+    },
   },
   watch: {
     opened: {
       handler(newVal) {
         if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+    nodeLeavesLength: {
+      handler(newVal) {
+        if (newVal && this.opened) this.node.leaves = sortTreeLeaves(this.node.leaves)
       },
     },
   },

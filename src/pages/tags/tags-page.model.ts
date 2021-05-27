@@ -3,6 +3,7 @@ import {
   combine,
   createEffect,
   createEvent,
+  createStore,
   forward,
   guard,
   restore,
@@ -13,7 +14,7 @@ import { deleteTagsFx } from '@/features/api/assignment/olympiad-tags/delete-tag
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { TreeData } from '@/features/api/types'
 import { getTagsTreeLightFx } from '@/features/api/assignment/olympiad-tags/get-tags-tree-light'
-import { cropString, mergeTreeData } from '@/features/lib'
+import { cropString, mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { condition, every } from 'patronum'
 import { FiltersParams } from '@/pages/common/types'
@@ -82,10 +83,9 @@ export const loadTree = createEvent<FiltersParams>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteTagsTree = createEvent<TreeData[] | null>()
 export const setTagsTree = createEvent<TreeData[] | null>()
-export const $tagsTree = restore<TreeData[] | null>(rewriteTagsTree, null).on(
-  setTagsTree,
-  (state, data) => mergeTreeData(state!, data!)
-)
+export const $tagsTree = createStore<TreeData[] | null>(null)
+  .on(setTagsTree, (state, data) => mergeTreeData(state!, data!))
+  .on(rewriteTagsTree, (state, payload) => sortTreeLeaves(payload!))
 export const setTagsTreeTotal = createEvent<number>()
 export const $tagsTreeTotal = restore<number>(setTagsTreeTotal, 0)
 

@@ -106,7 +106,7 @@ import Chip from '@/pages/dictionary/themes/list/parts/themes-tree/parts/Chip.vu
 import Actions from '@/pages/bank/lesson-tasks/list/parts/table/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { mapTaskTypeTo } from '@/pages/common/constants'
-import { removeHtmlTags } from '@/features/lib'
+import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
 import {
   modalVisibilityChanged as createFolderModal,
   loadFolder,
@@ -202,6 +202,21 @@ export default AutoOpenFolderMixin({
     showActions(): boolean {
       const { element_type } = this.$props.node
       return element_type === 'folder'
+    },
+    nodeLeavesLength(): number {
+      return this.node.leaves.length
+    },
+  },
+  watch: {
+    opened: {
+      handler(newVal) {
+        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+    nodeLeavesLength: {
+      handler(newVal) {
+        if (newVal && this.opened) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
     },
   },
   methods: {

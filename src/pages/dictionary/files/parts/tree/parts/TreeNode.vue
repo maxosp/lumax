@@ -115,11 +115,19 @@ export default AutoOpenFolderMixin({
     extension() {
       return this.node.media.file_name.slice(this.node.media.file_name.lastIndexOf('.') + 1)
     },
+    nodeLeavesLength(): number {
+      return this.node.leaves.length
+    },
   },
   watch: {
     opened: {
       handler(newVal) {
         if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+      },
+    },
+    nodeLeavesLength: {
+      handler(newVal) {
+        if (newVal && this.opened) this.node.leaves = sortTreeLeaves(this.node.leaves)
       },
     },
   },

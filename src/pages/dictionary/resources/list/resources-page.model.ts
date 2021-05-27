@@ -3,6 +3,7 @@ import {
   combine,
   createEffect,
   createEvent,
+  createStore,
   forward,
   guard,
   restore,
@@ -13,7 +14,7 @@ import { TreeData } from '@/features/api/types'
 import { getResourcesTreeFx } from '@/features/api/media/get-resources-tree'
 import { deleteResourcesFx } from '@/features/api/media/delete-resources'
 import { getResourcesTreeLightFx } from '@/features/api/media/get-resources-tree-light'
-import { mergeTreeData } from '@/features/lib'
+import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import { getResourcesInfoFx } from '@/features/api/media/get-resources-tree-info'
 import { FiltersParams } from '@/pages/common/types'
@@ -55,14 +56,13 @@ export const loadTree = createEvent<FiltersParams>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteResourcesTree = createEvent<TreeData[] | null>()
 export const setResourcesTree = createEvent<TreeData[] | null>()
-export const $resourcesTree = restore<TreeData[] | null>(rewriteResourcesTree, null).on(
-  setResourcesTree,
-  (state, data) => {
+export const $resourcesTree = createStore<TreeData[] | null>(null)
+  .on(setResourcesTree, (state, data) => {
     if (state === null) return data
     if (data === undefined) return state
     return mergeTreeData(state, data!)
-  }
-)
+  })
+  .on(rewriteResourcesTree, (state, payload) => sortTreeLeaves(payload!))
 
 export const setResourcesTreeTotal = createEvent<number>()
 export const $resourcesTreeTotal = restore<number>(setResourcesTreeTotal, 0)

@@ -16,7 +16,7 @@ import { getMediaTreeLightFx } from '@/features/api/media/get-media-tree-light'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { uploadMediaFx } from '@/features/api/media/upload-media'
 import { TreeData } from '@/features/api/types'
-import { mergeTreeData } from '@/features/lib'
+import { mergeTreeData, sortTreeLeaves } from '@/features/lib'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { confirmDeleteModalVisibilityChanged } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
 import {
@@ -72,10 +72,9 @@ export const loadTree = createEvent<FiltersParams>()
 export const loadFilteredTree = createEvent<FiltersParams>()
 const rewriteFilesTree = createEvent<TreeData[] | null>()
 export const setFilesTree = createEvent<TreeData[] | null>()
-export const $filesTree = restore<TreeData[] | null>(rewriteFilesTree, null).on(
-  setFilesTree,
-  (state, data) => mergeTreeData(state!, data!)
-)
+export const $filesTree = createStore<TreeData[] | null>(null)
+  .on(setFilesTree, (state, data) => mergeTreeData(state!, data!))
+  .on(rewriteFilesTree, (state, payload) => sortTreeLeaves(payload!))
 export const setFilesTreeTotal = createEvent<number>()
 export const $filesTreeTotal = restore<number>(setFilesTreeTotal, 0)
 
