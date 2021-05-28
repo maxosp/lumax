@@ -20,7 +20,7 @@ sample({
   },
   clock: themeDropdownModule.methods.itemChanged,
   fn: (list, elementId) => {
-    if (!list.all.length) return []
+    if (!list.all.length) return [...list.selected]
     const arr = list.selected.slice()
     if (arr.find((el) => el.id === +elementId!) === undefined) {
       const elem = findItem(elementId!, list.all)
