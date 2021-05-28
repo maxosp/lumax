@@ -3,6 +3,7 @@
     <BaseDropdown
       class="input dropdown"
       :value="correctValue"
+      :disabled="isDisabled ? !$canSetLabels : false"
       label="Метки"
       placeholder="Выберите метки"
       @input="searchStringChanged"
@@ -49,6 +50,7 @@ import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
 import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import {
   loadLabels,
+  $canSetLabels,
   $selectedLabels,
   setSelectedLabels,
   labelsDropdownModule,
@@ -61,12 +63,16 @@ export default Vue.extend({
     BaseDropdown,
     SelectItem,
   },
+  props: {
+    isDisabled: { type: Boolean, default: false },
+  },
   effector: {
     $selectedLabels,
+    $canSetLabels,
     ...labelsDropdownModule.store,
   },
   computed: {
-    correctValue() {
+    correctValue(): string {
       const arr = [...this.$itemsDropdown]
       const currentItem = arr.find((el: DropdownItem) => el.name === this.$item)
       return currentItem ? currentItem.title : this.$searchString

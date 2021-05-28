@@ -18,7 +18,6 @@
     <BaseTextarea
       class="textarea"
       :class="{'--error': commentError}"
-      :max-length="textareaMaxLength"
       placeholder="Введите ваш комментарий"
       :value="$comment"
       label="Комментарий"

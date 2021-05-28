@@ -10,7 +10,10 @@
           @setItem="setTheme"
         />
         <DifficultiesDropdown class="field" @setItem="setDifficulty" />
-        <LabelsDropdown class="field" />
+        <LabelsDropdown
+          class="field"
+          is-disabled
+        />
         <TaskTypesDropdown class="field" @setItem="setTaskType" />
         <component
           v-if="$taskType"

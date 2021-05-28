@@ -136,3 +136,7 @@ export type TicketCommentResponseType = {
   created_by: User
   media_ids: number[]
 }
+
+export type TicketCommentFailType = {
+  text: string[]
+}

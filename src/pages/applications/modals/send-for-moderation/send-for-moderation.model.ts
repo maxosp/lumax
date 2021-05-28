@@ -176,6 +176,14 @@ forward({
   to: $commentErrorModule.methods.resetError,
 })
 
+forward({
+  from: sendComment.failData.map((res) => res.body.text[0]),
+  to: [
+    addToast.prepend((message) => ({ type: 'error', message })),
+    $commentErrorModule.methods.setError.prepend(() => true),
+  ],
+})
+
 sample({
   clock: sendComment.doneData.map((res) => res.body.id),
   source: $selectedApplications,

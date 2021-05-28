@@ -74,9 +74,17 @@ sample({
   clock: createTagFromTree,
   fn: (tag: { class_id: number; subject_id: number }) => {
     classDropdownModule.methods.itemChanged(`${tag.class_id}`)
-    setSelectedClass({ id: tag.class_id })
+    setSelectedClass({
+      id: tag.class_id,
+      name: `${tag.class_id}`,
+      title: `${tag.class_id}`,
+    })
     subjectDropdownModule.methods.itemChanged(`${tag.subject_id}`)
-    setSelectedSubject({ id: tag.subject_id })
+    setSelectedSubject({
+      id: tag.subject_id,
+      name: `${tag.subject_id}`,
+      title: `${tag.subject_id}`,
+    })
     modalVisibilityChanged(true)
   },
 })

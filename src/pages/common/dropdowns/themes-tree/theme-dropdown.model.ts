@@ -1,6 +1,6 @@
 import { combine, createEvent, createStore, forward, restore } from 'effector-root'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { DropdownItem, SelectedObjectType } from '@/pages/common/types'
+import { DropdownItem } from '@/pages/common/types'
 import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { debounce, every } from 'patronum'
 import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
@@ -13,7 +13,7 @@ export const themesDropdownModule = createFilter()
 
 export const $themes = createStore<DropdownItem[]>([])
 
-export const setSelectedTheme = createEvent<DropdownItem | SelectedObjectType | null>()
+export const setSelectedTheme = createEvent<DropdownItem | null>()
 export const $selectedTheme = restore(setSelectedTheme, null)
 
 forward({

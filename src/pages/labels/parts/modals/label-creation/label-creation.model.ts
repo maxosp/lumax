@@ -113,11 +113,23 @@ sample({
   clock: createLabelFromTree,
   fn: (label: { class_id: number; subject_id: number; theme_id: number }) => {
     classDropdownModule.methods.itemChanged(`${label.class_id}`)
-    setSelectedClass({ id: label.class_id })
+    setSelectedClass({
+      id: label.class_id,
+      name: `${label.class_id}`,
+      title: `${label.class_id}`,
+    })
     subjectDropdownModule.methods.itemChanged(`${label.subject_id}`)
-    setSelectedSubject({ id: label.subject_id })
+    setSelectedSubject({
+      id: label.subject_id,
+      name: `${label.subject_id}`,
+      title: `${label.subject_id}`,
+    })
     themesDropdownModule.methods.itemChanged(`${label.theme_id}`)
-    setSelectedTheme({ id: label.theme_id })
+    setSelectedTheme({
+      id: label.theme_id,
+      name: `${label.theme_id}`,
+      title: `${label.theme_id}`,
+    })
     modalVisibilityChanged(true)
   },
 })

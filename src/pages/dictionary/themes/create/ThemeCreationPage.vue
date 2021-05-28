@@ -60,9 +60,9 @@ export default Vue.extend({
     if (this.$route.params) {
       const { subject, studyYear, theme } = this.$route.params
       subject && subjectDropdownModule.methods.itemChanged(subject)
-      subject && setSelectedSubject({ id: +subject })
+      subject && setSelectedSubject({ id: +subject, name: subject, title: subject })
       studyYear && classDropdownModule.methods.itemChanged(studyYear)
-      studyYear && setSelectedClass({ id: +studyYear })
+      studyYear && setSelectedClass({ id: +studyYear, name: studyYear, title: studyYear })
       theme && positionDropdownModule.methods.itemChanged(theme)
     }
   },

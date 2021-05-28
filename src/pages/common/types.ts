@@ -28,10 +28,6 @@ export type DropdownItem = {
   parent_id?: number | null
 }
 
-export type SelectedObjectType = {
-  id: number
-}
-
 export type RefsType = {
   vuetable?: typeof Vuetable
   pagination?: typeof VuetablePagination

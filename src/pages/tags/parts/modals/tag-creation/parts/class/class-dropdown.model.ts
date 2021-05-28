@@ -1,11 +1,11 @@
 import { getUserStudyYearsListFx } from '@/features/api/user/get-user-study-years-list'
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { attach, createEvent, createStore, forward, restore } from 'effector-root'
-import { DropdownItem, SelectedObjectType } from '@/pages/common/types'
+import { DropdownItem } from '@/pages/common/types'
 
 export const classDropdownModule = createFilter()
 
-export const setSelectedClass = createEvent<DropdownItem | SelectedObjectType | null>()
+export const setSelectedClass = createEvent<DropdownItem | null>()
 export const $selectedClass = restore(setSelectedClass, null)
 
 const getClasses = attach({
