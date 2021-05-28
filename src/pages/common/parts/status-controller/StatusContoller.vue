@@ -98,7 +98,7 @@ export default Vue.extend({
     },
     isReviewButtonVisible(): boolean {
       if (!this.taskTypeIsTest) return false
-      if (this.isFromTaskPages && this.isEditPage) {
+      if (this.isFromTaskPages) {
         return ['new', 'revision'].includes(this.$status)
       }
       if (this.isFromApplications && this.isEditPage) {
