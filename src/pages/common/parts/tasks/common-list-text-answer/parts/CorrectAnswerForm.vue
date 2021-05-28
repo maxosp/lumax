@@ -182,8 +182,8 @@ export default Vue.extend({
       setCorrectAnswers([...this.$correctAnswers, { id, name: '', title: '' }])
     },
     removeCorrectAnswerFromEditor({ id }) {
-      const pattern = new RegExp(`<input id="${id}" placeholder="S${id}" type="" />`)
-      let newTextTemplate = this.$textTemplate.replace(this.$textTemplate.match(pattern), '')
+      const pattern = new RegExp(`<input id="${id}"(.*?)placeholder="S${id}" type="" />`)
+      let newTextTemplate = this.$textTemplate.replace(pattern, '')
       if (newTextTemplate.match(/<input(.*?)>/g) === null || newTextTemplate === '') {
         setTextTemplate(newTextTemplate)
         this.removeCorrectAnswer({ id })

@@ -3,23 +3,23 @@ import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-lis
 import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
 
-export const tagsDropdownModule = createFilter()
+export const labelsDropdownModule = createFilter()
 
-const getTags = attach({
+export const getLabels = attach({
   effect: getLabelsListFx,
 })
 
-export const loadTags = createEvent<void>()
-export const $tags = createStore<DropdownItem[]>([])
+export const loadLabels = createEvent<void>()
+export const $labels = createStore<DropdownItem[]>([])
 
 forward({
-  from: loadTags,
-  to: getTags.prepend(() => ({})),
+  from: loadLabels,
+  to: getLabels.prepend(() => ({})),
 })
 
 forward({
-  from: getTags.doneData.map((res) =>
+  from: getLabels.doneData.map((res) =>
     res.body.data.map((subject) => ({ name: `${subject.id}`, title: subject.name }))
   ),
-  to: $tags,
+  to: $labels,
 })

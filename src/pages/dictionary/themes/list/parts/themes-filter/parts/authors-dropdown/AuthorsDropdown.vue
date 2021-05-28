@@ -1,6 +1,5 @@
 <template>
   <FilterDropdown
-    v-if="$authors.length"
     label="Автор"
     placeholder="Выберите автора"
     :data="$authors"

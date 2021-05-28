@@ -17,7 +17,7 @@
     </div>
     <div class="main">
       <p class="title">
-        {{ $labelsList.length ? 'Список ID заданий' : 'Задания не привязаны к тегу' }}
+        {{ $labelsList.length ? 'Список ID заданий' : 'Задания не привязаны к метке' }}
       </p>
       <div class="list">
         <span

@@ -6,7 +6,7 @@ import { DropdownItem } from '@/pages/common/types'
 
 export const tagsDropdownModule = createFilter()
 
-const getTags = attach({
+export const getTags = attach({
   effect: getTagsListFx,
   mapParams: (params: GetListQueryParams) => params,
 })

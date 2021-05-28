@@ -3,7 +3,7 @@ import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subject
 import { difficultyDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/difficulty-dropdown/difficulty-dropdown.model'
 import { languagesDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/language-dropdown/language-dropdown.model'
 import { statusDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/status-dropdown/status-dropdown.model'
-import { tagsDropdownModule } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/tags-dropdown/tags-dropdown.model'
+import { labelsDropdownModule } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/labels-dropdown/labels-dropdown.model'
 import { themesDropdownModule } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { typeDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/type-dropdown/type-dropdown.model'
 
@@ -13,7 +13,7 @@ export const dropdownModules = {
   difficultyDropdownModule,
   languagesDropdownModule,
   statusDropdownModule,
-  tagsDropdownModule,
+  labelsDropdownModule,
   themesDropdownModule,
   typeDropdownModule,
 }

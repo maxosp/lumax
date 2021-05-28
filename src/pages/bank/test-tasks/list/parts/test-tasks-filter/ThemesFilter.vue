@@ -29,8 +29,8 @@
       <LanguageDropdown class="half-third" @setItem="val => setItem({'interface_language': val})" />
     </div>
     <div class="row">
-      <TagsDropdown class="half-second" @setItem="val => setItem({'labels': val})" />
-      <div class="tags-input-relative-align">
+      <LabelsDropdown class="half-second" @setItem="val => setItem({'labels': val})" />
+      <div class="labels-input-relative-align">
         <BaseSwitch
           class="switch"
           :checked="$filterParams.is_prerequisite"
@@ -97,7 +97,7 @@ export default Vue.extend({
     TypeDropdown: dropdownComponents.TypeDropdown,
     LanguageDropdown: dropdownComponents.LanguageDropdown,
     BaseButton,
-    TagsDropdown: dropdownComponents.TagsDropdown,
+    LabelsDropdown: dropdownComponents.LabelsDropdown,
     BaseSwitch,
   },
   effector: {
@@ -170,7 +170,7 @@ export default Vue.extend({
   flex-shrink: 0;
 }
 
-.tags-input-relative-align {
+.labels-input-relative-align {
   width: 100%;
   display: flex;
   align-self: flex-end;

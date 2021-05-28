@@ -20,7 +20,7 @@ export const themesTableFields: TableField[] = [
   },
   {
     name: 'subject',
-    sortField: 'subject',
+    sortField: 'subject__name',
     title: 'Предмет',
     width: '140px',
     formatter(subject: Subject) {

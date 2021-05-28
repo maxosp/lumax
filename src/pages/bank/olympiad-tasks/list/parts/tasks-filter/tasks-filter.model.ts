@@ -8,6 +8,7 @@ import {
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { dropdownModules } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/dropdown-modules'
+import { getTags } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
 
 export const olympiadTasksFilters = createFiltersModel({}, dropdownModules)
 
@@ -26,17 +27,17 @@ export const $canSetTags = every({
   stores: [$selectedTheme],
 })
 
-const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
+const $formToGetThemeOrTagList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
   study_year: cl && +cl.name,
   subject: obj && +obj.name,
 }))
 
 const debounced = debounce({
-  source: $formToGetThemeList,
+  source: $formToGetThemeOrTagList,
   timeout: 150,
 })
 
 forward({
   from: debounced,
-  to: getThemes.prepend(() => ({})),
+  to: [getThemes.prepend(() => ({})), getTags],
 })

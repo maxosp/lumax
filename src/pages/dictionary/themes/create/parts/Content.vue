@@ -106,6 +106,9 @@ export default Vue.extend({
 .contents {
   display: contents;
 }
+.content ::v-deep .content {
+  min-height: 500px;
+}
 .content {
   width: 100%;
   height: fit-content;
