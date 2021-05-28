@@ -8,6 +8,7 @@ import {
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { dropdownModules } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/dropdown-modules'
+import { getLabels } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/labels-dropdown/labels-dropdown.model'
 
 export const testTasksFilters = createFiltersModel(
   {
@@ -26,7 +27,7 @@ export const $canSetThemePosition = every({
   stores: [$selectedSubject, $selectedClass],
 })
 
-export const $canSetTags = every({
+export const $canSetLabels = every({
   predicate: (value) => value !== null,
   stores: [$selectedTheme],
 })
@@ -52,4 +53,14 @@ const debounced = debounce({
 forward({
   from: debounced,
   to: getThemes,
+})
+
+const $formToGetLabelList = combine($selectedTheme, (theme) => ({ theme: theme && +theme.name }))
+const debouncedLabelList = debounce({
+  source: $formToGetLabelList,
+  timeout: 150,
+})
+forward({
+  from: debouncedLabelList,
+  to: getLabels,
 })
