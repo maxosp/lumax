@@ -26,3 +26,8 @@ forward({
   ),
   to: $subjects,
 })
+
+forward({
+  from: subjectsDropdownModule.methods.resetDropdown,
+  to: setSelectedSubject.prepend(() => null),
+})

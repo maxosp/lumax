@@ -42,6 +42,8 @@ import {
   deleteTag,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 
 export default Vue.extend({
   components: {
@@ -52,6 +54,8 @@ export default Vue.extend({
     $tags,
     $selectedTags,
     ...tagsDropdownModule.store,
+    $selectedClass,
+    $selectedSubject,
   },
   methods: {
     ...tagsDropdownModule.methods,
@@ -62,7 +66,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    loadTags()
+    if (!this.$selectedSubject && !this.$selectedClass) loadTags()
   },
 })
 </script>

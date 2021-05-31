@@ -41,3 +41,8 @@ forward({
   from: getThemes.doneData.map((res) => res.body.data),
   to: $themesData,
 })
+
+forward({
+  from: themesDropdownModule.methods.resetDropdown,
+  to: setSelectedTheme.prepend(() => null),
+})

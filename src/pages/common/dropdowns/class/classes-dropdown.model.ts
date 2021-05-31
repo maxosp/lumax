@@ -26,3 +26,8 @@ forward({
   ),
   to: $classes,
 })
+
+forward({
+  from: classesDropdownModule.methods.resetDropdown,
+  to: setSelectedClass.prepend(() => null),
+})

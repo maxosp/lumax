@@ -20,6 +20,7 @@ import {
   themesDropdownModule,
   setSelectedTheme,
   loadThemes,
+  $selectedTheme,
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -34,6 +35,7 @@ export default Vue.extend({
   effector: {
     $positions,
     ...themesDropdownModule.store,
+    $selectedTheme,
   },
   data() {
     return {

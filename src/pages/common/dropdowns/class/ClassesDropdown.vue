@@ -18,6 +18,7 @@ import {
   $classes,
   classesDropdownModule,
   setSelectedClass,
+  $selectedClass,
 } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 
@@ -28,6 +29,7 @@ export default Vue.extend({
   effector: {
     $classes,
     ...classesDropdownModule.store,
+    $selectedClass,
   },
   methods: {
     ...classesDropdownModule.methods,

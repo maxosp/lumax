@@ -8,7 +8,10 @@ import {
 } from '@/pages/common/dropdowns/themes-list/theme-dropdown.model'
 import { createFiltersModel } from '@/pages/common/filters/create-filters-model'
 import { dropdownModules } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/dropdown-modules'
-import { getTags } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
+import {
+  getTags,
+  resetSelectedTags,
+} from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
 
 export const olympiadTasksFilters = createFiltersModel({}, dropdownModules)
 
@@ -39,5 +42,23 @@ const debounced = debounce({
 
 forward({
   from: debounced,
-  to: [getThemes.prepend(() => ({})), getTags],
+  to: [getThemes.prepend(() => ({})), getTags, resetSelectedTags.prepend(() => ({}))],
+})
+
+forward({
+  from: reset,
+  to: resetSelectedTags,
+})
+
+forward({
+  from: [
+    dropdownModules.classesDropdownModule.methods.itemChanged,
+    dropdownModules.classesDropdownModule.methods.resetItem,
+    dropdownModules.subjectsDropdownModule.methods.itemChanged,
+    dropdownModules.subjectsDropdownModule.methods.resetItem,
+  ],
+  to: [
+    dropdownModules.tagsDropdownModule.methods.resetItem,
+    olympiadTasksFilters.methods.changeFilter.prepend(() => ({ tags: undefined })),
+  ],
 })
