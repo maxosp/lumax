@@ -60,7 +60,10 @@ import {
   $isFilled as $isFilledMovingOnText,
   $form as $formMovingOnText,
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
-import { $selectedLabels } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
+import {
+  $selectedLabels,
+  clearSelectedLabels,
+} from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 import { mapTaskTypeTo } from '@/pages/common/constants'
@@ -124,6 +127,7 @@ forward({
     taskTypesDropdownModule.methods.resetDropdown,
     themesDropdownModule.methods.resetDropdown,
     difficultiesDropdownModule.methods.resetDropdown,
+    clearSelectedLabels,
   ],
 })
 
