@@ -29,7 +29,10 @@ const resetLabels = merge([setSelectedClass, setSelectedSubject, setSelectedThem
 
 export const setSelectedLabels = createEvent<DropdownItem[]>()
 export const clearSelectedLabels = createEvent<void>()
-export const $selectedLabels = restore(setSelectedLabels, []).reset(resetLabels)
+export const $selectedLabels = restore(setSelectedLabels, []).reset(
+  resetLabels,
+  clearSelectedLabels
+)
 
 export const $canSetLabels = every({
   predicate: (value) => value !== null,
