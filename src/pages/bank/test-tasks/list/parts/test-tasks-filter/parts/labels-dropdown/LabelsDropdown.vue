@@ -20,6 +20,7 @@ import {
 } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/parts/labels-dropdown/labels-dropdown.model'
 import { $canSetLabels } from '@/pages/bank/test-tasks/list/parts/test-tasks-filter/test-tasks-filter.model'
 import { DropdownItem } from '@/pages/common/types'
+import { $selectedTheme } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 export default Vue.extend({
   components: {
@@ -29,6 +30,7 @@ export default Vue.extend({
     $labels,
     $canSetLabels,
     ...labelsDropdownModule.store,
+    $selectedTheme,
   },
   methods: {
     ...labelsDropdownModule.methods,
@@ -38,7 +40,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    loadLabels()
+    if (this.$selectedTheme) loadLabels()
   },
 })
 </script>

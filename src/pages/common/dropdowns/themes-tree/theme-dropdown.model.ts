@@ -53,3 +53,8 @@ forward({
     }),
   ],
 })
+
+forward({
+  from: themesDropdownModule.methods.resetDropdown,
+  to: setSelectedTheme.prepend(() => null),
+})

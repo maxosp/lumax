@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
 
 import {
   $isFilled as $isFilledBroadFile,
@@ -57,7 +57,7 @@ import {
   $form as $formMovingOnText,
 } from '@/pages/common/parts/tasks/moving-images-on-text-input-answer/moving-images-on-text-input-answer.model'
 
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
@@ -72,6 +72,7 @@ import {
 import { condition } from 'patronum'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
+import { parseError } from '@/features/lib'
 
 const createLessonAssignment = attach({
   effect: createLessonAssignmentFx,
@@ -207,6 +208,15 @@ sample({
     }
   },
   target: createLessonAssignment,
+})
+
+const { elementNotFound } = split(createLessonAssignment.failData, {
+  elementNotFound: ({ status }) => status === 400,
+})
+
+forward({
+  from: elementNotFound,
+  to: addToast.prepend((data: any) => ({ type: 'error', message: parseError(data.body) })),
 })
 
 forward({

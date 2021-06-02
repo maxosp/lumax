@@ -35,9 +35,25 @@ export const $canSetLabels = every({
 forward({
   from: [
     dropdownModules.classesDropdownModule.methods.itemChanged,
+    dropdownModules.classesDropdownModule.methods.resetItem,
     dropdownModules.subjectsDropdownModule.methods.itemChanged,
+    dropdownModules.subjectsDropdownModule.methods.resetItem,
   ],
-  to: dropdownModules.themesDropdownModule.methods.resetItem,
+  to: [
+    dropdownModules.themesDropdownModule.methods.resetItem,
+    testTasksFilters.methods.changeFilter.prepend(() => ({ theme: undefined })),
+  ],
+})
+
+forward({
+  from: [
+    dropdownModules.themesDropdownModule.methods.itemChanged,
+    dropdownModules.themesDropdownModule.methods.resetItem,
+  ],
+  to: [
+    dropdownModules.labelsDropdownModule.methods.resetDropdown,
+    testTasksFilters.methods.changeFilter.prepend(() => ({ labels: undefined })),
+  ],
 })
 
 const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
