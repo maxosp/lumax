@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
 
 import {
   $isFilled as $isFilledBroadFile,
@@ -63,7 +63,7 @@ import {
   resetSelectedTags,
 } from '@/pages/bank/olympiad-tasks/create/parts/tags-dropdown/tags-dropdown.model'
 
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
@@ -82,6 +82,7 @@ import {
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
+import { parseError } from '@/features/lib'
 
 const createOlympiadAssignment = attach({
   effect: createOlympiadAssignmentFx,
@@ -253,6 +254,15 @@ sample({
     }
   },
   target: createOlympiadAssignment,
+})
+
+const { elementNotFound } = split(createOlympiadAssignment.failData, {
+  elementNotFound: ({ status }) => status === 400,
+})
+
+forward({
+  from: elementNotFound,
+  to: addToast.prepend((data: any) => ({ type: 'error', message: parseError(data.body) })),
 })
 
 forward({

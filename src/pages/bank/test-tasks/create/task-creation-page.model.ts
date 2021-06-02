@@ -1,4 +1,4 @@
-import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
+import { attach, combine, createEvent, forward, restore, sample, split } from 'effector-root'
 import { createTestAssignmentFx } from '@/features/api/assignment/test-assignment/create-test-assignment'
 import {
   $themes,
@@ -64,7 +64,7 @@ import {
   $selectedLabels,
   clearSelectedLabels,
 } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
-import { successToastEvent } from '@/features/toasts/toasts.model'
+import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { DropdownItem } from '@/pages/common/types'
@@ -76,6 +76,7 @@ import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-type
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
 import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
+import { parseError } from '@/features/lib/index'
 
 const createTestAssignment = attach({
   effect: createTestAssignmentFx,
@@ -246,6 +247,15 @@ sample({
 forward({
   from: createTestAssignment.doneData,
   to: successToastEvent('Задание успешно создано!'),
+})
+
+const { elementNotFound } = split(createTestAssignment.failData, {
+  elementNotFound: ({ status }) => status === 400,
+})
+
+forward({
+  from: elementNotFound,
+  to: addToast.prepend((data: any) => ({ type: 'error', message: parseError(data.body) })),
 })
 
 const $redirectHandler = sample({

@@ -169,3 +169,14 @@ type Entries<T> = {
 export function entries<T>(obj: T): Entries<T> {
   return Object.entries(obj) as any
 }
+
+export function parseError(data: { [key in string]: string }) {
+  const type = Object.keys(data)[0]
+  const map = {
+    theme_id: 'Тема не найдена',
+    study_year_id: 'Класс не найден',
+    subject_id: 'Предмет не найден',
+    folder: 'Расположение не найдено',
+  }
+  return map[type] ? `${map[type]}` : 'Один из указанных элементов не найден'
+}
