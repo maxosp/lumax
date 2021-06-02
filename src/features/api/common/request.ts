@@ -38,6 +38,7 @@ split({
     unauthorized: ({ status }) => status === 401,
     forbidden: ({ status }) => status === 403,
     noInternet: ({ status }) => status === undefined,
+    notFound: ({ status }) => status === 404,
   },
   cases: {
     unauthorized: navigatePush.prepend<Response>(() => ({ name: 'auth.login' })),
@@ -46,5 +47,6 @@ split({
       type: 'no-internet',
       message: 'Отсутствует подключение',
     })),
+    notFound: addToast.prepend(() => ({ type: 'error', message: 'Страница не найдена' })),
   },
 })
