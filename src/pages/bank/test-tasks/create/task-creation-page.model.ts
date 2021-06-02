@@ -209,7 +209,7 @@ const $baseForm = combine(
     theme: themes.find((theme) => theme.id === theme_id),
     theme_id,
     difficulty,
-    labels: labels.map(({ name }) => name),
+    labels: labels.map(({ id }) => id),
     ...(needDuplicate ? { duplicate_count: count } : {}),
     interface_language: language.title,
   })
