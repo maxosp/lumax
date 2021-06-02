@@ -37,6 +37,7 @@ import HeaderPopup from '@/pages/common/parts/header/header-popup/HeaderPopup.vu
 import DownloadButton from '@/pages/common/parts/header/DownloadButton.vue'
 import { TableField } from '@/pages/dictionary/themes/list/types'
 import { tagsPageParams } from '@/pages/tags/tags-page.model'
+import { modalVisibilityChanged } from '@/pages/tags/parts/modals/tag-creation/tag-creation.modal'
 
 export default Vue.extend({
   components: {
@@ -52,6 +53,7 @@ export default Vue.extend({
     $treeView: tagsPageParams.store.treeView,
   },
   methods: {
+    modalVisibilityChanged,
     toggleTreeView: tagsPageParams.methods.toggleTreeView,
   },
 })
