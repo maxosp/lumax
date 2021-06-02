@@ -3,8 +3,20 @@
     <div class="header">
       <FormLabel>Текст</FormLabel>
       <div class="actions">
-        <BaseButton class="add-image button" @click="addImage">+ изображение</BaseButton>
-        <BaseButton class="button" @click="addText">+ текст</BaseButton>
+        <BaseButton
+          v-tooltip.bottom-end="tooltipOptionsImage"
+          class="add-image button"
+          @click="addImage"
+        >
+          + изображение
+        </BaseButton>
+        <BaseButton
+          v-tooltip.top-end="tooltipOptionsText"
+          class="button"
+          @click="addText"
+        >
+          + текст
+        </BaseButton>
       </div>
     </div>
     <Wysiwyg
@@ -41,6 +53,18 @@ export default Vue.extend({
   effector: {
     $mainTemplate,
     $inputs,
+  },
+  computed: {
+    tooltipOptionsImage() {
+      return {
+        content: 'Добавьте область для прикрепления изображения',
+      }
+    },
+    tooltipOptionsText() {
+      return {
+        content: 'Добавьте текстовое поле',
+      }
+    },
   },
   methods: {
     changeMainTemplate,

@@ -35,6 +35,7 @@ a:focus {
 
 
 .tooltip {
+  z-index: 10000;
   .tooltip-inner {
     background-color: var(--tooltip-bg-color);
     color: #fff;

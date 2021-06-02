@@ -6,8 +6,20 @@
       <div class="actions">
         <template v-if="!$hideDragAndDropControls">
           <BaseButton class="button" @click="triggerInputFile">Заменить фон</BaseButton>
-          <BaseButton class="add-image button" @click="setNextResizerToImage">+ изображение</BaseButton>
-          <BaseButton class="button" @click="setNextResizerToText">+ текст</BaseButton>
+          <BaseButton
+            v-tooltip.bottom-end="tooltipOptions"
+            class="add-image button"
+            @click="setNextResizerToImage"
+          >
+            + изображение
+          </BaseButton>
+          <BaseButton
+            v-tooltip.top-end="tooltipOptionsText"
+            class="button"
+            @click="setNextResizerToText"
+          >
+            + текст
+          </BaseButton>
         </template>
       </div>
     </div>
@@ -123,6 +135,16 @@ export default Vue.extend({
       return {
         width: `${this.$mainImageSize.width * this.$scale}px`,
         height: `${this.$mainImageSize.height * this.$scale}px`,
+      }
+    },
+    tooltipOptions() {
+      return {
+        content: 'Добавьте область для прикрепления изображения',
+      }
+    },
+    tooltipOptionsText() {
+      return {
+        content: 'Добавьте текстовое поле',
       }
     },
   },
