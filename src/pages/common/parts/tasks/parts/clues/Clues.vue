@@ -58,6 +58,7 @@ export default Vue.extend({
           id: getRandomId(),
           text: '',
           scores: 1,
+          number: this.$clues.length,
         },
       ])
     },
