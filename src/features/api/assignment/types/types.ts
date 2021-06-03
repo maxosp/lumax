@@ -140,6 +140,7 @@ export type Clue = {
   id?: number
   text: string
   scores: number
+  number?: number
 }
 
 export type CreateOlympiadAssignmentFxParams = {

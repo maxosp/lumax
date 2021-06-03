@@ -212,7 +212,7 @@ export const $baseForm = combine(
     score,
     tags: tags.map(({ name }) => name),
     answer_text,
-    clues: clues.map(({ text, scores }) => ({ text, scores })),
+    clues: clues.map(({ text, scores, number }) => ({ text, scores, number })),
     interface_language: language.title,
   })
 )

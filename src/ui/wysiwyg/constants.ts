@@ -10,6 +10,7 @@ export const wysiwygConfig = {
     'uploadimage, divarea, html5video, widget, widgetselection, clipboard, lineutils, video, videodetector',
   removePlugins: 'easyimage, cloudservices, exportpdf',
   uploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
+  filebrowserUploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   pasteUploadFileApi: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   allowedContent: true,
   toolbar: [
