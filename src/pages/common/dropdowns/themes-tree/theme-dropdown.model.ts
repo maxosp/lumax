@@ -55,9 +55,7 @@ forward({
 })
 
 themesDropdownModule.methods.setItems.watch((d) => console.log(d))
-themesDropdownModule.methods.itemChanged.watch((d) => console.log(d))
-themesDropdownModule.methods.resetItem.watch((d) => console.log(d))
-themesDropdownModule.methods.resetDropdown.watch((d) => console.log(d))
+themesDropdownModule.store.$itemsDropdown.watch((d) => console.log(d))
 
 forward({
   from: themesDropdownModule.methods.resetDropdown,
