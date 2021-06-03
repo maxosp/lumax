@@ -139,6 +139,7 @@ export const cropString = (str: string, len: number) => {
 }
 
 export function formatData(data: GetThemeTreeFilterListResponse[]): any {
+  console.log(JSON.parse(JSON.stringify(data)))
   return data.map((elem: any) => ({
     name: `${elem.theme.id}`,
     title: elem.theme.name,

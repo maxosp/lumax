@@ -49,7 +49,11 @@ export default Vue.extend({
       this.$emit('setItem', item ? item.name : null)
     },
   },
+  beforeUpdate() {
+    console.log(this.$itemsDropdown)
+  },
   mounted() {
+    console.log(this.$itemsDropdown)
     if (this.isPreload) loadThemes()
   },
 })

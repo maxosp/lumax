@@ -82,6 +82,8 @@ export default Vue.extend({
   watch: {
     data: {
       handler(val, oldVal) {
+        console.log(val)
+        console.log(oldVal)
         if ((!oldVal.length && !!val.length) || oldVal !== val) {
           this.$props.methods.setItems(this.$props.data)
         }
