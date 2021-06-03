@@ -8,7 +8,7 @@
       :editor-url="editorUrl"
       class="editor"
       @ready="onEditorReady"
-      @input="uploadPictureAndEmit"
+      @input="val => $emit('input', val)"
     />
   </div>
 </template>
@@ -18,7 +18,6 @@ import Vue from 'vue'
 import Ckeditor from 'ckeditor4-vue'
 import { wysiwygConfig, url, enableRules } from '@/ui/wysiwyg/constants'
 import { $token } from '@/features/api/common/request'
-import { config } from '@/config'
 
 export default Vue.extend({
   name: 'Wysiwyg',
@@ -30,7 +29,7 @@ export default Vue.extend({
     listenInsertion: { type: Boolean, required: false, default: false },
     listenRightClick: { type: Boolean, required: false, default: false },
     editorId: { type: String, required: false },
-    editorIndex: { type: Number, required: false, default: 1 },
+    editorIndex: { type: Number, required: false, default: 2 },
     placeholder: { type: String, default: '' },
   },
   effector: {
@@ -44,75 +43,81 @@ export default Vue.extend({
     }
   },
   methods: {
-    getReadStream(mediaURL) {
-      return fetch(mediaURL.trim()).then(({ body }) => body.getReader())
-    },
-    getCaptionFromURL(mediaURL) {
-      const splittedURL = mediaURL.trim().split('/')
-      return splittedURL[splittedURL.length - 1]
-    },
-    async transformStreamIntoFile({ url: mediaUrl, fileType }) {
-      try {
-        const streamReader = await this.getReadStream(mediaUrl)
-        const streamBuffer = await streamReader.read().then(({ done, value }) => ({ done, value }))
-        const file = new File(streamBuffer.value, this.getCaptionFromURL(mediaUrl), {
-          type: fileType,
-        })
-        return file
-      } catch (err) {
-        console.error('ERRORED_WHILE_STREAM_TRANSFORM')
-        console.log(err)
-      }
-    },
-    parseForMedia(v) {
-      const exp = /https?:\/\/(.*?)"/gi
-      const expVideo = /(.mp4|.webm|.avi|.wmv|.mov)/gi
-      const expImage = /(.jpeg|.jpg|.png)/gi
-      const URLs = v.match(exp)
+    // getReadStream(mediaURL) {
+    //   return fetch(mediaURL.trim()).then(({ body }) => body.getReader())
+    // },
+    // getCaptionFromURL(mediaURL) {
+    //   const splittedURL = mediaURL.trim().split('/')
+    //   return splittedURL[splittedURL.length - 1]
+    // },
+    // async transformStreamIntoFile({ url: mediaUrl, fileType }) {
+    //   try {
+    //     const streamReader = await this.getReadStream(mediaUrl)
+    //     const streamBuffer = await streamReader.read().then(({ done, value }) => ({ done, value }))
+    //     const file = new File(streamBuffer.value, this.getCaptionFromURL(mediaUrl), {
+    //       type: fileType,
+    //     })
+    //     return file
+    //   } catch (err) {
+    //     console.error('ERRORED_WHILE_STREAM_TRANSFORM')
+    //     console.log(err)
+    //   }
+    // },
+    // parseForMedia(v) {
+    //   const exp = /https?:\/\/(.*?)"/gi
+    //   const expVideo = /(.mp4|.webm|.avi|.wmv|.mov)/gi
+    //   const expImage = /(.jpeg|.jpg|.png)/gi
+    //   let URLs = v.match(exp)
 
-      let mediaObject = null
+    //   let mediaObject = null
 
-      if (URLs) {
-        if (URLs[URLs.length - 1].match(expVideo)) {
-          mediaObject = {
-            url: URLs[URLs.length - 1].slice(0, -1),
-            tag: 'video',
-            fileType: `video/${URLs[URLs.length - 1].match(expVideo)[0].replace('.', '')}`,
-          }
-        } else if (URLs[URLs.length - 1].match(expImage)) {
-          mediaObject = {
-            url: URLs[URLs.length - 1].slice(0, -1),
-            tag: 'img',
-            fileType: `image/${URLs[URLs.length - 1].match(expImage)[0].replace('.', '')}`,
-          }
-        }
-        return mediaObject
-      }
-    },
-    async uploadPictureAndEmit(v) {
-      const mediaObject = this.parseForMedia(v)
-      if (mediaObject) {
-        try {
-          const file = await this.transformStreamIntoFile(mediaObject)
-          const fd = new FormData()
+    //   if (URLs) {
+    //     URLs = URLs.map((urlObj) => {
+    //       if (urlObj.match(expVideo)) {
+    //         mediaObject = {
+    //           url: urlObj.slice(0, -1),
+    //           tag: 'video',
+    //           fileType: `video/${urlObj.match(expVideo)[0].replace('.', '')}`,
+    //         }
+    //       } else if (urlObj.match(expImage)) {
+    //         mediaObject = {
+    //           url: urlObj.slice(0, -1),
+    //           tag: 'img',
+    //           fileType: `image/${urlObj.match(expImage)[0].replace('.', '')}`,
+    //         }
+    //       }
+    //       return mediaObject
+    //     })
+    //     return URLs
+    //   }
+    // },
+    // async uploadPictureAndEmit(v) {
+    // const mediaObject = this.parseForMedia(v)
+    // if (mediaObject) {
+    //   mediaObject.map(async (media) => {
+    //     try {
+    //       const file = await this.transformStreamIntoFile(media)
+    //       const fd = new FormData()
 
-          fd.append('file', file, file.name)
-          fd.append('file_type', mediaObject.tag)
+    //       fd.append('file', file, file.name)
+    //       fd.append('file_type', media.tag)
 
-          await fetch(`${config.BACKEND_URL}/api/media-app/media/upload/`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${this.$token}`,
-            },
-            body: fd,
-          }).then((r) => r.json())
-        } catch (err) {
-          console.error('ERORRED_WHILE_UPLOADING_PICTURE')
-          console.log(err)
-        }
-      }
-      this.$emit('input', v)
-    },
+    //       await fetch(`${config.BACKEND_URL}/api/media-app/media/upload/`, {
+    //         method: 'POST',
+    //         headers: {
+    //           Authorization: `Bearer ${this.$token}`,
+    //         },
+    //         body: fd,
+    //       }).then((r) => r.json())
+    //     } catch (err) {
+    //       console.error('ERORRED_WHILE_UPLOADING_PICTURE')
+    //       console.log(err)
+    //     }
+    //     return media
+    //   })
+    // }
+    // this.$emit('input', v)
+    // },
     onEditorReady(editor) {
       this.editorName = editor.name
       editor.on('fileUploadRequest', (event) => {
@@ -219,6 +224,7 @@ export default Vue.extend({
   background: var(--base-bg-color);
   border-radius: 5px;
   padding: 2px;
+  max-width: 936px;
   & ::v-deep .editor {
     background: var(--c-grey-4);
     border-radius: 5px;
@@ -226,6 +232,7 @@ export default Vue.extend({
     .cke_top {
       padding: 5px 8px;
       box-sizing: border-box;
+      background: #fff;
       .cke_toolbar {
         display: flex;
         flex-direction: row;
@@ -287,6 +294,12 @@ export default Vue.extend({
     }
     .cke_bottom {
       display: none;
+    }
+    .cke_wysiwyg_div {
+      background-color: #edeef0;
+    }
+    .cke_wysiwyg_div::before {
+      opacity: 1;
     }
   }
 }
