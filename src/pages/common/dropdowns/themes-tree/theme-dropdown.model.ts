@@ -20,7 +20,7 @@ forward({
   from: getThemesTreeListFx.doneData.map((data) => formatData(data.body)),
   to: $themes,
 })
-$themes.watch((d) => console.log(d))
+
 forward({
   from: loadThemes,
   to: getThemesTreeListFx.prepend(() => ({ is_prerequisite: false })),
