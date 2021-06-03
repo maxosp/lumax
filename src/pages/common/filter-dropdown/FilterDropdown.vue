@@ -9,7 +9,7 @@
     @clear="clear"
   >
     <template #default="{closeMenu}">
-      <div v-if="items.length && !isRecursive">
+      <div v-show="items.length && !isRecursive">
         <SelectItem
           v-for="item in items"
           :key="item.name"
@@ -20,7 +20,7 @@
           {{ item.title }}
         </SelectItem>
       </div>
-      <div v-if="items.length && isRecursive">
+      <div v-show="items.length && isRecursive">
         <SelectItemRecursive
           v-for="item in items"
           :key="item.name"
@@ -32,7 +32,7 @@
           :handle-click="(val) => handleClick(val, closeMenu)"
         />
       </div>
-      <div v-if="items.length === 0">
+      <div v-show="items.length === 0">
         <SelectItem @click="closeMenu">
           Не найдено совпадений
         </SelectItem>
