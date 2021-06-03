@@ -76,7 +76,6 @@ export default Vue.extend({
       return currentItem ? currentItem.title : this.$props.store.$searchString
     },
     items() {
-      console.log(this)
       return this.$props.store.$itemsDropdown
     },
   },
