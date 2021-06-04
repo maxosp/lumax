@@ -70,10 +70,10 @@ export default Vue.extend({
     items(): DropdownItem[] {
       if (this.isFolder) {
         return [
-          { name: 'create-folder', title: 'Создать папку' },
-          { name: 'create-task', title: 'Создать задание' },
-          { name: 'edit-folder', title: 'Редактировать' },
-          { name: 'delete-folder', title: 'Удалить' },
+          { name: 'create_folder', title: 'Создать папку' },
+          { name: 'create_task', title: 'Создать задание' },
+          { name: 'edit_folder', title: 'Редактировать' },
+          { name: 'delete_folder', title: 'Удалить' },
         ]
       }
       return this.$props.selected.length > 1 ? contextMethodsManyLessons : contextMethodsOneLesson

@@ -29,7 +29,7 @@ function formatData(data: TreeData[]): any {
     title: elem[elem.element_type].name,
     id: elem[elem.element_type].id,
     leaves: elem.leaves.length ? formatData(elem.leaves) : elem.leaves,
-    ordering_number: elem.ordering_number,
+    ordering_string: elem.ordering_string,
   }))
 }
 

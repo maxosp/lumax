@@ -49,7 +49,7 @@
         icon="copy"
       />
       <Actions
-        :id="node.assignment && node.assignment.id || node.ordering_number"
+        :id="node.assignment && node.assignment.id || nodeId"
         :is-folder="showActions"
         :selected="[]"
         class="action"
@@ -79,6 +79,10 @@
         @onEdit="(val) => $emit('onEdit', val)"
         @onDuplicate="val => $emit('onDuplicate', val)"
         @onDuplicateNTimes="val => $emit('onDuplicateNTimes', val)"
+        @onCreateFolder="createFolder"
+        @onCreateTask="createTask"
+        @onEditFolder="editFolder"
+        @onDeleteFolder="deleteFolder"
       />
     </div>
     <ContextMenu

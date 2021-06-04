@@ -2,6 +2,10 @@ import { TreeData, GetThemeTreeFilterListResponse } from '@/features/api/types'
 import { Dictionary } from 'vue-router/types/router'
 import { PageParams } from '@/pages/common/types'
 
+export const removeHtmlTags = (str: string) => {
+  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
+}
+
 const wordDeclination = (total: number, words: string[]) => {
   /*
    Порядок слов для массива words:
@@ -44,8 +48,15 @@ export const formatFilesTitle = formatTitleDecorator(['файл', 'файла', 
 
 export const sortTreeLeaves = (leaves: TreeData[]) => {
   return leaves.sort((a: TreeData, b: TreeData) => {
-    // a.ordering_number - b.ordering_number
-    // если оба значения - числа в строке (в названии темы, задания)
+    a.ordering_string = removeHtmlTags(a.ordering_string)
+    b.ordering_string = removeHtmlTags(b.ordering_string)
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+    if (
+      a.ordering_string.match(/\d{2,3}\S+/) !== null &&
+      b.ordering_string.match(/\d{2,3}\S+/) !== null
+    ) {
+      return collator.compare(a.ordering_string, b.ordering_string)
+    }
     if (
       a.ordering_string.match(/(^.\d+)/) !== null &&
       b.ordering_string.match(/(^.\d+)/) !== null
@@ -64,11 +75,7 @@ export const sortTreeLeaves = (leaves: TreeData[]) => {
     ) {
       return -1
     }
-    // если оба значения - числа (классы)
-    if (!isNaN(+a.ordering_string) && !isNaN(+b.ordering_string)) {
-      return +a.ordering_string - +b.ordering_string
-    }
-    return a.ordering_string.localeCompare(b.ordering_string)
+    return collator.compare(a.ordering_string, b.ordering_string)
   })
 }
 
@@ -151,10 +158,6 @@ export const isQueryParamsEquelToPage = (
   }
 
   return true
-}
-
-export const removeHtmlTags = (str: string) => {
-  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
 }
 
 export const cropString = (str: string, len: number) => {

@@ -50,7 +50,6 @@ export type TreeData = {
   olympiad_tag: Tag | null
   study_resource: ResourceType | null
   virtual_folder: VirtualFolder | null
-  ordering_number: number
   ordering_string: string
   media: UploadMediaResponse
   assignment: BaseAssignment | null
@@ -67,7 +66,6 @@ export type GetThemeTreeFilterListResponse = {
 }
 export type GetFolderTreeListResponse = {
   element_type: TreeElementType
-  ordering_number: number
   leaves: TreeData[]
   folder: {
     id: number
@@ -81,7 +79,6 @@ type OlympiadTag = {
 }
 export type TreeDataLight = {
   element_type: TreeElementType
-  ordering_number: number
   leaves: TreeData[]
   subject: Subject | null
   study_year: StudyYear | null
