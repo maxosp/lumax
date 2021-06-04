@@ -1,8 +1,11 @@
-import { createEvent, createStore, forward, attach, restore } from 'effector-root'
+import { createEvent, createStore, forward, attach, restore, merge } from 'effector-root'
 import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
 import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/get-test-assignment'
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { DropdownItem } from '@/pages/common/types'
+import { setSelectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { setSelectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { setSelectedTheme } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 export const getLabels = attach({
   effect: getLabelsListFx,
@@ -20,8 +23,12 @@ export const loadLabels = createEvent<void>()
 export const $labels = createStore<DropdownItem[]>([])
 
 export const setSelectedLabels = createEvent<DropdownItem[]>()
-export const resetLabels = createEvent<void>()
-export const $selectedLabels = restore(setSelectedLabels, []).reset(resetLabels)
+export const clearSelectedLabels = createEvent<void>()
+const resetLabels = merge([setSelectedClass, setSelectedSubject, setSelectedTheme])
+export const $selectedLabels = restore(setSelectedLabels, []).reset(
+  resetLabels,
+  clearSelectedLabels
+)
 
 export const loadCurrentLabelsIDs = createEvent<number>()
 export const $currentLabelsIDs = createStore<number[]>([])

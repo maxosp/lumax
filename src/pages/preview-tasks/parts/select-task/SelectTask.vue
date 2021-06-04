@@ -38,7 +38,7 @@ import {
 import { goBack, Navigate } from '@/features/navigation'
 import {
   loadCurrentLabelsIDs,
-  resetLabels,
+  clearSelectedLabels,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 
 export default Vue.extend({
@@ -64,7 +64,7 @@ export default Vue.extend({
       const index = this.questions.findIndex((item) => item === val)
       const tasksIds = (this.$route as Navigate).query!.questions.split(',')
       if (index !== -1) {
-        resetLabels()
+        clearSelectedLabels()
         loadCurrentLabelsIDs(+tasksIds[index])
         setCurrentIndex(index)
       }
