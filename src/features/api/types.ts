@@ -51,6 +51,7 @@ export type TreeData = {
   study_resource: ResourceType | null
   virtual_folder: VirtualFolder | null
   ordering_number: number
+  ordering_string: string
   media: UploadMediaResponse
   assignment: BaseAssignment | null
 }

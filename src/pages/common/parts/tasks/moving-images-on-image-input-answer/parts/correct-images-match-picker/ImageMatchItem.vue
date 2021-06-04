@@ -14,7 +14,7 @@
         v-else-if="droppableImages.length"
         class="dropdown"
         placeholder="Нет соответсвий"
-        :value="image.value ? `A${image.value}` : ''"
+        :value="canSetImageValue(image) ? `A${image.value}` : ''"
         read-only-dropdown
       >
         <template #default="{closeMenu}">
@@ -87,6 +87,9 @@ export default Vue.extend({
     isBackgroundImage: { type: Boolean, default: false },
   },
   methods: {
+    canSetImageValue(val: any) {
+      return this.droppableImages.find((el) => el.value === val.value)
+    },
     pickValue(droppable: DroppableImage | null, image: DraggableImage) {
       this.$emit('change', {
         ...image,

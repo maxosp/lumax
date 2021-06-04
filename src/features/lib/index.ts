@@ -43,7 +43,33 @@ export const formatResourcesTitle = formatTitleDecorator(['ресурс', 'ре�
 export const formatFilesTitle = formatTitleDecorator(['файл', 'файла', 'файлов'])
 
 export const sortTreeLeaves = (leaves: TreeData[]) => {
-  return leaves.sort((a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number)
+  return leaves.sort((a: TreeData, b: TreeData) => {
+    // a.ordering_number - b.ordering_number
+    // если оба значения - числа в строке (в названии темы, задания)
+    if (
+      a.ordering_string.match(/(^.\d+)/) !== null &&
+      b.ordering_string.match(/(^.\d+)/) !== null
+    ) {
+      return +a.ordering_string.match(/(^.\d+)/)![0] - +b.ordering_string.match(/(^.\d+)/)![0]
+    }
+    if (
+      a.ordering_string.match(/(^.\d+)/) !== null &&
+      b.ordering_string.match(/(^.\d+)/) === null
+    ) {
+      return 1
+    }
+    if (
+      a.ordering_string.match(/(^.\d+)/) === null &&
+      b.ordering_string.match(/(^.\d+)/) !== null
+    ) {
+      return -1
+    }
+    // если оба значения - числа (классы)
+    if (!isNaN(+a.ordering_string) && !isNaN(+b.ordering_string)) {
+      return +a.ordering_string - +b.ordering_string
+    }
+    return a.ordering_string.localeCompare(b.ordering_string)
+  })
 }
 
 const checkChildren = (oldData: TreeData, newData?: TreeData) => {
