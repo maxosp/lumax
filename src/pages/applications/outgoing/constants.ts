@@ -24,7 +24,7 @@ export const outgoingApplicationsDataFields: TableField[] = [
   },
   {
     name: 'test_assignment',
-    sortField: 'subject__name',
+    sortField: 'test_assignment__theme__subject__name',
     title: 'Предмет',
     width: '140px',
     formatter(obj: TestAssignment) {
@@ -33,7 +33,7 @@ export const outgoingApplicationsDataFields: TableField[] = [
   },
   {
     name: 'test_assignment',
-    sortField: 'study_year__name',
+    sortField: 'test_assignment__theme__study_year__name',
     titleClass: 'center aligned',
     dataClass: 'center aligned',
     title: 'Класс',

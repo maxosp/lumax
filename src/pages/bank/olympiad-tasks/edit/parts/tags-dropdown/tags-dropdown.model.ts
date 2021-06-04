@@ -30,7 +30,9 @@ const a = combineEvents({
 sample({
   clock: a,
   fn: (list) => {
-    const arr = list.selected.map((selectedId) => list.all.find((tag) => tag.id === selectedId))
+    const arr = list.selected
+      .map((selectedId) => list.all.find((tag) => tag.id === selectedId))
+      .filter(Boolean)
     const res: DropdownItem[] = arr.map((tag) => ({ name: `${tag!.id}`, title: tag!.name }))
     return res
   },

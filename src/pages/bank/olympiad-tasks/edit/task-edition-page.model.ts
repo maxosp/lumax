@@ -154,9 +154,9 @@ export const $isPreview = restore(toggleIsPreview, false).reset(clearFields)
 export const setRedirectAfterSave = createEvent<boolean>()
 const $redirectAfterSave = restore(setRedirectAfterSave, false).reset(clearFields)
 
-const $formToGetTagsList = combine($class, $subject, (cl, obj) => ({
-  study_year: (cl && +cl) || undefined,
-  subject: (obj && +obj) || undefined,
+const $formToGetTagsList = combine($class, $subject, (sy, subj) => ({
+  study_year: (sy && +sy) || null,
+  subject: (subj && +subj) || null,
 }))
 
 const debounced = debounce({

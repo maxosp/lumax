@@ -4,7 +4,7 @@ import { getTestAssignmentFx } from '@/features/api/assignment/test-assignment/g
 import { getLabelFx } from '@/features/api/assignment/labels/get-label'
 import { DropdownItem } from '@/pages/common/types'
 
-const getLabels = attach({
+export const getLabels = attach({
   effect: getLabelsListFx,
 })
 
