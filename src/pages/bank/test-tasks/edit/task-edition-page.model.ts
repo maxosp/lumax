@@ -80,7 +80,10 @@ import {
   themesDropdownModule,
 } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
-import { $selectedLabels } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
+import {
+  $selectedLabels,
+  getLabels,
+} from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { successToastEvent } from '@/features/toasts/toasts.model'
 import { mapTaskTypeToComponent } from '@/pages/common/dropdowns/bank/task-types-dropdown/constants'
 import { AssignmentAudioFile } from '@/features/api/assignment/types/types'
@@ -105,6 +108,7 @@ import {
 } from '@/pages/common/parts/status-controller/status.model'
 import { getTicketFx } from '@/features/api/ticket/moderation/get-ticket'
 import { handleUpdateAudioFilesFx } from '@/pages/common/parts/audio-files/audio-files-save.model'
+import { debounce } from 'patronum'
 
 const updateAssignment = attach({
   effect: updateTestAssignmentFx,
@@ -165,6 +169,22 @@ export const toggleIsPreview = createEvent<boolean>()
 export const $isPreview = restore(toggleIsPreview, false)
 
 export const loadApplication = createEvent<number>()
+
+const $formToGetLabelsList = combine($class, $subject, $theme, (sy, subj, theme) => ({
+  study_year: (sy && +sy) || null,
+  subject: (subj && +subj) || null,
+  theme: (theme && +theme) || null,
+}))
+
+const debounced = debounce({
+  source: $formToGetLabelsList,
+  timeout: 150,
+})
+
+forward({
+  from: debounced,
+  to: getLabels,
+})
 
 forward({
   from: clearFields,
