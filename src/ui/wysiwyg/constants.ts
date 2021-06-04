@@ -13,6 +13,7 @@ export const wysiwygConfig = {
   filebrowserUploadUrl: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   pasteUploadFileApi: `${config.BACKEND_URL}/api/media-app/media/upload/`,
   allowedContent: true,
+  skin: 'bootstrapck',
   toolbar: [
     [
       'Bold',
@@ -37,9 +38,7 @@ export const wysiwygConfig = {
       'Link',
       'Table',
       'Image',
-      'Video',
       'VideoDetector',
-      'Iframe',
       'Maximize',
       'Source',
     ],
