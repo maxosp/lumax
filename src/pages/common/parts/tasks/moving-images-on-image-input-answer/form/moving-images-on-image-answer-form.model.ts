@@ -140,7 +140,15 @@ $inputs.on(removeInput, (inputs, removed) => {
 const DEFAULT_SIZE = 200
 export const setDraggableImages = createEvent<DraggableImage[]>()
 export const $draggableImages = restore(setDraggableImages, [])
-  .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => question.draggable)
+  .on(setupMovingOnImageAnswerDataFx.doneData, (_, question) => {
+    let res = JSON.parse(JSON.stringify(question.droppable))
+    res = question.draggable.map((draggable) =>
+      question.droppable.find((droppable) => droppable.value === draggable.value)
+        ? draggable
+        : { ...draggable, value: null, size: undefined }
+    )
+    return res
+  })
   .on(uploadMediaImageFx.doneData, (items, res) => {
     return [
       ...items,

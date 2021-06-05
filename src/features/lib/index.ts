@@ -2,6 +2,10 @@ import { TreeData, GetThemeTreeFilterListResponse } from '@/features/api/types'
 import { Dictionary } from 'vue-router/types/router'
 import { PageParams } from '@/pages/common/types'
 
+export const removeHtmlTags = (str: string) => {
+  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
+}
+
 const wordDeclination = (total: number, words: string[]) => {
   /*
    Порядок слов для массива words:
@@ -43,7 +47,36 @@ export const formatResourcesTitle = formatTitleDecorator(['ресурс', 'ре�
 export const formatFilesTitle = formatTitleDecorator(['файл', 'файла', 'файлов'])
 
 export const sortTreeLeaves = (leaves: TreeData[]) => {
-  return leaves.sort((a: TreeData, b: TreeData) => a.ordering_number - b.ordering_number)
+  return leaves.sort((a: TreeData, b: TreeData) => {
+    a.ordering_string = removeHtmlTags(a.ordering_string)
+    b.ordering_string = removeHtmlTags(b.ordering_string)
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+    if (
+      a.ordering_string.match(/\d{2,3}\S+/) !== null &&
+      b.ordering_string.match(/\d{2,3}\S+/) !== null
+    ) {
+      return collator.compare(a.ordering_string, b.ordering_string)
+    }
+    if (
+      a.ordering_string.match(/(^.\d+)/) !== null &&
+      b.ordering_string.match(/(^.\d+)/) !== null
+    ) {
+      return +a.ordering_string.match(/(^.\d+)/)![0] - +b.ordering_string.match(/(^.\d+)/)![0]
+    }
+    if (
+      a.ordering_string.match(/(^.\d+)/) !== null &&
+      b.ordering_string.match(/(^.\d+)/) === null
+    ) {
+      return 1
+    }
+    if (
+      a.ordering_string.match(/(^.\d+)/) === null &&
+      b.ordering_string.match(/(^.\d+)/) !== null
+    ) {
+      return -1
+    }
+    return collator.compare(a.ordering_string, b.ordering_string)
+  })
 }
 
 const checkChildren = (oldData: TreeData, newData?: TreeData) => {
@@ -125,10 +158,6 @@ export const isQueryParamsEquelToPage = (
   }
 
   return true
-}
-
-export const removeHtmlTags = (str: string) => {
-  return str.replace(new RegExp('<[^>]*>', 'g'), '').replace(new RegExp('&[a-z]*;', 'g'), ' ')
 }
 
 export const cropString = (str: string, len: number) => {

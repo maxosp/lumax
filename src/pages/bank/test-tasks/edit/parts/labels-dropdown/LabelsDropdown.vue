@@ -56,7 +56,7 @@ import {
   loadCurrentLabelsIDs,
   loadCurrentLabels,
   $currentLabel,
-  resetLabels,
+  clearSelectedLabels,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 import { DEFAULT_ID } from '@/pages/common/constants'
@@ -98,7 +98,7 @@ export default Vue.extend({
       immediate: false,
       handler() {
         if (this.$route.name === 'test-tasks-edit') {
-          resetLabels()
+          clearSelectedLabels()
           const taskIds = (this.$route as Navigate).query!.questions.split(',')
           const taskId = +taskIds[+this.$route.query.currentQuestion - 1]
           loadCurrentLabelsIDs(taskId)
