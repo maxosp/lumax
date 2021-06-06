@@ -121,7 +121,7 @@ export default Vue.extend({
   }
 }
 .left {
-  width: 630px;
+  width: 750px;
   .input {
     margin-bottom: 20px;
   }
