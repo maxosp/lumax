@@ -222,6 +222,21 @@ export default Vue.extend({
   max-width: 936px;
 }
 ::v-deep .editor {
+  tr,
+  td {
+    border: 1px solid black;
+  }
+  li {
+    margin-left: 20px;
+    padding-left: 5px;
+    padding-top: 5px;
+  }
+  ol > li {
+    list-style-type: symbols !important;
+  }
+  ul > li {
+    list-style-type: disc !important;
+  }
   .cke_chrome {
     background: #edeef0;
     border: none;
