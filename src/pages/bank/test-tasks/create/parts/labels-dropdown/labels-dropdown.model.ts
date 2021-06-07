@@ -1,6 +1,5 @@
-import { createEvent, createStore, forward, attach, restore, combine, merge } from 'effector-root'
-import { debounce, every } from 'patronum'
-import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
+import { createEvent, forward, attach, restore, merge, sample, guard } from 'effector-root'
+import { every } from 'patronum'
 import { DropdownItem } from '@/pages/common/types'
 import {
   $selectedSubject,
@@ -15,17 +14,72 @@ import {
   setSelectedTheme,
 } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
-
-export const labelsDropdownModule = createFilter()
+import { createDropdownModel } from '@/pages/common/filters/create-dropdown-model'
+import { GetListQueryParams } from '@/features/api/types'
+import { Label } from '@/features/api/assignment/types/types'
 
 const getLabels = attach({
   effect: getLabelsListFx,
 })
 
+export const labelsDropdownModule = createDropdownModel<Label>(getLabels)
+
+export const $canSetLabels = every({
+  predicate: (value) => value !== null,
+  stores: [$selectedSubject, $selectedClass, $selectedTheme],
+})
+
 export const loadLabels = createEvent<void>()
-export const $labels = createStore<DropdownItem[]>([])
+
+sample({
+  clock: loadLabels,
+  source: {
+    $nextPage: labelsDropdownModule.store.$nextPage,
+    $selectedClass,
+    $selectedSubject,
+    $selectedTheme,
+  },
+  fn: (params): GetListQueryParams => ({
+    page: params.$nextPage,
+    study_year: params.$selectedClass!.id,
+    subject: params.$selectedSubject!.id,
+    theme: params.$selectedTheme!.id,
+    is_prerequisite: false,
+  }),
+  target: getLabels,
+})
+
+guard({
+  clock: [$selectedSubject, $selectedClass, $selectedTheme],
+  source: $canSetLabels,
+  filter: (canSetLabels) => canSetLabels,
+  target: loadLabels,
+})
+
+forward({
+  from: labelsDropdownModule.methods.canLoadNextPage,
+  to: loadLabels,
+})
+
+sample({
+  clock: getLabels.doneData,
+  source: { items: labelsDropdownModule.store.$items },
+  fn: ({ items }, res) => {
+    const newData = res.body.data.map((field) => ({
+      name: `${field.id}`,
+      title: field.name,
+    }))
+    return [...items, ...newData]
+  },
+  target: labelsDropdownModule.store.$items,
+})
 
 const resetLabels = merge([setSelectedClass, setSelectedSubject, setSelectedTheme])
+
+forward({
+  from: resetLabels,
+  to: labelsDropdownModule.methods.resetDropdown,
+})
 
 export const setSelectedLabels = createEvent<DropdownItem[]>()
 export const clearSelectedLabels = createEvent<void>()
@@ -33,55 +87,3 @@ export const $selectedLabels = restore(setSelectedLabels, []).reset(
   resetLabels,
   clearSelectedLabels
 )
-
-export const $canSetLabels = every({
-  predicate: (value) => value !== null,
-  stores: [$selectedSubject, $selectedClass, $selectedTheme],
-})
-
-const $formToGetLabelsList = combine(
-  $selectedClass,
-  $selectedSubject,
-  $selectedTheme,
-  (cls, subject, theme) => ({
-    study_year: cls && +cls.name,
-    subject: subject && +subject.name,
-    theme: theme && +theme.name,
-  })
-)
-
-const debounced = debounce({
-  source: $formToGetLabelsList,
-  timeout: 150,
-})
-
-forward({
-  from: debounced,
-  to: [
-    getLabels.prepend((data) => {
-      return {
-        study_year: data.study_year ? data.study_year : undefined,
-        subject: data.subject ? data.subject : undefined,
-        theme: data.theme ? data.theme : undefined,
-        is_prerequisite: false,
-      }
-    }),
-  ],
-})
-
-forward({
-  from: loadLabels,
-  to: getLabels.prepend(() => ({})),
-})
-
-forward({
-  from: getLabels.doneData.map((res) =>
-    (res.body.data as unknown as DropdownItem[]).map((label) => {
-      return {
-        ...label,
-        title: label.name,
-      }
-    })
-  ),
-  to: [$labels, labelsDropdownModule.methods.setItems],
-})

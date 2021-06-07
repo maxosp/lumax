@@ -1,25 +1,39 @@
-import { createEvent, createStore, forward, attach } from 'effector-root'
+import { createEvent, forward, attach, sample } from 'effector-root'
 import { getLabelsListFx } from '@/features/api/assignment/labels/get-labels-list'
-import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { DropdownItem } from '@/pages/common/types'
-
-export const labelsDropdownModule = createFilter()
+import { createDropdownModel } from '@/pages/common/filters/create-dropdown-model'
+import { GetListQueryParams } from '@/features/api/types'
 
 export const getLabels = attach({
   effect: getLabelsListFx,
 })
 
-export const loadLabels = createEvent<void>()
-export const $labels = createStore<DropdownItem[]>([])
+export const labelsDropdownModule = createDropdownModel(getLabels)
 
-forward({
-  from: loadLabels,
-  to: getLabels.prepend(() => ({})),
+export const loadLabels = createEvent<void>()
+
+sample({
+  clock: loadLabels,
+  source: { $nextPage: labelsDropdownModule.store.$nextPage },
+  fn: (params): GetListQueryParams => ({
+    page: params.$nextPage,
+  }),
+  target: getLabels,
 })
 
 forward({
-  from: getLabels.doneData.map((res) =>
-    res.body.data.map((subject) => ({ name: `${subject.id}`, title: subject.name }))
-  ),
-  to: $labels,
+  from: labelsDropdownModule.methods.canLoadNextPage,
+  to: loadLabels,
+})
+
+sample({
+  clock: getLabels.doneData,
+  source: { items: labelsDropdownModule.store.$items },
+  fn: ({ items }, res) => {
+    const newData = res.body.data.map((field) => ({
+      name: `${field.id}`,
+      title: field.name,
+    }))
+    return [...items, ...newData]
+  },
+  target: labelsDropdownModule.store.$items,
 })

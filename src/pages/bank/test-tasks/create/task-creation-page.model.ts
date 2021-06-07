@@ -71,7 +71,7 @@ import { DropdownItem } from '@/pages/common/types'
 import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { condition } from 'patronum'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { subjectsDropdownModel } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/create/parts/difficulties-dropdown/difficulties-dropdown.model'
 import { uploadAudioFiles } from '@/pages/common/parts/audio-files/audio-files-save.model'
@@ -124,7 +124,7 @@ forward({
   from: clearFields,
   to: [
     classesDropdownModule.methods.resetDropdown,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     themesDropdownModule.methods.resetDropdown,
     difficultiesDropdownModule.methods.resetDropdown,

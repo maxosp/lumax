@@ -36,6 +36,12 @@ import { createError } from '@/lib/effector/error-generator'
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { getSubjectFx } from '@/features/api/subject/get-subject'
 
+type InitAssignment = {
+  theme: number
+  subject: number
+  class: number
+}
+
 const getTheme = attach({
   effect: getThemeFx,
 })
@@ -69,11 +75,7 @@ const saveResource = createEvent<void>()
 export const redirectAfterSaveChanged = createEvent<boolean>()
 const $redirectAfterSave = restore(redirectAfterSaveChanged, false)
 
-export const initAssignment = createEvent<{
-  theme: number
-  subject: number
-  class: number
-}>()
+export const initAssignment = createEvent<InitAssignment>()
 
 forward({
   from: initAssignment,

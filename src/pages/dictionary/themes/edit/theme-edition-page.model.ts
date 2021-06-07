@@ -18,7 +18,7 @@ import {
 import { positionDropdownModule } from '@/pages/dictionary/themes/edit/parts/position/position.model'
 import {
   $selectedPrerequisites,
-  prerequisiteDropdownModule,
+  prerequisitesDropdownModel,
   resetSelectedPrerequisites,
   setSelectedPrerequisites,
 } from '@/pages/dictionary/themes/edit/parts/prerequisites/prerequisites.model'
@@ -80,7 +80,7 @@ forward({
     classDropdownModule.methods.resetDropdown,
     subjectDropdownModule.methods.resetDropdown,
     positionDropdownModule.methods.resetDropdown,
-    prerequisiteDropdownModule.methods.resetDropdown,
+    prerequisitesDropdownModel.methods.resetDropdown,
     themeDropdownModule.methods.resetDropdown,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),

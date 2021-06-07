@@ -31,7 +31,7 @@ import {
 } from '@/pages/bank/test-tasks/create/task-creation-page.model'
 import {
   setSelectedSubject,
-  subjectsDropdownModule,
+  subjectsDropdownModel,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import {
   classesDropdownModule,
@@ -59,7 +59,7 @@ export default Vue.extend({
   mounted() {
     if (this.$route.params) {
       const { subject, studyYear, theme } = this.$route.params
-      subject && subjectsDropdownModule.methods.itemChanged(subject)
+      subject && subjectsDropdownModel.methods.itemChanged(subject)
       subject && setSelectedSubject({ name: subject, title: '' })
       setSubject(+subject)
       studyYear && classesDropdownModule.methods.itemChanged(studyYear)

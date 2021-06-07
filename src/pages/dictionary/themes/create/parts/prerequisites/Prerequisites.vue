@@ -3,10 +3,12 @@
     <FilterDropdown
       label="Пререквизиты темы"
       placeholder="Выберите пререквизиты"
-      :methods="prerequisiteModuleMethods"
-      :data="$prerequisites"
+      :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
+      :data="$items"
       :store="{ $item, $itemsDropdown, $searchString }"
       :selected-data="$selectedPrerequisites"
+      :loading="$loading"
+      @infiniteHandler="nextPageTrigger"
     />
     <div class="selected-prerequisite">
       <div
@@ -42,9 +44,8 @@ import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import PrerequisiteMenu from '@/pages/dictionary/themes/create/parts/prerequisites/PrerequisiteMenu.vue'
 import {
-  $prerequisites,
   $selectedPrerequisites,
-  prerequisiteDropdownModule,
+  prerequisitesDropdownModel,
   deletePrerequisite,
 } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
 
@@ -55,17 +56,12 @@ export default Vue.extend({
     PrerequisiteMenu,
   },
   effector: {
-    $prerequisites,
     $selectedPrerequisites,
-    ...prerequisiteDropdownModule.store,
-  },
-  data() {
-    return {
-      prerequisiteModuleMethods: prerequisiteDropdownModule.methods,
-    }
+    ...prerequisitesDropdownModel.store,
   },
   methods: {
     deletePrerequisite,
+    ...prerequisitesDropdownModel.methods,
     showPrerequisiteMenu(itemId: number) {
       let currentComponent = ''
       Object.keys(this.$refs).forEach((el) => {
@@ -75,6 +71,9 @@ export default Vue.extend({
       })
       ;(this.$refs[currentComponent] as any)[0].$refs.tooltip.toggleTooltip()
     },
+  },
+  beforeDestroy() {
+    this.dropdownDestroy()
   },
 })
 </script>

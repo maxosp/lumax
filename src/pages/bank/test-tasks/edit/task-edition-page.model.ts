@@ -77,6 +77,7 @@ import { difficultiesDropdownModule } from '@/pages/bank/test-tasks/edit/parts/d
 import { taskTypesDropdownModule } from '@/pages/common/dropdowns/bank/task-types-dropdown/task-types-dropdown.model'
 import {
   $themes,
+  setSelectedTheme,
   themesDropdownModule,
 } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
@@ -96,7 +97,7 @@ import {
 } from '@/pages/common/dropdowns/class/classes-dropdown.model'
 import {
   setSelectedSubject,
-  subjectsDropdownModule,
+  subjectsDropdownModel,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { updateTestAssignmentBulkFx } from '@/features/api/assignment/test-assignment/update-test-assignment-bulk'
 import {
@@ -190,7 +191,7 @@ forward({
   from: clearFields,
   to: [
     classesDropdownModule.methods.resetDropdown,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
     themesDropdownModule.methods.resetDropdown,
@@ -208,7 +209,7 @@ forward({
 forward({
   from: loadAssignment.doneData.map((res) => res.body),
   to: [
-    subjectsDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.subject?.id}`),
+    subjectsDropdownModel.methods.itemChanged.prepend((data) => `${data.theme.subject?.id}`),
     setSelectedSubject.prepend((data) => ({
       name: data && data.theme.subject ? `${data.theme.subject.id}` : '',
       title: data && data.theme.subject ? data.theme.subject.name : '',
@@ -219,6 +220,10 @@ forward({
     setSelectedClass.prepend((data) => ({
       name: data && data.theme.study_year ? `${data.theme.study_year.id}` : '',
       title: data && data.theme.study_year ? data.theme.study_year.name : '',
+    })),
+    setSelectedTheme.prepend((data) => ({
+      name: data && data.theme.id ? `${data.theme.id}` : '',
+      title: data && data.theme.name ? data.theme.name : '',
     })),
     themesDropdownModule.methods.itemChanged.prepend((data) => `${data.theme.id}`),
     setTheme.prepend((data) => `${data.theme.id}` || null),

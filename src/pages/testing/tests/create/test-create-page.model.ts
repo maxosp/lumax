@@ -25,7 +25,7 @@ import {
   classesDropdownModule,
   setSelectedClass,
 } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { subjectsDropdownModel } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { condition } from 'patronum'
 import { navigatePush } from '@/features/navigation'
 import { DropdownItem } from '@/pages/common/types'
@@ -200,7 +200,7 @@ forward({
   to: [
     typeDropdownModule.methods.resetDropdown,
     classesDropdownModule.methods.resetDropdown,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     automaticGenerationFormClearFields,
     finalTextFormClearFields,
   ],

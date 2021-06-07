@@ -36,10 +36,7 @@ import {
   setCurrentQuestion,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { goBack, Navigate } from '@/features/navigation'
-import {
-  loadCurrentLabelsIDs,
-  clearSelectedLabels,
-} from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
+import { loadCurrentLabelsIDs } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 
 export default Vue.extend({
   name: 'SelectTask',
@@ -64,7 +61,6 @@ export default Vue.extend({
       const index = this.questions.findIndex((item) => item === val)
       const tasksIds = (this.$route as Navigate).query!.questions.split(',')
       if (index !== -1) {
-        clearSelectedLabels()
         loadCurrentLabelsIDs(+tasksIds[index])
         setCurrentIndex(index)
       }

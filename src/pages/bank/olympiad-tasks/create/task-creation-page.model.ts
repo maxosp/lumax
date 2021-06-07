@@ -72,7 +72,7 @@ import { mapTaskTypeTo } from '@/pages/common/constants'
 import { combineEvents, condition, debounce, every } from 'patronum'
 import { createOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/create-olympiad-assignment'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { subjectsDropdownModel } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { scoreDropdownModule } from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/score-dropdown.model'
 import {
   $clues,
@@ -142,7 +142,7 @@ forward({
   from: clearFields,
   to: [
     classesDropdownModule.methods.resetDropdown,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     scoreDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     resetCluesList,

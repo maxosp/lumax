@@ -4,7 +4,7 @@ import { getMediaFx } from '@/features/api/media/get-media'
 import { UploadMediaResponse } from '@/features/api/media/types'
 import { $session } from '@/features/session/index'
 import { addToast, successToastEvent } from '@/features/toasts/toasts.model'
-import { colorDropdownModule } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
+import { colorsDropdownModel } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
 import { CreateSubjectType } from '@/features/api/subject/types'
 
 export const uploadMedia = attach({
@@ -95,8 +95,8 @@ const uploadImageSubjectFx = createEffect({
 })
 const $dropDownData = combine(
   {
-    list: colorDropdownModule.store.$itemsDropdown,
-    elem: colorDropdownModule.store.$item,
+    list: colorsDropdownModel.store.$itemsDropdown,
+    elem: colorsDropdownModel.store.$item,
   },
   ({ list, elem }) => {
     const element = list.find((item) => item.name === elem)
@@ -199,6 +199,6 @@ forward({
     resetSubjectTitle,
     resetIconSubjectId,
     resetImageSubjectId,
-    colorDropdownModule.methods.resetDropdown,
+    colorsDropdownModel.methods.resetDropdown,
   ],
 })

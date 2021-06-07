@@ -1,29 +1,16 @@
 <template>
   <div class="labels-dropdown">
-    <BaseDropdown
-      class="input dropdown"
-      value="Выберите метки"
+    <FilterDropdown
       label="Метки"
-      placeholder=""
-      read-only-dropdown
-      @clear="clear"
-    >
-      <template #default="{closeMenu}">
-        <div v-if="$labels.length">
-          <SelectItem
-            v-for="item in $labels"
-            :key="item.name"
-            :placeholder="item.title"
-            @click="onSelectItem(item, closeMenu)"
-          >
-            {{ item.title }}
-          </SelectItem>
-        </div>
-        <div v-else>
-          <SelectItem @click="closeMenu">Нет созданных меток</SelectItem>
-        </div>
-      </template>
-    </BaseDropdown>
+      placeholder="Выберите метки"
+      :data="$items"
+      :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
+      :store="{ $item, $itemsDropdown, $searchString }"
+      :loading="$loading"
+      :disabled="!$canSetLabels"
+      @infiniteHandler="nextPageTrigger"
+      @item-changed="onSelectItem"
+    />
     <div class="selected-labels">
       <div
         v-for="item in $selectedLabels"
@@ -45,36 +32,39 @@
 <script lang="ts">
 import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import {
   loadLabels,
-  $labels,
   $selectedLabels,
   setSelectedLabels,
   $currentLabelsIDs,
   loadCurrentLabelsIDs,
   loadCurrentLabels,
   $currentLabel,
-  clearSelectedLabels,
+  resetLabels,
+  labelsDropdownModule,
+  $canSetLabels,
 } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import { Navigate } from '@/features/navigation'
 import { $currentQuestion } from '@/pages/preview-tasks/parts/select-task/select-task.model'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
+import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { $selectedTheme } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 export default Vue.extend({
   components: {
     Icon,
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   effector: {
-    $labels,
+    ...labelsDropdownModule.store,
     $selectedLabels,
     $currentLabelsIDs,
     $currentLabel,
     $currentQuestion,
+    $canSetLabels,
   },
   watch: {
     $currentLabelsIDs: {
@@ -98,7 +88,7 @@ export default Vue.extend({
       immediate: false,
       handler() {
         if (this.$route.name === 'test-tasks-edit') {
-          clearSelectedLabels()
+          resetLabels()
           const taskIds = (this.$route as Navigate).query!.questions.split(',')
           const taskId = +taskIds[+this.$route.query.currentQuestion - 1]
           loadCurrentLabelsIDs(taskId)
@@ -108,6 +98,7 @@ export default Vue.extend({
   },
   methods: {
     loadLabels,
+    ...labelsDropdownModule.methods,
     onSelectItem(item: DropdownItem, cb: any) {
       const existedItem = this.$selectedLabels.find(
         (label: DropdownItem) => label.name === item.name
@@ -131,10 +122,13 @@ export default Vue.extend({
     },
   },
   beforeMount() {
-    loadLabels()
     loadCurrentLabelsIDs(+this.$route.params.id)
   },
+  mounted() {
+    if ($selectedClass && $selectedSubject && $selectedTheme) loadLabels()
+  },
   beforeDestroy() {
+    this.dropdownDestroy()
     setSelectedLabels([])
   },
 })

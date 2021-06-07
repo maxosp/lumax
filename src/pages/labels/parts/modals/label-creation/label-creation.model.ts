@@ -23,15 +23,17 @@ import { DEFAULT_ID } from '@/pages/common/constants'
 import { createError } from '@/lib/effector/error-generator'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 
+type CreateLabelFromTree = {
+  class_id: number
+  subject_id: number
+  theme_id: number
+}
+
 export const createLabel = attach({
   effect: createLabelFx,
 })
 
-export const createLabelFromTree = createEvent<{
-  class_id: number
-  subject_id: number
-  theme_id: number
-}>()
+export const createLabelFromTree = createEvent<CreateLabelFromTree>()
 
 export const checkIfThemeCanBeSend = createEvent<void>()
 export const clearFields = createEvent<void>()

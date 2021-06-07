@@ -44,7 +44,7 @@ import PrerequisiteMenu from '@/pages/dictionary/themes/edit/parts/prerequisites
 import {
   $prerequisites,
   $selectedPrerequisites,
-  prerequisiteDropdownModule,
+  prerequisitesDropdownModel,
   deletePrerequisite,
 } from '@/pages/dictionary/themes/edit/parts/prerequisites/prerequisites.model'
 
@@ -57,11 +57,11 @@ export default Vue.extend({
   effector: {
     $prerequisites,
     $selectedPrerequisites,
-    ...prerequisiteDropdownModule.store,
+    ...prerequisitesDropdownModel.store,
   },
   data() {
     return {
-      prerequisiteModuleMethods: prerequisiteDropdownModule.methods,
+      prerequisiteModuleMethods: prerequisitesDropdownModel.methods,
     }
   },
   methods: {

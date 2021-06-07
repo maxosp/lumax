@@ -13,7 +13,7 @@ import {
 import {
   $selectedSubject,
   setSelectedSubject,
-  subjectsDropdownModule,
+  subjectsDropdownModel,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { getTagsTreeLight } from '@/pages/tags/tags-page.model'
@@ -77,7 +77,7 @@ forward({
 })
 
 forward({
-  from: subjectsDropdownModule.methods.itemChanged,
+  from: subjectsDropdownModel.methods.itemChanged,
   to: $subjectErrorModule.methods.resetError,
 })
 
@@ -100,7 +100,7 @@ sample({
   fn: (tag: Tag) => {
     $form.map((data) => (data.id = tag.id))
     tagTitleChanged(tag.name)
-    tag.subject && subjectsDropdownModule.methods.itemChanged(`${tag.subject.id}`)
+    tag.subject && subjectsDropdownModel.methods.itemChanged(`${tag.subject.id}`)
     tag.subject &&
       setSelectedSubject({ id: tag.subject.id, name: `${tag.subject.id}`, title: tag.subject.name })
     tag.study_year && classesDropdownModule.methods.itemChanged(`${tag.study_year.id}`)
@@ -133,7 +133,7 @@ forward({
   from: clearFields,
   to: [
     tagTitleReset,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     classesDropdownModule.methods.resetDropdown,
     $titleErrorModule.methods.resetError,
     $subjectErrorModule.methods.resetError,

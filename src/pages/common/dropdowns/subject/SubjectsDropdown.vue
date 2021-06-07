@@ -1,11 +1,13 @@
 <template>
   <FilterDropdown
-    v-if="$subjects.length"
+    v-if="$items.length"
     label="Предмет"
     placeholder="Выберите предмет"
-    :data="$subjects"
+    :data="$items"
     :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
     :store="{ $item, $itemsDropdown, $searchString }"
+    :loading="$loading"
+    @infiniteHandler="nextPageTrigger"
     @item-changed="onSelectItem"
   />
 </template>
@@ -14,9 +16,8 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  subjectsDropdownModule,
+  subjectsDropdownModel,
   loadSubjects,
-  $subjects,
   setSelectedSubject,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
@@ -26,15 +27,17 @@ export default Vue.extend({
     FilterDropdown,
   },
   effector: {
-    $subjects,
-    ...subjectsDropdownModule.store,
+    ...subjectsDropdownModel.store,
   },
   methods: {
-    ...subjectsDropdownModule.methods,
+    ...subjectsDropdownModel.methods,
     onSelectItem(item: DropdownItem | null) {
       setSelectedSubject(item || null)
       this.$emit('setItem', item ? item.name : null)
     },
+  },
+  beforeDestroy() {
+    this.dropdownDestroy()
   },
   mounted() {
     loadSubjects()

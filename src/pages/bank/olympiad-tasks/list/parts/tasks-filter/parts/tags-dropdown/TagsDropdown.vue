@@ -3,9 +3,11 @@
     <FilterDropdown
       label="Тег"
       placeholder="Выберите тег"
-      :data="$tags"
+      :data="$items"
       :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
       :store="{ $item, $itemsDropdown, $searchString }"
+      :loading="$loading"
+      @infiniteHandler="nextPageTrigger"
       @item-changed="onSelectItem"
     />
     <div class="selected-tags">
@@ -35,9 +37,8 @@ import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
 import {
-  tagsDropdownModule,
+  tagsDropdownModel,
   loadTags,
-  $tags,
   $selectedTags,
   deleteTag,
 } from '@/pages/bank/olympiad-tasks/list/parts/tasks-filter/parts/tags-dropdown/tags-dropdown.model'
@@ -51,19 +52,21 @@ export default Vue.extend({
     Icon,
   },
   effector: {
-    $tags,
+    ...tagsDropdownModel.store,
     $selectedTags,
-    ...tagsDropdownModule.store,
     $selectedClass,
     $selectedSubject,
   },
   methods: {
-    ...tagsDropdownModule.methods,
+    ...tagsDropdownModel.methods,
     loadTags,
     deleteTag,
     onSelectItem(item: DropdownItem | null) {
       this.$emit('setItem', item ? item.name : null)
     },
+  },
+  beforeDestroy() {
+    this.dropdownDestroy()
   },
   mounted() {
     if (!this.$selectedSubject && !this.$selectedClass) loadTags()

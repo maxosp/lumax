@@ -1,5 +1,5 @@
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { subjectsDropdownModel } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { difficultyDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/difficulty-dropdown/difficulty-dropdown.model'
 import { languagesDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/language-dropdown/language-dropdown.model'
 import { statusDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/status-dropdown/status-dropdown.model'
@@ -9,7 +9,7 @@ import { typeDropdownModule } from '@/pages/common/dropdowns/bank/test-tasks/typ
 
 export const dropdownModules = {
   classesDropdownModule,
-  subjectsDropdownModule,
+  subjectsDropdownModel,
   difficultyDropdownModule,
   languagesDropdownModule,
   statusDropdownModule,

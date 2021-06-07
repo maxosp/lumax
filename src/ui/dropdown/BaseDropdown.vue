@@ -24,7 +24,10 @@
     </template>
 
     <template #menu>
-      <SelectMenu>
+      <SelectMenu
+        :loading="loading"
+        @infiniteHandler="$emit('infiniteHandler')"
+      >
         <slot v-bind="{closeMenu}" />
       </SelectMenu>
     </template>
@@ -52,6 +55,7 @@ export default Vue.extend({
     label: { type: String as PropType<string>, default: '' },
     disabled: { type: Boolean as PropType<boolean> },
     readOnlyDropdown: { type: Boolean as PropType<boolean> },
+    loading: { type: Boolean as PropType<boolean> },
   },
   data: () => ({
     isOpen: false,

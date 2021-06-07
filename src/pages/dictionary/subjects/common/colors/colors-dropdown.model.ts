@@ -1,29 +1,41 @@
-import { attach, createEvent, createStore, forward } from 'effector-root'
+import { attach, createEvent, sample } from 'effector-root'
 import { getColorsListFx } from '@/features/api/subject/get-subject-colors'
-import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
-import { DropdownItem } from '@/pages/common/types'
-
-export const colorDropdownModule = createFilter()
+import { Icon } from '@/features/api/subject/types'
+import { GetListQueryParams } from '@/features/api/types'
+import { forward } from 'effector'
+import { createDropdownModel } from '@/pages/common/filters/create-dropdown-model'
 
 const getColors = attach({
   effect: getColorsListFx,
 })
 
+export const colorsDropdownModel = createDropdownModel<Icon>(getColors)
 export const loadColors = createEvent<void>()
-export const $colors = createStore<DropdownItem[]>([])
 
-forward({
-  from: loadColors,
-  to: getColors.prepend(() => ({})),
+sample({
+  clock: loadColors,
+  source: { $nextPage: colorsDropdownModel.store.$nextPage },
+  fn: (params): GetListQueryParams => ({
+    page: params.$nextPage,
+  }),
+  target: getColors,
 })
 
 forward({
-  from: getColors.doneData.map((res) =>
-    res.body.data.map((color) => ({
-      name: `${color.id}`,
-      title: color.name,
-      value: color.value,
+  from: colorsDropdownModel.methods.canLoadNextPage,
+  to: loadColors,
+})
+
+sample({
+  clock: getColors.doneData,
+  source: { items: colorsDropdownModel.store.$items },
+  fn: ({ items }, res) => {
+    const newColors = res.body.data.map((field) => ({
+      name: `${field.id}`,
+      title: field.name,
+      value: field.value,
     }))
-  ),
-  to: $colors,
+    return [...items, ...newColors]
+  },
+  target: colorsDropdownModel.store.$items,
 })
