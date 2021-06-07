@@ -81,7 +81,13 @@ export default Vue.extend({
           (label) => label.name === this.$currentLabel.name
         )
         if (index === DEFAULT_ID) {
-          setSelectedLabels([...this.$selectedLabels, this.$currentLabel])
+          setSelectedLabels([
+            ...this.$selectedLabels,
+            {
+              name: `${this.$currentLabel.name}`,
+              title: this.$currentLabel.title,
+            },
+          ])
         }
       },
     },

@@ -55,6 +55,9 @@ export default Vue.extend({
     isDisabled: { type: Boolean, default: false },
   },
   effector: {
+    $selectedClass,
+    $selectedSubject,
+    $selectedTheme,
     $selectedLabels,
     $canSetLabels,
     ...labelsDropdownModule.store,
@@ -95,7 +98,7 @@ export default Vue.extend({
     this.dropdownDestroy()
   },
   mounted() {
-    if ($selectedClass && $selectedSubject && $selectedTheme) loadLabels()
+    if (this.$selectedClass && this.$selectedSubject && this.$selectedTheme) loadLabels()
   },
 })
 </script>

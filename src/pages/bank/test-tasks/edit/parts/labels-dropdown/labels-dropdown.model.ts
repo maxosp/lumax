@@ -79,10 +79,12 @@ forward({
 sample({
   clock: getLabels.doneData,
   fn: (res) => {
-    return res.body.data.map((field) => ({
-      name: `${field.id}`,
-      title: field.name,
-    }))
+    return [
+      ...res.body.data.map((field) => ({
+        name: `${field.id}`,
+        title: field.name,
+      })),
+    ]
   },
   target: labelsDropdownModule.store.$items,
 })
