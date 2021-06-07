@@ -86,7 +86,7 @@ import { LANGUAGE_DATA } from '@/pages/bank/common/constants'
 import { mapTaskTypeTo } from '@/pages/common/constants'
 import { combineEvents, condition, debounce } from 'patronum'
 import { classesDropdownModule } from '@/pages/common/dropdowns/class/classes-dropdown.model'
-import { subjectsDropdownModule } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { subjectsDropdownModel } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { scoreDropdownModule } from '@/pages/common/dropdowns/bank/olympiad-tasks/score-dropdown/score-dropdown.model'
 import { updateOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/update-olympiad-assignment'
 import { getOlympiadAssignmentFx } from '@/features/api/assignment/olympiad-assignment/get-olympiad-assignment'
@@ -185,7 +185,7 @@ forward({
   from: clearFields,
   to: [
     classesDropdownModule.methods.resetDropdown,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     scoreDropdownModule.methods.resetDropdown,
     taskTypesDropdownModule.methods.resetDropdown,
     setTaskType.prepend(() => null),
@@ -202,7 +202,7 @@ forward({
 forward({
   from: loadAssignment.doneData.map((res) => res.body),
   to: [
-    subjectsDropdownModule.methods.itemChanged.prepend((data) => `${data.subject.id}`),
+    subjectsDropdownModel.methods.itemChanged.prepend((data) => `${data.subject.id}`),
     setSubject.prepend((data) => `${data.subject.id}` || null),
     classesDropdownModule.methods.itemChanged.prepend((data) => `${data.study_year.id}`),
     setClass.prepend((data) => `${data.study_year.id}` || null),

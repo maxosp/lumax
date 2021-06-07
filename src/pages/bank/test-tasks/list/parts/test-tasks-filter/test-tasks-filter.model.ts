@@ -36,8 +36,8 @@ forward({
   from: [
     dropdownModules.classesDropdownModule.methods.itemChanged,
     dropdownModules.classesDropdownModule.methods.resetItem,
-    dropdownModules.subjectsDropdownModule.methods.itemChanged,
-    dropdownModules.subjectsDropdownModule.methods.resetItem,
+    dropdownModules.subjectsDropdownModel.methods.itemChanged,
+    dropdownModules.subjectsDropdownModel.methods.resetItem,
   ],
   to: [
     dropdownModules.themesDropdownModule.methods.resetItem,

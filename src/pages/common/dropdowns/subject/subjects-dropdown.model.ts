@@ -1,33 +1,49 @@
-import { createEvent, createStore, forward, attach, restore } from 'effector-root'
+import { createEvent, forward, attach, restore, sample } from 'effector-root'
 import { getSubjectsListFx } from '@/features/api/subject/get-subjects-list'
-import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-
-export const subjectsDropdownModule = createFilter()
-
-export const setSelectedSubject = createEvent<DropdownItem | null>()
-export const $selectedSubject = restore(setSelectedSubject, null)
+import { GetListQueryParams } from '@/features/api/types'
+import { createDropdownModel } from '@/pages/common/filters/create-dropdown-model'
+import { SubjectGrid } from '@/features/api/subject/types'
 
 const getSubjects = attach({
   effect: getSubjectsListFx,
 })
 
+export const subjectsDropdownModel = createDropdownModel<SubjectGrid>(getSubjects)
+
+export const setSelectedSubject = createEvent<DropdownItem | null>()
+export const $selectedSubject = restore(setSelectedSubject, null)
+
 export const loadSubjects = createEvent<void>()
-export const $subjects = createStore<DropdownItem[]>([])
 
-forward({
-  from: loadSubjects,
-  to: getSubjects.prepend(() => ({})),
+sample({
+  clock: loadSubjects,
+  source: { $nextPage: subjectsDropdownModel.store.$nextPage },
+  fn: (params): GetListQueryParams => ({
+    page: params.$nextPage,
+  }),
+  target: getSubjects,
 })
 
 forward({
-  from: getSubjects.doneData.map((res) =>
-    res.body.data.map((subject) => ({ name: `${subject.id}`, title: subject.name }))
-  ),
-  to: $subjects,
+  from: subjectsDropdownModel.methods.canLoadNextPage,
+  to: loadSubjects,
+})
+
+sample({
+  clock: getSubjects.doneData,
+  source: { items: subjectsDropdownModel.store.$items },
+  fn: ({ items }, res) => {
+    const newData = res.body.data.map((field) => ({
+      name: `${field.id}`,
+      title: field.name,
+    }))
+    return [...items, ...newData]
+  },
+  target: subjectsDropdownModel.store.$items,
 })
 
 forward({
-  from: subjectsDropdownModule.methods.resetDropdown,
+  from: subjectsDropdownModel.methods.resetDropdown,
   to: setSelectedSubject.prepend(() => null),
 })

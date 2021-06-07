@@ -5,8 +5,10 @@
     :label="$props.label"
     :placeholder="$props.placeholder"
     :disabled="disabled"
+    :loading="loading"
     @input="$props.methods.searchStringChanged"
     @clear="clear"
+    @infiniteHandler="$emit('infiniteHandler')"
   >
     <template #default="{closeMenu}">
       <div v-show="items.length && !isRecursive">
@@ -32,7 +34,11 @@
           :handle-click="(val) => handleClick(val, closeMenu)"
         />
       </div>
-      <div v-show="items.length === 0">
+      <SmallLoader
+        v-show="loading"
+        class="loader"
+      />
+      <div v-show="items.length === 0 && !loading">
         <SelectItem @click="closeMenu">
           Не найдено совпадений
         </SelectItem>
@@ -49,12 +55,14 @@ import SelectItemRecursive from '@/ui/select/parts/SelectItemRecursive.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { FilterDropdownMethods, FilterDropdownStore } from '@/pages/common/filter-dropdown/types'
 import { findItem } from '@/pages/common/filter-dropdown/lib'
+import SmallLoader from '@/pages/common/parts/internal-loader-blocks/SmallLoader.vue'
 
 export default Vue.extend({
   components: {
     BaseDropdown,
     SelectItem,
     SelectItemRecursive,
+    SmallLoader,
   },
   props: {
     label: { type: String, required: false, default: '' },
@@ -65,9 +73,10 @@ export default Vue.extend({
     disabled: { type: Boolean as PropType<boolean> },
     selectedData: { type: Array as PropType<DropdownItem[]> },
     isRecursive: { type: Boolean as PropType<boolean> },
+    loading: { type: Boolean as PropType<boolean>, default: false },
   },
   computed: {
-    correctValue() {
+    correctValue(): DropdownItem {
       const arr = [...this.$props.store.$itemsDropdown]
       const currentItem = this.isRecursive
         ? findItem(this.$props.store.$item, arr)
@@ -75,7 +84,7 @@ export default Vue.extend({
 
       return currentItem ? currentItem.title : this.$props.store.$searchString
     },
-    items() {
+    items(): DropdownItem {
       return this.$props.store.$itemsDropdown
     },
   },
@@ -113,3 +122,13 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 51px;
+  font-size: 14px;
+}
+</style>

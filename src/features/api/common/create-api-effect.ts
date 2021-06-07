@@ -7,7 +7,7 @@ type Options<PARAMS, DONE, FAIL> = {
   requestMapper: (params: PARAMS) => RequestParams
 }
 
-type ApiEffect<PARAMS, DONE, FAIL> = Effect<PARAMS, Response<DONE>, Response<FAIL>>
+export type ApiEffect<PARAMS, DONE, FAIL> = Effect<PARAMS, Response<DONE>, Response<FAIL>>
 
 export const createApiEffect = <PARAMS = void, DONE = void, FAIL = void>(
   options: Options<PARAMS, DONE, FAIL>

@@ -1,11 +1,13 @@
 <template>
   <FilterDropdown
-    v-if="$colors.length"
+    v-if="$items.length"
     label="Цвет"
     placeholder="Выберите цвет предмета"
-    :methods="subjectModuleMethods"
-    :data="$colors"
+    :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
+    :data="$items"
     :store="{ $item, $itemsDropdown, $searchString }"
+    :loading="$loading"
+    @infiniteHandler="nextPageTrigger"
   />
 </template>
 
@@ -13,24 +15,20 @@
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
 import {
-  $colors,
+  colorsDropdownModel,
   loadColors,
-  colorDropdownModule,
 } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
 
 export default Vue.extend({
   components: { FilterDropdown },
   effector: {
-    $colors,
-    ...colorDropdownModule.store,
-  },
-  data() {
-    return {
-      subjectModuleMethods: colorDropdownModule.methods,
-    }
+    ...colorsDropdownModel.store,
   },
   methods: {
-    loadColors,
+    ...colorsDropdownModel.methods,
+  },
+  beforeDestroy() {
+    this.dropdownDestroy()
   },
   mounted() {
     loadColors()

@@ -1,30 +1,16 @@
 <template>
   <div class="labels-dropdown">
-    <BaseDropdown
-      class="input dropdown"
-      :value="correctValue"
-      :disabled="isDisabled ? !$canSetLabels : false"
+    <FilterDropdown
       label="Метки"
       placeholder="Выберите метки"
-      @input="searchStringChanged"
-      @clear="clear"
-    >
-      <template #default="{closeMenu}">
-        <div v-if="$itemsDropdown.length">
-          <SelectItem
-            v-for="item in $itemsDropdown"
-            :key="item.name"
-            :placeholder="item.title"
-            @click="onSelectItem(item, closeMenu)"
-          >
-            {{ item.title }}
-          </SelectItem>
-        </div>
-        <div v-else>
-          <SelectItem @click="closeMenu">Нет созданных меток</SelectItem>
-        </div>
-      </template>
-    </BaseDropdown>
+      :data="$items"
+      :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
+      :store="{ $item, $itemsDropdown, $searchString }"
+      :loading="$loading"
+      :disabled="isDisabled ? !$canSetLabels : false"
+      @infiniteHandler="nextPageTrigger"
+      @item-changed="onSelectItem"
+    />
     <div class="selected-labels">
       <div
         v-for="item in $selectedLabels"
@@ -46,8 +32,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import Icon from '@/ui/icon/Icon.vue'
-import BaseDropdown from '@/ui/dropdown/BaseDropdown.vue'
-import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import {
   loadLabels,
   $canSetLabels,
@@ -56,12 +40,15 @@ import {
   labelsDropdownModule,
 } from '@/pages/bank/test-tasks/create/parts/labels-dropdown/labels-dropdown.model'
 import { DropdownItem } from '@/pages/common/types'
+import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
+import { $selectedClass } from '@/pages/common/dropdowns/class/classes-dropdown.model'
+import { $selectedSubject } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
+import { $selectedTheme } from '@/pages/common/dropdowns/themes-tree/theme-dropdown.model'
 
 export default Vue.extend({
   components: {
     Icon,
-    BaseDropdown,
-    SelectItem,
+    FilterDropdown,
   },
   props: {
     isDisabled: { type: Boolean, default: false },
@@ -104,8 +91,11 @@ export default Vue.extend({
       this.resetSearchString()
     },
   },
+  beforeDestroy() {
+    this.dropdownDestroy()
+  },
   mounted() {
-    loadLabels()
+    if ($selectedClass && $selectedSubject && $selectedTheme) loadLabels()
   },
 })
 </script>

@@ -14,7 +14,7 @@ import {
   iconSubjectIdChanged,
   imageSubjectIdChanged,
 } from '@/pages/dictionary/subjects/common/create-edit.model'
-import { colorDropdownModule } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
+import { colorsDropdownModel } from '@/pages/dictionary/subjects/common/colors/colors-dropdown.model'
 import { errorToastEvent, successToastEvent } from '@/features/toasts/toasts.model'
 import { navigatePush } from '@/features/navigation'
 
@@ -89,12 +89,12 @@ sample({
     shortUsefulInfoChanged(subject.short_useful_info)
     if (subject.icon) iconSubjectIdChanged(subject.icon)
     if (subject.image) imageSubjectIdChanged(subject.image)
-    if (subject.color) colorDropdownModule.methods.itemChanged(`${subject.color.id}`)
+    if (subject.color) colorsDropdownModel.methods.itemChanged(`${subject.color.id}`)
   },
 })
 
 // очистка полей
 forward({
   from: clearFields,
-  to: [colorDropdownModule.methods.resetItem, colorDropdownModule.methods.resetSearchString],
+  to: [colorsDropdownModel.methods.resetItem, colorsDropdownModel.methods.resetSearchString],
 })

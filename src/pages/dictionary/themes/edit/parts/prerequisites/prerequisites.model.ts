@@ -8,7 +8,7 @@ export const getThemeData = attach({
   effect: getThemeFx,
 })
 
-export const prerequisiteDropdownModule = createFilter()
+export const prerequisitesDropdownModel = createFilter()
 
 export const $prerequisites = createStore<DropdownItem[]>([])
 
@@ -29,9 +29,9 @@ forward({
 sample({
   source: {
     selected: $selectedPrerequisites,
-    all: prerequisiteDropdownModule.store.$itemsDropdown,
+    all: prerequisitesDropdownModel.store.$itemsDropdown,
   },
-  clock: prerequisiteDropdownModule.methods.itemChanged,
+  clock: prerequisitesDropdownModel.methods.itemChanged,
   fn: (list, element) => {
     const arr = list.selected.slice()
     if (!arr.find(((el: any) => el.name === element) || !arr.length) && element) {

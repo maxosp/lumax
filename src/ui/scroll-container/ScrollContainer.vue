@@ -15,10 +15,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-
 import 'simplebar/dist/simplebar.min.css'
-
-const SimpleBar = require('simplebar/dist/simplebar.min')
+import SimpleBar from 'simplebar'
 
 export default Vue.extend({
   name: 'ScrollContainer',
@@ -27,11 +25,14 @@ export default Vue.extend({
     hideHorizontal: { type: Boolean as PropType<boolean> },
     autoHide: { type: Boolean as PropType<boolean>, default: true },
     hideVertical: { type: Boolean as PropType<boolean> },
+    loading: { type: Boolean as PropType<boolean> },
   },
   data: () => ({
-    bar: null,
+    bar: {} as SimpleBar,
+    scrollElement: {} as HTMLElement,
+    contentElement: {} as HTMLElement,
+    scrollOffset: 100,
   }),
-
   computed: {
     classes() {
       return {
@@ -41,16 +42,27 @@ export default Vue.extend({
     },
   },
 
-  mounted() {
-    this.bar = new SimpleBar(this.$refs.simpleBar as HTMLDivElement)
+  watch: {
+    loading(newVal) {
+      if (!newVal) {
+        Vue.nextTick(() => this.bar.recalculate())
+      }
+    },
   },
-  beforeUpdate() {
-    const content = document.getElementsByClassName('simplebar-content')[0] as HTMLElement
-    const height = parseInt(getComputedStyle(content).height, 10)
-    if (height === 0 && document.getElementsByClassName('select-item')[0]) {
-      const block = document.getElementsByClassName('select-item')[0].parentNode
-      if (block) content.appendChild(block)
-    }
+
+  mounted() {
+    this.bar = new SimpleBar(this.$refs.simpleBar as HTMLElement)
+    this.scrollElement = this.bar.getScrollElement()
+    this.contentElement = this.bar.getContentElement()
+    this.bar.getScrollElement().addEventListener('scroll', () => {
+      const scrollElementBottomPosition = this.scrollElement.getClientRects()[0].bottom
+      const contentElementBottomPosition = this.contentElement.getClientRects()[0].bottom
+      const loadStartPosition = contentElementBottomPosition - this.scrollOffset
+
+      if (loadStartPosition <= scrollElementBottomPosition && !this.loading) {
+        this.$emit('infiniteHandler')
+      }
+    })
   },
 })
 </script>
@@ -150,7 +162,6 @@ export default Vue.extend({
   left: unset;
   right: 0;
 }
-
 .scrollbar >>> .simplebar-content {
   padding-right: 15px;
 }

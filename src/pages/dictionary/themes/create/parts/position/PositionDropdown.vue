@@ -13,10 +13,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import FilterDropdown from '@/pages/common/filter-dropdown/FilterDropdown.vue'
-import { $canSetThemePosition } from '@/pages/dictionary/themes/create/theme-creation-page.model'
 import {
   $positions,
   positionDropdownModule,
+  $canSetThemePosition,
 } from '@/pages/dictionary/themes/create/parts/position/position.model'
 
 export default Vue.extend({

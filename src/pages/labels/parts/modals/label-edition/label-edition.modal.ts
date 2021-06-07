@@ -8,7 +8,7 @@ import {
 import {
   $selectedSubject,
   setSelectedSubject,
-  subjectsDropdownModule,
+  subjectsDropdownModel,
 } from '@/pages/common/dropdowns/subject/subjects-dropdown.model'
 import { condition } from 'patronum'
 import {
@@ -87,7 +87,7 @@ forward({
 })
 
 forward({
-  from: subjectsDropdownModule.methods.itemChanged,
+  from: subjectsDropdownModel.methods.itemChanged,
   to: $subjectErrorModule.methods.resetError,
 })
 
@@ -111,7 +111,7 @@ sample({
   fn: (label: Label) => {
     $form.map((data) => (data.id = label.id))
     labelTitleChanged(label.name)
-    label.subject && subjectsDropdownModule.methods.itemChanged(`${label.subject.id}`)
+    label.subject && subjectsDropdownModel.methods.itemChanged(`${label.subject.id}`)
     label.subject &&
       setSelectedSubject({
         id: label.subject.id,
@@ -154,7 +154,7 @@ forward({
   from: clearFields,
   to: [
     labelTitleReset,
-    subjectsDropdownModule.methods.resetDropdown,
+    subjectsDropdownModel.methods.resetDropdown,
     classesDropdownModule.methods.resetDropdown,
     setSelectedTheme.prepend(() => null),
     setSelectedClass.prepend(() => null),

@@ -1,37 +1,71 @@
 import { getThemeFx } from '@/features/api/subject/get-theme'
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
-import { createFilter } from '@/pages/common/filter-dropdown/create-filter'
 import { DropdownItem } from '@/pages/common/types'
-import { attach, createEvent, createStore, forward, restore, sample } from 'effector-root'
+import { attach, createEvent, forward, restore, sample } from 'effector-root'
+import { GetListQueryParams } from '@/features/api/types'
+import { $selectedSubject } from '@/pages/dictionary/themes/create/parts/subjects/subjects.model'
+import { createDropdownModel } from '@/pages/common/filters/create-dropdown-model'
+import { Theme } from '@/features/api/subject/types'
 
 export const getThemeData = attach({
   effect: getThemeFx,
 })
 
-export const prerequisiteDropdownModule = createFilter()
+export const getPrerequisites = attach({
+  effect: getThemesListFx,
+  mapParams: (params: GetListQueryParams) => params,
+})
 
-export const $prerequisites = createStore<DropdownItem[]>([])
+export const prerequisitesDropdownModel = createDropdownModel<Theme>(getPrerequisites)
 
 export const setSelectedPrerequisites = createEvent<DropdownItem[]>()
 export const $selectedPrerequisites = restore<DropdownItem[]>(setSelectedPrerequisites, [])
 export const resetSelectedPrerequisites = createEvent()
 export const deletePrerequisite = createEvent<string>()
 
+export const loadPrerequisites = createEvent<void>()
+
+sample({
+  clock: [loadPrerequisites, $selectedSubject],
+  source: { $nextPage: prerequisitesDropdownModel.store.$nextPage, $selectedSubject },
+  fn: (params): GetListQueryParams => ({
+    page: params.$nextPage,
+    subject: params.$selectedSubject!.id,
+    is_prerequisite: true,
+  }),
+  target: getPrerequisites,
+})
+
 forward({
-  from: getThemesListFx.doneData.map((data) =>
-    data.body.data
-      .filter((item) => item.is_prerequisite)
-      .map((elem) => ({ name: `${elem.id}`, title: elem.name, id: elem.id }))
-  ),
-  to: $prerequisites,
+  from: prerequisitesDropdownModel.methods.canLoadNextPage,
+  to: loadPrerequisites,
+})
+
+sample({
+  clock: getPrerequisites.doneData,
+  source: { items: prerequisitesDropdownModel.store.$items },
+  fn: ({ items }, res) => {
+    const newColors = res.body.data.map((field) => ({
+      name: `${field.id}`,
+      title: field.name,
+      id: field.id,
+    }))
+    return [...items, ...newColors]
+  },
+  target: prerequisitesDropdownModel.store.$items,
+})
+
+forward({
+  from: $selectedSubject,
+  to: prerequisitesDropdownModel.methods.resetDropdown,
 })
 
 sample({
   source: {
     selected: $selectedPrerequisites,
-    all: prerequisiteDropdownModule.store.$itemsDropdown,
+    all: prerequisitesDropdownModel.store.$itemsDropdown,
   },
-  clock: prerequisiteDropdownModule.methods.itemChanged,
+  clock: prerequisitesDropdownModel.methods.itemChanged,
   fn: (list, element) => {
     if (!list.all.length) return [...list.selected]
     const arr = list.selected.slice()

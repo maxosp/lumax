@@ -2,7 +2,7 @@
   <FilterDropdown
     label="Тема"
     placeholder="Выберите тему"
-    :methods="themesDropdownMethods"
+    :methods="{ setItems, resetItem, itemChanged, searchStringChanged, resetSearchString }"
     :data="$themes"
     :store="{ $item, $itemsDropdown, $searchString }"
     :disabled="isDisabled ? !$canSetThemePosition : false"
@@ -36,11 +36,6 @@ export default Vue.extend({
     $themes,
     $canSetThemePosition,
     ...themesDropdownModule.store,
-  },
-  data() {
-    return {
-      themesDropdownMethods: themesDropdownModule.methods,
-    }
   },
   methods: {
     ...themesDropdownModule.methods,

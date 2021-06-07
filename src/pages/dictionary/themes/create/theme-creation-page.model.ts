@@ -1,5 +1,5 @@
 import { attach, combine, createEvent, forward, restore, sample } from 'effector-root'
-import { condition, debounce, every } from 'patronum'
+import { condition } from 'patronum'
 import {
   $selectedSubject,
   setSelectedSubject,
@@ -19,10 +19,9 @@ import {
 import { positionDropdownModule } from '@/pages/dictionary/themes/create/parts/position/position.model'
 import {
   $selectedPrerequisites,
-  prerequisiteDropdownModule,
+  prerequisitesDropdownModel,
   resetSelectedPrerequisites,
 } from '@/pages/dictionary/themes/create/parts/prerequisites/prerequisites.model'
-import { getThemesTreeListFx } from '@/features/api/subject/get-themes-tree-list'
 import { createThemeFx } from '@/features/api/subject/create-theme'
 import { CreateThemeType } from '@/features/api/subject/types'
 import { navigatePush } from '@/features/navigation'
@@ -31,12 +30,7 @@ import {
   $isPrerequisite,
   isPrerequisiteChanged,
 } from '@/pages/dictionary/themes/create/parts/header/header.model'
-import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { createError } from '@/lib/effector/error-generator'
-
-const getThemesTreeList = attach({
-  effect: getThemesTreeListFx,
-})
 
 const saveThemeFx = attach({
   effect: createThemeFx,
@@ -76,16 +70,11 @@ forward({
     classDropdownModule.methods.resetDropdown,
     subjectDropdownModule.methods.resetDropdown,
     positionDropdownModule.methods.resetDropdown,
-    prerequisiteDropdownModule.methods.resetDropdown,
+    prerequisitesDropdownModel.methods.resetDropdown,
     themeDropdownModule.methods.resetDropdown,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),
   ],
-})
-
-export const $canSetThemePosition = every({
-  predicate: (value) => value !== null,
-  stores: [$selectedSubject, $selectedClass],
 })
 
 export const $formToSend = combine({
@@ -139,7 +128,7 @@ forward({
     classDropdownModule.methods.resetItem,
     subjectDropdownModule.methods.resetItem,
     positionDropdownModule.methods.resetItem,
-    prerequisiteDropdownModule.methods.resetItem,
+    prerequisitesDropdownModel.methods.resetItem,
     themeDropdownModule.methods.resetItem,
     setSelectedSubject.prepend(() => null),
     setSelectedClass.prepend(() => null),
@@ -156,31 +145,7 @@ forward({
 
 forward({
   from: subjectDropdownModule.methods.itemChanged,
-  to: [resetSelectedPrerequisites, prerequisiteDropdownModule.methods.resetItem],
-})
-
-const $formToGetThemeList = combine($selectedClass, $selectedSubject, (cl, obj) => ({
-  study_year: cl && cl.id,
-  subject: obj && obj.id,
-}))
-
-const debounced = debounce({
-  source: $formToGetThemeList,
-  timeout: 150,
-})
-
-forward({
-  from: debounced,
-  to: [
-    getThemesTreeList.prepend((data) => {
-      return {
-        study_year: data.study_year ? data.study_year : undefined,
-        subject: data.subject ? data.subject : undefined,
-        is_prerequisite: false,
-      }
-    }),
-    getThemesListFx.prepend((data) => ({ subject: data.subject || undefined })),
-  ],
+  to: [resetSelectedPrerequisites, prerequisitesDropdownModel.methods.resetItem],
 })
 
 const $saveMethodFired = sample({

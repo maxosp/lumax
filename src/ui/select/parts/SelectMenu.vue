@@ -1,13 +1,17 @@
 <template>
   <div class="select-menu">
-    <ScrollContainer :max-height="actionsSelectMenuMaxHeight">
+    <ScrollContainer
+      :max-height="actionsSelectMenuMaxHeight"
+      :loading="loading"
+      @infiniteHandler="$emit('infiniteHandler')"
+    >
       <slot />
     </ScrollContainer>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import ScrollContainer from '@/ui/scroll-container/ScrollContainer.vue'
 import { actionsSelectMenuMaxHeight } from '@/pages/common/constants'
 
@@ -15,6 +19,9 @@ export default Vue.extend({
   name: 'SelectMenu',
   components: {
     ScrollContainer,
+  },
+  props: {
+    loading: { type: Boolean as PropType<boolean> },
   },
   data: () => ({
     actionsSelectMenuMaxHeight,
