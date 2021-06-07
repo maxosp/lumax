@@ -101,6 +101,11 @@
     <RequestDeleteModal
       @confirmRequestDelete="sendRequestDeleteTheme"
     />
+    <CannotDeleteModal
+      :value="currentFailed"
+      :show-modal="showDeleteModal"
+      @toggle-modal="val => toggleModal(val)"
+    />
   </div>
 </template>
 
@@ -127,6 +132,9 @@ import {
   requestDeleteThemes,
   themesPageParams,
   $isLoading,
+  $cannotDeleteData,
+  $dataToDelete,
+  checkBeforeDeletion,
 } from '@/pages/dictionary/themes/list/themes-page.model'
 import {
   toggleVisibility,
@@ -142,10 +150,17 @@ import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vu
 import { RefsType, HttpOptionsType, RightClickParams } from '@/pages/common/types'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
-import { loadConfirmDeleteModal } from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
-import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/request-delete-modal.model'
 import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
+import CannotDeleteModal from '@/pages/applications/modals/cannot-delete/CannotDeleteModal.vue'
+import {
+  loadConfirmDeleteModal,
+  $confirmDeleteModalVisibility,
+} from '@/pages/common/modals/confirm-delete/confirm-delete-modal.model'
+import {
+  loadRequestDeleteModal,
+  $requestDeleteModalVisibility,
+} from '@/pages/common/modals/request-delete/request-delete-modal.model'
 
 Vue.use(VueEvents)
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
@@ -173,6 +188,7 @@ export default (
     ConfirmDeleteModal,
     RequestDeleteModal,
     LoaderBig,
+    CannotDeleteModal,
   },
   effector: {
     $token,
@@ -184,6 +200,10 @@ export default (
     $treeView: themesPageParams.store.treeView,
     $currentPage: themesPageParams.store.currentPage,
     $isLoading,
+    $cannotDeleteData,
+    $dataToDelete,
+    $confirmDeleteModalVisibility,
+    $requestDeleteModalVisibility,
   },
   data() {
     return {
@@ -198,11 +218,15 @@ export default (
       subject: null,
       studyYear: null,
       theme: null,
+      currentFailed: null as any | null,
     }
   },
   computed: {
     apiUrl(): string {
       return `${config.BACKEND_URL}/api/subject-app/themes/list/`
+    },
+    showDeleteModal(): boolean {
+      return !!this.currentFailed
     },
   },
   watch: {
@@ -216,6 +240,26 @@ export default (
     $treeView: {
       handler(newVal) {
         if (newVal) this.removeSelection()
+      },
+    },
+    $cannotDeleteData: {
+      handler() {
+        this.showNextFailed()
+      },
+    },
+    $dataToDelete: {
+      handler() {
+        this.deleteNextTheme()
+      },
+    },
+    $confirmDeleteModalVisibility: {
+      handler(newVal) {
+        if (!newVal) this.$dataToDelete.shift()
+      },
+    },
+    $requestDeleteModalVisibility: {
+      handler(newVal) {
+        if (!newVal) this.$dataToDelete.shift()
       },
     },
   },
@@ -265,9 +309,7 @@ export default (
       else this.selectedRows = []
     },
     onRemoveThemes(ids: number[]) {
-      this.$session?.permissions?.subjects_theme?.delete
-        ? loadConfirmDeleteModal(ids)
-        : loadRequestDeleteModal(ids)
+      checkBeforeDeletion({ ids, rights: !!this.$session?.permissions?.subjects_theme?.delete })
     },
     async removeSelectedThemes(ids: number[]) {
       await deleteThemes(ids)
@@ -303,6 +345,27 @@ export default (
     },
     hideContextMenu() {
       this.showContextMenu = false
+    },
+    toggleModal(val: boolean) {
+      if (!val) {
+        this.currentFailed = null
+        this.showNextFailed()
+      }
+    },
+    showNextFailed() {
+      if (this.$cannotDeleteData.length === 0 || this.showDeleteModal) return
+      const val = this.$cannotDeleteData.shift()!
+      const tasksIds = val.map((el) => el.id)
+      this.currentFailed = {
+        object_type: 'theme',
+        theme: { test_assignment: tasksIds, study_resources: [], id: val[0].theme!.id },
+      }
+    },
+    deleteNextTheme() {
+      if (this.$dataToDelete.length === 0) return
+      const val = this.$dataToDelete[0]
+      if (this.$session?.permissions?.subjects_theme?.delete) loadConfirmDeleteModal([val!])
+      else loadRequestDeleteModal([val!])
     },
   },
   created() {

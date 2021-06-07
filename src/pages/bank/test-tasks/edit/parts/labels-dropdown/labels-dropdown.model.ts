@@ -78,13 +78,13 @@ forward({
 
 sample({
   clock: getLabels.doneData,
-  source: { items: labelsDropdownModule.store.$items },
-  fn: ({ items }, res) => {
-    const newData = res.body.data.map((field) => ({
-      name: `${field.id}`,
-      title: field.name,
-    }))
-    return [...items, ...newData]
+  fn: (res) => {
+    return [
+      ...res.body.data.map((field) => ({
+        name: `${field.id}`,
+        title: field.name,
+      })),
+    ]
   },
   target: labelsDropdownModule.store.$items,
 })

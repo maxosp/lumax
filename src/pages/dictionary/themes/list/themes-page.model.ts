@@ -29,6 +29,7 @@ import { loadTreeLight as loadTasksTreeLight } from '@/pages/bank/test-tasks/lis
 import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { RequestDeleteThemesParams } from '@/features/api/assignment/types/types'
 import { themesFilters } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
+import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -64,6 +65,46 @@ export const requestDeleteThemes = attach({
       ticket_comment: payload.ticket_comment?.trim() !== '' ? payload.ticket_comment : undefined,
     }
   },
+})
+
+export const setCannotDeleteData = createEvent<TreeData[]>()
+export const $cannotDeleteData = createStore<TreeData[][]>([])
+
+const setDataToDelete = createEvent<number>()
+export const $dataToDelete = createStore<number[]>([])
+
+export const checkBeforeDeletion = createEffect({
+  handler: (data: { ids: number[]; rights: boolean }): Promise<any[]> =>
+    Promise.all(
+      data.ids.map(async (id) => {
+        await getTestAssignmentListFx({ theme: id }).then(async (r) => {
+          if (r.body.data.length === 0) {
+            setDataToDelete(id)
+          } else {
+            setCannotDeleteData(r.body.data)
+          }
+        })
+      })
+    ),
+})
+sample({
+  clock: setDataToDelete,
+  source: $dataToDelete,
+  fn: (oldData, newData) => {
+    oldData.push(newData)
+    return [...oldData]
+  },
+  target: $dataToDelete,
+})
+
+sample({
+  clock: setCannotDeleteData,
+  source: $cannotDeleteData,
+  fn: (oldData, newData) => {
+    oldData.push(newData)
+    return [...oldData]
+  },
+  target: $cannotDeleteData,
 })
 
 export const themesPageParams = createPageParamsModel()

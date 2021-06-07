@@ -47,7 +47,7 @@ export default Vue.extend({
     },
     correctThemeTitle(): string {
       const { study_resources, test_assignment, parent_theme } = this.value.theme
-      return `Тема не может быть удалена, пока к ней привязаны ${
+      return `Тема ${this.value.theme.id} не может быть удалена, пока к ней привязаны ${
         parent_theme ? `другие темы ${parent_theme}` : ''
       } ${study_resources.length > 0 ? `обучающие ресурсы ${study_resources.slice(0, 3)}` : ''} ${
         test_assignment ? `задания ${test_assignment.slice(0, 3)}` : ''

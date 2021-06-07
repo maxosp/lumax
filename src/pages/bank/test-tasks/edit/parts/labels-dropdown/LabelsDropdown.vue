@@ -8,6 +8,7 @@
       :store="{ $item, $itemsDropdown, $searchString }"
       :loading="$loading"
       :disabled="!$canSetLabels"
+      :selectedData="$selectedLabels"
       @infiniteHandler="nextPageTrigger"
       @item-changed="onSelectItem"
     />
@@ -80,7 +81,13 @@ export default Vue.extend({
           (label) => label.name === this.$currentLabel.name
         )
         if (index === DEFAULT_ID) {
-          setSelectedLabels([...this.$selectedLabels, this.$currentLabel])
+          setSelectedLabels([
+            ...this.$selectedLabels,
+            {
+              name: `${this.$currentLabel.name}`,
+              title: this.$currentLabel.title,
+            },
+          ])
         }
       },
     },
@@ -99,7 +106,7 @@ export default Vue.extend({
   methods: {
     loadLabels,
     ...labelsDropdownModule.methods,
-    onSelectItem(item: DropdownItem, cb: any) {
+    onSelectItem(item: DropdownItem) {
       const existedItem = this.$selectedLabels.find(
         (label: DropdownItem) => label.name === item.name
       )
@@ -111,7 +118,6 @@ export default Vue.extend({
       } else {
         setSelectedLabels([item, ...this.$selectedLabels])
       }
-      cb()
     },
     onRemoveItem(item: DropdownItem) {
       const labels = this.$selectedLabels.filter((label: DropdownItem) => label.name !== item.name)

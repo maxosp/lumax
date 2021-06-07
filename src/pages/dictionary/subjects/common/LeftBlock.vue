@@ -79,7 +79,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 630px;
+  max-width: 750px;
   margin-right: 30px;
 }
 .field {

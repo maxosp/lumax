@@ -41,9 +41,9 @@ sample({
   },
   fn: (params): GetListQueryParams => ({
     page: params.$nextPage,
-    study_year: params.$selectedClass!.id,
-    subject: params.$selectedSubject!.id,
-    theme: params.$selectedTheme!.id,
+    study_year: params.$selectedClass!.id || null,
+    subject: params.$selectedSubject!.id || null,
+    theme: params.$selectedTheme!.id || null,
     is_prerequisite: false,
   }),
   target: getLabels,
@@ -63,13 +63,13 @@ forward({
 
 sample({
   clock: getLabels.doneData,
-  source: { items: labelsDropdownModule.store.$items },
-  fn: ({ items }, res) => {
-    const newData = res.body.data.map((field) => ({
-      name: `${field.id}`,
-      title: field.name,
-    }))
-    return [...items, ...newData]
+  fn: (res) => {
+    return [
+      ...res.body.data.map((field) => ({
+        name: `${field.id}`,
+        title: field.name,
+      })),
+    ]
   },
   target: labelsDropdownModule.store.$items,
 })
