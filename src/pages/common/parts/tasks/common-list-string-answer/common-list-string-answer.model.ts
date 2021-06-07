@@ -36,7 +36,7 @@ export const $isFilled = combine(
   $questionsAnswers,
   (wording, answersOptions, questionsAnswers) =>
     wording &&
-    answersOptions.some((op) => op.title) &&
+    answersOptions.every((op) => op.title) &&
     questionsAnswers.every(
       (qa) => qa.question && qa.answer && answersOptions.some((ao) => ao.title === qa.answer)
     )

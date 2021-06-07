@@ -41,7 +41,7 @@ export const $isFilled = combine(
   $correctAnswers,
   (wording, answersOptions, correctAnswers) =>
     wording &&
-    answersOptions.some((op) => op.title) &&
+    answersOptions.every((op) => op.title) &&
     correctAnswers.length &&
     correctAnswers.every(
       (answer) => answer.title && answersOptions.some((ao) => ao.title === answer.title)
