@@ -222,6 +222,10 @@ export default Vue.extend({
   max-width: 936px;
 }
 ::v-deep .editor {
+  table {
+    table-layout: fixed;
+  }
+  th,
   tr,
   td {
     border: 1px solid black;
@@ -232,10 +236,10 @@ export default Vue.extend({
     padding-top: 5px;
   }
   ol > li {
-    list-style-type: symbols !important;
+    list-style-type: decimal;
   }
   ul > li {
-    list-style-type: disc !important;
+    list-style-type: disc;
   }
   .cke_chrome {
     background: #edeef0;
