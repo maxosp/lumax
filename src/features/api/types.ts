@@ -53,6 +53,7 @@ export type TreeData = {
   ordering_string: string
   media: UploadMediaResponse
   assignment: BaseAssignment | null
+  id?: number
 }
 
 export type GetThemeTreeFilterListResponse = {

@@ -43,7 +43,7 @@ sample({
   fn: (oldData, newData) => {
     if (oldData.find((el) => el.id === newData.id)) return oldData
     oldData!.push(newData)
-    return oldData
+    return [...oldData]
   },
   target: $cannotDeleteData,
 })

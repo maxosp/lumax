@@ -52,9 +52,9 @@ export default Vue.extend({
   computed: {
     correctTitle(): string {
       if (this.$selectedIds.length === 1) {
-        return `${mapDeleteModalTypeToTitle[this.type].typeWord.singular} будет ${
-          mapDeleteModalTypeToTitle[this.type].deleteWord.singular
-        }.`
+        return `${mapDeleteModalTypeToTitle[this.type].typeWord.singular} ${this.$selectedIds.join(
+          ', '
+        )} будет ${mapDeleteModalTypeToTitle[this.type].deleteWord.singular}.`
       }
       return `${mapDeleteModalTypeToTitle[this.type].typeWord.plural} будут ${
         mapDeleteModalTypeToTitle[this.type].deleteWord.plural
