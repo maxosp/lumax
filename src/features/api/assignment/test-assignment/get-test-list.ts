@@ -1,10 +1,10 @@
 import { createApiEffect } from '@/features/api/common/create-api-effect'
-import { TreeDataResponse } from '@/features/api/types'
-import { GetAssignmentTreeQueryParams } from '@/features/api/assignment/types/types'
+import { GetListQueryParams, TableDataResponse } from '@/features/api/types'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 export const getTestAssignmentListFx = createApiEffect<
-  GetAssignmentTreeQueryParams,
-  TreeDataResponse
+  GetListQueryParams,
+  TableDataResponse<TestAssignment[]>
 >({
   requestMapper: (query) => ({
     method: 'GET',

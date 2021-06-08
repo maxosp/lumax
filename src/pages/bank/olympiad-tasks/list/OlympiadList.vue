@@ -176,13 +176,10 @@ import { loadRequestDeleteModal } from '@/pages/common/modals/request-delete/req
 import {
   combineRouteQueries,
   computeSortParam,
-  cropString,
   isQueryParamsEquelToPage,
   removeHtmlTags,
 } from '@/features/lib'
-import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
-import { OlympiadAssignment } from '@/features/api/assignment/types/olympiad-assignments-types'
 import { loadDuplicateModal } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 import DuplicateModal from '@/pages/bank/common/modals/duplicate/DuplicateModal.vue'
 
@@ -237,7 +234,6 @@ export default (
       selectedRows: [] as number[] | null,
       subject_id: null,
       class_id: null,
-      localItems: [] as OlympiadAssignment[],
     }
   },
   computed: {
@@ -299,23 +295,13 @@ export default (
       return mapTaskTypeTo[type].description
     },
     showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
-        const filteredList = this.localItems
-          .filter((item) => idArr.includes(item.id))
-          .map((item) => ({
-            id: item.id,
-            name: `${item.id}`,
-            title: `[id${item.id}] - ${cropString(item.wording, 34)}`,
-          }))
-        changeTasks(filteredList)
-      }
       this.$router.push({
         name: 'preview-task',
         query: {
           questions: idArr.join(','),
+          fromPage: 'tasks',
           taskType: 'olympiad-assignment',
           token: this.$token,
-          fromPage: 'tasks',
         },
       })
     },
@@ -347,14 +333,9 @@ export default (
       this.selectedRows = []
     },
     async myFetch(apiUrl: string, httpOptions: any) {
-      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
       const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
-      const {
-        data: { data },
-      } = await request
-      this.localItems = data
       return request
     },
     onFilterSet() {

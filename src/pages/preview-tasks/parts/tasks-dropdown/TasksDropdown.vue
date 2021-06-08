@@ -30,8 +30,8 @@ export default Vue.extend({
   },
   watch: {
     $tasks: {
-      handler() {
-        this.setCurrentTaskNameIntoDd()
+      handler(newValue) {
+        if (newValue.length) this.setCurrentTaskNameIntoDd()
       },
     },
   },
@@ -44,9 +44,6 @@ export default Vue.extend({
     setCurrentTaskNameIntoDd() {
       tasksDropdownModule.methods.itemChanged(this.$tasks[this.$currentIndex].name)
     },
-  },
-  mounted() {
-    this.setCurrentTaskNameIntoDd()
   },
 })
 </script>

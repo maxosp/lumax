@@ -30,6 +30,7 @@ import { getThemesListFx } from '@/features/api/subject/get-themes-list'
 import { RequestDeleteThemesParams } from '@/features/api/assignment/types/types'
 import { themesFilters } from '@/pages/dictionary/themes/list/parts/themes-filter/themes-filter.model'
 import { getTestAssignmentListFx } from '@/features/api/assignment/test-assignment/get-test-list'
+import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 
 const getThemesTree = attach({
   effect: getThemesTreeFx,
@@ -67,8 +68,8 @@ export const requestDeleteThemes = attach({
   },
 })
 
-export const setCannotDeleteData = createEvent<TreeData[]>()
-export const $cannotDeleteData = createStore<TreeData[][]>([])
+export const setCannotDeleteData = createEvent<TestAssignment[]>()
+export const $cannotDeleteData = createStore<TestAssignment[][]>([])
 
 const setDataToDelete = createEvent<number>()
 export const $dataToDelete = createStore<number[]>([])

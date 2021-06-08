@@ -20,6 +20,7 @@ export type getTicketsListQueryParams = {
   search?: string
   page?: number
   per_page?: number
+  ids?: string
 }
 export type getTicketsDeletionListQueryParams = {
   object_type?: string
@@ -30,6 +31,7 @@ export type TestAssignmentType = {
   wording: string
   type: string
   status: string
+  ids: string
   theme: {
     id: number
     name: string

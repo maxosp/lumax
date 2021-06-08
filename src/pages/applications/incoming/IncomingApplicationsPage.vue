@@ -64,7 +64,6 @@
         <template id="one" #actions="props">
           <Actions
             :application-id="props.rowData.id"
-            :task-id="props.rowData.test_assignment.id"
             :selected-applications="selectedApplications"
             @showPreview="showPreview"
             @onEdit="editApplications"
@@ -89,7 +88,6 @@
       v-if="showContextMenu"
       :key="clickedRowApplicationId"
       :application-id="clickedRowApplicationId"
-      :task-id="clickedRowTaskId"
       :selected-applications="selectedApplications"
       :style="contextMenuStyles"
       class="context-menu"
@@ -142,20 +140,13 @@ import { loadModal } from '@/pages/applications/modals/send-for-moderation/send-
 import SetToModeratorModal from '@/pages/applications/modals/set-to-moderator/SetToModeratorModal.vue'
 import { loadModeratorModal } from '@/pages/applications/modals/set-to-moderator/set-to-moderator.model'
 import { RefsType, HttpOptionsType, RightClickParams } from '@/pages/common/types'
-import { ApplicationType } from '@/pages/applications/types'
 import { navigatePush } from '@/features/navigation'
 import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vue'
-import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
-import { ModerationTicket } from '@/features/api/ticket/types'
-import {
-  combineRouteQueries,
-  computeSortParam,
-  cropString,
-  isQueryParamsEquelToPage,
-} from '@/features/lib'
+import { combineRouteQueries, computeSortParam, isQueryParamsEquelToPage } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
 import { DEFAULT_ID } from '@/pages/common/constants'
 import TooltipCell from '@/pages/applications/incoming/parts/table/TooltipCell.vue'
+import { loadApplicationsTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 
 Vue.component('VuetableFieldCheckbox', VuetableFieldCheckbox)
 export default (
@@ -193,14 +184,12 @@ export default (
   data() {
     return {
       clickedRowApplicationId: DEFAULT_ID,
-      clickedRowTaskId: DEFAULT_ID,
       searchFields: searchFieldsData,
       total: 1,
       fields: incomingApplicationsDataFields,
       showContextMenu: false,
       contextMenuStyles: { top: '0', left: '0' },
-      selectedApplications: [] as ApplicationType[],
-      localItems: [] as ModerationTicket[],
+      selectedApplications: [] as number[] | null,
     }
   },
   computed: {
@@ -234,45 +223,36 @@ export default (
     toggleVisibility,
     loadList,
     reset,
-    showPreview(applicationIds: number[], taskIds: number[]) {
-      this.transferSelectedApps(applicationIds)
+    async showPreview(applicationIds: number[]) {
+      const taskIds = await this.getTaskIds(applicationIds)
       navigatePush({
         name: 'preview-task',
         query: {
-          questions: taskIds.join(','),
-          taskType: 'test-assignment',
           applications: applicationIds.join(','),
-          token: this.$token,
+          questions: taskIds.join(','),
           fromPage: 'applications',
+          taskType: 'test-assignment',
+          token: this.$token,
         },
       })
     },
-    editApplications(applicationIds: number[], taskIds: number[]) {
-      this.transferSelectedApps(applicationIds)
+    async editApplications(applicationIds: number[]) {
+      const taskIds = await this.getTaskIds(applicationIds)
       navigatePush({
         name: 'test-tasks-edit',
         query: {
-          questions: taskIds.join(','),
           applications: applicationIds.join(','),
+          questions: taskIds.join(','),
           fromPage: 'applications',
         },
         params: { id: `${taskIds[0]}` },
       })
     },
-    transferSelectedApps(applicationIds: number[]) {
-      if (applicationIds.length > 1) {
-        const filteredList = this.localItems
-          .filter((item) => applicationIds.includes(item.id))
-          .map((item) => ({
-            id: item.test_assignment.id,
-            name: `${item.test_assignment.id}`,
-            title: `[id${item.test_assignment.id}] - ${cropString(
-              item.test_assignment.wording,
-              34
-            )}`,
-          }))
-        changeTasks(filteredList)
-      }
+    async getTaskIds(applicationIds: number[]) {
+      const taskIds = await loadApplicationsTasks(applicationIds).then((res) => {
+        return res.body.data.map(({ test_assignment }) => test_assignment.id)
+      })
+      return taskIds
     },
     acceptApplications(ids: number[]) {
       acceptApplicationsFx({ tickets: ids })
@@ -287,14 +267,9 @@ export default (
       this.removeSelection()
     },
     async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
-      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
       const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
-      const {
-        data: { data },
-      } = await request
-      this.localItems = data
       return request
     },
     onFilterSet() {
@@ -323,7 +298,6 @@ export default (
     handleRightClick({ data, event }: RightClickParams) {
       const { scrollTop } = document.querySelector('#app') || { scrollTop: 0 }
       this.clickedRowApplicationId = data.id
-      this.clickedRowTaskId = data.test_assignment.id
       this.showContextMenu = true
       this.contextMenuStyles = { top: `${event.y + scrollTop}px`, left: `${event.x + 120}px` }
       event.preventDefault()
@@ -331,30 +305,15 @@ export default (
     handleRowClick(res: any) {
       if (res.event.target.closest('.actions-activator')) return
       const { selectedTo } = this.$refs.vuetable
-      if (selectedTo.find((el: number) => el === res.data.id)) {
+      if (selectedTo.length === 0) selectedTo.push(res.data.id)
+      else if (selectedTo.find((el: number) => el === res.data.id)) {
         selectedTo.splice(selectedTo.indexOf(res.data.id), 1)
-        this.selectedApplications = this.selectedApplications.filter((el) =>
-          selectedTo.find((currentId: number) => currentId === el.application)
-        )
-      } else {
-        selectedTo.push(res.data.id)
-        this.selectedApplications.push({
-          application: res.data.id,
-          task: res.data.test_assignment.id,
-        })
-      }
+      } else selectedTo.push(res.data.id)
+      this.selectedApplications = this.$refs.vuetable.selectedTo
     },
     allToggled(isSelected: boolean) {
-      if (isSelected) {
-        this.selectedApplications = this.$refs.vuetable.tableData.map(
-          (ticket: ModerationTicket) => ({
-            application: ticket.id,
-            task: ticket.test_assignment.id,
-          })
-        )
-      } else {
-        this.selectedApplications = []
-      }
+      if (isSelected) this.selectedApplications = this.$refs.vuetable.selectedTo
+      else this.selectedApplications = []
     },
     removeSelection() {
       this.$refs.vuetable.selectedTo = []

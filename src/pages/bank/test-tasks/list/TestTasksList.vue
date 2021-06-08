@@ -216,7 +216,6 @@ import TasksTypesModal from '@/pages/common/modals/tasks-bank/tasks-types/TasksT
 import TasksUpdateModal from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/TasksUpdateModal.vue'
 import RequestDeleteModal from '@/pages/common/modals/request-delete/RequestDeleteModal.vue'
 import ConfirmDeleteModal from '@/pages/common/modals/confirm-delete/ConfirmDeleteModal.vue'
-import { changeTasks } from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
 import { $canRefreshAfterMultiChanges } from '@/pages/bank/test-tasks/list/parts/modals/tasks-update/tasks-update-modal.model'
 import {
   $canRefreshAfterSendingToReview,
@@ -226,12 +225,10 @@ import NoDataContent from '@/pages/common/parts/no-data-content/NoDataContent.vu
 import {
   combineRouteQueries,
   computeSortParam,
-  cropString,
   isQueryParamsEquelToPage,
   removeHtmlTags,
 } from '@/features/lib'
 import LoaderBig from '@/pages/common/parts/internal-loader-blocks/BigLoader.vue'
-import { TestAssignment } from '@/features/api/assignment/types/test-assignments-types'
 import DuplicateModal from '@/pages/bank/common/modals/duplicate/DuplicateModal.vue'
 import { loadDuplicateModal } from '@/pages/bank/common/modals/duplicate/duplicate.model'
 
@@ -295,7 +292,6 @@ export default (
       studyYear: null,
       isPrerequisite: false,
       theme: null,
-      localItems: [] as TestAssignment[],
       showDeleteModalType: 'task',
     }
   },
@@ -346,23 +342,13 @@ export default (
     duplicateAssignment,
     loadDuplicateModal,
     showPreview(idArr: number[]) {
-      if (idArr.length > 1) {
-        const filteredList = this.localItems
-          .filter((item) => idArr.includes(item.id))
-          .map((item) => ({
-            id: item.id,
-            name: `${item.id}`,
-            title: `[id${item.id}] - ${cropString(item.wording, 34)}`,
-          }))
-        changeTasks(filteredList)
-      }
       this.$router.push({
         name: 'preview-task',
         query: {
           questions: idArr.join(','),
+          fromPage: 'tasks',
           taskType: 'test-assignment',
           token: this.$token,
-          fromPage: 'tasks',
         },
       })
     },
@@ -376,14 +362,9 @@ export default (
       return mapTaskTypeTo[type].description
     },
     async myFetch(apiUrl: string, httpOptions: HttpOptionsType) {
-      /* todo: don't save localItems and use them in showPreview like that, fetch that data directly on the PreviewPage  */
       const request = axios.get(apiUrl, {
         params: { ...httpOptions.params, sort: computeSortParam(httpOptions.params.sort) },
       })
-      const {
-        data: { data },
-      } = await request
-      this.localItems = data
       return request
     },
     onPaginationData(paginationData: any) {

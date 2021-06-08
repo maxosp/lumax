@@ -13,6 +13,8 @@
     />
     <SelectTask
       :questions="questions"
+      :from-page="fromPage"
+      task-type="lesson-assignment"
     />
     <TaskContent />
     <TaskFooter
@@ -48,6 +50,7 @@ import {
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { combineRouteQueries } from '@/features/lib'
 import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import { FromPage } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'TaskCreationPage',
@@ -68,7 +71,7 @@ export default Vue.extend({
   data() {
     return {
       questions: [] as string[],
-      fromPage: '',
+      fromPage: '' as FromPage,
     }
   },
   watch: {
@@ -79,10 +82,10 @@ export default Vue.extend({
             name: 'preview-task',
             query: {
               questions: this.questions.length ? this.questions.join(',') : this.$route.params.id,
-              taskType: 'lesson-assignment',
-              token: this.$token,
               fromPage: this.fromPage,
+              taskType: 'lesson-assignment',
               currentQuestion: String(this.$currentQuestion),
+              token: this.$token,
             },
           })
         }
@@ -112,7 +115,7 @@ export default Vue.extend({
     if (questions && typeof questions === 'string') {
       this.questions = questions.split(',')
     }
-    if (fromPage && typeof fromPage === 'string') {
+    if (fromPage && (fromPage === 'applications' || fromPage === 'tasks')) {
       this.fromPage = fromPage
     }
     if (currentQuestion && typeof +currentQuestion === 'number') {

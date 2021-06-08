@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Card from '@/ui/card/Card.vue'
 import TasksDropdown from '@/pages/preview-tasks/parts/tasks-dropdown/TasksDropdown.vue'
 import Icon from '@/ui/icon/Icon.vue'
@@ -34,9 +34,18 @@ import {
   next,
   setQuestionsAmount,
   setCurrentQuestion,
+  selectTaskDestroy,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
-import { goBack, Navigate } from '@/features/navigation'
+import { Navigate } from '@/features/navigation'
 import { loadCurrentLabelsIDs } from '@/pages/bank/test-tasks/edit/parts/labels-dropdown/labels-dropdown.model'
+import {
+  $tasks,
+  loadApplicationsTasks,
+  loadLessonTasks,
+  loadOlympiadTasks,
+  loadTestTasks,
+} from '@/pages/preview-tasks/parts/tasks-dropdown/tasks-dropdown.model'
+import { FromPage, TaskType } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'SelectTask',
@@ -45,48 +54,68 @@ export default Vue.extend({
     TasksDropdown,
     Icon,
   },
-  data() {
-    return {
-      questions: [] as string[],
-    }
+  props: {
+    questions: { type: Array as PropType<string[]>, required: true },
+    applications: { type: Array as PropType<number[]>, required: false },
+    fromPage: { type: String as PropType<FromPage>, required: true },
+    taskType: {
+      type: String as PropType<TaskType>,
+      required: true,
+    },
   },
   effector: {
     $currentQuestion,
     $questionAmount,
+    $tasks,
   },
   methods: {
     prev,
     next,
     onSelectTask(val: string) {
-      const index = this.questions.findIndex((item) => item === val)
+      const index = this.$tasks.findIndex((item) => item.name === val)
       const tasksIds = (this.$route as Navigate).query!.questions.split(',')
       if (index !== -1) {
         loadCurrentLabelsIDs(+tasksIds[index])
         setCurrentIndex(index)
       }
     },
-  },
-  created() {
-    const { questions, currentQuestion } = this.$route.query
-
-    if (questions && typeof questions === 'string') {
-      this.questions = questions.split(',')
-
-      if (this.questions.length > 1) {
-        setQuestionsAmount(this.questions.length)
+    loadTasks() {
+      if (this.fromPage === 'applications') {
+        loadApplicationsTasks(this.applications)
       }
+      if (this.fromPage === 'tasks') {
+        switch (this.taskType) {
+          case 'test-assignment':
+            loadTestTasks(this.questions)
+            break
+          case 'olympiad-assignment':
+            loadOlympiadTasks(this.questions)
+            break
+          case 'lesson-assignment':
+            loadLessonTasks(this.questions)
+            break
+          default:
+            loadTestTasks(this.questions)
+        }
+      }
+    },
+  },
+  beforeDestroy() {
+    selectTaskDestroy()
+  },
+  mounted() {
+    const { currentQuestion } = this.$route.query
+
+    if (this.questions.length > 1) {
+      setQuestionsAmount(this.questions.length)
     }
 
-    if (
-      currentQuestion &&
-      typeof currentQuestion === 'string' &&
-      typeof +currentQuestion === 'number'
-    ) {
+    if (currentQuestion && typeof +currentQuestion === 'number') {
       setCurrentQuestion(+currentQuestion)
     } else {
       setCurrentQuestion(1)
     }
-    if (!this.questions) goBack()
+    this.loadTasks()
   },
 })
 </script>
