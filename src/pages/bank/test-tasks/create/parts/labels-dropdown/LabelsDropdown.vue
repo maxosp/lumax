@@ -8,7 +8,8 @@
       :store="{ $item, $itemsDropdown, $searchString }"
       :loading="$loading"
       :disabled="isDisabled ? !$canSetLabels : false"
-      :selectedData="$selectedLabels"
+      :selected-data="$selectedLabels"
+      secondClick
       @infiniteHandler="nextPageTrigger"
       @item-changed="onSelectItem"
     />
@@ -88,6 +89,7 @@ export default Vue.extend({
     onRemoveItem(item: DropdownItem) {
       const labels = this.$selectedLabels.filter((label: DropdownItem) => label.name !== item.name)
       setSelectedLabels(labels)
+      this.itemChanged(this.$selectedLabels.length ? this.$selectedLabels[0].name : null)
     },
     clear() {
       this.resetItem()

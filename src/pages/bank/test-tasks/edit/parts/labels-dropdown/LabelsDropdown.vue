@@ -8,7 +8,8 @@
       :store="{ $item, $itemsDropdown, $searchString }"
       :loading="$loading"
       :disabled="!$canSetLabels"
-      :selectedData="$selectedLabels"
+      :selected-data="$selectedLabels"
+      secondClick
       @infiniteHandler="nextPageTrigger"
       @item-changed="onSelectItem"
     />
@@ -107,21 +108,24 @@ export default Vue.extend({
     loadLabels,
     ...labelsDropdownModule.methods,
     onSelectItem(item: DropdownItem) {
-      const existedItem = this.$selectedLabels.find(
-        (label: DropdownItem) => label.name === item.name
-      )
-      if (existedItem) {
-        const labels = this.$selectedLabels.filter(
-          (label: DropdownItem) => label.name !== item.name
+      if (this.$selectedLabels && item) {
+        const existedItem = this.$selectedLabels.find(
+          (label: DropdownItem) => label.name === item.name
         )
-        setSelectedLabels(labels)
-      } else {
-        setSelectedLabels([item, ...this.$selectedLabels])
+        if (existedItem) {
+          const labels = this.$selectedLabels.filter(
+            (label: DropdownItem) => label.name !== item.name
+          )
+          setSelectedLabels(labels)
+        } else {
+          setSelectedLabels([item, ...this.$selectedLabels])
+        }
       }
     },
     onRemoveItem(item: DropdownItem) {
       const labels = this.$selectedLabels.filter((label: DropdownItem) => label.name !== item.name)
       setSelectedLabels(labels)
+      this.itemChanged(this.$selectedLabels.length ? this.$selectedLabels[0].name : null)
     },
     clear() {
       // clear handle
@@ -134,6 +138,7 @@ export default Vue.extend({
     if ($selectedClass && $selectedSubject && $selectedTheme) loadLabels()
   },
   beforeDestroy() {
+    this.resetDropdown()
     this.dropdownDestroy()
     setSelectedLabels([])
   },
