@@ -14,28 +14,28 @@
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('showPreview', selectedApplicationsIds, selectedTasksIds )"
+        @click="$emit('showPreview', selectedApplications)"
       >
         Предпросмотр
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onEdit', selectedApplicationsIds, selectedTasksIds )"
+        @click="$emit('onEdit', selectedApplications)"
       >
         Редактировать
       </span>
       <span
-        v-if="selectedTasksIds.length === 1"
+        v-if="selectedApplications.length === 1"
         class="text --basic"
-        @click="$emit('onSeeComments', selectedApplicationsIds)"
+        @click="$emit('onSeeComments', selectedApplications)"
       >
         Посмотреть комментарий
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onCancel', selectedApplicationsIds)"
+        @click="$emit('onCancel', selectedApplications)"
       >
         Отменить
       </span>
@@ -53,7 +53,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
-import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'TableHeader',
@@ -62,15 +61,7 @@ export default Vue.extend({
   },
   props: {
     total: { type: Number, required: true },
-    selectedApplications: { type: Array as PropType<ApplicationType[]> },
-  },
-  computed: {
-    selectedTasksIds() {
-      return this.selectedApplications.map((el) => el.task)
-    },
-    selectedApplicationsIds() {
-      return this.selectedApplications.map((el) => el.application)
-    },
+    selectedApplications: { type: Array as PropType<number[]>, required: true },
   },
 })
 </script>

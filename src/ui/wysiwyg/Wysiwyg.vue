@@ -28,6 +28,7 @@ export default Vue.extend({
     value: { type: String, required: true, default: '' },
     listenInsertion: { type: Boolean, required: false, default: false },
     listenRightClick: { type: Boolean, required: false, default: false },
+    listenSelection: { type: Boolean, required: false, default: false },
     editorId: { type: String, required: false },
     editorIndex: { type: Number, required: false, default: 2 },
     placeholder: { type: String, default: '' },
@@ -120,6 +121,8 @@ export default Vue.extend({
     // },
     onEditorReady(editor) {
       this.editorName = editor.name
+      const editable = editor.editable()
+
       editor.on('fileUploadRequest', (event) => {
         const { xhr } = event.data.fileLoader
         const formData = new FormData()
@@ -155,7 +158,6 @@ export default Vue.extend({
         const incomingString = event.data.dataValue.split(' ')
         if (incomingString.some((el) => checkString.includes(el))) event.cancel()
       })
-      this.$emit('instance-ready', editor)
       if (editor.dataProcessor.dataFilter) {
         editor.dataProcessor.dataFilter.addRules({
           elements: {
@@ -165,6 +167,32 @@ export default Vue.extend({
           },
         })
       }
+      if (this.listenSelection) {
+        editable.attachListener(editable, 'mouseup', (event) => {
+          const range = editor.getSelectedRanges()
+          const isRange = range[0].endOffset - range[0].startOffset > 0
+          if (isRange) {
+            // parent node and their bounding for setting right position if mouseout happened far from elem
+            const parentElementPosition = editor
+              .getSelection()
+              .getNative()
+              .anchorNode.parentNode.getBoundingClientRect()
+            // event for position
+            const mouseEvent = event.data.$
+
+            if (!parentElementPosition && !mouseEvent) return
+
+            this.$emit('text-selected', { parentElementPosition, mouseEvent, editor })
+          }
+        })
+      }
+
+      editor.on('beforeDestroy', () => {
+        editable.clearListeners()
+        editor.removeAllListeners()
+      })
+
+      this.$emit('instance-ready', editor)
     },
     handleInsert(event) {
       const editor = window.CKEDITOR.instances[this.editorName]
@@ -172,46 +200,24 @@ export default Vue.extend({
         alert('Editor did not instanced, try to reload page')
         return
       }
-
       editor.focus()
       editor.insertHtml(event.detail)
-    },
-    handleRightClick(el) {
-      if (el.$) {
-        this.$emit('right-click', el.$)
-      }
     },
   },
   mounted() {
     window.CKEDITOR.on('instanceReady', enableRules)
-    const editor = document.querySelector(`#${this.$props.editorId}`)
 
-    document.addEventListener('contextmenu', this.handleRightClick)
-
-    if (this.$props.listenRightClick) {
-      window.CKEDITOR.on('instanceReady', () => {
-        const currentEditor = window.CKEDITOR.instances[`editor${this.$props.editorIndex}`]
-        if (!currentEditor) return
-        currentEditor.contextMenu.addListener((el) => {
-          currentEditor.contextMenu.removeAll()
-          this.handleRightClick(el)
-        })
-      })
-    }
-    if (this.$props.listenInsertion) {
-      editor && editor.addEventListener('insert', this.handleInsert)
-    }
+    window.CKEDITOR.on('instanceReady', ({ editor }) => {
+      if (this.$props.listenInsertion) {
+        editor && editor.addEventListener('insert', this.handleInsert)
+      }
+    })
   },
-  berforeDestroy() {
+  beforeDestroy() {
     const editor = document.querySelector(`#${this.$props.editorId}`)
 
     if (this.$props.listenInsertion) {
       editor && editor.removeEventListener('insert', this.handleInsert)
-    }
-
-    if (this.$props.listenRightClick) {
-      const editorArea = editor && editor.querySelector('.cke_contents')
-      editorArea && editorArea.removeEventListener('contextmenu', this.handleRightClick)
     }
   },
 })

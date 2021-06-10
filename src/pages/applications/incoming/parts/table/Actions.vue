@@ -44,7 +44,6 @@ import SelectItem from '@/ui/select/parts/SelectItem.vue'
 import { SelectItemI } from '@/ui/select/BaseSelect.vue'
 import { DropdownItem } from '@/pages/common/types'
 import { actionsSelectMenuMaxHeight, selectItemHeight } from '@/pages/common/constants'
-import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'Actions',
@@ -55,9 +54,8 @@ export default Vue.extend({
   },
   props: {
     applicationId: { type: Number, required: true },
-    taskId: { type: Number, required: true },
     selectedApplications: {
-      type: Array as PropType<ApplicationType[]>,
+      type: Array as PropType<number[]>,
       required: true,
     },
   },
@@ -98,17 +96,14 @@ export default Vue.extend({
     },
     handleAction(item: SelectItemI) {
       const selectedApplicationsIds = this.selectedApplications.length
-        ? this.selectedApplications.map((el) => el.application)
+        ? this.selectedApplications
         : [this.applicationId]
-      const selectedTasksIds = this.selectedApplications.length
-        ? this.selectedApplications.map((el) => el.task)
-        : [this.taskId]
       switch (item.name) {
         case 'preview':
-          this.$emit('showPreview', selectedApplicationsIds, selectedTasksIds)
+          this.$emit('showPreview', selectedApplicationsIds)
           break
         case 'edit':
-          this.$emit('onEdit', selectedApplicationsIds, selectedTasksIds)
+          this.$emit('onEdit', selectedApplicationsIds)
           break
         case 'accept':
           this.$emit('onAccept', selectedApplicationsIds)

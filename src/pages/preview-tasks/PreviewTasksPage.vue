@@ -11,8 +11,11 @@
     />
     <SelectTask
       :questions="questions"
+      :applications="applications"
+      :from-page="fromPage"
+      :task-type="taskType"
     />
-    <Card class="previw-task">
+    <Card class="preview-task">
       <iframe
         ref="iframe"
         :src="iframeLink"
@@ -58,6 +61,7 @@ import {
   $currentQuestion,
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { combineRouteQueries } from '@/features/lib'
+import { FromPage, TaskType } from '@/pages/common/types'
 
 type IframeData = {
   activeTask: string | null
@@ -78,10 +82,10 @@ export default Vue.extend({
   data: () => ({
     questions: [] as string[],
     token: null as null | string,
-    taskType: null as null | string,
+    taskType: '' as TaskType,
     applications: [] as number[],
     heightIframe: 0,
-    fromPage: '',
+    fromPage: '' as FromPage,
   }),
   effector: {
     $isPreview,
@@ -117,8 +121,8 @@ export default Vue.extend({
               name: 'test-tasks-edit',
               query: {
                 questions: this.questions.join(','),
-                fromPage: this.fromPage,
                 applications: this.applications.join(','),
+                fromPage: this.fromPage,
                 currentQuestion: String(this.$currentQuestion),
               },
               params: { id: this.activeTask || '1' },
@@ -177,16 +181,16 @@ export default Vue.extend({
       }
     },
     $currentQuestion(value) {
-      if (value !== $currentQuestion) {
+      if (value !== +this.$route.query.currentQuestion) {
         this.$router.replace(combineRouteQueries(this.$route.query, { currentQuestion: value }))
       }
     },
   },
   methods: {
     toEditPage() {
-      let nameRoute = 'test-tasks-edit'
+      let nameRoute = 'test-assignment'
       if (this.taskType === 'olympiad-assignment') nameRoute = 'olympiad-tasks-edit'
-      if (this.taskType === 'lesson-tasks-edit') nameRoute = 'lesson-tasks-edit'
+      if (this.taskType === 'test-assignment') nameRoute = 'lesson-tasks-edit'
       this.$router.push({ name: nameRoute, params: { id: `${this.activeTask}` } })
     },
     async acceptApplications() {
@@ -232,11 +236,18 @@ export default Vue.extend({
       this.questions = questions.split(',')
     }
     if (token && typeof token === 'string') this.token = token
-    if (taskType && typeof taskType === 'string') this.taskType = taskType
+    if (
+      taskType &&
+      (taskType === 'test-assignment' ||
+        taskType === 'olympiad-assignment' ||
+        taskType === 'lesson-assignment')
+    ) {
+      this.taskType = taskType
+    }
     if (applications && typeof applications === 'string') {
       this.applications = applications.split(',').map((appId) => Number(appId))
     }
-    if (fromPage && typeof fromPage === 'string') {
+    if (fromPage && (fromPage === 'applications' || fromPage === 'tasks')) {
       this.fromPage = fromPage
     }
     if (!this.questions || !this.token || !this.taskType || !this.fromPage) goBack()
@@ -259,7 +270,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.previw-task {
+.preview-task {
   padding: 0;
   user-select: none;
 }

@@ -27,6 +27,7 @@ export type GetListQueryParams = {
   study_year?: number | null
   is_prerequisite?: boolean
   theme?: number | null
+  ids?: string
 }
 
 export type TableDataResponse<T> = {

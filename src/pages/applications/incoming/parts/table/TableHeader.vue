@@ -14,35 +14,35 @@
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('showPreview', selectedApplicationsIds, selectedTasksIds)"
+        @click="$emit('showPreview', selectedApplications)"
       >
         Предпросмотр
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onEdit', selectedApplicationsIds, selectedTasksIds)"
+        @click="$emit('onEdit', selectedApplications)"
       >
         Редактировать
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onAccept', selectedApplicationsIds)"
+        @click="$emit('onAccept', selectedApplications)"
       >
         Принять
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onSendToRevision', selectedApplicationsIds)"
+        @click="$emit('onSendToRevision', selectedApplications)"
       >
         На доработку
       </span>
       <span
         v-if="this.selectedApplications.length"
         class="text --basic"
-        @click="$emit('onAssignToModerator', selectedApplicationsIds)"
+        @click="$emit('onAssignToModerator', selectedApplications)"
       >
         Назначить
       </span>
@@ -60,7 +60,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Divider from '@/ui/divider/Divider.vue'
-import { ApplicationType } from '@/pages/applications/types'
 
 export default Vue.extend({
   name: 'TableHeader',
@@ -69,15 +68,7 @@ export default Vue.extend({
   },
   props: {
     total: { type: Number, required: true },
-    selectedApplications: { type: Array as PropType<ApplicationType[]> },
-  },
-  computed: {
-    selectedTasksIds() {
-      return this.selectedApplications.map((el) => el.task)
-    },
-    selectedApplicationsIds() {
-      return this.selectedApplications.map((el) => el.application)
-    },
+    selectedApplications: { type: Array as PropType<number[]> },
   },
 })
 </script>

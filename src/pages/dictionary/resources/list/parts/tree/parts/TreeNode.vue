@@ -68,7 +68,7 @@ import Chip from '@/pages/dictionary/resources/list/parts/tree/parts/Chip.vue'
 import Actions from '@/pages/dictionary/resources/list/parts/Actions.vue'
 import { TreeData } from '@/features/api/types'
 import { navigatePush } from '@/features/navigation'
-import { removeHtmlTags, sortTreeLeaves } from '@/features/lib'
+import { removeHtmlTags, sortResourcesTreeLeaves, sortTreeLeaves } from '@/features/lib'
 import { setDataToUpdateTree } from '@/pages/common/parts/tree/data-to-update-tree/data-to-update-tree.model'
 import { FiltersParams } from '@/pages/common/types'
 import AutoOpenFolderMixin from '@/features/lib/mixins/AutoOpenFolderMixin'
@@ -149,12 +149,22 @@ export default AutoOpenFolderMixin({
   watch: {
     opened: {
       handler(newVal) {
-        if (newVal) this.node.leaves = sortTreeLeaves(this.node.leaves)
+        if (newVal) {
+          const { leaves } = this.node
+          if (leaves.some((el) => el.element_type === 'study_resource')) {
+            this.node.leaves = sortResourcesTreeLeaves(leaves)
+          } else this.node.leaves = sortTreeLeaves(leaves)
+        }
       },
     },
     nodeLeavesLength: {
       handler(newVal) {
-        if (newVal && this.opened) this.node.leaves = sortTreeLeaves(this.node.leaves)
+        if (newVal && this.opened) {
+          const { leaves } = this.node
+          if (leaves.some((el) => el.element_type === 'study_resource')) {
+            this.node.leaves = sortResourcesTreeLeaves(leaves)
+          } else this.node.leaves = sortTreeLeaves(leaves)
+        }
       },
     },
   },

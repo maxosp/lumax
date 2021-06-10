@@ -74,6 +74,7 @@ export default Vue.extend({
     selectedData: { type: Array as PropType<DropdownItem[]> },
     isRecursive: { type: Boolean as PropType<boolean> },
     loading: { type: Boolean as PropType<boolean>, default: false },
+    secondClick: { type: Boolean as PropType<boolean>, default: false },
   },
   computed: {
     correctValue(): DropdownItem {
@@ -100,7 +101,14 @@ export default Vue.extend({
   methods: {
     onSelectItem(item: DropdownItem, cb: any) {
       this.$emit('item-changed', item)
-      this.$props.methods.itemChanged(item.name)
+      const isSecondClick =
+        this.selectedData && !!this.selectedData.find((el: DropdownItem) => el.name === item.name)
+      if (this.secondClick && isSecondClick) {
+        const resucedSelectedData = this.selectedData.filter((data) => data.name !== item.name)
+        this.$props.methods.itemChanged(
+          this.selectedData.length === 1 ? null : resucedSelectedData[0].name
+        )
+      } else this.$props.methods.itemChanged(item.name)
       this.$props.methods.resetSearchString()
       cb()
     },

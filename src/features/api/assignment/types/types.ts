@@ -72,6 +72,7 @@ export interface GetAssignmentTreeQueryParams {
   created_by_me?: boolean
   theme?: number
   search?: string
+  ids?: string
 }
 
 export interface GetAssignmentListQueryParams extends GetAssignmentTreeQueryParams {

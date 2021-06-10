@@ -79,6 +79,43 @@ export const sortTreeLeaves = (leaves: TreeData[]) => {
   })
 }
 
+export const sortResourcesTreeLeaves = (leaves: TreeData[]) => {
+  const sorter = {
+    file: {
+      value: 1,
+      text: 'file_name',
+    },
+    video: {
+      value: 2,
+      text: 'link',
+    },
+    text: {
+      value: 3,
+      text: 'text',
+    },
+    link: {
+      value: 4,
+      text: 'link',
+    },
+  }
+  let arr = JSON.parse(JSON.stringify(leaves))
+  arr = arr.sort((a: any, b: any) => {
+    if (a.element_type !== 'study_resource' || b.element_type !== 'study_resource') return 0
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+    if (
+      sorter[a.study_resource.resource_type].value === sorter[b.study_resource.resource_type].value
+    ) {
+      const aText: string = a.study_resource[sorter[a.study_resource.resource_type].text]
+      const bText: string = b.study_resource[sorter[a.study_resource.resource_type].text]
+      return collator.compare(removeHtmlTags(aText), removeHtmlTags(bText))
+    }
+    return (
+      sorter[a.study_resource.resource_type].value - sorter[b.study_resource.resource_type].value
+    )
+  })
+  return arr
+}
+
 const checkChildren = (oldData: TreeData, newData?: TreeData) => {
   if (newData) {
     return oldData.leaves.some((odl) =>

@@ -1,16 +1,18 @@
 import { createEvent, restore, sample } from 'effector'
 
+export const selectTaskDestroy = createEvent<void>()
+
 export const prev = createEvent<void>()
 export const next = createEvent<void>()
 
 export const setQuestionsAmount = createEvent<number>()
-export const $questionAmount = restore(setQuestionsAmount, 1)
+export const $questionAmount = restore(setQuestionsAmount, 1).reset(selectTaskDestroy)
 
 export const setCurrentIndex = createEvent<number>()
-export const $currentIndex = restore(setCurrentIndex, 0)
+export const $currentIndex = restore(setCurrentIndex, 0).reset(selectTaskDestroy)
 
 export const setCurrentQuestion = createEvent<number>()
-export const $currentQuestion = restore(setCurrentQuestion, 1)
+export const $currentQuestion = restore(setCurrentQuestion, 1).reset(selectTaskDestroy)
 
 sample({
   source: [$currentIndex, $questionAmount],

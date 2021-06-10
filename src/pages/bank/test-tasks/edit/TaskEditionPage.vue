@@ -17,6 +17,9 @@
     />
     <SelectTask
       :questions="questions"
+      :applications="applications"
+      :from-page="fromPage"
+      task-type="test-assignment"
     />
     <TaskContent />
     <TaskFooter
@@ -70,6 +73,7 @@ import {
 } from '@/pages/preview-tasks/parts/select-task/select-task.model'
 import { combineRouteQueries } from '@/features/lib'
 import { resetCounters } from '@/pages/common/parts/tasks/moving-images-on-image-input-answer/form/moving-images-on-image-answer-form.model'
+import { FromPage } from '@/pages/common/types'
 
 export default Vue.extend({
   name: 'TaskEditionPage',
@@ -95,7 +99,7 @@ export default Vue.extend({
   },
   data: () => ({
     questions: [] as string[],
-    fromPage: '',
+    fromPage: '' as FromPage,
     applications: [] as number[],
   }),
   watch: {
@@ -106,11 +110,11 @@ export default Vue.extend({
             name: 'preview-task',
             query: {
               questions: this.questions.length ? this.questions.join(',') : this.$route.params.id,
-              taskType: 'test-assignment',
-              token: this.$token,
-              fromPage: this.fromPage,
               applications: this.applications.join(','),
+              fromPage: this.fromPage,
+              taskType: 'test-assignment',
               currentQuestion: String(this.$currentQuestion),
+              token: this.$token,
             },
           })
         }
@@ -180,7 +184,7 @@ export default Vue.extend({
       this.applications = applications.split(',').map((appId) => Number(appId))
       loadApplication(this.applications[this.$currentIndex])
     }
-    if (fromPage && typeof fromPage === 'string') {
+    if (fromPage && (fromPage === 'applications' || fromPage === 'tasks')) {
       this.fromPage = fromPage
     }
     if (currentQuestion && typeof +currentQuestion === 'number') {

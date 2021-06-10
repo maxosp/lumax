@@ -97,3 +97,7 @@ export type RightClickParams = {
   event: any
   type?: ContextMenuType
 }
+
+export type TaskType = 'test-assignment' | 'olympiad-assignment' | 'lesson-assignment'
+
+export type FromPage = 'applications' | 'tasks'
