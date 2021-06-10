@@ -9,7 +9,7 @@
       :loading="$loading"
       :disabled="!$canSetLabels"
       :selected-data="$selectedLabels"
-      secondClick
+      second-click
       @infiniteHandler="nextPageTrigger"
       @item-changed="onSelectItem"
     />

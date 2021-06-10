@@ -205,9 +205,10 @@ export default Vue.extend({
     },
   },
   mounted() {
+    const editor = document.querySelector(`#${this.$props.editorId}`)
     window.CKEDITOR.on('instanceReady', enableRules)
 
-    window.CKEDITOR.on('instanceReady', ({ editor }) => {
+    window.CKEDITOR.on('instanceReady', () => {
       if (this.$props.listenInsertion) {
         editor && editor.addEventListener('insert', this.handleInsert)
       }
