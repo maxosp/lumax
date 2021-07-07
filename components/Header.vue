@@ -1,12 +1,14 @@
 <template>
   <div class="container">
-    <img src="~assets/images/Logo.png" alt="Логотип тип" class="logo">
+    <a href="home">
+      <img src="~assets/images/Logo.png" alt="Логотип Lumax" class="logo">
+    </a>
     <div class="navbar">
       <AppButton class="nav-btn">Фильмы</AppButton>
       <AppButton class="nav-btn">Сериалы</AppButton>
       <AppButton class="nav-btn">Мультфильмы</AppButton>
     </div>
-    <AppButton>Вход</AppButton>
+    <AppButton class="login-btn">Вход</AppButton>
   </div>
 </template>
 
@@ -32,12 +34,29 @@ export default Vue.extend({
   margin-bottom: 20px;
 }
 
+.logo {
+  cursor: pointer;
+}
+
 .nav-btn {
   background-color: transparent;
+  box-shadow: none;
   color: #fff;
 
   &:hover {
     color: $primary-color;
+    background-color: transparent;
+  }
+}
+
+.login-btn {
+  @include flex-middle;
+  box-shadow: none;
+  background-color: $primary-color;
+  color: $secondary-color;
+
+  &:hover {
+    box-shadow: $box-shadow;
   }
 }
 </style>

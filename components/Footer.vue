@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <div class="socials">
-      <a href="#">&#xe908;</a>
-      <a href="#">&#xe905;</a>
-      <a href="#">&#xe906;</a>
-      <a href="#">&#xe909;</a>
+      <a href="twitter">&#xe908;</a>
+      <a href="gmail">&#xe905;</a>
+      <a href="instagram">&#xe906;</a>
+      <a href="vk">&#xe909;</a>
     </div>
-    <p>Max Osipenko 2021</p>
+    <p>Maxim Osipenko 2021</p>
   </div>
 </template>
 
